@@ -17,7 +17,8 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 public class client extends Applet_Sub1 {
-	private FogHandler fogHandler = new FogHandler();
+    public static int clientZoom = 600;
+    private FogHandler fogHandler = new FogHandler();
 	public static int cameratoggle;
 	public static int zoom;
     static boolean clientData;
@@ -12782,7 +12783,7 @@ if(i18 > 1)
             if(aBooleanArray876[4] && anIntArray1203[4] + 128 > i)
                 i = anIntArray1203[4] + 128;
             int k = anInt1185 + anInt896 & 0x7ff;
-            method144(0, 600 + i * 3, i, anInt1014, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550) - 50, k, anInt1015);
+            method144(0, clientZoom + i * 3, i, anInt1014, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550) - 50, k, anInt1015);
         	 }
         int j;
         if(!aBoolean1160)

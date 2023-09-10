@@ -46,6 +46,52 @@ public class Applet_Sub1 extends Applet
     public void mouseWheelMoved(MouseWheelEvent e)
     {
 	int notches = e.getWheelRotation();
+        /** ZOOMING **/
+        boolean zoom = client.currentScreenMode == client.ScreenMode.FIXED ? (anInt20 < 512)
+                : (anInt20 < client.currentGameWidth - 200);
+        if (zoom && client.anInt857 == -1) {
+            client.clientZoom += notches * 35;
+
+            int max_zoom_1 = (client.currentScreenMode == client.ScreenMode.FIXED ? -150 : -300);
+            if (client.clientZoom < max_zoom_1) {
+                client.clientZoom = max_zoom_1;
+            }
+            if (client.clientZoom > 1200) {
+                client.clientZoom = 1200;
+            }
+            if (client.currentScreenMode == client.ScreenMode.FIXED) {
+                if (client.clientZoom < 70) {
+                    client.clientZoom = 70;
+                }
+            } else {
+                if (client.clientZoom < 130) {
+                    client.clientZoom = 130;
+                }
+            }
+
+            int setting = 0;
+            if (client.clientZoom > 1000) {
+                setting = 4;
+            } else if (client.clientZoom > 800) {
+                setting = 3;
+            } else if (client.clientZoom > 600) {
+                setting = 2;
+            } else if (client.clientZoom > 400) {
+                setting = 1;
+            }
+
+            //RSInterface.interfaceCache[SettingsWidget.ZOOMTOGGLE].active = true;
+			
+			/*
+			//this is commented out because settings[168] is nulling when a value is set to it.
+			try {
+				client.instance.settings[168] = setting;
+			} catch (Exception e) {
+				System.out.println("Failed to set settings[168] to: "+setting);
+			}
+			*/
+            //RSInterface.interfaceCache[SettingsWidget.ZOOM_SLIDER].slider.setValue(client.clientZoom);
+        }
 	if (anInt20 > 0 && anInt21 > 340 && anInt20 < 510 && anInt21 < 500) {//Chatbox
 	  client.anInt1089 -= notches*30;		
 	}
@@ -344,18 +390,18 @@ mouseWheelDown = false;
         anInt18 = 0;
         int i = keyevent.getKeyCode();
         int j = keyevent.getKeyChar();
-        if(i == KeyEvent.VK_INSERT)
-          client.zoom += 15;
-        if(i == KeyEvent.VK_PAGE_UP)
-          client.zoom -= 15;
-        if(i == KeyEvent.VK_HOME)
-          client.fwdbwd -= 15;
-        if(i == KeyEvent.VK_END)
-          client.fwdbwd += 15;
-        if(i == KeyEvent.VK_PAGE_DOWN)
-          client.lftrit -= 15;
-        if(i == KeyEvent.VK_DELETE)
-          client.lftrit += 15;
+        if (i == KeyEvent.VK_PAGE_UP) {
+            if (client.clientZoom == 150) {
+                return;
+            }
+            client.clientZoom -= 50;
+        }
+        if (i == KeyEvent.VK_PAGE_DOWN) {
+            if (client.clientZoom == 1300) {
+                return;
+            }
+            client.clientZoom += 50;
+        }
         if(j < 30)
             j = 0;
         if(i == 37)
