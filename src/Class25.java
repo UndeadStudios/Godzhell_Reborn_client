@@ -1,7 +1,3 @@
-
-import java.io.PrintStream;
-import sign.signlink;
-
 public class Class25
 {
 
@@ -208,8 +204,8 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[i][j][k].aClass40_1312 = class40;
     }
 
-    public void method280(int i, int j, int k, int l, Class30_Sub2_Sub4 class30_sub2_sub4, byte byte0, int i1, 
-            int j1)
+    public void method280(int i, int j, int k, int l, Class30_Sub2_Sub4 class30_sub2_sub4, byte byte0, long i1,
+                          int j1)
     {
         if(class30_sub2_sub4 == null)
             return;
@@ -259,8 +255,8 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[l][i][i1].aClass3_1316 = class3;
     }
 
-    public void method282(int i, Class30_Sub2_Sub4 class30_sub2_sub4, boolean flag, int j, int k, byte byte0, int l, 
-            Class30_Sub2_Sub4 class30_sub2_sub4_1, int i1, int j1, int k1)
+    public void method282(int i, Class30_Sub2_Sub4 class30_sub2_sub4, boolean flag, long j, int k, byte byte0, int l,
+                          Class30_Sub2_Sub4 class30_sub2_sub4_1, int i1, int j1, int k1)
     {
         if(!flag)
             aBoolean434 = !aBoolean434;
@@ -283,8 +279,8 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[k1][l][k].aClass10_1313 = class10;
     }
 
-    public void method283(int i, int j, int k, int l, int i1, int j1, int k1, 
-            Class30_Sub2_Sub4 class30_sub2_sub4, int l1, byte byte0, int i2, int j2)
+    public void method283(long i, int j, int k, int l, int i1, int j1, int k1,
+                          Class30_Sub2_Sub4 class30_sub2_sub4, int l1, byte byte0, int i2, int j2)
     {
         if(class30_sub2_sub4 == null)
             return;
@@ -306,8 +302,8 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[i1][l1][j].aClass26_1314 = class26;
     }
 
-    public boolean method284(int i, byte byte0, int j, int k, Class30_Sub2_Sub4 class30_sub2_sub4, int l, int i1, 
-            int j1, byte byte1, int k1, int l1)
+    public boolean method284(long i, byte byte0, int j, int k, Class30_Sub2_Sub4 class30_sub2_sub4, int l, int i1,
+                             int j1, byte byte1, int k1, int l1)
     {
         if(byte1 != 110)
             anInt431 = 250;
@@ -322,7 +318,7 @@ public class Class25
         }
     }
 
-    public boolean method285(int i, int j, byte byte0, int k, int l, int i1, int j1, 
+    public boolean method285(int i, int j, byte byte0, int k, long l, int i1, int j1,
             int k1, Class30_Sub2_Sub4 class30_sub2_sub4, boolean flag)
     {
         if(class30_sub2_sub4 == null)
@@ -354,7 +350,7 @@ public class Class25
     }
 
     public boolean method286(int i, int j, int k, Class30_Sub2_Sub4 class30_sub2_sub4, int l, int i1, int j1, 
-            int k1, int l1, int i2, int j2, int k2, byte byte0)
+            int k1, int l1, int i2, long j2, int k2, byte byte0)
     {
         if(byte0 != 35)
         {
@@ -366,8 +362,8 @@ public class Class25
             return method287(j, l1, k2, (i2 - l1) + 1, (i1 - k2) + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte)0);
     }
 
-    private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1, 
-            int l1, Class30_Sub2_Sub4 class30_sub2_sub4, int i2, boolean flag, int j2, byte byte0)
+    private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1,
+                              int l1, Class30_Sub2_Sub4 class30_sub2_sub4, int i2, boolean flag, long j2, byte byte0)
     {
         for(int k2 = j; k2 < j + l; k2++)
         {
@@ -625,7 +621,7 @@ public class Class25
             return class30_sub3.aClass49_1315;
     }
 
-    public int method300(int i, int j, int k)
+    public long method300(int i, int j, int k)
     {
         Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[i][j][k];
         if(class30_sub3 == null || class30_sub3.aClass10_1313 == null)
@@ -634,7 +630,7 @@ public class Class25
             return class30_sub3.aClass10_1313.anInt280;
     }
 
-    public int method301(int i, int j, int k, int l)
+    public long method301(int i, int j, int k, int l)
     {
         Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[i][j][l];
         if(k != 0)
@@ -645,7 +641,7 @@ public class Class25
             return class30_sub3.aClass26_1314.anInt505;
     }
 
-    public int method302(int i, int j, int k)
+    public long method302(int i, int j, int k)
     {
         Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[i][j][k];
         if(class30_sub3 == null)
@@ -660,7 +656,7 @@ public class Class25
         return 0;
     }
 
-    public int method303(int i, int j, int k)
+    public long method303(int i, int j, int k)
     {
         Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[i][j][k];
         if(class30_sub3 == null || class30_sub3.aClass49_1315 == null)
@@ -669,7 +665,7 @@ public class Class25
             return class30_sub3.aClass49_1315.anInt815;
     }
 
-    public int method304(int i, int j, int k, int l)
+    public int method304(int i, int j, int k, long l)
     {
         Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[i][j][k];
         if(class30_sub3 == null)
@@ -1754,14 +1750,14 @@ label0:
         k4 = l4;
         if(j3 < 50)
             return;
-        int i5 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i2 << 9) / k2;
-        int j5 = Class30_Sub2_Sub1_Sub3.anInt1467 + (l3 << 9) / k2;
-        int k5 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i3 << 9) / j2;
-        int l5 = Class30_Sub2_Sub1_Sub3.anInt1467 + (i4 << 9) / j2;
-        int i6 = Class30_Sub2_Sub1_Sub3.anInt1466 + (l2 << 9) / k3;
-        int j6 = Class30_Sub2_Sub1_Sub3.anInt1467 + (j4 << 9) / k3;
-        int k6 = Class30_Sub2_Sub1_Sub3.anInt1466 + (l1 << 9) / j3;
-        int l6 = Class30_Sub2_Sub1_Sub3.anInt1467 + (k4 << 9) / j3;
+        int i5 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i2 << client.log_view_dist) / k2;
+        int j5 = Class30_Sub2_Sub1_Sub3.anInt1467 + (l3 << client.log_view_dist) / k2;
+        int k5 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i3 << client.log_view_dist) / j2;
+        int l5 = Class30_Sub2_Sub1_Sub3.anInt1467 + (i4 << client.log_view_dist) / j2;
+        int i6 = Class30_Sub2_Sub1_Sub3.anInt1466 + (l2 << client.log_view_dist) / k3;
+        int j6 = Class30_Sub2_Sub1_Sub3.anInt1467 + (j4 << client.log_view_dist) / k3;
+        int k6 = Class30_Sub2_Sub1_Sub3.anInt1466 + (l1 << client.log_view_dist) / j3;
+        int l6 = Class30_Sub2_Sub1_Sub3.anInt1467 + (k4 << client.log_view_dist) / j3;
         Class30_Sub2_Sub1_Sub3.anInt1465 = 0;
         if((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0)
         {
@@ -1845,8 +1841,8 @@ label0:
                 Class40.anIntArray691[l1] = k2;
                 Class40.anIntArray692[l1] = i3;
             }
-            Class40.anIntArray688[l1] = Class30_Sub2_Sub1_Sub3.anInt1466 + (i2 << 9) / i3;
-            Class40.anIntArray689[l1] = Class30_Sub2_Sub1_Sub3.anInt1467 + (k2 << 9) / i3;
+            Class40.anIntArray688[l1] = Class30_Sub2_Sub1_Sub3.anInt1466 + (i2 << client.log_view_dist) / i3;
+            Class40.anIntArray689[l1] = Class30_Sub2_Sub1_Sub3.anInt1467 + (k2 << client.log_view_dist) / i3;
         }
 
         Class30_Sub2_Sub1_Sub3.anInt1465 = 0;

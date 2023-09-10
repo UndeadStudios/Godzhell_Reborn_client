@@ -162,19 +162,17 @@ public class Class42_Sub1 extends Class42
             else
                 aByteArray1372[k1] = 0;
 
-        abyte2 = class44.method571("map_index", null);
+        abyte2 = class44.method571("525map_index", null);
         Class30_Sub2_Sub2 class30_sub2_sub2_2 = new Class30_Sub2_Sub2(abyte2, 891);
-        j1 = abyte2.length / 7;
+        j1 = class30_sub2_sub2_2.method410();
         anIntArray1371 = new int[j1];
         anIntArray1350 = new int[j1];
         anIntArray1337 = new int[j1];
-        anIntArray1356 = new int[j1];
         for(int i2 = 0; i2 < j1; i2++)
         {
             anIntArray1371[i2] = class30_sub2_sub2_2.method410();
             anIntArray1350[i2] = class30_sub2_sub2_2.method410();
             anIntArray1337[i2] = class30_sub2_sub2_2.method410();
-            anIntArray1356[i2] = class30_sub2_sub2_2.method408();
         }
 
         abyte2 = class44.method571("anim_index", null);
@@ -432,8 +430,8 @@ public class Class42_Sub1 extends Class42
             return;
         //if(anIntArrayArray1364[j][i] == 0)
             //return;
-        if(aByteArrayArray1342[j][i] == 0)
-            return;
+        //if(aByteArrayArray1342[j][i] == 0)
+           // return;
         if(anInt1332 == 0)
             return;
         Class30_Sub2_Sub3 class30_sub2_sub3 = new Class30_Sub2_Sub3();

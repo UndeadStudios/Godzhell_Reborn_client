@@ -48,7 +48,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             class30_sub2_sub2_1.aByteArray1405 = new byte[100];
         else
         if(i == 1)
-            class30_sub2_sub2_1.aByteArray1405 = new byte[5000];
+            class30_sub2_sub2_1.aByteArray1405 = new byte[40000];
         else
             class30_sub2_sub2_1.aByteArray1405 = new byte[30000];
         return class30_sub2_sub2_1;
@@ -243,7 +243,40 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             i -= 0x10000;
         return i;
     }
+    public int method912(int i) {
+        anInt1406++;
+        int i_6_ = aByteArray1405[anInt1406] & i;
+        if (i_6_ < 128)
+            return method408();
+        return -32768 + method410();
+    }
+    public int method1606() {
+        int var2 = 0;
 
+        int var3;
+        for (var3 = this.readUShortSmart(); var3 == 32767; var3 = this.readUShortSmart()) {
+            var2 += 32767;
+        }
+
+        var2 += var3;
+        return var2;
+    }
+
+    public int readUShortSmart() {
+        int var2 = this.aByteArray1405[this.anInt1406] & 255;
+        return var2 < 128 ? this.method408() : this.method410() - 32768;
+    }
+    public int method937(boolean bool) {
+        anInt1406++;
+        int i = 0;
+        int i_25_ = method912(255);
+        if (!bool)
+            return -6;
+        for (/**/; i_25_ == 32767; i_25_ = method912(255))
+            i += 32767;
+        i += i_25_;
+        return i;
+    }
     public int method412()
     {
         anInt1406 += 3;
@@ -358,10 +391,26 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         else
             return method410() - 32768;
     }
-
-    private static final BigInteger RSA_MODULUS = new BigInteger("24849545541937346749424624539693975668005763266915398302191580362318509084176531162572333689652450372767080959278266914441241053643722647063622671715214793");
+    public int readSmart() {
+        int value = aByteArray1405[anInt1406] & 0xFF;
+        if (value < 128) {
+            return method408() - 64;
+        } else {
+            return method410() - 49152;
+        }
+    }
+    public int readUSmart2() {
+        int baseVal = 0;
+        int lastVal = 0;
+        while ((lastVal = readSmart()) == 32767) {
+            baseVal += 32767;
+        }
+        return baseVal + lastVal;
+    }
+    private static final BigInteger RSA_MODULUS = new BigInteger("16928028640386444233753461627784780622271056343201923868292339613459023644602450644595713209139392506121702290400308489452089579755756150418531726243143329");
 
     private static final BigInteger RSA_EXPONENT = new BigInteger("65537");
+
 
     public void method423(BigInteger biginteger, BigInteger biginteger1, byte byte0)
     {
@@ -372,7 +421,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         BigInteger biginteger2 = new BigInteger(abyte0);
         if(byte0 != 0)
             aBoolean1403 = !aBoolean1403;
-        BigInteger biginteger3 = biginteger2.modPow(RSA_EXPONENT, RSA_MODULUS);
+        BigInteger biginteger3 = biginteger2;//.modPow(RSA_EXPONENT, RSA_MODULUS);
         byte abyte1[] = biginteger3.toByteArray();
         anInt1406 = 0;
         method398(abyte1.length);

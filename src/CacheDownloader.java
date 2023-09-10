@@ -18,7 +18,7 @@ import sign.signlink;
 
 /**
  * Handles downloadiong our cache files from the webserver
- * 
+ *
  * @author Arithium
  *
  */
@@ -46,12 +46,12 @@ public class CacheDownloader {
 
 	/**
 	 * Different file types to download archives from
-	 * 
+	 *
 	 * @author Mobster
 	 *
 	 */
 	public enum FileType {
-		CACHE(signlink.findcachedir(), "https://ghreborn.000webhostapp.com/cache/old/cache.zip", 1); 
+		CACHE(signlink.findcachedir(), "https://godzhell.net/cache/cache.zip", 7);
 		/**
 		 * The link to the file on the webserver
 		 */
@@ -85,7 +85,7 @@ public class CacheDownloader {
 
 		/**
 		 * Gets the current version of the file
-		 * 
+		 *
 		 * @return The current version of the file
 		 */
 		public int getVersion() {
@@ -94,7 +94,7 @@ public class CacheDownloader {
 
 		/**
 		 * Gets the url of the file on the webserver
-		 * 
+		 *
 		 * @return The url of the file on the webserver
 		 */
 		public String getURL() {
@@ -103,7 +103,7 @@ public class CacheDownloader {
 
 		/**
 		 * Gets the directory to extract the file too
-		 * 
+		 *
 		 * @return The directory to extract the file too
 		 */
 		public String getDirectory() {
@@ -118,7 +118,7 @@ public class CacheDownloader {
 
 	/**
 	 * Deletes the zip file from the directory
-	 * 
+	 *
 	 * @param fileName
 	 *            The name of the file to delete
 	 */
@@ -154,9 +154,9 @@ public class CacheDownloader {
 
 	/**
 	 * Starts our cache downloader
-	 * 
+	 *
 	 * @param Client
-	 *            The {@link Client} instance
+	 *            The {@link client} instance
 	 * @param type
 	 *            The {@link FileType} we are downloading
 	 */
@@ -185,10 +185,10 @@ public class CacheDownloader {
 
 	/**
 	 * Starts the downloading process
-	 * 
+	 *
 	 * @param Client
-	 *            The {@link Client} instance
-	 * @param address
+	 *            The {@link client} instance
+	 * @param type
 	 *            The address of the file to download
 	 * @param localFileName
 	 *            The name of our file to store in our cache directory
@@ -225,7 +225,7 @@ public class CacheDownloader {
 
 	/**
 	 * Gets the archive name
-	 * 
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -233,8 +233,11 @@ public class CacheDownloader {
 		int lastSlashIndex = type.getURL().lastIndexOf('/');
 
 		if ((lastSlashIndex >= 0) && (lastSlashIndex < (type.getURL().length() - 1))) {
-			return type.getURL().substring(lastSlashIndex + 1, type.getURL().length() - 5);
+			String u = type.getURL().substring(lastSlashIndex + 1, type.getURL().length() - 5);
+			String Name = u.replace("?dl=1", "");
+			return Name;
 		} else {
+			System.err.println("error retrieving archived name.");
 		}
 
 		return "";
@@ -242,7 +245,7 @@ public class CacheDownloader {
 
 	/**
 	 * Starts the unzipping process
-	 * 
+	 *
 	 * @param zin
 	 * @param s
 	 * @throws IOException
@@ -260,7 +263,7 @@ public class CacheDownloader {
 
 	/**
 	 * Attempts to unzip the archive
-	 * 
+	 *
 	 * @param type
 	 */
 	private static void unZip(FileType type) {

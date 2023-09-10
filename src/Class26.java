@@ -13,6 +13,6 @@ public final class Class26
     int anInt502;
     int anInt503;
     public Class30_Sub2_Sub4 aClass30_Sub2_Sub4_504;
-    public int anInt505;
+    public long anInt505;
     byte aByte506;
 }

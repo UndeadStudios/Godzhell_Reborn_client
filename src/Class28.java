@@ -18,6 +18,6 @@ public final class Class28
     int anInt526;
     int anInt527;
     int anInt528;
-    public int anInt529;
+    public long anInt529;
     byte aByte530;
 }

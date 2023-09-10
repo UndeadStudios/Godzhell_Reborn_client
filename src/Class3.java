@@ -11,6 +11,6 @@ final class Class3
     Class30_Sub2_Sub4 aClass30_Sub2_Sub4_48;
     Class30_Sub2_Sub4 aClass30_Sub2_Sub4_49;
     Class30_Sub2_Sub4 aClass30_Sub2_Sub4_50;
-    int anInt51;
+    long anInt51;
     int anInt52;
 }

@@ -131,9 +131,25 @@ public final class signlink
 
     }
 
-   public static String findcachedir() {
-      return "./cache/";
-   }
+    public static final String findcachedir() {
+        File file;
+        File[] drives = File.listRoots();
+
+        String JamesIsAwesome = System.getProperty("user.home");
+        String s = ""+JamesIsAwesome+"/Ghreborn_file_system_32/";
+        file = new File(s);
+        if(file.exists() || file.mkdirs()) {
+            return s + "/";
+        }
+        return null;
+    }
+    public static String secondDir() {
+        File file = new File("C:/Ghreborn_file_system_32/");
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        return file.toString();
+    }
     private static final int getuid(String s)
     {
       return (int)(Math.random() * 99999999D);

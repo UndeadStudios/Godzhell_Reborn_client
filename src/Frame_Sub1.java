@@ -49,7 +49,7 @@ public final class Frame_Sub1 extends Frame
 		try {
 			s = new ScreenManager();
 			s.closeFullScreen();
-			setTitle("Ghreborn 317");
+			setTitle("Godzhell Reborn and Remastered.");
 			setResizable(false);
 			setUndecorated(false);
 			setVisible(true);

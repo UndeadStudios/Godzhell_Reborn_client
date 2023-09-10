@@ -27,9 +27,9 @@ public class Class37
 
     public void method534(Class30_Sub2_Sub2 class30_sub2_sub2, int i)
     {
-                anInt648 = class30_sub2_sub2.method410();
-                anInt649 = class30_sub2_sub2.method408();
-                anInt650 = class30_sub2_sub2.method408();
+            anInt648 = class30_sub2_sub2.method410();
+            anInt649 = class30_sub2_sub2.method408();
+            anInt650 = class30_sub2_sub2.method408();
     }
 
     public Class37()

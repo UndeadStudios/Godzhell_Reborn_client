@@ -48,8 +48,8 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		ModelDef_1.anInt370 = numTriangles;
 		ModelDef_1.anInt371 = numTexTriangles;
 		int l1 = nc1.method408();
-		boolean bool = (0x1 & l1 ^ 0xffffffff) == -2;
-		boolean bool_78_ = (l1 & 0x2 ^ 0xffffffff) == -3;
+		boolean bool = (0x1 & l1) == 1;
+		boolean bool_78_ = (l1 & 0x2) == 2;
 		int i2 = nc1.method408();
 		int j2 = nc1.method408();
 		int k2 = nc1.method408();
@@ -404,8 +404,8 @@ if(anIntArray1638 != null) {
 		ModelDef_1.anInt370 = numTriangles;
 		ModelDef_1.anInt371 = numTexTriangles;
 		int l1 = nc1.method408();
-		boolean bool = (0x1 & l1 ^ 0xffffffff) == -2;
-		boolean bool_78_ = (l1 & 0x2 ^ 0xffffffff) == -3;
+		boolean bool = (0x1 & l1) == 1;
+		boolean bool_78_ = (l1 & 0x2) == 2;
 		boolean bool_25_ = (0x4 & l1) == 4;
 		boolean bool_26_ = (0x8 & l1) == 8;
 		if (!bool_26_) {
@@ -2101,7 +2101,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	}
 
 	public final void method443(int i, int j, int k, int l, int i1, int j1,
-			int k1, int l1, int i2) {
+			int k1, int l1, long i2) {
 		int j2 = l1 * i1 - j1 * l >> 16;
 			int k2 = k1 * j + j2 * k >> 16;
 			int l2 = anInt1650 * k >> 16;
@@ -2109,19 +2109,19 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 							if (i3 <= 50 || k2 >= 3500)
 								return;
 							int j3 = l1 * l + j1 * i1 >> 16;
-				int k3 = j3 - anInt1650 << 9;
+				int k3 = j3 - anInt1650 << client.log_view_dist;
 				if (k3 / i3 >= Class30_Sub2_Sub1.anInt1386)
 					return;
-				int l3 = j3 + anInt1650 << 9;
+				int l3 = j3 + anInt1650 << client.log_view_dist;
 				if (l3 / i3 <= -Class30_Sub2_Sub1.anInt1386)
 					return;
 				int i4 = k1 * k - j2 * j >> 16;
 				int j4 = anInt1650 * j >> 16;
-				int k4 = i4 + j4 << 9;
+				int k4 = i4 + j4 << client.log_view_dist;
 				if (k4 / i3 <= -Class30_Sub2_Sub1.anInt1387)
 					return;
 				int l4 = j4 + (super.anInt1426 * k >> 16);
-				int i5 = i4 - l4 << 9;
+				int i5 = i4 - l4 << client.log_view_dist;
 				if (i5 / i3 >= Class30_Sub2_Sub1.anInt1387)
 					return;
 				int j5 = l2 + (super.anInt1426 * j >> 16);
@@ -2183,8 +2183,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		l7 = k8;
 		anIntArray1667[j7] = i8 - k2;
 		if (i8 >= 50) {
-			anIntArray1665[j7] = l5 + (k7 << 9) / i8;
-			anIntArray1666[j7] = j6 + (l7 << 9) / i8;
+			anIntArray1665[j7] = l5 + (k7 << client.log_view_dist) / i8;
+			anIntArray1666[j7] = j6 + (l7 << client.log_view_dist) / i8;
 		} else {
 			anIntArray1665[j7] = -5000;
 			flag = true;
@@ -2204,7 +2204,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				}
 	}
 
-	private final void method483(boolean flag, boolean flag1, int i) {
+	private final void method483(boolean flag, boolean flag1, long i) {
 		for (int j = 0; j < anInt1652; j++)
 			anIntArray1671[j] = 0;
 
@@ -2459,10 +2459,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			if (j2 >= 50) {
 				int k5 = (50 - l1) * anIntArray1692[j2 - l1];
 				anIntArray1678[l] = j
-				+ (k2 + ((anIntArray1668[k1] - k2) * k5 >> 16) << 9)
+				+ (k2 + ((anIntArray1668[k1] - k2) * k5 >> 16) << client.log_view_dist)
 				/ 50;
 				anIntArray1679[l] = k
-				+ (k3 + ((anIntArray1669[k1] - k3) * k5 >> 16) << 9)
+				+ (k3 + ((anIntArray1669[k1] - k3) * k5 >> 16) << client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = k4
 				+ ((anIntArray1636[i] - k4) * k5 >> 16);
@@ -2470,10 +2470,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			if (i2 >= 50) {
 				int l5 = (50 - l1) * anIntArray1692[i2 - l1];
 				anIntArray1678[l] = j
-				+ (k2 + ((anIntArray1668[j1] - k2) * l5 >> 16) << 9)
+				+ (k2 + ((anIntArray1668[j1] - k2) * l5 >> 16) << client.log_view_dist)
 				/ 50;
 				anIntArray1679[l] = k
-				+ (k3 + ((anIntArray1669[j1] - k3) * l5 >> 16) << 9)
+				+ (k3 + ((anIntArray1669[j1] - k3) * l5 >> 16) << client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = k4
 				+ ((anIntArray1635[i] - k4) * l5 >> 16);
@@ -2754,7 +2754,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public static int anInt1685;
 	public static int anInt1686;
 	public static int anInt1687;
-	public static int anIntArray1688[] = new int[1000];
+	public static long anIntArray1688[] = new long[1000];
 	public static int anIntArray1689[];
 	public static int anIntArray1690[];
 	static int anIntArray1691[];

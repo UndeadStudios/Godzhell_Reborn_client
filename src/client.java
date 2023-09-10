@@ -1,31 +1,32 @@
-import java.applet.Applet;
 import java.applet.AppletContext;
 import java.awt.*;
 import java.io.*;
 import java.math.BigInteger;
 import java.net.*;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 import sign.signlink;
 
-import java.awt.Dimension;
+import javax.swing.*;
 import java.net.URL;
 import java.net.URLConnection;
-
-import javax.swing.*;
 
 import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-public final class client extends Applet_Sub1 {
+public class client extends Applet_Sub1 {
 	private FogHandler fogHandler = new FogHandler();
 	public static int cameratoggle;
 	public static int zoom;
+    static boolean clientData;
+    public static final ClientDiscordRPC RICH_PRESENCE = new ClientDiscordRPC();
 	public static int lftrit;
 	public static int fwdbwd;
+    public static int log_view_dist = 10;
 	public static boolean flip = false;
-	public static boolean newDamage = true;
+	public static boolean newDamage = false;
 	public static boolean flip_s = false;
 	public static boolean flip_r = false;
 	public boolean FogToggle = false;
@@ -64,7 +65,7 @@ public final class client extends Applet_Sub1 {
     }
 	
 		public void maps() {
-		for(int MapIndex = 0; MapIndex < 3536; MapIndex++) {
+		for(int MapIndex = 0; MapIndex < 3736; MapIndex++) {
 			byte[] abyte0 = GetMap(MapIndex);
 			if(abyte0 != null && abyte0.length > 0) {
 				aClass14Array970[4].method234(abyte0.length, abyte0, (byte)2, MapIndex);
@@ -94,74 +95,205 @@ public final class client extends Applet_Sub1 {
 			
 			Class25.method310(500, 800, clientSize == 0 ? 512 : clientWidth, clientSize == 0 ? 334 : clientHeight, ai, aBoolean1231);
 		}
+    public static final Rectangle MAXIMUM_SCREEN_BOUNDS = GraphicsEnvironment.getLocalGraphicsEnvironment()
+            .getMaximumWindowBounds();
 		void mouseWheelDragged(int i, int j) {
 			if (!mouseWheelDown)
 				return;
 			this.anInt1186 += i * 3;
 			this.anInt1187 += (j << 1);
 		}
-		public enum ScreenMode {
-			FIXED,
-			RESIZABLE,
-			FULLSCREEN;
-		}
-		
-		public static ScreenMode frameMode = ScreenMode.FIXED;
-		public static int frameWidth = 765;
-		public static int frameHeight = 503;
-		
-		public static void frameMode(ScreenMode screenMode) {
-			if (frameMode != screenMode) {
-				frameMode = screenMode;
-				if (screenMode == ScreenMode.FIXED) {
-					frameWidth = 765;
-					frameHeight = 503;
-				} else if (screenMode == ScreenMode.RESIZABLE) {
-					frameWidth = 900;
-					frameHeight = 600;
-				} else if (screenMode == ScreenMode.FULLSCREEN) {
-					frameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
-					frameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
-				}
-			}
-		}
-		
-		public void refreshFrameSize() {
-			if (frameMode != ScreenMode.FIXED) {
-				if (frameWidth != getWidth()) {
-					frameWidth = getWidth();
-					setBounds();
-				}
-				if (frameHeight != getHeight()) {
-					frameHeight = getHeight();
-					setBounds();
-				}
-			}
-		}
-		
-		private void setBounds() {
-			Class30_Sub2_Sub1_Sub3.method365(frameMode == ScreenMode.FIXED ? 765 : frameWidth, frameMode == ScreenMode.FIXED ? 503 : frameHeight, anInt1002);
-			fullScreenTextureArray = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-			Class30_Sub2_Sub1_Sub3.method365(frameMode == ScreenMode.FIXED ? 516 : frameWidth, frameMode == ScreenMode.FIXED ? 165 : frameHeight, anInt1002);
-			anIntArray1180 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-			Class30_Sub2_Sub1_Sub3.method365(frameMode == ScreenMode.FIXED ? 250 : frameWidth, frameMode == ScreenMode.FIXED ? 335 : frameHeight, anInt1002);
-			anIntArray1181 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-			Class30_Sub2_Sub1_Sub3.method365(frameMode == ScreenMode.FIXED ? 512 : frameWidth, frameMode == ScreenMode.FIXED ? 334 : frameHeight, anInt1002);
-			anIntArray1182 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-			int ai[] = new int[9];
-			for(int i8 = 0; i8 < 9; i8++) {
-				int k8 = 128 + i8 * 32 + 15;
-				int l8 = 600 + k8 * 3;
-				int i9 = Class30_Sub2_Sub1_Sub3.anIntArray1470[k8];
-				ai[i8] = l8 * i9 >> 16;
-			}
-			Class25.method310(500, 800, frameMode == ScreenMode.FIXED ? 512 : frameWidth, frameMode == ScreenMode.FIXED ? 334 : frameHeight, ai, aBoolean1231);
-			if (aBoolean1157) {
-				aClass15_1165 = new Class15(frameWidth, frameHeight, method11(0), 0);
-			} else {
-				aClass15_1109 = new Class15(frameWidth, frameHeight, method11(0), 0);
-			}
-		}
+    public enum ScreenMode {
+
+        FIXED(1, 765, 503, false, false),
+        RESIZABLE(2, 902, 702, true, false),
+        FULLSCREEN(3, (int) client.MAXIMUM_SCREEN_BOUNDS.getWidth(), (int) client.MAXIMUM_SCREEN_BOUNDS.getHeight(), false, true);
+
+        private final int numericalValue;
+
+        private final int width;
+
+        private final int height;
+
+        private final boolean resizable;
+
+        private final boolean undecorated;
+
+        ScreenMode(int numericalValue, int width, int height, boolean resizable, boolean undecorated) {
+            this.numericalValue = numericalValue;
+            this.width = width;
+            this.height = height;
+            this.resizable = resizable;
+            this.undecorated = undecorated;
+        }
+
+        public int getNumericalValue() {
+            return numericalValue;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public boolean isResizable() {
+            return resizable;
+        }
+
+        public boolean isUndecorated() {
+            return undecorated;
+        }
+
+    }
+    public static ScreenMode currentScreenMode = ScreenMode.FIXED;
+    public static int currentGameWidth = currentScreenMode.equals(ScreenMode.FIXED) ? 765 : 0;
+    public static int currentGameHeight = currentScreenMode.equals(ScreenMode.FIXED) ? 503 : 0;
+    public static int gameScreenWidth = 516;
+    public static int gameScreenHeight = 338;
+    public static int IDLE_TIME = 60000; // 1 minute = 3000
+    public void currentScreenMode(client.ScreenMode mode) {
+        if (currentScreenMode == mode)
+            return;
+
+        JFrame component = ClientWindow.getFrame();
+
+        component.dispose();
+        currentScreenMode = mode;
+        if (mode.isUndecorated()) {
+            component.setUndecorated(true);
+            component.setLocation(0, 0);
+            component.setVisible(true);
+        } else {
+            if (component.isUndecorated()) {
+                component.setUndecorated(false);
+                component.setVisible(true);
+            }
+        }
+
+        component.setMinimumSize(new Dimension(765, mode == ScreenMode.FIXED ? 503 : 610));
+        //component.setMinimumSize(new Dimension(
+        // mode == ScreenMode.FIXED ? 765+30 : 850,
+        //mode == ScreenMode.FIXED ? 503+39 : 600));
+
+        component.setResizable(mode.isResizable());
+        Insets insets = ClientWindow.getInset();
+
+        int clientWidth = mode.getWidth();
+        int clientHeight = mode.getHeight();
+
+        final int xInsetOffset = insets.left + insets.right;
+        final int yInsetOffset = insets.top + insets.bottom;
+
+        int totalClientWidth = clientWidth;
+        int totalClientHeight = clientHeight;
+        if (mode == ScreenMode.FIXED) {
+            log_view_dist = 9;
+           // WorldController.viewDistance = 9;
+        } else if (mode == ScreenMode.RESIZABLE) {
+            log_view_dist = 10;
+           // WorldController.viewDistance = 10;
+        } else if (mode == ScreenMode.FULLSCREEN) {
+            log_view_dist = 10;
+           // WorldController.viewDistance = 10;
+        }
+        if (mode == ScreenMode.FULLSCREEN) {
+/*			if (SystemUtils.IS_OS_MAC)
+				component.setLocation(0, insets.top);*/
+            totalClientWidth = (int) MAXIMUM_SCREEN_BOUNDS.getWidth();
+            totalClientHeight = (int) MAXIMUM_SCREEN_BOUNDS.getHeight();
+        } else {
+            totalClientWidth += xInsetOffset;
+            totalClientHeight += yInsetOffset;
+        }
+
+        component.setSize(totalClientWidth, totalClientHeight);
+
+        currentGameWidth = totalClientWidth;
+        currentGameHeight = totalClientHeight;
+
+        gameScreenWidth = currentScreenMode == ScreenMode.FIXED ? 516 : totalClientWidth;
+        gameScreenHeight = currentScreenMode == ScreenMode.FIXED ? 338 : totalClientHeight;
+
+        if (mode != ScreenMode.FULLSCREEN)
+            component.setLocationRelativeTo(null);
+
+        component.setVisible(true);
+        aGraphics12 = super.method11(0).getGraphics();
+        setBounds();
+    }
+    private boolean stackTabs() {
+        return !(currentGameWidth >= 1100);
+    }
+
+    private boolean checkMainScreenBounds() {
+        if (checkBounds(0, currentGameWidth - (stackTabs() ? 231 : 462), currentGameHeight - (stackTabs() ? 73 : 37),
+                currentGameWidth, currentGameHeight)) {
+            return false;
+        }
+        if (checkBounds(0, currentGameWidth - 225, 0, currentGameWidth, 170)) {
+            return false;
+        }
+        if (checkBounds(0, currentGameWidth - 204, currentGameHeight - (stackTabs() ? 73 : 37) - 275, currentGameWidth,
+                currentGameHeight)) {
+            return false;
+        }
+        return !checkBounds(0, 0, currentGameHeight - 168, 516, currentGameHeight);
+    }
+
+    private boolean checkBounds(int type, int x1, int y1, int x2, int y2) {
+        if (type == 0)
+            return anInt20 >= x1 && anInt20 <= x2 && anInt21 >= y1 && anInt21 <= y2;
+        else
+            return Math.pow((x1 + type - x2), 2) + Math.pow((y1 + type - y2), 2) < Math.pow(type, 2);
+    }
+
+    private void setBounds() {
+        Class30_Sub2_Sub1_Sub3.method365(-950,gameScreenHeight, gameScreenHeight);
+        Class30_Sub2_Sub1_Sub3.method365(-950,gameScreenWidth, gameScreenHeight);
+        fullScreenTextureArray = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+        Class30_Sub2_Sub1_Sub3.method365(-950,
+                currentScreenMode == ScreenMode.FIXED ? 516
+                        : gameScreenWidth,
+                currentScreenMode == ScreenMode.FIXED ? 168
+                        : gameScreenHeight);
+        anIntArray1180 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+        Class30_Sub2_Sub1_Sub3.method365(-950,
+                currentScreenMode == ScreenMode.FIXED ? 249
+                        : gameScreenWidth,
+                currentScreenMode == ScreenMode.FIXED ? 335
+                        : gameScreenHeight);
+        anIntArray1181 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+        Class30_Sub2_Sub1_Sub3.method365(-950,gameScreenWidth, gameScreenHeight);
+        anIntArray1182 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+        method456();
+    }
+    public void method456() {
+        int[] ai = new int[9];
+        for (int i8 = 0; i8 < 9; i8++) {
+            int k8 = 128 + i8 * 32 + 15;
+            int l8 = 600 + k8 * 3;
+            int i9 = Class30_Sub2_Sub1_Sub3.anIntArray1470[k8];
+            ai[i8] = (l8 * i9 >> 16);
+        }
+        if (currentScreenMode == ScreenMode.FIXED && (currentGameWidth >= 756) && (currentGameWidth <= 1025)
+                && (currentGameHeight >= 494) && (currentGameHeight <= 850)) {
+            //Class25.viewDistance = 9;
+           // cameraZoom = 575;
+        } else if (currentScreenMode == ScreenMode.FIXED) {
+            //cameraZoom = 600;
+        } else if (currentScreenMode != ScreenMode.FIXED) {
+            //Class25.viewDistance = 10;
+            //cameraZoom = 600;
+        }
+        Class25.method310(500, 800, currentScreenMode == ScreenMode.FIXED ? 516 : currentGameWidth,
+                currentScreenMode == ScreenMode.FIXED ? 335 : currentGameHeight, ai, aBoolean1231);
+       // if (loggedIn) {
+            aClass15_1165 = new Class15(gameScreenWidth, gameScreenHeight, method11(0), 0);
+       // }
+    }
 		public byte[] GetMap(int Index) {
 		try {
 			File Map = new File("./Maps/"+Index+".gz");
@@ -176,9 +308,9 @@ public final class client extends Applet_Sub1 {
 		}
 	}
 
-	public int positions[] = new int[2000];
-	public int landScapes[] = new int[2000];
-	public int objects[] = new int[2000];
+	public int positions[] = new int[4000];
+	public int landScapes[] = new int[4000];
+	public int objects[] = new int[4000];
 
 	public void setNewMaps(){
 	try {
@@ -192,7 +324,7 @@ public final class client extends Applet_Sub1 {
 			objects[D] = Integer.parseInt(s.substring(s.indexOf("[")+1,s.indexOf("]")));
 				D++;
 			}
-	//System.out.println("Total of "+D+" Maps added on the world map!");
+	System.out.println("Total of "+D+" Maps added on the world map!");
 	}
 	catch (IOException e) {e.printStackTrace();}
 	}
@@ -418,9 +550,9 @@ public final void method18(int i) {
         aClass30_Sub2_Sub1_Sub4_1272.method381(128, "Click to continue", 23693, 60, 239);
     } else
     if(anInt1276 != -1)
-        method105(8, 0, 0, Class9.aClass9Array210[anInt1276], 0);
+        drawInterface( 0, 0, Class9.aClass9Array210[anInt1276], 0);
     else if(anInt1042 != -1) {
-        method105(8, 0, 0, Class9.aClass9Array210[anInt1042], 0);
+        drawInterface(0, 0, Class9.aClass9Array210[anInt1042], 0);
     } else {
         Class30_Sub2_Sub1_Sub4 class30_sub2_sub1_sub4 = aClass30_Sub2_Sub1_Sub4_1271;
         int j = 0;
@@ -643,7 +775,7 @@ public final void init()
 			aBoolean959 = true;
 			signlink.storeid = 32;
 			signlink.startpriv(InetAddress.getLocalHost());
-			setserver("127.0.0.1", "29433");
+			setserver("127.0.0.1");
 			method2(503, false, 765);
 		}
 		catch (Exception exception)
@@ -803,14 +935,14 @@ public final void method22(boolean flag)
             }
 
             Class7 class7 = new Class7(aByteArrayArrayArray1258, -60, 104, 104, anIntArrayArrayArray1214);
-            int k2 = aByteArrayArray1183.length;
+            int k2 = terrainData.length;
             int k18 = 62;
 	    for(int A = 0; A < k2; A++)
 		for(int B = 0; B < 2000; B++)
-			if(anIntArray1234[A] == positions[B])
+			if(mapCoordinates[A] == positions[B])
 		  {
-		    anIntArray1235[A] = landScapes[B];
-		    anIntArray1236[A] = objects[B];
+		    terrainIndices[A] = landScapes[B];
+		    objectIndices[A] = objects[B];
 		  }
 					
 		
@@ -819,22 +951,22 @@ public final void method22(boolean flag)
             {
         for(int i3 = 0; i3 < k2; i3++)
                 {
-                    int i4 = (anIntArray1234[i3] >> 8) * 64 - anInt1034;
-                    int k5 = (anIntArray1234[i3] & 0xff) * 64 - anInt1035;
-                    byte abyte0[] = aByteArrayArray1183[i3];
-                    if (FileOperations.FileExists(signlink.findcachedir()+"/maps/FloorMaps/"+anIntArray1235[i3]+".dat"))
-                    abyte0 = FileOperations.ReadFile(signlink.findcachedir()+"/maps/FloorMaps/"+anIntArray1235[i3]+".dat");
+                    int i4 = (mapCoordinates[i3] >> 8) * 64 - anInt1034;
+                    int k5 = (mapCoordinates[i3] & 0xff) * 64 - anInt1035;
+                    byte abyte0[] = terrainData[i3];
+                    if (FileOperations.FileExists(signlink.findcachedir()+"/maps/FloorMaps/"+ terrainIndices[i3]+".dat"))
+                    abyte0 = FileOperations.ReadFile(signlink.findcachedir()+"/maps/FloorMaps/"+ terrainIndices[i3]+".dat");
 
             if(abyte0 != null)
-                        class7.method180(abyte0, k5, i4, (anInt1069 - 6) * 8, (anInt1070 - 6) * 8, (byte)4, aClass11Array1230);
+                        class7.method180(abyte0, k5, i4, (currentRegionX - 6) * 8, (currentRegionY - 6) * 8, (byte)4, aClass11Array1230);
                 }
 
         for(int j4 = 0; j4 < k2; j4++)
                 {
-                    int l5 = (anIntArray1234[j4] >> 8) * 64 - anInt1034;
-                    int k7 = (anIntArray1234[j4] & 0xff) * 64 - anInt1035;
-                    byte abyte2[] = aByteArrayArray1183[j4];
-                    if(abyte2 == null && anInt1070 < 800)
+                    int l5 = (mapCoordinates[j4] >> 8) * 64 - anInt1034;
+                    int k7 = (mapCoordinates[j4] & 0xff) * 64 - anInt1035;
+                    byte abyte2[] = terrainData[j4];
+                    if(abyte2 == null && currentRegionY < 800)
                         //class7.method174(k7, 64, 0, 64, l5);
 			class7.method174(k7 * 8, 8, 0, 8, l5 * 8);
                 }
@@ -849,13 +981,13 @@ public final void method22(boolean flag)
                 aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
         for(int i6 = 0; i6 < k2; i6++)
                 {
-                    byte abyte1[] = aByteArrayArray1247[i6];
-                    if (FileOperations.FileExists(signlink.findcachedir()+"/maps/ObjectMaps/"+anIntArray1236[i6]+".dat"))
-                    abyte1 = FileOperations.ReadFile(signlink.findcachedir()+"/maps/ObjectMaps/"+anIntArray1236[i6]+".dat");
+                    byte abyte1[] = mapData[i6];
+                    if (FileOperations.FileExists(signlink.findcachedir()+"/maps/ObjectMaps/"+ objectIndices[i6]+".dat"))
+                    abyte1 = FileOperations.ReadFile(signlink.findcachedir()+"/maps/ObjectMaps/"+ objectIndices[i6]+".dat");
             if(abyte1 != null)
                     {
-                        int l8 = (anIntArray1234[i6] >> 8) * 64 - anInt1034;
-                        int k9 = (anIntArray1234[i6] & 0xff) * 64 - anInt1035;
+                        int l8 = (mapCoordinates[i6] >> 8) * 64 - anInt1034;
+                        int k9 = (mapCoordinates[i6] & 0xff) * 64 - anInt1035;
                         class7.method190(l8, aClass11Array1230, k9, 7, aClass25_946, abyte1);
                     }
                 }
@@ -877,11 +1009,11 @@ public final void method22(boolean flag)
                                 int j10 = l7 >> 14 & 0x3ff;
                                 int l10 = l7 >> 3 & 0x7ff;
                                 int j11 = (j10 / 8 << 8) + l10 / 8;
-        for(int l11 = 0; l11 < anIntArray1234.length; l11++)
+        for(int l11 = 0; l11 < mapCoordinates.length; l11++)
                                 {
-            if(anIntArray1234[l11] != j11 || aByteArrayArray1183[l11] == null)
+            if(mapCoordinates[l11] != j11 || terrainData[l11] == null)
                                         continue;
-                                    class7.method179(i9, l9, aClass11Array1230, 9, k4 * 8, (j10 & 7) * 8, aByteArrayArray1183[l11], (l10 & 7) * 8, j3, j6 * 8);
+                                    class7.method179(i9, l9, aClass11Array1230, 9, k4 * 8, (j10 & 7) * 8, terrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
                                     break;
                                 }
 
@@ -918,11 +1050,11 @@ public final void method22(boolean flag)
                                 int k11 = i10 >> 14 & 0x3ff;
                                 int i12 = i10 >> 3 & 0x7ff;
                                 int j12 = (k11 / 8 << 8) + i12 / 8;
-                                for(int k12 = 0; k12 < anIntArray1234.length; k12++)
+                                for(int k12 = 0; k12 < mapCoordinates.length; k12++)
                                 {
-                                    if(anIntArray1234[k12] != j12 || aByteArrayArray1247[k12] == null)
+                                    if(mapCoordinates[k12] != j12 || mapData[k12] == null)
                                         continue;
-                                    class7.method183(aClass11Array1230, aClass25_946, k10, j8 * 8, (i12 & 7) * 8, true, l6, aByteArrayArray1247[k12], (k11 & 7) * 8, i11, j9 * 8);
+                                    class7.method183(aClass11Array1230, aClass25_946, k10, j8 * 8, (i12 & 7) * 8, true, l6, mapData[k12], (k11 & 7) * 8, i11, j9 * 8);
                                     break;
                                 }
 
@@ -984,10 +1116,10 @@ public final void method22(boolean flag)
         System.gc();
         Class30_Sub2_Sub1_Sub3.method367(20, true);
         aClass42_Sub1_1068.method566(0);
-        int k = (anInt1069 - 6) / 8 - 1;
-        int j1 = (anInt1069 + 6) / 8 + 1;
-        int i2 = (anInt1070 - 6) / 8 - 1;
-        int l2 = (anInt1070 + 6) / 8 + 1;
+        int k = (currentRegionX - 6) / 8 - 1;
+        int j1 = (currentRegionX + 6) / 8 + 1;
+        int i2 = (currentRegionY - 6) / 8 - 1;
+        int l2 = (currentRegionY + 6) / 8 + 1;
         if(aBoolean1141)
         {
             k = 49;
@@ -1068,11 +1200,11 @@ public final void method22(boolean flag)
         {
             for(int l2 = 0; l2 < 104; l2++)
             {
-                int i3 = aClass25_946.method303(anInt918, k2, l2);
+                long i3 = aClass25_946.method303(anInt918, k2, l2);
                 if(i3 != 0)
                 {
-                    i3 = i3 >> 14 & 0x7fff;
-                    int j3 = Class46.method572(i3).anInt746;
+                    int objId = ObjectKey.getObjectId(i3);
+                    int j3 = Class46.method572(objId).anInt746;
                     if(j3 >= 0)
                     {
                         int k3 = k2;
@@ -1151,7 +1283,7 @@ public final void method22(boolean flag)
         for(int j = 0; j < anInt836; j++)
         {
             Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[anIntArray837[j]];
-            int k = 0x20000000 + (anIntArray837[j] << 14);
+            long k = 0x20000000L | (long)  anIntArray837[j] << 32;
             if(class30_sub2_sub4_sub1_sub1 == null || !class30_sub2_sub4_sub1_sub1.method449(aBoolean1224) || class30_sub2_sub4_sub1_sub1.aClass5_1696.aBoolean93 != flag)
                 continue;
             int l = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 >> 7;
@@ -1165,7 +1297,7 @@ public final void method22(boolean flag)
                 anIntArrayArray929[l][i1] = anInt1265;
             }
             if(!class30_sub2_sub4_sub1_sub1.aClass5_1696.aBoolean84)
-                k += 0x80000000;
+               k |= ~0x7fffffffffffffffL;
             aClass25_946.method285(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1552, (byte)6, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550), k, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551, (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1540 - 1) * 64 + 60, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550, class30_sub2_sub4_sub1_sub1, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).aBoolean1541);
         }
 
@@ -1280,7 +1412,7 @@ public final void method22(boolean flag)
                                     Class8 class8 = Class8.method198(class9_1.anIntArray253[k2] - 1);
                                     if(anInt1282 == 1 && class9_1.aBoolean249) {
                                         if(class9_1.anInt250 != anInt1284 || k2 != anInt1283) {
-                                            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @lre@" + class8.aString170;
+                                            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @lre@" + class8.name;
                                             anIntArray1093[anInt1133] = 870;
                                             anIntArray1094[anInt1133] = class8.anInt157;
                                             anIntArray1091[anInt1133] = k2;
@@ -1290,7 +1422,7 @@ public final void method22(boolean flag)
                                     } else
                                     if(anInt1136 == 1 && class9_1.aBoolean249) {
                                         if((anInt1138 & 0x10) == 16) {
-                                            aStringArray1199[anInt1133] = aString1139 + " @lre@" + class8.aString170;
+                                            aStringArray1199[anInt1133] = aString1139 + " @lre@" + class8.name;
                                             anIntArray1093[anInt1133] = 543;
                                             anIntArray1094[anInt1133] = class8.anInt157;
                                             anIntArray1091[anInt1133] = k2;
@@ -1301,7 +1433,7 @@ public final void method22(boolean flag)
                                         if(class9_1.aBoolean249) {
                                             for(int l3 = 4; l3 >= 3; l3--)
                                                 if(class8.aStringArray189 != null && class8.aStringArray189[l3] != null) {
-                                                    aStringArray1199[anInt1133] = class8.aStringArray189[l3] + " @lre@" + class8.aString170;
+                                                    aStringArray1199[anInt1133] = class8.aStringArray189[l3] + " @lre@" + class8.name;
                                                     if(l3 == 3)
                                                         anIntArray1093[anInt1133] = 493;
                                                     if(l3 == 4)
@@ -1311,7 +1443,7 @@ public final void method22(boolean flag)
                                                     anIntArray1092[anInt1133] = class9_1.anInt250;
                                                     anInt1133++;
                                                 } else if(l3 == 4) {
-                                                    aStringArray1199[anInt1133] = "Drop @lre@" + class8.aString170;
+                                                    aStringArray1199[anInt1133] = "Drop @lre@" + class8.name;
                                                     anIntArray1093[anInt1133] = 847;
                                                     anIntArray1094[anInt1133] = class8.anInt157;
                                                     anIntArray1091[anInt1133] = k2;
@@ -1321,7 +1453,7 @@ public final void method22(boolean flag)
 
                                         }
                                         if(class9_1.aBoolean242) {
-                                            aStringArray1199[anInt1133] = "Use @lre@" + class8.aString170;
+                                            aStringArray1199[anInt1133] = "Use @lre@" + class8.name;
                                             anIntArray1093[anInt1133] = 447;
                                             anIntArray1094[anInt1133] = class8.anInt157;
                                             anIntArray1091[anInt1133] = k2;
@@ -1331,7 +1463,7 @@ public final void method22(boolean flag)
                                         if(class9_1.aBoolean249 && class8.aStringArray189 != null) {
                                             for(int i4 = 2; i4 >= 0; i4--)
                                                 if(class8.aStringArray189[i4] != null) {
-                                                    aStringArray1199[anInt1133] = class8.aStringArray189[i4] + " @lre@" + class8.aString170;
+                                                    aStringArray1199[anInt1133] = class8.aStringArray189[i4] + " @lre@" + class8.name;
                                                     if(i4 == 0)
                                                         anIntArray1093[anInt1133] = 74;
                                                     if(i4 == 1)
@@ -1348,7 +1480,7 @@ public final void method22(boolean flag)
                                         if(class9_1.aStringArray225 != null) {
                                             for(int j4 = 4; j4 >= 0; j4--)
                                                 if(class9_1.aStringArray225[j4] != null) {
-                                                    aStringArray1199[anInt1133] = class9_1.aStringArray225[j4] + " @lre@" + class8.aString170;
+                                                    aStringArray1199[anInt1133] = class9_1.aStringArray225[j4] + " @lre@" + class8.name;
                                                     if(j4 == 0)
                                                         anIntArray1093[anInt1133] = 632;
                                                     if(j4 == 1)
@@ -1367,9 +1499,9 @@ public final void method22(boolean flag)
 
                                         }
                                 		if(anInt863 >= 2)
-                                			 aStringArray1199[anInt1133] = "Examine @lre@"+class8.aString170+"@gre@(@whi@"+class8.anInt157+"@gre@)";
+                                			 aStringArray1199[anInt1133] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
                                 		if(anInt863 <= 1)
-                                        aStringArray1199[anInt1133] = "Examine @lre@"+class8.aString170;
+                                        aStringArray1199[anInt1133] = "Examine @lre@"+class8.name;
                                         anIntArray1093[anInt1133] = 1125;
                                         anIntArray1094[anInt1133] = class8.anInt157;
                                         anIntArray1091[anInt1133] = k2;
@@ -2005,10 +2137,10 @@ Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x000001, 1, i1, (byte)4);
             return;
         aClass30_Sub2_Sub1_Sub1_1196.method348(0, 16083, 0);
         if(anInt1189 != -1)
-            method105(8, 0, 0, Class9.aClass9Array210[anInt1189], 0);
+            drawInterface(0, 0, Class9.aClass9Array210[anInt1189], 0);
         else
         if(anIntArray1130[anInt1221] != -1)
-            method105(8, 0, 0, Class9.aClass9Array210[anIntArray1130[anInt1221]], 0);
+            drawInterface( 0, 0, Class9.aClass9Array210[anIntArray1130[anInt1221]], 0);
         if(aBoolean885 && anInt948 == 1)
             method40((byte)9);
         aClass15_1163.method238(205, 23680, super.aGraphics12, 553);
@@ -2153,48 +2285,48 @@ Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x000001, 1, i1, (byte)4);
         int i = anInt1098 * 128 + 64;
         int j = anInt1099 * 128 + 64;
         int k = method42(anInt918, j, true, i) - anInt1100;
-        if(anInt858 < i)
+        if(xCameraPos < i)
         {
-            anInt858 += anInt1101 + ((i - anInt858) * anInt1102) / 1000;
-            if(anInt858 > i)
-                anInt858 = i;
+            xCameraPos += anInt1101 + ((i - xCameraPos) * anInt1102) / 1000;
+            if(xCameraPos > i)
+                xCameraPos = i;
         }
-        if(anInt858 > i)
+        if(xCameraPos > i)
         {
-            anInt858 -= anInt1101 + ((anInt858 - i) * anInt1102) / 1000;
-            if(anInt858 < i)
-                anInt858 = i;
+            xCameraPos -= anInt1101 + ((xCameraPos - i) * anInt1102) / 1000;
+            if(xCameraPos < i)
+                xCameraPos = i;
         }
-        if(anInt859 < k)
+        if(zCameraPos < k)
         {
-            anInt859 += anInt1101 + ((k - anInt859) * anInt1102) / 1000;
-            if(anInt859 > k)
-                anInt859 = k;
+            zCameraPos += anInt1101 + ((k - zCameraPos) * anInt1102) / 1000;
+            if(zCameraPos > k)
+                zCameraPos = k;
         }
-        if(anInt859 > k)
+        if(zCameraPos > k)
         {
-            anInt859 -= anInt1101 + ((anInt859 - k) * anInt1102) / 1000;
-            if(anInt859 < k)
-                anInt859 = k;
+            zCameraPos -= anInt1101 + ((zCameraPos - k) * anInt1102) / 1000;
+            if(zCameraPos < k)
+                zCameraPos = k;
         }
-        if(anInt860 < j)
+        if(yCameraPos < j)
         {
-            anInt860 += anInt1101 + ((j - anInt860) * anInt1102) / 1000;
-            if(anInt860 > j)
-                anInt860 = j;
+            yCameraPos += anInt1101 + ((j - yCameraPos) * anInt1102) / 1000;
+            if(yCameraPos > j)
+                yCameraPos = j;
         }
-        if(anInt860 > j)
+        if(yCameraPos > j)
         {
-            anInt860 -= anInt1101 + ((anInt860 - j) * anInt1102) / 1000;
-            if(anInt860 < j)
-                anInt860 = j;
+            yCameraPos -= anInt1101 + ((yCameraPos - j) * anInt1102) / 1000;
+            if(yCameraPos < j)
+                yCameraPos = j;
         }
         i = anInt995 * 128 + 64;
         j = anInt996 * 128 + 64;
         k = method42(anInt918, j, true, i) - anInt997;
-        int l = i - anInt858;
-        int i1 = k - anInt859;
-        int j1 = j - anInt860;
+        int l = i - xCameraPos;
+        int i1 = k - zCameraPos;
+        int j1 = j - yCameraPos;
         int k1 = (int)Math.sqrt(l * l + j1 * j1);
         int l1 = (int)(Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
         if(byte0 == 5)
@@ -2206,40 +2338,40 @@ Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x000001, 1, i1, (byte)4);
             l1 = 128;
         if(l1 > 383)
             l1 = 383;
-        if(anInt861 < l1)
+        if(yCameraCurve < l1)
         {
-            anInt861 += anInt998 + ((l1 - anInt861) * anInt999) / 1000;
-            if(anInt861 > l1)
-                anInt861 = l1;
+            yCameraCurve += anInt998 + ((l1 - yCameraCurve) * anInt999) / 1000;
+            if(yCameraCurve > l1)
+                yCameraCurve = l1;
         }
-        if(anInt861 > l1)
+        if(yCameraCurve > l1)
         {
-            anInt861 -= anInt998 + ((anInt861 - l1) * anInt999) / 1000;
-            if(anInt861 < l1)
-                anInt861 = l1;
+            yCameraCurve -= anInt998 + ((yCameraCurve - l1) * anInt999) / 1000;
+            if(yCameraCurve < l1)
+                yCameraCurve = l1;
         }
-        int j2 = i2 - anInt862;
+        int j2 = i2 - xCameraCurve;
         if(j2 > 1024)
             j2 -= 2048;
         if(j2 < -1024)
             j2 += 2048;
         if(j2 > 0)
         {
-            anInt862 += anInt998 + (j2 * anInt999) / 1000;
-            anInt862 &= 0x7ff;
+            xCameraCurve += anInt998 + (j2 * anInt999) / 1000;
+            xCameraCurve &= 0x7ff;
         }
         if(j2 < 0)
         {
-            anInt862 -= anInt998 + (-j2 * anInt999) / 1000;
-            anInt862 &= 0x7ff;
+            xCameraCurve -= anInt998 + (-j2 * anInt999) / 1000;
+            xCameraCurve &= 0x7ff;
         }
-        int k2 = i2 - anInt862;
+        int k2 = i2 - xCameraCurve;
         if(k2 > 1024)
             k2 -= 2048;
         if(k2 < -1024)
             k2 += 2048;
         if(k2 < 0 && j2 > 0 || k2 > 0 && j2 < 0)
-            anInt862 = i2;
+            xCameraCurve = i2;
     }
 
 public final void method40(byte byte0)
@@ -2481,15 +2613,15 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
         for(int l = 0; l < j; l++)
         {
             Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2;
-            int i1;
+            long i1;
             if(flag)
             {
                 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2_1126;
-                i1 = anInt889 << 14;
+                i1 = (long) anInt889 << 32;
             } else
             {
                 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[l]];
-                i1 = anIntArray892[l] << 14;
+                i1 = (long) anIntArray892[l] << 32;
             }
             if(class30_sub2_sub4_sub1_sub2 == null || !class30_sub2_sub4_sub1_sub2.method449(aBoolean1224))
                 continue;
@@ -2668,7 +2800,7 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
 
     public final void method50(int i, int j, int k, int l, int i1, int j1)
     {
-        int k1 = aClass25_946.method300(j1, l, i);
+        long k1 = aClass25_946.method300(j1, l, i);
         if(j >= 0)
             return;
         if(k1 != 0)
@@ -2681,7 +2813,7 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
                 k3 = i1;
             int ai[] = aClass30_Sub2_Sub1_Sub1_1263.anIntArray1439;
             int k4 = 24624 + l * 4 + (103 - i) * 512 * 4;
-            int i5 = k1 >> 14 & 0x7fff;
+            int i5 = ObjectKey.getObjectId(k1);
             Class46 class46_2 = Class46.method572(i5);
             if(class46_2.anInt758 != -1)
             {
@@ -2772,7 +2904,7 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
             int i2 = aClass25_946.method304(j1, l, i, k1);
             int l2 = i2 >> 6 & 3;
             int j3 = i2 & 0x1f;
-            int l3 = k1 >> 14 & 0x7fff;
+            int l3 = ObjectKey.getObjectId(k1);
             Class46 class46_1 = Class46.method572(l3);
             if(class46_1.anInt758 != -1)
             {
@@ -2809,7 +2941,7 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
         k1 = aClass25_946.method303(j1, l, i);
         if(k1 != 0)
         {
-            int j2 = k1 >> 14 & 0x7fff;
+            int j2 = ObjectKey.getObjectId(k1);
             Class46 class46 = Class46.method572(j2);
             if(class46.anInt758 != -1)
             {
@@ -2928,12 +3060,13 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
             anInt958 = 0;
             method52(false);//highmem
             aBoolean959 = true;//members
-            frameMode(ScreenMode.RESIZABLE);
             signlink.storeid = 32;
             signlink.startpriv(InetAddress.getLocalHost());
             client client1 = new client();
-            client1.method1(503, false, 765);
-            setserver("127.0.0.1", "29433");
+            client1 = new ClientWindow(args);
+            //setserver("76.146.169.35", "59999");
+            setserver(Configuration.TEST_SERVER_ADDRESS);
+            RICH_PRESENCE.initialize();
             return;
         }
         catch(Exception exception)
@@ -2941,10 +3074,9 @@ aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[
             return;
         }
     }
-public static void setserver(String s, String p)
+public static void setserver(String s)
 	{
 		server = s;
-		port = p;
 	}
     public final void method53(int i)
     {
@@ -2964,7 +3096,7 @@ public static void setserver(String s, String p)
             int j = method54((byte)-95);
             if(j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L)
             {
-                signlink.reporterror(aString1173 + " glcfb " + aLong1215 + "," + j + "," + aBoolean960 + "," + aClass14Array970[0] + "," + aClass42_Sub1_1068.method552() + "," + anInt918 + "," + anInt1069 + "," + anInt1070);
+                signlink.reporterror(aString1173 + " glcfb " + aLong1215 + "," + j + "," + aBoolean960 + "," + aClass14Array970[0] + "," + aClass42_Sub1_1068.method552() + "," + anInt918 + "," + currentRegionX + "," + currentRegionY);
                 aLong824 = System.currentTimeMillis();
             }
         }
@@ -2977,26 +3109,26 @@ public static void setserver(String s, String p)
 
     public final int method54(byte byte0)
     {
-        for(int i = 0; i < aByteArrayArray1183.length; i++)
+        for(int i = 0; i < terrainData.length; i++)
         {
-            if(aByteArrayArray1183[i] == null && anIntArray1235[i] != -1)
+            if(terrainData[i] == null && terrainIndices[i] != -1)
                 return -1;
-		System.out.println("FloorMap:"+anIntArray1235[i]);
-            if(aByteArrayArray1247[i] == null && anIntArray1236[i] != -1)
+		System.out.println("FloorMap:"+ terrainIndices[i]);
+            if(mapData[i] == null && objectIndices[i] != -1)
                 return -2; 
-System.out.println("ObjectMaps:"+anIntArray1236[i]); 
+System.out.println("ObjectMaps:"+ objectIndices[i]);
         }
 
         boolean flag = true;
         if(byte0 != -95)
             return 0;
-        for(int j = 0; j < aByteArrayArray1183.length; j++)
+        for(int j = 0; j < terrainData.length; j++)
         {
-            byte abyte0[] = aByteArrayArray1247[j];
+            byte abyte0[] = mapData[j];
             if(abyte0 != null)
             {
-                int k = (anIntArray1234[j] >> 8) * 64 - anInt1034;
-                int l = (anIntArray1234[j] & 0xff) * 64 - anInt1035;
+                int k = (mapCoordinates[j] >> 8) * 64 - anInt1034;
+                int l = (mapCoordinates[j] & 0xff) * 64 - anInt1035;
                 if(aBoolean1159)
                 {
                     k = 10;
@@ -3130,20 +3262,20 @@ System.out.println("ObjectMaps:"+anIntArray1236[i]);
                     method21(aBoolean1228, 0, class30_sub2_sub3.aByteArray1420);
                 if(class30_sub2_sub3.anInt1419 == 3 && anInt1023 == 1)
                 {
-                    for(int i = 0; i < aByteArrayArray1183.length; i++)
+                    for(int i = 0; i < terrainData.length; i++)
                     {
-                        if(anIntArray1235[i] == class30_sub2_sub3.anInt1421)
+                        if(terrainIndices[i] == class30_sub2_sub3.anInt1421)
                         {
-                            aByteArrayArray1183[i] = class30_sub2_sub3.aByteArray1420;
+                            terrainData[i] = class30_sub2_sub3.aByteArray1420;
                             if(class30_sub2_sub3.aByteArray1420 == null)
-                                anIntArray1235[i] = -1;
+                                terrainIndices[i] = -1;
                             break;
                         }
-                        if(anIntArray1236[i] != class30_sub2_sub3.anInt1421)
+                        if(objectIndices[i] != class30_sub2_sub3.anInt1421)
                             continue;
-                        aByteArrayArray1247[i] = class30_sub2_sub3.aByteArray1420;
+                        mapData[i] = class30_sub2_sub3.aByteArray1420;
                         if(class30_sub2_sub3.aByteArray1420 == null)
-                            anIntArray1236[i] = -1;
+                            objectIndices[i] = -1;
                         break;
                     }
 
@@ -3262,11 +3394,25 @@ System.out.println("ObjectMaps:"+anIntArray1236[i]);
 
     public final void method62(int i)
     {
+        if (currentScreenMode != ScreenMode.FIXED && currentScreenMode != ScreenMode.FULLSCREEN) {
+            if (currentGameWidth != method11(0).getWidth()) {
+                currentGameWidth = method11(0).getWidth();
+                gameScreenWidth = method11(0).getWidth();
+                aGraphics12 = super.method11(0).getGraphics();
+                setBounds();
+            }
+            if (currentGameHeight != method11(0).getHeight()) {
+                currentGameHeight = method11(0).getHeight();
+                gameScreenHeight = method11(0).getHeight();
+                aGraphics12 = super.method11(0).getGraphics();
+                setBounds();
+            }
+        }
         if(anInt1104 > 1)
             anInt1104--;
         if(anInt1011 > 0)
             anInt1011--;
-        for(int j = 0; j < 5; j++)
+        for(int j = 0; j < 100; j++)
             if(!method145(true))
                 break;
 
@@ -3536,7 +3682,7 @@ System.out.println("ObjectMaps:"+anIntArray1236[i]);
 
         method73(732);
         super.anInt18++;
-        if(super.anInt18 > 4500)
+        if(super.anInt18 > IDLE_TIME)
         {
             anInt1011 = 250;
             super.anInt18 -= 500;
@@ -3683,7 +3829,7 @@ System.out.println("ObjectMaps:"+anIntArray1236[i]);
         char c = '\u0168';
         char c1 = '\310';
         byte byte1 = 20;
-        aClass30_Sub2_Sub1_Sub4_1272.method381(0xffffff, "Ghreborn 317 is Loading...", 23693, c1 / 2 - 26 - byte1, c / 2);
+        aClass30_Sub2_Sub1_Sub4_1272.method381(0xffffff, "Godzhell Reborn is Loading...", 23693, c1 / 2 - 26 - byte1, c / 2);
         int j = c1 / 2 - 18 - byte1;
 		Class30_Sub2_Sub1.method337(c / 2 - 152, 304/*width*/, 18/*height*/, 0xCCCCCC, j, true); //OUTLINE
 		Class30_Sub2_Sub1.method337(c / 2 - 151, 302/*width*/, 16/*height*/, 0xA5A5A5, j + 1, true); //INLINE
@@ -3752,9 +3898,9 @@ System.out.println("ObjectMaps:"+anIntArray1236[i]);
         }
     }
 
-    public final boolean method66(int i, int j, int k, int l)
+    public final boolean method66(long i, int j, int k, int l)
     {
-        int i1 = i >> 14 & 0x7fff;
+        int i1 = ObjectKey.getObjectId(i);
         int j1 = aClass25_946.method304(anInt918, k, j, i);
         if(l >= 0)
             throw new NullPointerException();
@@ -4017,8 +4163,8 @@ public void downloadcache(String url, String name1, String dir1, String type)
         aClass15_1165.method237(0);
         aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Connection lost", 23693, 144, 257);
         aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Connection lost", 23693, 143, 256);
-        aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn 317 is attempting to reestablish", 23693, 159, 257);
-        aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn 317 is attempting to reestablish", 23693, 158, 256);
+        aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn is attempting to reestablish", 23693, 159, 257);
+        aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn is attempting to reestablish", 23693, 158, 256);
         while(i >= 0)
             aClass30_Sub2_Sub2_1192.method398(164);
         aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
@@ -4053,7 +4199,8 @@ public void downloadcache(String url, String name1, String dir1, String type)
         int j = anIntArray1091[i];
         int k = anIntArray1092[i];
         int l = anIntArray1093[i];
-        int i1 = anIntArray1094[i];
+        int i1 = (int) anIntArray1094[i];
+        long keyLong = anIntArray1094[i];
         if(l >= 2000)
             l -= 2000;
 					if(l == 1150) { //face north
@@ -4096,11 +4243,11 @@ public void downloadcache(String url, String name1, String dir1, String type)
             aClass30_Sub2_Sub2_1192.method399(i1);
             aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
         }
-        if(l == 62 && method66(i1, k, j, -770))
+        if(l == 62 && method66(keyLong, k, j, -770))
         {
             aClass30_Sub2_Sub2_1192.method397((byte)6, 192);
             aClass30_Sub2_Sub2_1192.method399(anInt1284);
-            aClass30_Sub2_Sub2_1192.method431(true, i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
             aClass30_Sub2_Sub2_1192.method433(0, k + anInt1035);
             aClass30_Sub2_Sub2_1192.method431(true, anInt1283);
             aClass30_Sub2_Sub2_1192.method433(0, j + anInt1034);
@@ -4212,9 +4359,9 @@ public void downloadcache(String url, String name1, String dir1, String type)
                 aClass30_Sub2_Sub2_1192.method401(0xe63271);
                 anInt924 = 0;
             }
-            method66(i1, k, j, -770);
+            method66(keyLong, k, j, -770);
             aClass30_Sub2_Sub2_1192.method397((byte)6, 228);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
             aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
             aClass30_Sub2_Sub2_1192.method399(j + anInt1034);
         }
@@ -4588,9 +4735,9 @@ public void downloadcache(String url, String name1, String dir1, String type)
         }
         if(l == 900)
         {
-            method66(i1, k, j, -770);
+            method66(keyLong, k, j, -770);
             aClass30_Sub2_Sub2_1192.method397((byte)6, 252);
-            aClass30_Sub2_Sub2_1192.method433(0, i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
             aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
             aClass30_Sub2_Sub2_1192.method432(-431, j + anInt1034);
         }
@@ -4651,13 +4798,13 @@ public void downloadcache(String url, String name1, String dir1, String type)
                 aClass30_Sub2_Sub2_1192.method431(true, i1);
             }
         }
-        if(l == 956 && method66(i1, k, j, -770))
+        if(l == 956 && method66(keyLong, k, j, -770))
         {
             aClass30_Sub2_Sub2_1192.method397((byte)6, 35);
             aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
             aClass30_Sub2_Sub2_1192.method432(-431, anInt1137);
             aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method431(true, i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
         }
         if(l == 567)
         {
@@ -4819,26 +4966,26 @@ public void downloadcache(String url, String name1, String dir1, String type)
         }
         if(l == 113)
         {
-            method66(i1, k, j, -770);
+            method66(keyLong, k, j, -770);
             aClass30_Sub2_Sub2_1192.method397((byte)6, 70);
             aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
             aClass30_Sub2_Sub2_1192.method399(k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method433(0, i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
         }
         if(l == 872)
         {
-            method66(i1, k, j, -770);
+            method66(keyLong, k, j, -770);
             aClass30_Sub2_Sub2_1192.method397((byte)6, 234);
             aClass30_Sub2_Sub2_1192.method433(0, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
             aClass30_Sub2_Sub2_1192.method433(0, k + anInt1035);
         }
         if(l == 502)
         {
-            method66(i1, k, j, -770);
+            method66(keyLong, k, j, -770);
             aClass30_Sub2_Sub2_1192.method397((byte)6, 132);
             aClass30_Sub2_Sub2_1192.method433(0, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method399(i1 >> 14 & 0x7fff);
+            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
             aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
         }
         if(l == 1125)
@@ -4847,12 +4994,12 @@ public void downloadcache(String url, String name1, String dir1, String type)
             Class9 class9_4 = Class9.aClass9Array210[k];
             String s5;
             if(class9_4 != null && class9_4.anIntArray252[j] >= 0x186a0)
-                s5 = class9_4.anIntArray252[j] + " x " + class8.aString170;
+                s5 = class9_4.anIntArray252[j] + " x " + class8.name;
             else
             if(class8.aByteArray178 != null)
                 s5 = new String(class8.aByteArray178);
             else
-                s5 = "It's a " + class8.aString170 + ".";
+                s5 = "It's a " + class8.name + ".";
             method77(s5, 0, "", aBoolean991);
         }
         if(l == 169)
@@ -4874,14 +5021,14 @@ public void downloadcache(String url, String name1, String dir1, String type)
             anInt1283 = j;
             anInt1284 = k;
             anInt1285 = i1;
-            aString1286 = Class8.method198(i1).aString170;
+            aString1286 = Class8.method198(i1).name;
             anInt1136 = 0;
             aBoolean1153 = true;
             return;
         }
         if(l == 1226)
         {
-            int j1 = i1 >> 14 & 0x7fff;
+            int j1 = ObjectKey.getObjectId(keyLong);
             Class46 class46 = Class46.method572(j1);
             String s10;
             if(class46.aByteArray777 != null)
@@ -4911,7 +5058,7 @@ public void downloadcache(String url, String name1, String dir1, String type)
             if(class8_1.aByteArray178 != null)
                 s6 = new String(class8_1.aByteArray178);
             else
-                s6 = "It's a " + class8_1.aString170 + ".";
+                s6 = "It's a " + class8_1.name + ".";
             method77(s6, 0, "", aBoolean991);
         }
         anInt1282 = 0;
@@ -4963,14 +5110,14 @@ public void downloadcache(String url, String name1, String dir1, String type)
             anIntArray1092[anInt1133] = super.anInt21;
             anInt1133++;
         }
-        int j = -1;
+        long j = -1;
         for(int k = 0; k < Class30_Sub2_Sub4_Sub6.anInt1687; k++)
         {
-            int l = Class30_Sub2_Sub4_Sub6.anIntArray1688[k];
-            int i1 = l & 0x7f;
-            int j1 = l >> 7 & 0x7f;
-            int k1 = l >> 29 & 3;
-            int l1 = l >> 14 & 0x7fff;
+            Long l = Class30_Sub2_Sub4_Sub6.anIntArray1688[k];
+			int i1 = ObjectKey.getObjectX(l);
+			int j1 = ObjectKey.getObjectY(l);
+			int k1 = ObjectKey.getObjectOpcode(l);
+			int l1 = ObjectKey.getObjectId(l);
             if(l == j)
                 continue;
             j = l;
@@ -5031,7 +5178,7 @@ public void downloadcache(String url, String name1, String dir1, String type)
                     if(anInt863 <= 1)
                    aStringArray1199[anInt1133] = "Examine @cya@"+class46.aString739+"@blu@(@whi@"+class46.anInt754+"@blu@)";
                     anIntArray1093[anInt1133] = 1226;
-                    anIntArray1094[anInt1133] = class46.anInt754 << 14;
+                    anIntArray1094[anInt1133] = l;
                     anIntArray1091[anInt1133] = i1;
                     anIntArray1092[anInt1133] = j1;
                     anInt1133++;
@@ -5091,7 +5238,7 @@ public void downloadcache(String url, String name1, String dir1, String type)
                         Class8 class8 = Class8.method198(class30_sub2_sub4_sub2.anInt1558);
                         if(anInt1282 == 1)
                         {
-                            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @lre@" + class8.aString170;
+                            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @lre@" + class8.name;
                             anIntArray1093[anInt1133] = 511;
                             anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
                             anIntArray1091[anInt1133] = i1;
@@ -5102,7 +5249,7 @@ public void downloadcache(String url, String name1, String dir1, String type)
                         {
                             if((anInt1138 & 1) == 1)
                             {
-                                aStringArray1199[anInt1133] = aString1139 + " @lre@" + class8.aString170;
+                                aStringArray1199[anInt1133] = aString1139 + " @lre@" + class8.name;
                                 anIntArray1093[anInt1133] = 94;
                                 anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
                                 anIntArray1091[anInt1133] = i1;
@@ -5114,7 +5261,7 @@ public void downloadcache(String url, String name1, String dir1, String type)
                             for(int j3 = 4; j3 >= 0; j3--)
                                if(j3 == 2)
                                 {
-                                    aStringArray1199[anInt1133] = "Take @lre@" + class8.aString170;
+                                    aStringArray1199[anInt1133] = "Take @lre@" + class8.name;
                                     anIntArray1093[anInt1133] = 234;
                                     anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
                                     anIntArray1091[anInt1133] = i1;
@@ -5122,9 +5269,9 @@ public void downloadcache(String url, String name1, String dir1, String type)
                                     anInt1133++;
                                 }
                     		if(anInt863 >= 2)
-                    			aStringArray1199[anInt1133] = "Examine @lre@"+class8.aString170+"@gre@(@whi@"+class8.anInt157+"@gre@)";
+                    			aStringArray1199[anInt1133] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
                             if(anInt863 <= 1)
-                            aStringArray1199[anInt1133] = "Examine @lre@"+class8.aString170;
+                            aStringArray1199[anInt1133] = "Examine @lre@"+class8.name;
                             anIntArray1093[anInt1133] = 1448;
                             anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
                             anIntArray1091[anInt1133] = i1;
@@ -5160,11 +5307,11 @@ public void downloadcache(String url, String name1, String dir1, String type)
         aClass30_Sub2_Sub2_1192 = null;
         aClass30_Sub2_Sub2_847 = null;
         aClass30_Sub2_Sub2_1083 = null;
-        anIntArray1234 = null;
-        aByteArrayArray1183 = null;
-        aByteArrayArray1247 = null;
-        anIntArray1235 = null;
-        anIntArray1236 = null;
+        mapCoordinates = null;
+        terrainData = null;
+        mapData = null;
+        terrainIndices = null;
+        objectIndices = null;
         anIntArrayArrayArray1214 = null;
         aByteArrayArrayArray1258 = null;
         aClass25_946 = null;
@@ -5209,7 +5356,7 @@ public void downloadcache(String url, String name1, String dir1, String type)
         aClass30_Sub2_Sub1_Sub2_867 = null;
         aClass30_Sub2_Sub1_Sub1_868 = null;
         aClass30_Sub2_Sub1_Sub2_869 = null;
-        aClass30_Sub2_Sub1_Sub1_1122 = null;
+        compassImage = null;
         aClass30_Sub2_Sub1_Sub1Array987 = null;
         aClass30_Sub2_Sub1_Sub1Array1095 = null;
         aClass30_Sub2_Sub1_Sub1Array1150 = null;
@@ -5459,14 +5606,21 @@ public void downloadcache(String url, String name1, String dir1, String type)
 
                         }
                         if(aString887.equals("::fpson"))
-                            aBoolean1156 = true;
+                            fpsOn = true;
+                            if(aString887.equals("::data"))
+                                clientData = !clientData;
+                        if (aString887.equals("::fixed")) {
+                            currentScreenMode(ScreenMode.FIXED);
+                        }
+                        if (aString887.equals("::resize")) {
+                            currentScreenMode(ScreenMode.RESIZABLE);
+                        }
+                        if (aString887.equals("::fullscreen")) {
+                            currentScreenMode(ScreenMode.FULLSCREEN);
+                        }
 
-                        if(aString887.equals("::fullscreen"))
-                            super.switchToFullscreen();
-                        if(aString887.equals("::fixedscreen"))
-                            super.switchToNormalscreen();
                         if(aString887.equals("::fpsoff"))
-                            aBoolean1156 = false;
+                            fpsOn = false;
                         if(aString887.equals("::noclip"))
                         {
                             for(int k1 = 0; k1 < 4; k1++)
@@ -6335,7 +6489,8 @@ if(s.startsWith("dump")) {
         Class30_Sub2_Sub1.method334();
         aClass30_Sub2_Sub1_Sub2_1197.method361(0, 16083, 0);
         aClass15_1163 = new Class15(190, 261, method11(0), 0);
-        aClass15_1165 = new Class15(512, 334, method11(0), 0);
+        aClass15_1165 = new Class15(currentScreenMode == ScreenMode.FIXED ? 516 : currentScreenMode.getWidth(),
+                currentScreenMode == ScreenMode.FIXED ? 338 : currentScreenMode.getHeight(), method11(0), 0);
         Class30_Sub2_Sub1.method334();
         aClass15_1123 = new Class15(496, 50, method11(0), 0);
         if(i != 1)
@@ -6382,7 +6537,9 @@ if(s.startsWith("dump")) {
             return;
         }
     }
-
+    static boolean centerMainScreenInterface() {
+        return (currentGameWidth <= 900 || currentGameHeight <= 650);
+    }
     public final void method82(int i)
     {
         if(anInt1086 != 0)
@@ -6392,32 +6549,70 @@ if(s.startsWith("dump")) {
         anInt1133 = 1;
         method129(false);
         anInt886 = 0;
-        if(super.anInt20 > 4 && super.anInt21 > 4 && super.anInt20 < 516 && super.anInt21 < 338)
-            if(anInt857 != -1)
-                method29(4, 13037, Class9.aClass9Array210[anInt857], super.anInt20, 4, super.anInt21, 0);
-            else
-                method71(33660);
+        if (currentScreenMode == ScreenMode.FIXED) {
+            if (super.anInt20 > 0 && super.anInt21 > 0 && super.anInt20 < 516 && super.anInt21 < 338)
+                if (anInt857 != -1)
+                    method29(4, 13037, Class9.aClass9Array210[anInt857], super.anInt20, 4, super.anInt21, 0);
+                else
+                    method71(33660);
+        } else {
+            if (checkMainScreenBounds()) {
+                if (anInt857 != -1) {
+                    if (currentGameWidth > 900 && currentGameHeight > 650 && anInt20 > (currentGameWidth / 2) - 356
+                            && anInt20 < ((currentGameWidth / 2) + 356) && anInt21 > (currentGameHeight / 2) - 230
+                            && anInt21 < (currentGameHeight / 2) + 230) {
+                        method29((currentGameWidth / 2) - 256 - 99, 13037, Class9.aClass9Array210[anInt857], super.anInt20,  (currentGameHeight / 2) - 167 - 63, super.anInt21, 0);
+                    } else if (centerMainScreenInterface()) {
+                        if (anInt20 > 0 && anInt20 > 0 && anInt21 < 516 && anInt21 < 343) {
+                            method29(0, 13037, Class9.aClass9Array210[anInt857], super.anInt20,  0, super.anInt21, 0);
+                        }
+                    }
+                } else {
+                    method71(33660);
+                }
+            }
+        }
         if(anInt886 != anInt1026)
             anInt1026 = anInt886;
         anInt886 = 0;
-        if(super.anInt20 > 553 && super.anInt21 > 205 && super.anInt20 < 743 && super.anInt21 < 466)
-            if(anInt1189 != -1)
-                method29(553, 13037, Class9.aClass9Array210[anInt1189], super.anInt20, 205, super.anInt21, 0);
-            else
-            if(anIntArray1130[anInt1221] != -1)
-                method29(553, 13037, Class9.aClass9Array210[anIntArray1130[anInt1221]], super.anInt20, 205, super.anInt21, 0);
+        if (currentScreenMode == ScreenMode.FIXED) {
+            if (super.anInt20 > 553 && super.anInt21 > 205 && super.anInt20 < 743 && super.anInt21 < 466)
+                if (anInt1189 != -1)
+                    method29(553, 13037, Class9.aClass9Array210[anInt1189], super.anInt20, 205, super.anInt21, 0);
+                else if (anIntArray1130[anInt1221] != -1)
+                    method29(553, 13037, Class9.aClass9Array210[anIntArray1130[anInt1221]], super.anInt20, 205, super.anInt21, 0);
+        } else {
+            int y = stackTabs() ? 73 : 37;
+            if (anInt20 > currentGameWidth - 197 && anInt21 > currentGameHeight - 275 - y + 10
+                    && anInt20 < currentGameWidth - 7 && anInt21 < currentGameHeight - y - 5) {
+                if (anInt1189 != -1) {
+                    method29(currentGameWidth - 197,13037, Class9.aClass9Array210[anInt1189],
+                            anInt20, currentGameHeight - 275 - y + 10, anInt21, 0);
+                } else if (anIntArray1130[anInt1221] != -1) {
+                    method29(currentGameWidth - 197, 13037, Class9.aClass9Array210[anIntArray1130[anInt1221]],
+                            anInt20, currentGameHeight - 275 - y + 10, anInt21, 0);
+                }
+            }
+        }
         if(anInt886 != anInt1048)
         {
             aBoolean1153 = true;
             anInt1048 = anInt886;
         }
         anInt886 = 0;
-        if(super.anInt20 > 17 && super.anInt21 > 357 && super.anInt20 < 496 && super.anInt21 < 453)
-            if(anInt1276 != -1)
-                method29(17, 13037, Class9.aClass9Array210[anInt1276], super.anInt20, 357, super.anInt21, 0);
-            else
-            if(super.anInt21 < 434 && super.anInt20 < 426)
-                method74(super.anInt20 - 17, super.anInt21 - 357, 9);
+        if (currentScreenMode == ScreenMode.FIXED) {
+            if (super.anInt20 > 17 && super.anInt21 > 357 && super.anInt20 < 496 && super.anInt21 < 453)
+                if (anInt1276 != -1)
+                    method29(17, 13037, Class9.aClass9Array210[anInt1276], super.anInt20, 357, super.anInt21, 0);
+                else if (super.anInt21 < 434 && super.anInt20 < 426)
+                    method74(super.anInt20 - 17, super.anInt21 - 357, 9);
+        } else {
+            if (super.anInt20 > 0 && super.anInt21 > currentGameHeight - 165 && super.anInt20 < 490 && super.anInt21 < currentGameHeight - 40)
+                if (anInt1276 != -1)
+                    method29(17, 13037, Class9.aClass9Array210[anInt1276], super.anInt20, currentGameHeight - 145, super.anInt21, 0);
+                else if (super.anInt21 < currentGameHeight - 40 && super.anInt20 < 490)
+                    method74(super.anInt20 - 17, super.anInt21 - (currentGameHeight - 165), 9);
+        }
         if(anInt1276 != -1 && anInt886 != anInt1039)
         {
             aBoolean1223 = true;
@@ -6444,9 +6639,9 @@ if(s.startsWith("dump")) {
                     k = anIntArray1092[j];
                     anIntArray1092[j] = anIntArray1092[j + 1];
                     anIntArray1092[j + 1] = k;
-                    k = anIntArray1094[j];
+                    long k2 = anIntArray1094[j];
                     anIntArray1094[j] = anIntArray1094[j + 1];
-                    anIntArray1094[j + 1] = k;
+                    anIntArray1094[j + 1] = k2;
                     flag = false;
                 }
         }
@@ -6465,13 +6660,13 @@ if(s.startsWith("dump")) {
         try {
             if(!flag) {
                 aString1266 = "@whi@Connecting to";
-                aString1267 = "@whi@Ghreborn 317.";
+                aString1267 = "@whi@Godzhell Reborn.";
                 method135(true, false);
             }
 	try {
 		aPort = Integer.parseInt(port);
 		} catch(NumberFormatException NFE) { }
-            aClass24_1168 = new Class24(this, -978, method19(aPort + anInt958));
+            aClass24_1168 = new Class24(this, -978, method19(Configuration.PORT + anInt958));
             long l = Class50.method583(s);
             int i = (int)(l >> 16 & 31L);
             aClass30_Sub2_Sub2_1192.anInt1406 = 0;
@@ -6753,6 +6948,11 @@ if(s.startsWith("dump")) {
                 }
 
                 method84(s, s1, flag);
+                return;
+            }
+            if(k == 22) {
+                aString1266 = "@blu@You not in the Private Beta.";
+                aString1267 = "@blu@Please apply on the discord.";
                 return;
             }
             if(k == -1) {
@@ -7075,8 +7275,8 @@ if(s.startsWith("dump")) {
                 int k2 = class30_sub2_sub2.method428(2);
                 class30_sub2_sub4_sub1_sub1.method447(-35698, k2, l1, anInt1161);
                 class30_sub2_sub4_sub1_sub1.anInt1532 = anInt1161 + 300;
-                class30_sub2_sub4_sub1_sub1.anInt1533 = class30_sub2_sub2.method428(2);
-                class30_sub2_sub4_sub1_sub1.anInt1534 = class30_sub2_sub2.method427(false);
+                class30_sub2_sub4_sub1_sub1.anInt1533 = class30_sub2_sub2.method410();
+                class30_sub2_sub4_sub1_sub1.anInt1534 = class30_sub2_sub2.method410();
             }
             if((l & 2) != 0)
             {
@@ -7279,7 +7479,7 @@ aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +
 
     private final void method89(boolean flag, Class30_Sub1 class30_sub1)
     {
-        int i = 0;
+        long i = 0;
         int j = -1;
         int k = 0;
         int l = 0;
@@ -7294,7 +7494,7 @@ aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +
         if(i != 0)
         {
             int i1 = aClass25_946.method304(class30_sub1.anInt1295, class30_sub1.anInt1297, class30_sub1.anInt1298, i);
-            j = i >> 14 & 0x7fff;
+            j = ObjectKey.getObjectId(i);
             k = i1 & 0x1f;
             l = i1 >> 6;
         }
@@ -7377,7 +7577,7 @@ aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +
 
     public final void method6()
     {
-    	// CacheDownloader.start(this, CacheDownloader.FileType.CACHE);
+    	 CacheDownloader.start(this, CacheDownloader.FileType.CACHE);
         method13(20, (byte)4, "Starting up");
     
         if(signlink.sunjava)
@@ -7389,7 +7589,7 @@ aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +
         }
         aBoolean993 = true;
         boolean flag = true;
-        String s = method80(true);
+       // String s = method80(true);
         if(signlink.cache_dat != null)
         {
             for(int i = 0; i < 5; i++)
@@ -7502,7 +7702,6 @@ aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +
             if(aClass14Array970[0] != null)
             {
                 method13(75, (byte)4, "Requesting maps");
-		setNewMaps();
                 aClass42_Sub1_1068.method558(3, aClass42_Sub1_1068.method562(0, 0, 48, 47));
                 aClass42_Sub1_1068.method558(3, aClass42_Sub1_1068.method562(1, 0, 48, 47));
                 aClass42_Sub1_1068.method558(3, aClass42_Sub1_1068.method562(0, 0, 48, 48));
@@ -7581,7 +7780,7 @@ aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +
 	for(int j3 = 0; j3 < 13; j3++)
 		aClass30_Sub2_Sub1_Sub1Array947[j3] = new Class30_Sub2_Sub1_Sub1(class44_2, "sideicons", j3);
 
-            aClass30_Sub2_Sub1_Sub1_1122 = new Class30_Sub2_Sub1_Sub1(class44_2, "compass", 0);
+            compassImage = new Class30_Sub2_Sub1_Sub1(class44_2, "compass", 0);
             aClass30_Sub2_Sub1_Sub1_1001 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapedge", 0);
             aClass30_Sub2_Sub1_Sub1_1001.method345(5059);
             try
@@ -7764,21 +7963,7 @@ aClass30_Sub2_Sub1_Sub1Array1095[j4] = new Class30_Sub2_Sub1_Sub1(class44_2, "he
                 anIntArray1052[l6 - 5] = j7 - 25;
                 anIntArray1229[l6 - 5] = l7 - j7;
             }
-            Class30_Sub2_Sub1_Sub3.method365(-950, 479, 96);
-            anIntArray1180 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-            Class30_Sub2_Sub1_Sub3.method365(-950, 190, 261);
-            anIntArray1181 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-            Class30_Sub2_Sub1_Sub3.method365(-950, 512, 334);
-            anIntArray1182 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-            int ai[] = new int[9];
-            for(int i8 = 0; i8 < 9; i8++)
-            {
-                int k8 = 128 + i8 * 32 + 15;
-                int l8 = 600 + k8 * 3;
-                int i9 = Class30_Sub2_Sub1_Sub3.anIntArray1470[k8];
-                ai[i8] = l8 * i9 >> 16;
-            }
-            Class25.method310(500, 800, 512, 334, ai, aBoolean1231);
+            setBounds();
             Class34.method487(class44_4);
             aClass48_879 = new Class48(this, anInt1096);
             method12(aClass48_879, 10);
@@ -7790,6 +7975,7 @@ aClass30_Sub2_Sub1_Sub1Array1095[j4] = new Class30_Sub2_Sub1_Sub1(class44_2, "he
         catch(Exception exception)
         {
             signlink.reporterror("loaderror " + aString1049 + " " + anInt1079);
+            exception.printStackTrace();
         }
         aBoolean926 = true;
     }
@@ -7919,7 +8105,7 @@ aClass30_Sub2_Sub1_Sub1Array1095[j4] = new Class30_Sub2_Sub1_Sub1(class44_2, "he
             g.setFont(new Font("Helvetica", 1, 16));
             g.setColor(Color.yellow);
             int k = 35;
-            g.drawString("Sorry, an error has occured whilst loading Ghreborn 317", 30, k);
+            g.drawString("Sorry, an error has occured whilst loading Ghreborn", 30, k);
             k += 50;
             g.setColor(Color.white);
             g.drawString("To fix this try the following (in order):", 30, k);
@@ -7964,7 +8150,7 @@ aClass30_Sub2_Sub1_Sub1Array1095[j4] = new Class30_Sub2_Sub1_Sub1(class44_2, "he
         }
     }
 
-public final URL getCodeBase(){
+public URL getCodeBase(){
         try
        {
                 return new URL("http://"+server+":" + (80 + anInt958));
@@ -8264,12 +8450,12 @@ public final URL getCodeBase(){
             class30_sub2_sub4_sub1.anInt1519++;
             if(class30_sub2_sub4_sub1.anInt1518 < class20.anInt352 && class30_sub2_sub4_sub1.anInt1519 > class20.method258(class30_sub2_sub4_sub1.anInt1518, (byte)-39))
             {
-                class30_sub2_sub4_sub1.anInt1519 = 0;
+                class30_sub2_sub4_sub1.anInt1519 = 1;
                 class30_sub2_sub4_sub1.anInt1518++;
             }
             if(class30_sub2_sub4_sub1.anInt1518 >= class20.anInt352)
             {
-                class30_sub2_sub4_sub1.anInt1519 = 0;
+                class30_sub2_sub4_sub1.anInt1519 = 1;
                 class30_sub2_sub4_sub1.anInt1518 = 0;
             }
         }
@@ -8321,20 +8507,22 @@ public static boolean nearby = true;
         if(aBoolean1255)
         {
             aBoolean1255 = false;
-            aClass15_903.method238(4, 23680, super.aGraphics12, 0);
-            aClass15_904.method238(357, 23680, super.aGraphics12, 0);
-            aClass15_905.method238(4, 23680, super.aGraphics12, 722);
-            aClass15_906.method238(205, 23680, super.aGraphics12, 743);
-            aClass15_907.method238(0, 23680, super.aGraphics12, 0);
-            aClass15_908.method238(4, 23680, super.aGraphics12, 516);
-            aClass15_909.method238(205, 23680, super.aGraphics12, 516);
-            aClass15_910.method238(357, 23680, super.aGraphics12, 496);
-            aClass15_911.method238(338, 23680, super.aGraphics12, 0);
+            if (currentScreenMode == ScreenMode.FIXED) {
+                aClass15_903.method238(4, 23680, super.aGraphics12, 0);
+                aClass15_904.method238(357, 23680, super.aGraphics12, 0);
+                aClass15_905.method238(4, 23680, super.aGraphics12, 722);
+                aClass15_906.method238(205, 23680, super.aGraphics12, 743);
+                aClass15_907.method238(0, 23680, super.aGraphics12, 0);
+                aClass15_908.method238(4, 23680, super.aGraphics12, 516);
+                aClass15_909.method238(205, 23680, super.aGraphics12, 516);
+                aClass15_910.method238(357, 23680, super.aGraphics12, 496);
+                aClass15_911.method238(338, 23680, super.aGraphics12, 0);
+            }
             aBoolean1153 = true;
             aBoolean1223 = true;
             aBoolean1103 = true;
             aBoolean1233 = true;
-            if(anInt1023 != 2)
+            if(anInt1023 != 2 && currentScreenMode == ScreenMode.FIXED)
             {
                 aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
                 aClass15_1164.method238(4, 23680, super.aGraphics12, 550);
@@ -8362,8 +8550,8 @@ public static boolean nearby = true;
         if(anInt1276 == -1)
         {
             aClass9_1059.anInt224 = anInt1211 - anInt1089 - 77;
-            if(super.anInt20 > 448 && super.anInt20 < 560 && super.anInt21 > 332)
-                method65(463, 77, super.anInt20 - 17, super.anInt21 - 357, aClass9_1059, 0, false, anInt1211, 0);
+            if(super.anInt20 > 448 && super.anInt20 < 560 && super.anInt21 > (currentScreenMode == ScreenMode.FIXED ? 332 : currentGameHeight - 158))
+                method65(463, 77, super.anInt20 - 17, super.anInt21 - (currentScreenMode == ScreenMode.FIXED ? 332 : currentGameHeight - 158), aClass9_1059, 0, false, anInt1211, 0);
             int i = anInt1211 - 77 - aClass9_1059.anInt224;
             if(i < 0)
                 i = 0;
@@ -8394,7 +8582,7 @@ public static boolean nearby = true;
             method18(6);
             aBoolean1223 = false;
         }
-        if(anInt1023 == 2)
+        if(anInt1023 == 2 && currentScreenMode == ScreenMode.FIXED)
         {
             method126(false);
             aClass15_1164.method238(4, 23680, super.aGraphics12, 550);
@@ -8604,10 +8792,8 @@ public static boolean nearby = true;
 
     }
 
-    public final void method105(int i, int j, int k, Class9 class9, int l)
+    public final void drawInterface(int j, int k, Class9 class9, int l)
     {
-        if(i != 8)
-            aBoolean991 = !aBoolean991;
         if(class9.anInt262 != 0 || class9.anIntArray240 == null)
             return;
         if(class9.aBoolean266 && anInt1026 != class9.anInt250 && anInt1048 != class9.anInt250 && anInt1039 != class9.anInt250)
@@ -8633,7 +8819,7 @@ public static boolean nearby = true;
                     class9_1.anInt224 = class9_1.anInt261 - class9_1.anInt267;
                 if(class9_1.anInt224 < 0)
                     class9_1.anInt224 = 0;
-                method105(8, class9_1.anInt224, k2, class9_1, l2);
+                drawInterface(class9_1.anInt224, k2, class9_1, l2);
                 if(class9_1.anInt261 > class9_1.anInt267)
                     method30(519, class9_1.anInt267, class9_1.anInt224, l2, k2 + class9_1.anInt220, class9_1.anInt261);
             } else
@@ -8897,7 +9083,7 @@ public static boolean nearby = true;
                             if(class9_1.anIntArray253[k4] > 0)
                             {
                                 Class8 class8 = Class8.method198(class9_1.anIntArray253[k4] - 1);
-                                String s2 = class8.aString170;
+                                String s2 = class8.name;
                                 if(class8.aBoolean176 || class9_1.anIntArray252[k4] != 1)
                                     s2 = s2 + " x" + method14(class9_1.anIntArray252[k4], 0);
                                 int i9 = k2 + i6 * (115 + class9_1.anInt231);
@@ -9222,7 +9408,7 @@ public static boolean nearby = true;
         }
         catch(Exception _ex)
         {
-            signlink.reporterror("glfc_ex " + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 + "," + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 + "," + anInt1014 + "," + anInt1015 + "," + anInt1069 + "," + anInt1070 + "," + anInt1034 + "," + anInt1035);
+            signlink.reporterror("glfc_ex " + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 + "," + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 + "," + anInt1014 + "," + anInt1015 + "," + currentRegionX + "," + currentRegionY + "," + anInt1034 + "," + anInt1035);
             throw new RuntimeException("eek");
         }
     }
@@ -9313,12 +9499,12 @@ public static boolean nearby = true;
         if(anInt1018 != -1)
         {
             method119(anInt945, false, anInt1018);
-            method105(8, 0, 0, Class9.aClass9Array210[anInt1018], 0);
+            drawInterface(0, 0, Class9.aClass9Array210[anInt1018], 0);
         }
         if(anInt857 != -1)
         {
             method119(anInt945, false, anInt857);
-            method105(8, 0, 0, Class9.aClass9Array210[anInt857], 0);
+            drawInterface( 0, 0, Class9.aClass9Array210[anInt857], 0);
         }
         method70(184);
         if(!aBoolean885)
@@ -9329,24 +9515,70 @@ public static boolean nearby = true;
         if(anInt948 == 0)
             method40((byte)9);
         if(anInt1055 == 1)
-            aClass30_Sub2_Sub1_Sub1Array1095[1].method348(472, 16083, 296);
-        if(aBoolean1156)
+            aClass30_Sub2_Sub1_Sub1Array1095[1].method348(currentScreenMode == ScreenMode.FIXED ? 472 : currentGameWidth - 85, 16083, currentScreenMode == ScreenMode.FIXED ? 296 : 186);
+        if(fpsOn)
         {
             char c = '\u01FB';
-            int k = 20;
+            int yPosition = 20;
+            int xPosition = currentScreenMode == ScreenMode.FIXED ? 515 : currentGameWidth - 222;
             int i1 = 0xffff00;
             if(super.anInt8 < 15)
                 i1 = 0xff0000;
-            aClass30_Sub2_Sub1_Sub4_1271.method380("Fps:" + super.anInt8, c, i1, (byte)-80, k);
-            k += 15;
+            aClass30_Sub2_Sub1_Sub4_1271.method380("Fps:" + super.anInt8, xPosition, i1, (byte)-80, yPosition);
+            yPosition += 15;
             Runtime runtime = Runtime.getRuntime();
             int j1 = (int)((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
             i1 = 0xffff00;
             if(j1 > 0x2000000 && aBoolean960)
                 i1 = 0xff0000;
-            aClass30_Sub2_Sub1_Sub4_1271.method380("Mem:" + j1 + "k", c, 0xffff00, (byte)-80, k);
-            k += 15;
+            aClass30_Sub2_Sub1_Sub4_1271.method380("Mem:" + j1 + "k", xPosition, 0xffff00, (byte)-80, yPosition);
+            yPosition += 15;
         }
+        int x = anInt1034 + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1550 - 6 >> 7);
+        int y = anInt1035 + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1551 - 6 >> 7);
+        int var131 = x >> 6;
+        int var12 = y >> 6;
+        int chunkX = x >> 3;
+        int var141 = y >> 3;
+        int regionid = var131 * 256 + var12;
+        int mapx = currentRegionX; // map region x
+        int mapy = currentRegionY; // map region y
+        if (clientData) {
+            Runtime runtime = Runtime.getRuntime();
+            int j1 = (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0x00FF00, "Players Nearby: " + anInt891, 27, (byte)-80, 5);
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0x00FF00, "Npcs Nearby: " + anInt836, 41, (byte)-80, 5);
+
+            if (mapx > 1000 || mapy > 1000) {
+                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Current Region: " + mapx + ", " + mapy + ", Region ID: " + regionid, 55, (byte)-80, 5);
+            } else {
+                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Current Region: 0" + mapx + ", 0" + mapy + ", Region ID: " + regionid, 55, (byte)-80, 5);
+            }
+            for (int num = 0; num < terrainIndices.length; num++) {
+                int[] flo = terrainIndices;
+                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Floor map: " + Arrays.toString(flo), 69, (byte)-80, 5);
+            }
+            for (int num = 0; num < objectIndices.length; num++) {
+                int[] obj = objectIndices;
+                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Object map: " + Arrays.toString(obj), 83, (byte)-80, 5);
+                // output: "Object map: "[1, 3, 5, 7, 9]"
+            }
+
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Map Data: " + terrainIndices[0] + ".dat", 97, (byte)-80, 5);
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Fps: " + super.anInt8, 111, (byte)-80, 5);
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Memory Used: " + j1/1024 + "MB", 125, (byte)-80, 5);
+            //aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00,
+              //      "Mouse: [" + super.getMouseX() + ", " + super.getMouseY() + "] [" + super.getRawMouseX() + ", " + super.getRawMouseY() + "]", 139, (byte)-80, 5);
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Coordinates: X: " + x + ", Y: " + y, 153, (byte)-80, 5);
+
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00,
+                    "Camera Position: X: " + xCameraPos + ", Y: " + yCameraPos + ", Z: " + zCameraPos, 167, (byte)-80, 5);
+            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Camera Curve: X: " + xCameraCurve + ", Y: " + yCameraCurve, (byte)-80, 181,
+                    5);
+            y = 181;
+            y += 15;
+        }
+
         if(anInt1104 != 0)
         {
             int j = anInt1104 / 50;
@@ -9669,10 +9901,10 @@ public static boolean nearby = true;
 			return anInt918;
 		}
         int j = 3;
-        if(anInt861 < 310)
+        if(yCameraCurve < 310)
         {
-            int k = anInt858 >> 7;
-            int l = anInt860 >> 7;
+            int k = xCameraPos >> 7;
+            int l = yCameraPos >> 7;
             int i1 = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 >> 7;
             int j1 = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 >> 7;
             if((aByteArrayArrayArray1258[anInt918][k][l] & 4) != 0)
@@ -9751,8 +9983,8 @@ public static boolean nearby = true;
 		if (roofsOff) {
 			return anInt918;
 		}
-        int j = method42(anInt918, anInt860, true, anInt858);
-        if(j - anInt859 < 800 && (aByteArrayArrayArray1258[anInt918][anInt858 >> 7][anInt860 >> 7] & 4) != 0)
+        int j = method42(anInt918, yCameraPos, true, xCameraPos);
+        if(j - zCameraPos < 800 && (aByteArrayArrayArray1258[anInt918][xCameraPos >> 7][yCameraPos >> 7] & 4) != 0)
             return anInt918;
         else
             return 3;
@@ -9788,7 +10020,7 @@ public static boolean nearby = true;
         throw new RuntimeException();
     }
 
-    public final String getParameter(String s)
+    public String getParameter(String s)
     {
         if(signlink.mainapp != null)
             return signlink.mainapp.getParameter(s);
@@ -9954,7 +10186,18 @@ public static boolean nearby = true;
     {
         if(flag)
             return;
-        aClass15_1164.method237(0);
+        if (currentScreenMode == ScreenMode.FIXED) {
+            aClass15_1164.method237(0);
+        }
+        if(currentScreenMode != ScreenMode.FIXED) {
+            for(int i = 0; i < 76; i++) {
+                int amt = (int)(Math.sqrt(Math.pow(77, 2) - Math.pow(75-i, 2)));
+                anIntArray1229[i] = 2 * amt + 2;
+                anIntArray1229[150-i] = 2 * amt + 2;
+                anIntArray1052[i] = -amt + 73;
+                anIntArray1052[150-i] = -amt + 73;
+            }
+        }
         if(anInt1021 == 2)
         {
             byte abyte0[] = aClass30_Sub2_Sub1_Sub2_1197.aByteArray1450;
@@ -9964,15 +10207,21 @@ public static boolean nearby = true;
                 if(abyte0[i5] == 0)
                     ai[i5] = 0;
 
-            aClass30_Sub2_Sub1_Sub1_1122.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, -236, 25, 0, 0, 33, 25);
+            compassImage.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, (currentScreenMode == ScreenMode.FIXED ? 25 : 25), 0, (currentScreenMode == ScreenMode.FIXED ? 29 : currentGameWidth - 178), 33, 25);
             aClass15_1165.method237(0);
             return;
         }
         int i = anInt1185 + anInt1209 & 0x7ff;
         int j = 48 + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
         int l2 = 464 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-        aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + anInt1170, anIntArray1052, -236, l2, 5, 25, 146, j);
-        aClass30_Sub2_Sub1_Sub1_1122.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, -236, 25, 0, 0, 33, 25);
+        if (currentScreenMode == ScreenMode.FIXED) {
+            for (int x = 0; x < anIntArray1229.length; x++){
+                anIntArray1229[x] = 170;
+                anIntArray1052[x] = -23;
+            }
+        }
+        aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + anInt1170, anIntArray1052, l2, currentScreenMode == ScreenMode.FIXED ? 9 : 7,  currentScreenMode == ScreenMode.FIXED ? 54 : currentGameWidth - 158, 146, j);
+        compassImage.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, (currentScreenMode == ScreenMode.FIXED ? 25 : 25), 0, (currentScreenMode == ScreenMode.FIXED ? 29 : currentGameWidth - 178), 33, 25);
         for(int j5 = 0; j5 < anInt1071; j5++)
         {
             int k = (anIntArray1072[j5] * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
@@ -10098,13 +10347,13 @@ public static boolean nearby = true;
             return;
         }
         int i1 = method42(anInt918, l, true, i) - j;
-        i -= anInt858;
-        i1 -= anInt859;
-        l -= anInt860;
-        int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[anInt861];
-        int k1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[anInt861];
-        int l1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[anInt862];
-        int i2 = Class30_Sub2_Sub4_Sub6.anIntArray1690[anInt862];
+        i -= xCameraPos;
+        i1 -= zCameraPos;
+        l -= yCameraPos;
+        int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[yCameraCurve];
+        int k1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[yCameraCurve];
+        int l1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[xCameraCurve];
+        int i2 = Class30_Sub2_Sub4_Sub6.anIntArray1690[xCameraCurve];
         int j2 = l * l1 + i * i2 >> 16;
         l = l * i2 - i * l1 >> 16;
         i = j2;
@@ -10115,8 +10364,8 @@ public static boolean nearby = true;
         i1 = j2;
         if(l >= 50)
         {
-            anInt963 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i << 9) / l;
-            anInt964 = Class30_Sub2_Sub1_Sub3.anInt1467 + (i1 << 9) / l;
+            anInt963 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i << client.log_view_dist) / l;
+            anInt964 = Class30_Sub2_Sub1_Sub3.anInt1467 + (i1 << client.log_view_dist) / l;
             return;
         } else
         {
@@ -10446,9 +10695,9 @@ public static boolean nearby = true;
             int i = c1 / 2 + 80;
             aClass30_Sub2_Sub1_Sub4_1270.method382(0x75a9a9, c / 2, anInt939, aClass42_Sub1_1068.aString1333, i, true);
             i = c1 / 2 - 70;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@Welcome to Ghreborn 317", i, true);
+            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@Welcome to Ghreborn", i, true);
             i = c1 / 2 - 50;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@@ Ghreborn.com", i, true);
+            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@@ GodzHell.net", i, true);
             i = c1 / 2 - 20;
             aClass30_Sub2_Sub1_Sub4_1272.method382(0xff0000, c / 2, anInt939, "@whi@New and Existing players click Enter to play", i, true);
             i += 30;
@@ -10488,9 +10737,9 @@ public static boolean nearby = true;
             }
         }
         if(anInt833 == 3) {
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Ghreborn 317", c1 / 2 - 60, true);
+            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Ghreborn", c1 / 2 - 60, true);
             int k = c1 / 2 - 35;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Ghreborn.com", k, true);
+            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "GodzHell.net", k, true);
             k += 15;
             aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Enjoy!", k, true);
             k += 15;
@@ -10684,7 +10933,7 @@ public static boolean nearby = true;
                     Class10 class10 = aClass25_946.method296(anInt918, j4, i7, false);
                     if(class10 != null)
                     {
-                        int k21 = class10.anInt280 >> 14 & 0x7fff;
+                        int k21 = ObjectKey.getObjectId(class10.anInt280);
                         if(j12 == 2)
                         {
                             class10.aClass30_Sub2_Sub4_278 = new Class30_Sub2_Sub4_Sub5(k21, 4 + k14, 2, i19, (byte)7, l19, j18, k20, j17, false);
@@ -10699,7 +10948,7 @@ public static boolean nearby = true;
                 {
                     Class26 class26 = aClass25_946.method297(j4, 866, i7, anInt918);
                     if(class26 != null)
-                        class26.aClass30_Sub2_Sub4_504 = new Class30_Sub2_Sub4_Sub5(class26.anInt505 >> 14 & 0x7fff, 0, 4, i19, (byte)7, l19, j18, k20, j17, false);
+                        class26.aClass30_Sub2_Sub4_504 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class26.anInt505), 0, 4, i19, (byte)7, l19, j18, k20, j17, false);
                 }
                 if(j16 == 2)
                 {
@@ -10707,13 +10956,13 @@ public static boolean nearby = true;
                     if(j12 == 11)
                         j12 = 10;
                     if(class28 != null)
-                        class28.aClass30_Sub2_Sub4_521 = new Class30_Sub2_Sub4_Sub5(class28.anInt529 >> 14 & 0x7fff, k14, j12, i19, (byte)7, l19, j18, k20, j17, false);
+                        class28.aClass30_Sub2_Sub4_521 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class28.anInt529), k14, j12, i19, (byte)7, l19, j18, k20, j17, false);
                 }
                 if(j16 == 3)
                 {
                     Class49 class49 = aClass25_946.method299(i7, j4, anInt918, 0);
                     if(class49 != null)
-                        class49.aClass30_Sub2_Sub4_814 = new Class30_Sub2_Sub4_Sub5(class49.anInt815 >> 14 & 0x7fff, k14, 22, i19, (byte)7, l19, j18, k20, j17, false);
+                        class49.aClass30_Sub2_Sub4_814 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class49.anInt815), k14, 22, i19, (byte)7, l19, j18, k20, j17, false);
                 }
             }
             return;
@@ -11107,7 +11356,7 @@ public static boolean nearby = true;
         {
             if(aBoolean960 && j != anInt918)
                 return;
-            int i2 = 0;
+            long i2 = 0;
             byte byte0 = -1;
             boolean flag = false;
             boolean flag1 = false;
@@ -11122,7 +11371,7 @@ public static boolean nearby = true;
             if(i2 != 0)
             {
                 int i3 = aClass25_946.method304(j, i1, i, i2);
-                int j2 = i2 >> 14 & 0x7fff;
+                int j2 = ObjectKey.getObjectId(i2);
                 int k2 = i3 & 0x1f;
                 int l2 = i3 >> 6;
                 if(j1 == 0)
@@ -11228,11 +11477,11 @@ public static boolean nearby = true;
             l2 = l2 * l3 - j2 * j3 >> 16;
             j2 = j4;
         }
-        anInt858 = l - j2;
-        anInt859 = i1 - k2;
-        anInt860 = k1 - l2;
-        anInt861 = k;
-        anInt862 = j1;
+        xCameraPos = l - j2;
+        zCameraPos = i1 - k2;
+        yCameraPos = k1 - l2;
+        yCameraCurve = k;
+        xCameraCurve = j1;
     }
 
     public final boolean method145(boolean flag)
@@ -11404,9 +11653,9 @@ public static boolean nearby = true;
                 anInt1102 = aClass30_Sub2_Sub2_1083.method408();
                 if(anInt1102 >= 100)
                 {
-                    anInt858 = anInt1098 * 128 + 64;
-                    anInt860 = anInt1099 * 128 + 64;
-                    anInt859 = method42(anInt918, anInt860, true, anInt858) - anInt1100;
+                    xCameraPos = anInt1098 * 128 + 64;
+                    yCameraPos = anInt1099 * 128 + 64;
+                    zCameraPos = method42(anInt918, yCameraPos, true, xCameraPos) - anInt1100;
                 }
                 anInt1008 = -1;
                 return true;
@@ -11487,8 +11736,8 @@ public static boolean nearby = true;
             }
             if(anInt1008 == 73 || anInt1008 == 241)
             {
-                int l2 = anInt1069;
-                int i11 = anInt1070;
+                int l2 = currentRegionX;
+                int i11 = currentRegionY;
                 if(anInt1008 == 73)
                 {
                     l2 = mapX = MapX = aClass30_Sub2_Sub2_1083.method435(true);
@@ -11521,58 +11770,58 @@ public static boolean nearby = true;
                     l2 = aClass30_Sub2_Sub2_1083.method410();
                     aBoolean1159 = true;
                 }
-                if(anInt1069 == l2 && anInt1070 == i11 && anInt1023 == 2)
+                if(currentRegionX == l2 && currentRegionY == i11 && anInt1023 == 2)
                 {
                     anInt1008 = -1;
                     return true;
                 }
-                anInt1069 = l2;
-                anInt1070 = i11;
-                anInt1034 = (anInt1069 - 6) * 8;
-                anInt1035 = (anInt1070 - 6) * 8;
+                currentRegionX = l2;
+                currentRegionY = i11;
+                anInt1034 = (currentRegionX - 6) * 8;
+                anInt1035 = (currentRegionY - 6) * 8;
                 aBoolean1141 = false;
-                if((anInt1069 / 8 == 48 || anInt1069 / 8 == 49) && anInt1070 / 8 == 48)
+                if((currentRegionX / 8 == 48 || currentRegionX / 8 == 49) && currentRegionY / 8 == 48)
                     aBoolean1141 = true;
-                if(anInt1069 / 8 == 48 && anInt1070 / 8 == 148)
+                if(currentRegionX / 8 == 48 && currentRegionY / 8 == 148)
                     aBoolean1141 = true;
                 anInt1023 = 1;
                 aLong824 = System.currentTimeMillis();
                 aClass15_1165.method237(0);
-                aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn 317 is Loading - Please wait....", 23693, 151, 257);
-                aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn 317 is Loading - Please wait....", 23693, 150, 256);
+                aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn is Loading - Please wait....", 23693, 151, 257);
+                aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn is Loading - Please wait....", 23693, 150, 256);
                 aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
                 if(anInt1008 == 73)
                 {
                     int k16 = 0;
-                    for(int i21 = (anInt1069 - 6) / 8; i21 <= (anInt1069 + 6) / 8; i21++)
+                    for(int i21 = (currentRegionX - 6) / 8; i21 <= (currentRegionX + 6) / 8; i21++)
                     {
-                        for(int k23 = (anInt1070 - 6) / 8; k23 <= (anInt1070 + 6) / 8; k23++)
+                        for(int k23 = (currentRegionY - 6) / 8; k23 <= (currentRegionY + 6) / 8; k23++)
                             k16++;
 
                     }
 
-                    aByteArrayArray1183 = new byte[k16][];
-                    aByteArrayArray1247 = new byte[k16][];
-                    anIntArray1234 = new int[k16];
-                    anIntArray1235 = new int[k16];
-                    anIntArray1236 = new int[k16];
+                    terrainData = new byte[k16][];
+                    mapData = new byte[k16][];
+                    mapCoordinates = new int[k16];
+                    terrainIndices = new int[k16];
+                    objectIndices = new int[k16];
                     k16 = 0;
-                    for(int l23 = (anInt1069 - 6) / 8; l23 <= (anInt1069 + 6) / 8; l23++)
+                    for(int l23 = (currentRegionX - 6) / 8; l23 <= (currentRegionX + 6) / 8; l23++)
                     {
-                        for(int j26 = (anInt1070 - 6) / 8; j26 <= (anInt1070 + 6) / 8; j26++)
+                        for(int j26 = (currentRegionY - 6) / 8; j26 <= (currentRegionY + 6) / 8; j26++)
                         {
-                            anIntArray1234[k16] = (l23 << 8) + j26;
+                            mapCoordinates[k16] = (l23 << 8) + j26;
                             if(aBoolean1141 && (j26 == 49 || j26 == 149 || j26 == 147 || l23 == 50 || l23 == 49 && j26 == 47))
                             {
-                                anIntArray1235[k16] = -1;
-                                anIntArray1236[k16] = -1;
+                                terrainIndices[k16] = -1;
+                                objectIndices[k16] = -1;
                                 k16++;
                             } else
                             {
-                                int k28 = anIntArray1235[k16] = aClass42_Sub1_1068.method562(0, 0, j26, l23);
+                                int k28 = terrainIndices[k16] = aClass42_Sub1_1068.method562(0, 0, j26, l23);
                                 if(k28 != -1)
                                     aClass42_Sub1_1068.method558(3, k28);
-                                int j30 = anIntArray1236[k16] = aClass42_Sub1_1068.method562(1, 0, j26, l23);
+                                int j30 = objectIndices[k16] = aClass42_Sub1_1068.method562(1, 0, j26, l23);
                                 if(j30 != -1)
                                     aClass42_Sub1_1068.method558(3, j30);
                                 k16++;
@@ -11615,20 +11864,20 @@ public static boolean nearby = true;
 
                     }
 
-                    aByteArrayArray1183 = new byte[l16][];
-                    aByteArrayArray1247 = new byte[l16][];
-                    anIntArray1234 = new int[l16];
-                    anIntArray1235 = new int[l16];
-                    anIntArray1236 = new int[l16];
+                    terrainData = new byte[l16][];
+                    mapData = new byte[l16][];
+                    mapCoordinates = new int[l16];
+                    terrainIndices = new int[l16];
+                    objectIndices = new int[l16];
                     for(int l26 = 0; l26 < l16; l26++)
                     {
-                        int i29 = anIntArray1234[l26] = ai[l26];
+                        int i29 = mapCoordinates[l26] = ai[l26];
                         int l30 = i29 >> 8 & 0xff;
                         int l31 = i29 & 0xff;
-                        int j32 = anIntArray1235[l26] = aClass42_Sub1_1068.method562(0, 0, l31, l30);
+                        int j32 = terrainIndices[l26] = aClass42_Sub1_1068.method562(0, 0, l31, l30);
                         if(j32 != -1)
                             aClass42_Sub1_1068.method558(3, j32);
-                        int i33 = anIntArray1236[l26] = aClass42_Sub1_1068.method562(1, 0, l31, l30);
+                        int i33 = objectIndices[l26] = aClass42_Sub1_1068.method562(1, 0, l31, l30);
                         if(i33 != -1)
                             aClass42_Sub1_1068.method558(3, i33);
                     }
@@ -12291,16 +12540,16 @@ if(i18 > 1)
                     int k7 = anInt995 * 128 + 64;
                     int k14 = anInt996 * 128 + 64;
                     int i20 = method42(anInt918, k14, true, k7) - anInt997;
-                    int l22 = k7 - anInt858;
-                    int k25 = i20 - anInt859;
-                    int j28 = k14 - anInt860;
+                    int l22 = k7 - xCameraPos;
+                    int k25 = i20 - zCameraPos;
+                    int j28 = k14 - yCameraPos;
                     int i30 = (int)Math.sqrt(l22 * l22 + j28 * j28);
-                    anInt861 = (int)(Math.atan2(k25, i30) * 325.94900000000001D) & 0x7ff;
-                    anInt862 = (int)(Math.atan2(l22, j28) * -325.94900000000001D) & 0x7ff;
-                    if(anInt861 < 128)
-                        anInt861 = 128;
-                    if(anInt861 > 383)
-                        anInt861 = 383;
+                    yCameraCurve = (int)(Math.atan2(k25, i30) * 325.94900000000001D) & 0x7ff;
+                    xCameraCurve = (int)(Math.atan2(l22, j28) * -325.94900000000001D) & 0x7ff;
+                    if(yCameraCurve < 128)
+                        yCameraCurve = 128;
+                    if(yCameraCurve > 383)
+                        yCameraCurve = 383;
                 }
                 anInt1008 = -1;
                 return true;
@@ -12540,30 +12789,30 @@ if(i18 > 1)
             j = method120(111);
         else
             j = method121(anInt1081);
-        int l = anInt858;
-        int i1 = anInt859;
-        int j1 = anInt860;
-        int k1 = anInt861;
-        int l1 = anInt862;
+        int l = xCameraPos;
+        int i1 = zCameraPos;
+        int j1 = yCameraPos;
+        int k1 = yCameraCurve;
+        int l1 = xCameraCurve;
         for(int i2 = 0; i2 < 5; i2++)
             if(aBooleanArray876[i2])
             {
                 int j2 = (int)((Math.random() * (double)(anIntArray873[i2] * 2 + 1) - (double)anIntArray873[i2]) + Math.sin((double)anIntArray1030[i2] * ((double)anIntArray928[i2] / 100D)) * (double)anIntArray1203[i2]);
                 if(i2 == 0)
-                    anInt858 += j2;
+                    xCameraPos += j2;
                 if(i2 == 1)
-                    anInt859 += j2;
+                    zCameraPos += j2;
                 if(i2 == 2)
-                    anInt860 += j2;
+                    yCameraPos += j2;
                 if(i2 == 3)
-                    anInt862 = anInt862 + j2 & 0x7ff;
+                    xCameraCurve = xCameraCurve + j2 & 0x7ff;
                 if(i2 == 4)
                 {
-                    anInt861 += j2;
-                    if(anInt861 < 128)
-                        anInt861 = 128;
-                    if(anInt861 > 383)
-                        anInt861 = 383;
+                    yCameraCurve += j2;
+                    if(yCameraCurve < 128)
+                        yCameraCurve = 128;
+                    if(yCameraCurve > 383)
+                        yCameraCurve = 383;
                 }
             }
 
@@ -12579,11 +12828,11 @@ if(i18 > 1)
             Class30_Sub2_Sub4_Sub6.anInt1686 = super.anInt21 - 4;
             Class30_Sub2_Sub1.method334();
             if(skyLoad){
-    			Class30_Sub2_Sub1.method336(503, 0, 0, 0xC8C0A8, 765, 0);
+    			Class30_Sub2_Sub1.method336(currentGameHeight, 0, 0, 0xC8C0A8, currentGameWidth  , 0);
     }
-            aClass25_946.method313(anInt858, anInt860, anInt862, anInt859, j, anInt861, false);
+            aClass25_946.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve, false);
             if(FogToggle) {           
-double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
+double fogDistance = Math.sqrt(Math.pow(zCameraPos, 2));
             int fogStartDistance = 1430;
             int fogEndDistance = 2100;
             fogHandler.setFogDistance((float) fogDistance);
@@ -12595,11 +12844,11 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
             method37(854, k2);
             method112(8);
             aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
-            anInt858 = l;
-            anInt859 = i1;
-            anInt860 = j1;
-            anInt861 = k1;
-            anInt862 = l1;
+            xCameraPos = l;
+            zCameraPos = i1;
+            yCameraPos = j1;
+            yCameraCurve = k1;
+            xCameraCurve = l1;
             return;
         }
     }
@@ -12739,7 +12988,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
         anIntArray1091 = new int[500];
         anIntArray1092 = new int[500];
         anIntArray1093 = new int[500];
-        anIntArray1094 = new int[500];
+        anIntArray1094 = new long[500];
         aClass30_Sub2_Sub1_Sub1Array1095 = new Class30_Sub2_Sub1_Sub1[20];
         aBoolean1103 = false;
         anInt1105 = 519;
@@ -12766,8 +13015,8 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
         anInt1171 = 1;
         aString1173 = "";
         aString1174 = "";
-        server = "ghreborn.ddns.net";
-	port = "29433";
+        server = Configuration.TEST_SERVER_ADDRESS;
+	port = "59999";
         aBoolean1176 = false;
         anInt1178 = -1;
         aClass19_1179 = new Class19(169);
@@ -12845,11 +13094,11 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private int anInt855;
     private static BigInteger aBigInteger856 = new BigInteger("7162900525229798032761816791230527296329313291232324290237849263501208207972894053929065636522363163621000728841182238772712427862772219676577293600221789");
     static int anInt857;
-    private int anInt858;
-    private int anInt859;
-    private int anInt860;
-    private int anInt861;
-    private int anInt862;
+    private int xCameraPos;
+    private int zCameraPos;
+    private int yCameraPos;
+    private int yCameraCurve;
+    private int xCameraCurve;
     private int anInt863;
     private int anIntArray864[];
     private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_865;
@@ -13072,8 +13321,8 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private int anInt1066;
     private int anInt1067;
     private Class42_Sub1 aClass42_Sub1_1068;
-    private int anInt1069;
-    private int anInt1070;
+    private int currentRegionX;
+    private int currentRegionY;
     private int anInt1071;
     private int anIntArray1072[];
     private int anIntArray1073[];
@@ -13097,7 +13346,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private int anIntArray1091[];
     private int anIntArray1092[];
     private int anIntArray1093[];
-    private int anIntArray1094[];
+    private long anIntArray1094[];
     private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array1095[];
     private static int anInt1096 = -192;
     private static int anInt1097;
@@ -13125,7 +13374,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private int anInt1119;
     private int anInt1120;
     private String aString1121;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1122;
+    private Class30_Sub2_Sub1_Sub1 compassImage;
     private Class15 aClass15_1123;
     private Class15 aClass15_1124;
     private Class15 aClass15_1125;
@@ -13162,7 +13411,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private boolean aBoolean1153;
     private int anInt1154;
     private static int anInt1155;
-    static boolean aBoolean1156;
+    static boolean fpsOn;
     public int[] fullScreenTextureArray;
     public boolean aBoolean1157;
     private boolean aBoolean1158;
@@ -13182,7 +13431,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private long aLong1172;
     private String aString1173;
     private String aString1174;
-    private static String server;
+    public static String server;
     private static String port;
     private static int aPort;
     private static int anInt1175;
@@ -13197,7 +13446,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private int anIntArray1180[];
     private int anIntArray1181[];
     private int anIntArray1182[];
-    private byte aByteArrayArray1183[][];
+    private byte terrainData[][];
     private int anInt1184;
     private int anInt1185;
     private int anInt1186;
@@ -13253,9 +13502,9 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private static boolean aBoolean1231;
     public static int anIntArray1232[];
     private boolean aBoolean1233;
-    private int anIntArray1234[];
-    private int anIntArray1235[];
-    private int anIntArray1236[];
+    private int mapCoordinates[];
+    private int terrainIndices[];
+    private int objectIndices[];
     int anInt1237;
     int anInt1238;
     private final int anInt1239 = 100;
@@ -13266,7 +13515,7 @@ double fogDistance = Math.sqrt(Math.pow(anInt859, 2));
     private int anInt1244;
     private int anInt1245;
     private int anInt1246;
-    private byte aByteArrayArray1247[][];
+    private byte mapData[][];
     private int anInt1248;
     private int anInt1249;
     private int anIntArray1250[];

@@ -107,6 +107,13 @@ public Class30_Sub2_Sub1_Sub1(String s)
         anInt1441 = anInt1445 = j;
         anInt1442 = anInt1443 = 0;
     }
+    public void setTransparency(int transRed, int transGreen, int transBlue) {
+        for (int index = 0; index < anIntArray1439.length; index++)
+            if (((anIntArray1439[index] >> 16) & 255) == transRed
+                    && ((anIntArray1439[index] >> 8) & 255) == transGreen
+                    && (anIntArray1439[index] & 255) == transBlue)
+                anIntArray1439[index] = 0;
+    }
 
    public Class30_Sub2_Sub1_Sub1(byte abyte0[], Component component)
     {
@@ -290,7 +297,8 @@ public Class30_Sub2_Sub1_Sub1(String s)
 				anInt1441 = 37;
 				anIntArray1439 = new int[anInt1440 * anInt1441];
 				PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, anInt1440, anInt1441, anIntArray1439, 0, anInt1440);
-				pixelgrabber.grabPixels();
+                pixelgrabber.grabPixels();
+            setTransparency(255, 0, 255);
 				
 			}
 			catch (Exception exception)
@@ -310,7 +318,8 @@ public Class30_Sub2_Sub1_Sub1(String s)
 				if(client.flip_s) { image = Toolkit.getDefaultToolkit().getImage(signlink.findcachedir() + ("/Sprites/REDSTONE1 2.png")); }
 				if(client.flip_r) { image = Toolkit.getDefaultToolkit().getImage(signlink.findcachedir() + ("/Sprites/REDSTONE1 3.png")); }
 				PixelGrabber pixelgrabber = new PixelGrabber(image, 0, 0, anInt1440, anInt1441, anIntArray1439, 0, anInt1440);
-				pixelgrabber.grabPixels();
+                pixelgrabber.grabPixels();
+            setTransparency(255, 0, 255);
 				
 			}
 			catch (Exception exception)
@@ -685,11 +694,9 @@ else {
             aBoolean1428 = !aBoolean1428;
     }
 
-    public void method352(int i, int j, int ai[], int k, int ai1[], int l, int i1,
+    public void method352(int i, int j, int ai[], int k, int ai1[], int i1,
             int j1, int k1, int l1, int i2)
     {
-        while(l >= 0)
-            anInt1434 = 362;
         try
         {
             int j2 = -l1 / 2;

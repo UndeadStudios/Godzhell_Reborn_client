@@ -1,8 +1,7 @@
+import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
-import java.io.PrintStream;
-import sign.signlink;
 
 public class Applet_Sub1 extends Applet
     implements Runnable, MouseListener, MouseMotionListener, KeyListener, FocusListener, WindowListener, MouseWheelListener
@@ -256,19 +255,18 @@ public boolean mouseWheelDown;
         anInt23 = i;
         anInt24 = j;
         aLong25 = System.currentTimeMillis();
-        if (type == 2) {
+        if (SwingUtilities.isMiddleMouseButton(mouseevent)) {
 			mouseWheelDown = true;
 			mouseWheelX = i;
 			mouseWheelY = j;
 			return;
 		}
-        if(mouseevent.isMetaDown())
+        if(SwingUtilities.isRightMouseButton(mouseevent))
         {
             anInt22 = 2;
             anInt19 = 2;
             return;
-        } else
-        {
+        } else if(SwingUtilities.isLeftMouseButton(mouseevent)){
             anInt22 = 1;
             anInt19 = 1;
             return;
@@ -632,4 +630,8 @@ mouseWheelDown = false;
     private int anInt33;
     public static int anInt34;
     public int key;
+
+    public int getFps() {
+        return anInt8;
+    }
 }

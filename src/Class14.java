@@ -197,18 +197,6 @@ public final class Class14
 
     public synchronized void method236(RandomAccessFile randomaccessfile, int i, int j) throws IOException {
 		try {
-
-        /*if(j < 0 || j > 0x3c00000)
-            System.out.println("Badseek - pos:" + j + " len:" + randomaccessfile.length());
-            j = 0x3c00000;
-            try
-            {
-                Thread.sleep(1000L);
-            }
-            catch(Exception _ex) { }
-		}
-		}
-        }*/
 			randomaccessfile.seek(j);
 		} catch(Exception e) {
 			e.printStackTrace();
