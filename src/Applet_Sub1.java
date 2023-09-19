@@ -292,6 +292,9 @@ public boolean mouseWheelDown;
 	int type =  mouseevent.getButton();
         int i = mouseevent.getX();
         int j = mouseevent.getY();
+        if(mouseevent.isControlDown()) {
+            client.controlIsDown = true;
+        }
         if(aFrame_Sub1_15 != null)
         {
             i -= 4;
@@ -446,6 +449,9 @@ mouseWheelDown = false;
         anInt18 = 0;
         int i = keyevent.getKeyCode();
         char c = keyevent.getKeyChar();
+        if(i == 17) {
+            client.controlIsDown = false;
+        }
         if(c < '\036')
             c = '\0';
         if(i == 37)
