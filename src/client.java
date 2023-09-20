@@ -1357,7 +1357,7 @@ public class client extends Applet_Sub1 {
                     boolean flag = false;
                     if(class9_1.anInt214 != 0)
                         flag = method103(class9_1, false);
-                    if(!flag && (class9_1.anInt250 != 5985 || anInt863 >= 1)) {
+                    if(!flag && (class9_1.anInt250 != 5985 || rights >= 1)) {
                         aStringArray1199[anInt1133] = class9_1.aString221;
                         anIntArray1093[anInt1133] = 315;
                         anIntArray1092[anInt1133] = class9_1.anInt250;
@@ -1500,9 +1500,9 @@ public class client extends Applet_Sub1 {
                                                 }
 
                                         }
-                                        if(anInt863 >= 2)
+                                        if(rights >= 2)
                                             aStringArray1199[anInt1133] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
-                                        if(anInt863 <= 1)
+                                        if(rights <= 1)
                                             aStringArray1199[anInt1133] = "Examine @lre@"+class8.name;
                                         anIntArray1093[anInt1133] = 1125;
                                         anIntArray1094[anInt1133] = class8.anInt157;
@@ -2757,7 +2757,7 @@ public class client extends Applet_Sub1 {
         if(j == 620)
         {
             aBoolean1158 = !aBoolean1158;
-            if(anInt863 >= 1)
+            if(rights >= 1)
             {
                 if(aBoolean1158)
                 {
@@ -5175,9 +5175,9 @@ public class client extends Applet_Sub1 {
                             }
 
                     }
-                    if(anInt863 >= 2)
+                    if(rights >= 2)
                         aStringArray1199[anInt1133] = "Examine @cya@"+class46.aString739+"@blu@(@whi@Object Id: "+class46.anInt754+"@blu@)(@whi@Model id: "+class46.anIntArray773[0]+"@blu@)(@whi@Anim: "+class46.anInt781+"@blu@)";
-                    if(anInt863 <= 1)
+                    if(rights <= 1)
                         aStringArray1199[anInt1133] = "Examine @cya@"+class46.aString739+"@blu@(@whi@"+class46.anInt754+"@blu@)";
                     anIntArray1093[anInt1133] = 1226;
                     anIntArray1094[anInt1133] = l;
@@ -5270,9 +5270,9 @@ public class client extends Applet_Sub1 {
                                     anIntArray1092[anInt1133] = j1;
                                     anInt1133++;
                                 }
-                            if(anInt863 >= 2)
+                            if(rights >= 2)
                                 aStringArray1199[anInt1133] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
-                            if(anInt863 <= 1)
+                            if(rights <= 1)
                                 aStringArray1199[anInt1133] = "Examine @lre@"+class8.name;
                             anIntArray1093[anInt1133] = 1448;
                             anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
@@ -5595,7 +5595,7 @@ public class client extends Applet_Sub1 {
                 }
                 if((j == 13 || j == 10) && aString887.length() > 0)
                 {
-                    if(anInt863 >= 2)
+                    if(rights >= 2)
                     {
                         if(aString887.equals("::clientdrop"))
                             method68(-670);
@@ -5860,10 +5860,10 @@ public class client extends Applet_Sub1 {
                         aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1513 = j2;
                         aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1531 = i3;
                         aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1535 = 150;
-                        if(anInt863 == 2)
+                        if(rights == 2)
                             method77(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).aString1506, 2, "@cr2@" + prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723), aBoolean991);
                         else
-                        if(anInt863 == 1)
+                        if(rights == 1)
                             method77(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).aString1506, 2, "@cr1@" + prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723), aBoolean991);
                         else
                             method77(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).aString1506, 2, prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723), aBoolean991);
@@ -5931,7 +5931,7 @@ public class client extends Applet_Sub1 {
             {
                 if(j > k1 - 14 && j <= k1 && !s.equals(aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703))
                 {
-                    if(anInt863 >= 1)
+                    if(rights >= 1)
                     {
                         aStringArray1199[anInt1133] = "Report abuse @whi@" + s;
                         anIntArray1093[anInt1133] = 606;
@@ -5950,7 +5950,7 @@ public class client extends Applet_Sub1 {
             {
                 if(j > k1 - 14 && j <= k1)
                 {
-                    if(anInt863 >= 1)
+                    if(rights >= 1)
                     {
                         aStringArray1199[anInt1133] = "Report abuse @whi@" + s;
                         anIntArray1093[anInt1133] = 606;
@@ -6194,7 +6194,7 @@ public class client extends Applet_Sub1 {
                 return;
             }
         }
-        if(j == 620 && class9.aString248 != " " && anInt863 < 1)
+        if(j == 620 && class9.aString248 != " " && rights < 1)
             class9.aString248 = " ";
         if(j == 650 || j == 655)
             if(anInt1193 != 0)
@@ -6735,7 +6735,7 @@ public class client extends Applet_Sub1 {
             }
             if(k == 2)
             {
-                anInt863 = aClass24_1168.method268();
+                rights = aClass24_1168.method268();
                 aBoolean1205 = aClass24_1168.method268() == 1;
                 aLong1220 = 0L;
                 anInt1022 = 0;
@@ -7389,9 +7389,9 @@ public class client extends Applet_Sub1 {
                     }
 
             }
-            if(anInt863 >= 2)
+            if(rights >= 2)
                 aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +"@gre@)";
-            if(anInt863 <= 1)
+            if(rights <= 1)
                 aStringArray1199[anInt1133] = "Examine @yel@" + s;
             anIntArray1093[anInt1133] = 1025;
             anIntArray1094[anInt1133] = i;
@@ -8753,7 +8753,7 @@ public class client extends Applet_Sub1 {
             aStringArray1199[anInt1133] = "Message @whi@" + aStringArray1082[i];
             anIntArray1093[anInt1133] = 639;
             anInt1133++;
-            if(anInt863 >= 2){
+            if(rights >= 2){
                 aStringArray1199[anInt1133] = "TeleToMe @whi@" + aStringArray1082[i];
                 anIntArray1093[anInt1133] = 638;
                 anInt1133++;
@@ -10216,14 +10216,8 @@ public class client extends Applet_Sub1 {
         int i = anInt1185 + anInt1209 & 0x7ff;
         int j = 48 + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
         int l2 = 464 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-        if (currentScreenMode == ScreenMode.FIXED) {
-            for (int x = 0; x < anIntArray1229.length; x++){
-                anIntArray1229[x] = 170;
-                anIntArray1052[x] = -23;
-            }
-        }
-        aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + anInt1170, anIntArray1052, l2, currentScreenMode == ScreenMode.FIXED ? 9 : 7,  currentScreenMode == ScreenMode.FIXED ? 54 : currentGameWidth - 158, 146, j);
-        compassImage.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, (currentScreenMode == ScreenMode.FIXED ? 25 : 25), 0, (currentScreenMode == ScreenMode.FIXED ? 29 : currentGameWidth - 178), 33, 25);
+        aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + anInt1170, anIntArray1052, l2, currentScreenMode == ScreenMode.FIXED ? 9 : 5,  currentScreenMode == ScreenMode.FIXED ? 25 : currentGameWidth - 158, 146, j);
+        compassImage.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, (currentScreenMode == ScreenMode.FIXED ? 25 : 25), 0, (currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 178), 33, 25);
         for(int j5 = 0; j5 < anInt1071; j5++)
         {
             int k = (anIntArray1072[j5] * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
@@ -10412,7 +10406,7 @@ public class client extends Applet_Sub1 {
                             i1 = 450;
                         if(super.anInt20 < 4 + i1)
                         {
-                            if(anInt863 >= 1)
+                            if(rights >= 1)
                             {
                                 aStringArray1199[anInt1133] = "Report @whi@" + s;
                                 anIntArray1093[anInt1133] = 2606;
@@ -13101,7 +13095,7 @@ public class client extends Applet_Sub1 {
     private int yCameraPos;
     private int yCameraCurve;
     private int xCameraCurve;
-    private int anInt863;
+    private int rights;
     private int anIntArray864[];
     private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_865;
     private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_866;
