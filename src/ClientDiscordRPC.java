@@ -11,7 +11,7 @@ public class ClientDiscordRPC {
         DiscordEventHandlers handlers = new DiscordEventHandlers.Builder().build();
         DiscordRPC.discordInitialize(applicationID, handlers, false);
         DiscordRPC.discordRegister(applicationID, "");
-        setTopText("discord.gg/undeadgames");
+        setTopText("Play Godzhell Reborn at GodzHell.net.");
         setSmallImage("logo", "GodzHell Reborn and Remastered");
         setLargeImage("logo", "GodzHell Reborn and Remastered");
     }

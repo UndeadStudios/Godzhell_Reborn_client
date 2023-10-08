@@ -777,7 +777,7 @@ public class client extends Applet_Sub1 {
             aBoolean959 = true;
             signlink.storeid = 32;
             signlink.startpriv(InetAddress.getLocalHost());
-            setserver("127.0.0.1");
+            setserver(Configuration.SERVER_ADDRESS);
             method2(503, false, 765);
         }
         catch (Exception exception)
@@ -3066,8 +3066,9 @@ public class client extends Applet_Sub1 {
             signlink.startpriv(InetAddress.getLocalHost());
             client client1 = new client();
             client1 = new ClientWindow(args);
-            //setserver("76.146.169.35", "59999");
-            setserver("76.146.169.35");
+            //setserver("ghreborn.ddns.net", "59999");
+            setserver(Configuration.SERVER_ADDRESS);
+            System.out.println("Connecting to "+Configuration.SERVER_ADDRESS);
             RICH_PRESENCE.initialize();
             return;
         }
@@ -8107,7 +8108,7 @@ public class client extends Applet_Sub1 {
             g.setFont(new Font("Helvetica", 1, 16));
             g.setColor(Color.yellow);
             int k = 35;
-            g.drawString("Sorry, an error has occured whilst loading Ghreborn", 30, k);
+            g.drawString("Sorry, an error has occured whilst loading GodzHell Reborn and Remastered", 30, k);
             k += 50;
             g.setColor(Color.white);
             g.drawString("To fix this try the following (in order):", 30, k);
@@ -13011,8 +13012,8 @@ public class client extends Applet_Sub1 {
         anInt1171 = 1;
         aString1173 = "";
         aString1174 = "";
-        server = "76.146.169.35";
-        port = "29432";
+        server = Configuration.SERVER_ADDRESS;
+        port = String.valueOf(Configuration.PORT);
         aBoolean1176 = false;
         anInt1178 = -1;
         aClass19_1179 = new Class19(169);
