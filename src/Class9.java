@@ -92,7 +92,7 @@ public class Class9
         Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("data", null), 891);
         int i = -1;
         int j = class30_sub2_sub2.method410();
-        aClass9Array210 = new Class9[20001];
+        aClass9Array210 = new Class9[50000];
         do
         {
             if(class30_sub2_sub2.anInt1406 >= class30_sub2_sub2.aByteArray1405.length)

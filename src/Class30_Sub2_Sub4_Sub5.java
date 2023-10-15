@@ -1,5 +1,3 @@
-import sign.signlink;
-
 public class Class30_Sub2_Sub4_Sub5 extends Class30_Sub2_Sub4
 {
 
@@ -48,20 +46,24 @@ private Class46 method457() {
 		int i = -1;
 		if(anInt1601 != -1) {
 			try {
-            Class37 class37 = Class37.aClass37Array646[anInt1601];
-            int k = class37.anInt648;
-            int l = class37.anInt649;
-            int i1 = class37.anInt650;
+            VarBit varBit = VarBit.aVarBitArray646[anInt1601];
+            int k = varBit.anInt648;
+            int l = varBit.anInt649;
+            int i1 = varBit.anInt650;
 				int j1 = client.anIntArray1232[i1 - l];
 				i = aClient1609.anIntArray971[k] >> l & j1;
 			} catch(Exception ex){ }
 		} else
-		if(anInt1602 != -1)
-			i = aClient1609.anIntArray971[anInt1602];
-		if(i < 0 || i >= anIntArray1600.length || anIntArray1600[i] == -1)
-			return null;
-		else
-			return Class46.method572(anIntArray1600[i]);
+		if(anInt1602 != -1) {
+            i = aClient1609.anIntArray971[anInt1602];
+        }
+    int var;
+        if (i >= 0 && i < anIntArray1600.length) {
+        var = anIntArray1600[i];
+    } else
+        var = anIntArray1600[anIntArray1600.length - 1];
+
+    return var != -1 ? Class46.method572(var) : null;
 	}
 
     public Class30_Sub2_Sub4_Sub5(int i, int j, int k, int l, byte byte0, int i1, int j1, 

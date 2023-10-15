@@ -1,4 +1,3 @@
-import sign.signlink;
 import java.io.*;
 
 public final class Class46 {
@@ -160,7 +159,7 @@ public final class Class46 {
 	public Class46 method580(boolean lolz) {
 		int i = -1;
 		if (anInt774 != -1) {
-			Class37 varBit = Class37.aClass37Array646[anInt774];
+			VarBit varBit = VarBit.aVarBitArray646[anInt774];
 			int j = varBit.anInt648;
 			int k = varBit.anInt649;
 			int l = varBit.anInt650;
@@ -168,10 +167,14 @@ public final class Class46 {
 			i = aClient765.anIntArray971[j] >> k & i1;
 		} else if (anInt749 != -1)
 			i = aClient765.anIntArray971[anInt749];
-		if (i < 0 || i >= anIntArray759.length || anIntArray759[i] == -1)
-			return null;
-		else
-			return method572(anIntArray759[i]);
+		int var;
+
+		if (i >= 0 && i < anIntArray759.length) {
+			var = anIntArray759[i];
+		} else
+			var = anIntArray759[anIntArray759.length - 1];
+
+		return var != -1 ? method572(var) : null;
 	}
 
 	public Class30_Sub2_Sub4_Sub6 method581(int i, int j, int k, int l) {

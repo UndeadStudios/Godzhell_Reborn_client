@@ -437,8 +437,78 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method16(int i) {}
+    public final void method16() {
+        int j = 5;
+        anIntArray1090[8] = 0;
+        int k = 0;
+        while(anIntArray1090[8] == 0)
+        {
+            String s = "Unknown problem";
+            method13(20, (byte) 4, "Connecting to Ghreborn web server");
+            try
+            {
+                DataInputStream datainputstream = method132("crc" + (int)(Math.random() * 99999999D) + "-" + 317);
+                Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(new byte[40], 891);
+                datainputstream.readFully(class30_sub2_sub2.aByteArray1405, 0, 40);
+                datainputstream.close();
+                for(int i1 = 0; i1 < 9; i1++)
+                    anIntArray1090[i1] = class30_sub2_sub2.method413();
 
+                int j1 = class30_sub2_sub2.method413();
+                int k1 = 1234;
+                for(int l1 = 0; l1 < 9; l1++)
+                    k1 = (k1 << 1) + anIntArray1090[l1];
+
+                if(j1 != k1)
+                {
+                    s = "checksum problem";
+                    anIntArray1090[8] = 0;
+                }
+            }
+            catch(EOFException _ex)
+            {
+                s = "EOF problem";
+                anIntArray1090[8] = 0;
+            }
+            catch(IOException _ex)
+            {
+                s = "connection problem";
+                anIntArray1090[8] = 0;
+            }
+            catch(Exception _ex)
+            {
+                s = "logic problem";
+                anIntArray1090[8] = 0;
+                if(!signlink.reporterror)
+                    return;
+            }
+            if(anIntArray1090[8] == 0)
+            {
+                k++;
+                for(int l = j; l > 0; l--)
+                {
+                    if(k >= 10)
+                    {
+                        method13(10, (byte) 4, "Game updated - please reload page");
+                        l = 10;
+                    } else
+                    {
+                        method13(10, (byte) 4, s + " - Will retry in " + l + " secs.");
+                    }
+                    try
+                    {
+                        Thread.sleep(1000L);
+                    }
+                    catch(Exception _ex) { }
+                }
+
+                j *= 2;
+                if(j > 60)
+                    j = 60;
+                aBoolean872 = !aBoolean872;
+            }
+        }
+    }
     public final boolean method17(int i, int j) {
         if(j < 0)
             return false;
@@ -772,7 +842,7 @@ public class client extends Applet_Sub1 {
         {
 
             anInt957 = 0;
-            anInt958 = 0;
+            ondemand_offset = 0;
             method52(true);
             aBoolean959 = true;
             signlink.storeid = 32;
@@ -3059,7 +3129,7 @@ public class client extends Applet_Sub1 {
     {
         try {
             anInt957 = 0;
-            anInt958 = 0;
+            ondemand_offset = 0;
             method52(false);//highmem
             aBoolean959 = true;//members
             signlink.storeid = 32;
@@ -4047,11 +4117,11 @@ public class client extends Applet_Sub1 {
         } catch (Exception _ex) {
         }
         if (abyte0 != null) {
-            /*aCRC32_930.reset();
+            aCRC32_930.reset();
             aCRC32_930.update(abyte0);
             int i1 = (int)aCRC32_930.getValue();
             if(i1 != j)
-                abyte0 = null;*/
+                abyte0 = null;
         }
         if (abyte0 != null) {
             Class44 class44 = new Class44(44820, abyte0);
@@ -4097,7 +4167,7 @@ public class client extends Applet_Sub1 {
                 } catch (Exception _ex) {
                     aClass14Array970[0] = null;
                 }
-              /*  if(abyte0 != null)
+                if(abyte0 != null)
                 {
                     aCRC32_930.reset();
                     aCRC32_930.update(abyte0);
@@ -4108,7 +4178,7 @@ public class client extends Applet_Sub1 {
                         j1++;
                         s2 = "Checksum error: " + i3;
                     }
-                }*/
+                }
             } catch (IOException ioexception) {
                 if (s2.equals("Unknown error"))
                     s2 = "Connection error";
@@ -6669,7 +6739,7 @@ public class client extends Applet_Sub1 {
             try {
                 aPort = Integer.parseInt(port);
             } catch(NumberFormatException NFE) { }
-            aClass24_1168 = new Class24(this, -978, method19(Configuration.PORT + anInt958));
+            aClass24_1168 = new Class24(this, -978, method19(Configuration.PORT + ondemand_offset));
             long l = Class50.method583(s);
             int i = (int)(l >> 16 & 31L);
             aClass30_Sub2_Sub2_1192.anInt1406 = 0;
@@ -7587,8 +7657,8 @@ public class client extends Applet_Sub1 {
             super.anInt6 = 5;
         if(aBoolean993)
         {
-            //aBoolean1252 = true;
-            //return;
+            aBoolean1252 = true;
+            return;
         }
         aBoolean993 = true;
         boolean flag = true;
@@ -7603,7 +7673,7 @@ public class client extends Applet_Sub1 {
         }
         try
         {
-            method16(533);
+            method16();
             aClass44_1053 = method67(1, "title screen", "title", anIntArray1090[1], (byte)-41, 25);
             aClass30_Sub2_Sub1_Sub4_1270 = new Class30_Sub2_Sub1_Sub4(false, "p11_full", 0, aClass44_1053);
             aClass30_Sub2_Sub1_Sub4_1271 = new Class30_Sub2_Sub1_Sub4(false, "p12_full", 0, aClass44_1053);
@@ -7630,9 +7700,11 @@ public class client extends Applet_Sub1 {
             aClass42_Sub1_1068.method551(class44_6, this);
             Class36.method528(aClass42_Sub1_1068.method557(0));
             Class30_Sub2_Sub4_Sub6.method459(aClass42_Sub1_1068.method555(79, 0), aClass42_Sub1_1068);
+            method13(65, (byte)4, "Loading Custom Models");
             ModelDecompressor.loadModels();
             //maps();
             preloadModels();
+            method13(67, (byte)4, "Requesting Music");
             if(!aBoolean960)
             {
                 anInt1227 = 0;
@@ -7658,7 +7730,7 @@ public class client extends Applet_Sub1 {
                     }
                 }
             }
-            method13(65, (byte)4, "Requesting animations");
+            method13(70, (byte)4, "Requesting animations");
             int k = aClass42_Sub1_1068.method555(79, 1);
             for(int i1 = 0; i1 < k; i1++)
                 aClass42_Sub1_1068.method558(1, i1);
@@ -7667,7 +7739,7 @@ public class client extends Applet_Sub1 {
             {
                 int j1 = k - aClass42_Sub1_1068.method552();
                 if(j1 > 0)
-                    method13(65, (byte)4, "Loading animations - " + (j1 * 100) / k + "%");
+                    method13(70, (byte)4, "Loading animations - " + (j1 * 100) / k + "%");
                 method57(false);
                 try
                 {
@@ -7680,7 +7752,7 @@ public class client extends Applet_Sub1 {
                     return;
                 }
             }
-            method13(70, (byte)4, "Requesting models");
+            method13(75, (byte)4, "Requesting models");
             k = aClass42_Sub1_1068.method555(79, 0);
             for(int k1 = 0; k1 < k; k1++)
             {
@@ -7694,7 +7766,7 @@ public class client extends Applet_Sub1 {
             {
                 int i2 = k - aClass42_Sub1_1068.method552();
                 if(i2 > 0)
-                    method13(70, (byte)4, "Loading models - " + (i2 * 100) / k + "%");
+                    method13(75, (byte)4, "Loading models - " + (i2 * 100) / k + "%");
                 method57(false);
                 try
                 {
@@ -7704,7 +7776,7 @@ public class client extends Applet_Sub1 {
             }
             if(aClass14Array970[0] != null)
             {
-                method13(75, (byte)4, "Requesting maps");
+                method13(80, (byte)4, "Requesting maps");
                 aClass42_Sub1_1068.method558(3, aClass42_Sub1_1068.method562(0, 0, 48, 47));
                 aClass42_Sub1_1068.method558(3, aClass42_Sub1_1068.method562(1, 0, 48, 47));
                 aClass42_Sub1_1068.method558(3, aClass42_Sub1_1068.method562(0, 0, 48, 48));
@@ -7722,7 +7794,7 @@ public class client extends Applet_Sub1 {
                 {
                     int j2 = k - aClass42_Sub1_1068.method552();
                     if(j2 > 0)
-                        method13(75, (byte)4, "Loading maps - " + (j2 * 100) / k + "%");
+                        method13(80, (byte)4, "Loading maps - " + (j2 * 100) / k + "%");
                     method57(false);
                     try
                     {
@@ -7770,7 +7842,7 @@ public class client extends Applet_Sub1 {
                         aClass42_Sub1_1068.method563((byte)1, 2, i3, (byte)8);
 
             }
-            method13(80, (byte)4, "Loading Ghreborn Maps");
+            method13(85, (byte)4, "Loading Ghreborn Maps");
             System.out.println("Welcome to Ghreborn.com");
             Mapicon = new Class30_Sub2_Sub1_Sub1(signlink.findcachedir() + ("Sprites/Minimap/Gen.PNG"));
             aClass30_Sub2_Sub1_Sub1_1196 = new Class30_Sub2_Sub1_Sub1(class44_2, "invback", 0);
@@ -7894,11 +7966,11 @@ public class client extends Applet_Sub1 {
                     aClass30_Sub2_Sub1_Sub2Array1060[i6].method360(i5 + l5, j5 + l5, k5 + l5, 0);
             }
 
-            method13(83, (byte)4, "Unpacking textures");
+            method13(86, (byte)4, "Unpacking textures");
             Class30_Sub2_Sub1_Sub3.method368(class44_3, 0);
             Class30_Sub2_Sub1_Sub3.method372(0.80000000000000004D, aByte1200);
             Class30_Sub2_Sub1_Sub3.method367(20, true);
-            method13(86, (byte)4, "Unpacking config");
+            method13(87, (byte)4, "Unpacking config");
             Class20.method257(0, class44);
             Class46.method576(class44);
             Class22.method260(0, class44);
@@ -7908,7 +7980,7 @@ public class client extends Applet_Sub1 {
             Class38.method535(0, class44);
             Class23.method264(0, class44);
             Class41.method546(0, class44);
-            Class37.method533(0, class44);
+            VarBit.method533(0, class44);
             Class8.aBoolean182 = aBoolean959;
             if(!aBoolean960)
             {
@@ -8156,7 +8228,7 @@ public class client extends Applet_Sub1 {
     public URL getCodeBase(){
         try
         {
-            return new URL("http://"+server+":" + (80 + anInt958));
+            return new URL("http://"+server+":" + (29435 + ondemand_offset));
         }
         catch(Exception _ex) { }
         return super.getCodeBase();
@@ -10122,10 +10194,10 @@ public class client extends Applet_Sub1 {
                 if(j1 == 14)
                 {
                     int j2 = ai[l++];
-                    Class37 class37 = Class37.aClass37Array646[j2];
-                    int l3 = class37.anInt648;
-                    int i4 = class37.anInt649;
-                    int j4 = class37.anInt650;
+                    VarBit varBit = VarBit.aVarBitArray646[j2];
+                    int l3 = varBit.anInt648;
+                    int i4 = varBit.anInt649;
+                    int j4 = varBit.anInt650;
                     int k4 = anIntArray1232[j4 - i4];
                     k1 = anIntArray971[l3] >> i4 & k4;
                 }
@@ -10509,7 +10581,7 @@ public class client extends Applet_Sub1 {
             catch(Exception _ex) { }
             aSocket832 = null;
         }
-        aSocket832 = method19(43595);
+        aSocket832 = method19(29433);
         aSocket832.setSoTimeout(10000);
         java.io.InputStream inputstream = aSocket832.getInputStream();
         OutputStream outputstream = aSocket832.getOutputStream();
@@ -10692,9 +10764,9 @@ public class client extends Applet_Sub1 {
             int i = c1 / 2 + 80;
             aClass30_Sub2_Sub1_Sub4_1270.method382(0x75a9a9, c / 2, anInt939, aClass42_Sub1_1068.aString1333, i, true);
             i = c1 / 2 - 70;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@Welcome to Ghreborn", i, true);
+            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@Welcome to GodzHell Reborn and Remastered", i, true);
             i = c1 / 2 - 50;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@@ GodzHell.net", i, true);
+            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@@ By Undead Games", i, true);
             i = c1 / 2 - 20;
             aClass30_Sub2_Sub1_Sub4_1272.method382(0xff0000, c / 2, anInt939, "@whi@New and Existing players click Enter to play", i, true);
             i += 30;
@@ -12934,7 +13006,7 @@ public class client extends Applet_Sub1 {
         anIntArray968 = new int[33];
         anIntArray969 = new int[256];
         aClass14Array970 = new Class14[5];
-        anIntArray971 = new int[2000];
+        anIntArray971 = new int[10000];
         aBoolean972 = false;
         aByte973 = -74;
         anInt975 = 50;
@@ -13191,7 +13263,7 @@ public class client extends Applet_Sub1 {
     private long aLongArray955[];
     private int anInt956;
     private static int anInt957 = 10;
-    static int anInt958;
+    static int ondemand_offset;
     private static boolean aBoolean959 = true;
     private static boolean aBoolean960;
     private int anInt961;

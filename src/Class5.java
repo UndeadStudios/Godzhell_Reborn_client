@@ -204,10 +204,10 @@ return class5;
 	int j = -1;
         if(anInt57 != -1) {
         try{
-            Class37 class37 = Class37.aClass37Array646[anInt57];
-            int k = class37.anInt648;
-            int l = class37.anInt649;
-            int i1 = class37.anInt650;
+            VarBit varBit = VarBit.aVarBitArray646[anInt57];
+            int k = varBit.anInt648;
+            int l = varBit.anInt649;
+            int i1 = varBit.anInt650;
             int j1 = client.anIntArray1232[i1 - l];
             j = aClient82.anIntArray971[k] >> l & j1;
 			} catch (Exception failed) {}

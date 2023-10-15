@@ -185,7 +185,7 @@ public static final void method193(Class44 class44) {
     aClass8Array172 = new Class8[10];
     for(int k = 0; k < 10; k++)
         aClass8Array172[k] = new Class8();
-    dumpCfg();
+    //dumpCfg();
 }
     public final Class30_Sub2_Sub4_Sub6 method194(int i, int j) {
         while(i >= 0)
@@ -1414,7 +1414,7 @@ if(i == 3753)  // change this if you need to "item number"
 {
 class8.aStringArray189 = new String[5];
 class8.aStringArray189[1] = "Wield";//New option
-class8.modelId = 7202; //Model ID
+class8.modelId = 21938; //Model ID
 class8.aBoolean176 = false;//Stackable
 class8.anInt181 = 984; //zoom increase will make it smaller
 class8.anInt190 = 126; //model rotate up+down increase to move doen away from you
@@ -1422,8 +1422,8 @@ class8.anInt198 = 129; //model rotate side ways increase to move right in circle
 class8.anInt169 = -1; // model offset increase to move to the right
 class8.anInt194 = 1; //model offset increase to move up
 class8.anInt204 = 28;
-class8.anInt165 = 7200;//male wearing
-class8.anInt200 = 7201;//female wearing
+class8.anInt165 = 21873;//male wearing
+class8.anInt200 = 21906;//female wearing
 class8.anInt204 = 28;
 class8.anInt175 = -1;//Unknown
 class8.anInt164 = -1;//Female arms/sleeves
@@ -5016,28 +5016,6 @@ class8.anInt175 = -1;
 class8.name = "Armadyl plateskirt";
 class8.aByteArray178 = "Provides excellent protection.".getBytes();
 }
-if(i == 3753)  // change this if you need to "item number"
-{
-class8.aStringArray189 = new String[5];
-class8.aStringArray189[1] = "Wield";//New option
-class8.modelId = 7202; //Model ID
-class8.aBoolean176 = false;//Stackable
-class8.anInt181 = 984; //zoom increase will make it smaller
-class8.anInt190 = 126; //model rotate up+down increase to move doen away from you
-class8.anInt198 = 129; //model rotate side ways increase to move right in circle
-class8.anInt169 = -1; // model offset increase to move to the right
-class8.anInt194 = 1; //model offset increase to move up
-class8.anInt204 = 28;
-class8.anInt165 = 7200;//male wearing
-class8.anInt200 = 7201;//female wearing
-class8.anInt204 = 28;
-class8.anInt175 = -1;//Unknown
-class8.anInt164 = -1;//Female arms/sleeves
-class8.anInt188 = -1;//male arms/sleeves
-class8.aBoolean176 = false;//Stackable
-class8.name = "Helm of neitiznot";//Name of the new item
-class8.aByteArray178 = "Its A Helm of neitiznot".getBytes();//examin info
-      }
 if(i == 15195)  // change this if you need to "item number"
 {
 class8.aStringArray189 = new String[5];
