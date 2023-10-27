@@ -59,9 +59,9 @@ public class client extends Applet_Sub1 {
     {
         if (packet == 103)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte) 6, 103);
-            aClass30_Sub2_Sub2_1192.method398(aString887.length() - 1);
-            aClass30_Sub2_Sub2_1192.method405(aString887.substring(2));
+            stream.method397((byte) 6, 103);
+            stream.writeUnsignedByte(aString887.length() - 1);
+            stream.writeString(aString887.substring(2));
             aString887 = "";
         }
     }
@@ -1018,7 +1018,7 @@ public class client extends Applet_Sub1 {
                     }
 
 
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
+            stream.method397((byte)6, 0);
             if(!aBoolean1159)
             {
                 for(int i3 = 0; i3 < k2; i3++)
@@ -1047,10 +1047,10 @@ public class client extends Applet_Sub1 {
                 if(anInt1097 > 160)
                 {
                     anInt1097 = 0;
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 238);
-                    aClass30_Sub2_Sub2_1192.method398(96);
+                    stream.method397((byte)6, 238);
+                    stream.writeUnsignedByte(96);
                 }
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
+                stream.method397((byte)6, 0);
                 for(int i6 = 0; i6 < k2; i6++)
                 {
                     byte abyte1[] = mapData[i6];
@@ -1107,7 +1107,7 @@ public class client extends Applet_Sub1 {
 
                 }
 
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
+                stream.method397((byte)6, 0);
                 for(int l6 = 0; l6 < 4; l6++)
                 {
                     for(int j8 = 0; j8 < 13; j8++)
@@ -1138,10 +1138,10 @@ public class client extends Applet_Sub1 {
                 }
 
             }
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
+            stream.method397((byte)6, 0);
             class7.method171(aClass11Array1230, aClass25_946, 2);
             aClass15_1165.method237(0);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
+            stream.method397((byte)6, 0);
             int k3 = Class7.anInt145;
             if(k3 > anInt918)
                 k3 = anInt918;
@@ -1162,7 +1162,7 @@ public class client extends Applet_Sub1 {
             if(anInt1051 > 98)
             {
                 anInt1051 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 150);
+                stream.method397((byte)6, 150);
             }
             method63(-919);
         }
@@ -1171,8 +1171,8 @@ public class client extends Applet_Sub1 {
         aBoolean1157 &= flag;
         if(super.aFrame_Sub1_15 != null)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 210);
-            aClass30_Sub2_Sub2_1192.method402(0x3f008edd);
+            stream.method397((byte)6, 210);
+            stream.writeDWord(0x3f008edd);
         }
         if(aBoolean960 && signlink.cache_dat != null)
         {
@@ -1750,28 +1750,28 @@ public class client extends Applet_Sub1 {
                 anInt1287 = (anInt1287 + 1) % 4;
                 aBoolean1233 = true;
                 aBoolean1223 = true;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 95);
-                aClass30_Sub2_Sub2_1192.method398(anInt1287);
-                aClass30_Sub2_Sub2_1192.method398(anInt845);
-                aClass30_Sub2_Sub2_1192.method398(anInt1248);
+                stream.method397((byte)6, 95);
+                stream.writeUnsignedByte(anInt1287);
+                stream.writeUnsignedByte(anInt845);
+                stream.writeUnsignedByte(anInt1248);
             }
             if(super.anInt27 >= 135 && super.anInt27 <= 235 && super.anInt28 >= 467 && super.anInt28 <= 499) {
                 anInt845 = (anInt845 + 1) % 3;
                 aBoolean1233 = true;
                 aBoolean1223 = true;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 95);
-                aClass30_Sub2_Sub2_1192.method398(anInt1287);
-                aClass30_Sub2_Sub2_1192.method398(anInt845);
-                aClass30_Sub2_Sub2_1192.method398(anInt1248);
+                stream.method397((byte)6, 95);
+                stream.writeUnsignedByte(anInt1287);
+                stream.writeUnsignedByte(anInt845);
+                stream.writeUnsignedByte(anInt1248);
             }
             if(super.anInt27 >= 273 && super.anInt27 <= 373 && super.anInt28 >= 467 && super.anInt28 <= 499) {
                 anInt1248 = (anInt1248 + 1) % 3;
                 aBoolean1233 = true;
                 aBoolean1223 = true;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 95);
-                aClass30_Sub2_Sub2_1192.method398(anInt1287);
-                aClass30_Sub2_Sub2_1192.method398(anInt845);
-                aClass30_Sub2_Sub2_1192.method398(anInt1248);
+                stream.method397((byte)6, 95);
+                stream.writeUnsignedByte(anInt1287);
+                stream.writeUnsignedByte(anInt845);
+                stream.writeUnsignedByte(anInt1248);
             }
             if(super.anInt27 >= 412 && super.anInt27 <= 512 && super.anInt28 >= 467 && super.anInt28 <= 499)
                 if(anInt857 == -1) {
@@ -1791,22 +1791,22 @@ public class client extends Applet_Sub1 {
             if(anInt940 > 1386)
             {
                 anInt940 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 165);
-                aClass30_Sub2_Sub2_1192.method398(0);
-                int j = aClass30_Sub2_Sub2_1192.anInt1406;
-                aClass30_Sub2_Sub2_1192.method398(139);
-                aClass30_Sub2_Sub2_1192.method398(150);
-                aClass30_Sub2_Sub2_1192.method399(32131);
-                aClass30_Sub2_Sub2_1192.method398((int)(Math.random() * 256D));
-                aClass30_Sub2_Sub2_1192.method399(3250);
-                aClass30_Sub2_Sub2_1192.method398(177);
-                aClass30_Sub2_Sub2_1192.method399(24859);
-                aClass30_Sub2_Sub2_1192.method398(119);
+                stream.method397((byte)6, 165);
+                stream.writeUnsignedByte(0);
+                int j = stream.anInt1406;
+                stream.writeUnsignedByte(139);
+                stream.writeUnsignedByte(150);
+                stream.writeWord(32131);
+                stream.writeUnsignedByte((int)(Math.random() * 256D));
+                stream.writeWord(3250);
+                stream.writeUnsignedByte(177);
+                stream.writeWord(24859);
+                stream.writeUnsignedByte(119);
                 if((int)(Math.random() * 2D) == 0)
-                    aClass30_Sub2_Sub2_1192.method399(47234);
+                    stream.writeWord(47234);
                 if((int)(Math.random() * 2D) == 0)
-                    aClass30_Sub2_Sub2_1192.method398(21);
-                aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - j, (byte)0);
+                    stream.writeUnsignedByte(21);
+                stream.method407(stream.anInt1406 - j, (byte)0);
             }
         }
     }
@@ -2189,8 +2189,8 @@ public class client extends Applet_Sub1 {
                     aLongArray955[j] = aLongArray955[j + 1];
                 }
 
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 215);
-                aClass30_Sub2_Sub2_1192.method404(5, l);
+                stream.method397((byte)6, 215);
+                stream.method404(5, l);
                 break;
             }
 
@@ -2256,21 +2256,21 @@ public class client extends Applet_Sub1 {
                 if(anInt854 > 1235)
                 {
                     anInt854 = 0;
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 226);
-                    aClass30_Sub2_Sub2_1192.method398(0);
-                    int l2 = aClass30_Sub2_Sub2_1192.anInt1406;
-                    aClass30_Sub2_Sub2_1192.method399(58722);
-                    aClass30_Sub2_Sub2_1192.method398(240);
-                    aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
-                    aClass30_Sub2_Sub2_1192.method398((int)(Math.random() * 256D));
+                    stream.method397((byte)6, 226);
+                    stream.writeUnsignedByte(0);
+                    int l2 = stream.anInt1406;
+                    stream.writeWord(58722);
+                    stream.writeUnsignedByte(240);
+                    stream.writeWord((int)(Math.random() * 65536D));
+                    stream.writeUnsignedByte((int)(Math.random() * 256D));
                     if((int)(Math.random() * 2D) == 0)
-                        aClass30_Sub2_Sub2_1192.method399(51825);
-                    aClass30_Sub2_Sub2_1192.method398((int)(Math.random() * 256D));
-                    aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
-                    aClass30_Sub2_Sub2_1192.method399(7130);
-                    aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
-                    aClass30_Sub2_Sub2_1192.method399(61657);
-                    aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - l2, (byte)0);
+                        stream.writeWord(51825);
+                    stream.writeUnsignedByte((int)(Math.random() * 256D));
+                    stream.writeWord((int)(Math.random() * 65536D));
+                    stream.writeWord(7130);
+                    stream.writeWord((int)(Math.random() * 65536D));
+                    stream.writeWord(61657);
+                    stream.method407(stream.anInt1406 - l2, (byte)0);
                 }
             }
             if(Class30_Sub2_Sub1_Sub3.anIntArray1480[24] >= j)
@@ -2321,7 +2321,7 @@ public class client extends Applet_Sub1 {
     public final void method38(byte byte0)
     {
         if(byte0 != -92)
-            aClass30_Sub2_Sub2_1192.method398(214);
+            stream.writeUnsignedByte(214);
         for(int i = -1; i < anInt891; i++)
         {
             int j;
@@ -2532,8 +2532,8 @@ public class client extends Applet_Sub1 {
                 anIntArray826[anInt899] = 0;
                 anInt899++;
                 aBoolean1153 = true;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 188);
-                aClass30_Sub2_Sub2_1192.method404(5, l);
+                stream.method397((byte)6, 188);
+                stream.method404(5, l);
                 return;
             }
         }
@@ -2814,13 +2814,13 @@ public class client extends Applet_Sub1 {
         }
         if(j == 326)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 101);
-            aClass30_Sub2_Sub2_1192.method398(aBoolean1047 ? 0 : 1);
+            stream.method397((byte)6, 101);
+            stream.writeUnsignedByte(aBoolean1047 ? 0 : 1);
             for(int i1 = 0; i1 < 7; i1++)
-                aClass30_Sub2_Sub2_1192.method398(anIntArray1065[i1]);
+                stream.writeUnsignedByte(anIntArray1065[i1]);
 
             for(int l1 = 0; l1 < 5; l1++)
-                aClass30_Sub2_Sub2_1192.method398(anIntArray990[l1]);
+                stream.writeUnsignedByte(anIntArray990[l1]);
 
             return true;
         }
@@ -2843,10 +2843,10 @@ public class client extends Applet_Sub1 {
             method147(537);
             if(aString881.length() > 0)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 218);
-                aClass30_Sub2_Sub2_1192.method404(5, Class50.method583(aString881));
-                aClass30_Sub2_Sub2_1192.method398(j - 601);
-                aClass30_Sub2_Sub2_1192.method398(aBoolean1158 ? 1 : 0);
+                stream.method397((byte)6, 218);
+                stream.method404(5, Class50.method583(aString881));
+                stream.writeUnsignedByte(j - 601);
+                stream.writeUnsignedByte(aBoolean1158 ? 1 : 0);
             }
         }
         return false;
@@ -3221,7 +3221,7 @@ public class client extends Applet_Sub1 {
             anInt1023 = 2;
             Class7.anInt131 = anInt918;
             method22(true);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 121);
+            stream.method397((byte)6, 121);
             return 0;
         }
     }
@@ -3497,13 +3497,13 @@ public class client extends Applet_Sub1 {
             {
                 if(super.anInt26 != 0 || aClass48_879.anInt810 >= 40)
                 {
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 45);
-                    aClass30_Sub2_Sub2_1192.method398(0);
-                    int j2 = aClass30_Sub2_Sub2_1192.anInt1406;
+                    stream.method397((byte)6, 45);
+                    stream.writeUnsignedByte(0);
+                    int j2 = stream.anInt1406;
                     int j3 = 0;
                     for(int j4 = 0; j4 < aClass48_879.anInt810; j4++)
                     {
-                        if(j2 - aClass30_Sub2_Sub2_1192.anInt1406 >= 240)
+                        if(j2 - stream.anInt1406 >= 240)
                             break;
                         j3++;
                         int l4 = aClass48_879.anIntArray807[j4];
@@ -3539,22 +3539,22 @@ public class client extends Applet_Sub1 {
                             {
                                 j6 += 32;
                                 k6 += 32;
-                                aClass30_Sub2_Sub2_1192.method399((anInt1022 << 12) + (j6 << 6) + k6);
+                                stream.writeWord((anInt1022 << 12) + (j6 << 6) + k6);
                                 anInt1022 = 0;
                             } else
                             if(anInt1022 < 8)
                             {
-                                aClass30_Sub2_Sub2_1192.method401(0x800000 + (anInt1022 << 19) + i6);
+                                stream.method401(0x800000 + (anInt1022 << 19) + i6);
                                 anInt1022 = 0;
                             } else
                             {
-                                aClass30_Sub2_Sub2_1192.method402(0xc0000000 + (anInt1022 << 19) + i6);
+                                stream.writeDWord(0xc0000000 + (anInt1022 << 19) + i6);
                                 anInt1022 = 0;
                             }
                         }
                     }
 
-                    aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - j2, (byte)0);
+                    stream.method407(stream.anInt1406 - j2, (byte)0);
                     if(j3 >= aClass48_879.anInt810)
                     {
                         aClass48_879.anInt810 = 0;
@@ -3597,8 +3597,8 @@ public class client extends Applet_Sub1 {
             if(super.anInt26 == 2)
                 j5 = 1;
             int l5 = (int)l;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 241);
-            aClass30_Sub2_Sub2_1192.method402((l5 << 20) + (j5 << 19) + k4);
+            stream.method397((byte)6, 241);
+            stream.writeDWord((l5 << 20) + (j5 << 19) + k4);
         }
         if(anInt1016 > 0)
             anInt1016--;
@@ -3608,21 +3608,21 @@ public class client extends Applet_Sub1 {
         {
             anInt1016 = 20;
             aBoolean1017 = false;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 86);
-            aClass30_Sub2_Sub2_1192.method399(anInt1184);
-            aClass30_Sub2_Sub2_1192.method432(-431, anInt1185);
+            stream.method397((byte)6, 86);
+            stream.writeWord(anInt1184);
+            stream.method432(-431, anInt1185);
         }
         if(super.aBoolean17 && !aBoolean954)
         {
             aBoolean954 = true;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 3);
-            aClass30_Sub2_Sub2_1192.method398(1);
+            stream.method397((byte)6, 3);
+            stream.writeUnsignedByte(1);
         }
         if(!super.aBoolean17 && aBoolean954)
         {
             aBoolean954 = false;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 3);
-            aClass30_Sub2_Sub2_1192.method398(0);
+            stream.method397((byte)6, 3);
+            stream.writeUnsignedByte(0);
         }
         method53(-48877);
         method115((byte)8);
@@ -3704,11 +3704,11 @@ public class client extends Applet_Sub1 {
                         {
                             class9.method204(anInt1085, (byte)9, anInt1066);
                         }
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 214);
-                        aClass30_Sub2_Sub2_1192.method433(0, anInt1084);
-                        aClass30_Sub2_Sub2_1192.method424(j1, 0);
-                        aClass30_Sub2_Sub2_1192.method433(0, anInt1085);
-                        aClass30_Sub2_Sub2_1192.method431(true, anInt1066);
+                        stream.method397((byte)6, 214);
+                        stream.method433(0, anInt1084);
+                        stream.method424(j1, 0);
+                        stream.method433(0, anInt1085);
+                        stream.method431(true, anInt1066);
                     }
                 } else
                 if((anInt1253 == 1 || method17(9, anInt1133 - 1)) && anInt1133 > 2)
@@ -3759,7 +3759,7 @@ public class client extends Applet_Sub1 {
         {
             anInt1011 = 250;
             super.anInt18 -= 500;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 202);
+            stream.method397((byte)6, 202);
         }
         anInt988++;
         if(i >= 0)
@@ -3807,13 +3807,13 @@ public class client extends Applet_Sub1 {
             anInt1171 = -1;
         anInt1010++;
         if(anInt1010 > 50)
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 0);
+            stream.method397((byte)6, 0);
         try
         {
-            if(aClass24_1168 != null && aClass30_Sub2_Sub2_1192.anInt1406 > 0)
+            if(aClass24_1168 != null && stream.anInt1406 > 0)
             {
-                aClass24_1168.method271(aClass30_Sub2_Sub2_1192.anInt1406, 0, aClass30_Sub2_Sub2_1192.aByteArray1405, 0);
-                aClass30_Sub2_Sub2_1192.anInt1406 = 0;
+                aClass24_1168.method271(stream.anInt1406, 0, stream.aByteArray1405, 0);
+                stream.anInt1406 = 0;
                 anInt1010 = 0;
                 return;
             }
@@ -4113,7 +4113,7 @@ public class client extends Applet_Sub1 {
         int l = 5;
         try {
             if (aClass14Array970[0] != null)
-                abyte0 = aClass14Array970[0].method233(true, i);
+                abyte0 = aClass14Array970[0].method233(i);
         } catch (Exception _ex) {
         }
         if (abyte0 != null) {
@@ -4239,7 +4239,7 @@ public class client extends Applet_Sub1 {
         aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn is attempting to reestablish", 23693, 159, 257);
         aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn is attempting to reestablish", 23693, 158, 256);
         while(i >= 0)
-            aClass30_Sub2_Sub2_1192.method398(164);
+            stream.writeUnsignedByte(164);
         aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
         anInt1021 = 0;
         anInt1261 = 0;
@@ -4295,11 +4295,11 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 57);
-                aClass30_Sub2_Sub2_1192.method432(-431, anInt1285);
-                aClass30_Sub2_Sub2_1192.method432(-431, i1);
-                aClass30_Sub2_Sub2_1192.method431(true, anInt1283);
-                aClass30_Sub2_Sub2_1192.method432(-431, anInt1284);
+                stream.method397((byte)6, 57);
+                stream.method432(-431, anInt1285);
+                stream.method432(-431, i1);
+                stream.method431(true, anInt1283);
+                stream.method432(-431, anInt1284);
             }
         }
         if(l == 234)
@@ -4311,20 +4311,20 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 236);
-            aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method399(i1);
-            aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
+            stream.method397((byte)6, 236);
+            stream.method431(true, k + anInt1035);
+            stream.writeWord(i1);
+            stream.method431(true, j + anInt1034);
         }
         if(l == 62 && method66(keyLong, k, j, -770))
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 192);
-            aClass30_Sub2_Sub2_1192.method399(anInt1284);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
-            aClass30_Sub2_Sub2_1192.method433(0, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method431(true, anInt1283);
-            aClass30_Sub2_Sub2_1192.method433(0, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method399(anInt1285);
+            stream.method397((byte)6, 192);
+            stream.writeWord(anInt1284);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
+            stream.method433(0, k + anInt1035);
+            stream.method431(true, anInt1283);
+            stream.method433(0, j + anInt1034);
+            stream.writeWord(anInt1285);
         }
         if(l == 511)
         {
@@ -4335,20 +4335,20 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 25);
-            aClass30_Sub2_Sub2_1192.method431(true, anInt1284);
-            aClass30_Sub2_Sub2_1192.method432(-431, anInt1285);
-            aClass30_Sub2_Sub2_1192.method399(i1);
-            aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method433(0, anInt1283);
-            aClass30_Sub2_Sub2_1192.method399(j + anInt1034);
+            stream.method397((byte)6, 25);
+            stream.method431(true, anInt1284);
+            stream.method432(-431, anInt1285);
+            stream.writeWord(i1);
+            stream.method432(-431, k + anInt1035);
+            stream.method433(0, anInt1283);
+            stream.writeWord(j + anInt1034);
         }
         if(l == 74)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 122);
-            aClass30_Sub2_Sub2_1192.method433(0, k);
-            aClass30_Sub2_Sub2_1192.method432(-431, j);
-            aClass30_Sub2_Sub2_1192.method431(true, i1);
+            stream.method397((byte)6, 122);
+            stream.method433(0, k);
+            stream.method432(-431, j);
+            stream.method431(true, i1);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4366,8 +4366,8 @@ public class client extends Applet_Sub1 {
                 flag8 = method48(505, class9);
             if(flag8)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 185);
-                aClass30_Sub2_Sub2_1192.method399(k);
+                stream.method397((byte)6, 185);
+                stream.writeWord(k);
             }
         }
         if(l == 561)
@@ -4383,11 +4383,11 @@ public class client extends Applet_Sub1 {
                 anInt1188 += i1;
                 if(anInt1188 >= 90)
                 {
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 136);
+                    stream.method397((byte)6, 136);
                     anInt1188 = 0;
                 }
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 128);
-                aClass30_Sub2_Sub2_1192.method399(i1);
+                stream.method397((byte)6, 128);
+                stream.writeWord(i1);
             }
         }
         if(l == 20)
@@ -4400,8 +4400,8 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 155);
-                aClass30_Sub2_Sub2_1192.method431(true, i1);
+                stream.method397((byte)6, 155);
+                stream.method431(true, i1);
             }
         }
         if(l == 779)
@@ -4414,8 +4414,8 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 153);
-                aClass30_Sub2_Sub2_1192.method431(true, i1);
+                stream.method397((byte)6, 153);
+                stream.method431(true, i1);
             }
         }
         if(l == 516)
@@ -4428,28 +4428,28 @@ public class client extends Applet_Sub1 {
             anInt924 += anInt1034;
             if(anInt924 >= 113)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 183);
-                aClass30_Sub2_Sub2_1192.method401(0xe63271);
+                stream.method397((byte)6, 183);
+                stream.method401(0xe63271);
                 anInt924 = 0;
             }
             method66(keyLong, k, j, -770);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 228);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
-            aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method399(j + anInt1034);
+            stream.method397((byte)6, 228);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
+            stream.method432(-431, k + anInt1035);
+            stream.writeWord(j + anInt1034);
         }
         if(l == 679 && !aBoolean1149)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 40);
-            aClass30_Sub2_Sub2_1192.method399(k);
+            stream.method397((byte)6, 40);
+            stream.writeWord(k);
             aBoolean1149 = true;
         }
         if(l == 431)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 129);
-            aClass30_Sub2_Sub2_1192.method432(-431, j);
-            aClass30_Sub2_Sub2_1192.method399(k);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
+            stream.method397((byte)6, 129);
+            stream.method432(-431, j);
+            stream.writeWord(k);
+            stream.method432(-431, i1);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4478,10 +4478,10 @@ public class client extends Applet_Sub1 {
         }
         if(l == 53)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 135);
-            aClass30_Sub2_Sub2_1192.method431(true, j);
-            aClass30_Sub2_Sub2_1192.method432(-431, k);
-            aClass30_Sub2_Sub2_1192.method431(true, i1);
+            stream.method397((byte)6, 135);
+            stream.method431(true, j);
+            stream.method432(-431, k);
+            stream.method431(true, i1);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4493,10 +4493,10 @@ public class client extends Applet_Sub1 {
         }
         if(l == 539)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 16);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
-            aClass30_Sub2_Sub2_1192.method433(0, j);
-            aClass30_Sub2_Sub2_1192.method433(0, k);
+            stream.method397((byte)6, 16);
+            stream.method432(-431, i1);
+            stream.method433(0, j);
+            stream.method433(0, k);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4523,19 +4523,19 @@ public class client extends Applet_Sub1 {
                     method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_7)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_7)).anIntArray1500[0]);
                     if(l == 484)
                     {
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 139);
-                        aClass30_Sub2_Sub2_1192.method431(true, anIntArray892[j3]);
+                        stream.method397((byte)6, 139);
+                        stream.method431(true, anIntArray892[j3]);
                     }
                     if(l == 6)
                     {
                         anInt1188 += i1;
                         if(anInt1188 >= 90)
                         {
-                            aClass30_Sub2_Sub2_1192.method397((byte)6, 136);
+                            stream.method397((byte)6, 136);
                             anInt1188 = 0;
                         }
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 128);
-                        aClass30_Sub2_Sub2_1192.method399(anIntArray892[j3]);
+                        stream.method397((byte)6, 128);
+                        stream.writeWord(anIntArray892[j3]);
                     }
                     flag9 = true;
                     break;
@@ -4547,13 +4547,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 870)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 53);
-            aClass30_Sub2_Sub2_1192.method399(j);
-            aClass30_Sub2_Sub2_1192.method432(-431, anInt1283);
-            aClass30_Sub2_Sub2_1192.method433(0, i1);
-            aClass30_Sub2_Sub2_1192.method399(anInt1284);
-            aClass30_Sub2_Sub2_1192.method431(true, anInt1285);
-            aClass30_Sub2_Sub2_1192.method399(k);
+            stream.method397((byte)6, 53);
+            stream.writeWord(j);
+            stream.method432(-431, anInt1283);
+            stream.method433(0, i1);
+            stream.writeWord(anInt1284);
+            stream.method431(true, anInt1285);
+            stream.writeWord(k);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4566,10 +4566,10 @@ public class client extends Applet_Sub1 {
         if(l == 847) // drop
         {
             //System.out.println("Dropped Item: " + i1);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 87);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
-            aClass30_Sub2_Sub2_1192.method399(k);
-            aClass30_Sub2_Sub2_1192.method432(-431, j);
+            stream.method397((byte)6, 87);
+            stream.method432(-431, i1);
+            stream.writeWord(k);
+            stream.method432(-431, j);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4604,10 +4604,10 @@ public class client extends Applet_Sub1 {
         }
         if(l == 78)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 117);
-            aClass30_Sub2_Sub2_1192.method433(0, k);
-            aClass30_Sub2_Sub2_1192.method433(0, i1);
-            aClass30_Sub2_Sub2_1192.method431(true, j);
+            stream.method397((byte)6, 117);
+            stream.method433(0, k);
+            stream.method433(0, i1);
+            stream.method431(true, j);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4630,12 +4630,12 @@ public class client extends Applet_Sub1 {
                 anInt986 += i1;
                 if(anInt986 >= 54)
                 {
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 189);
-                    aClass30_Sub2_Sub2_1192.method398(234);
+                    stream.method397((byte)6, 189);
+                    stream.writeUnsignedByte(234);
                     anInt986 = 0;
                 }
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 73);
-                aClass30_Sub2_Sub2_1192.method431(true, i1);
+                stream.method397((byte)6, 73);
+                stream.method431(true, i1);
             }
         }
         if(l == 213)
@@ -4647,17 +4647,17 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 79);
-            aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method399(i1);
-            aClass30_Sub2_Sub2_1192.method432(-431, j + anInt1034);
+            stream.method397((byte)6, 79);
+            stream.method431(true, k + anInt1035);
+            stream.writeWord(i1);
+            stream.method432(-431, j + anInt1034);
         }
         if(l == 632)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 145);
-            aClass30_Sub2_Sub2_1192.method432(-431, k);
-            aClass30_Sub2_Sub2_1192.method432(-431, j);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
+            stream.method397((byte)6, 145);
+            stream.method432(-431, k);
+            stream.method432(-431, j);
+            stream.method432(-431, i1);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4669,10 +4669,10 @@ public class client extends Applet_Sub1 {
         }
         if(l == 493)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 75);
-            aClass30_Sub2_Sub2_1192.method433(0, k);
-            aClass30_Sub2_Sub2_1192.method431(true, j);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
+            stream.method397((byte)6, 75);
+            stream.method433(0, k);
+            stream.method431(true, j);
+            stream.method432(-431, i1);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4691,10 +4691,10 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 156);
-            aClass30_Sub2_Sub2_1192.method432(-431, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method433(0, i1);
+            stream.method397((byte)6, 156);
+            stream.method432(-431, j + anInt1034);
+            stream.method431(true, k + anInt1035);
+            stream.method433(0, i1);
         }
         if(l == 94)
         {
@@ -4705,16 +4705,16 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 181);
-            aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method399(i1);
-            aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method432(-431, anInt1137);
+            stream.method397((byte)6, 181);
+            stream.method431(true, k + anInt1035);
+            stream.writeWord(i1);
+            stream.method431(true, j + anInt1034);
+            stream.method432(-431, anInt1137);
         }
         if(l == 646)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 185);
-            aClass30_Sub2_Sub2_1192.method399(k);
+            stream.method397((byte)6, 185);
+            stream.writeWord(k);
             Class9 class9_2 = Class9.aClass9Array210[k];
             if(class9_2.anIntArrayArray226 != null && class9_2.anIntArrayArray226[0][0] == 5)
             {
@@ -4741,12 +4741,12 @@ public class client extends Applet_Sub1 {
                 System.out.println(i1);
                 if(anInt1226 >= 85)
                 {
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 230);
-                    aClass30_Sub2_Sub2_1192.method398(239);
+                    stream.method397((byte)6, 230);
+                    stream.writeUnsignedByte(239);
                     anInt1226 = 0;
                 }
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 17);
-                aClass30_Sub2_Sub2_1192.method433(0, i1);
+                stream.method397((byte)6, 17);
+                stream.method433(0, i1);
             }
         }
         if(l == 965)
@@ -4762,12 +4762,12 @@ public class client extends Applet_Sub1 {
                 anInt1134++;
                 if(anInt1134 >= 96)
                 {
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 152);
-                    aClass30_Sub2_Sub2_1192.method398(88);
+                    stream.method397((byte)6, 152);
+                    stream.writeUnsignedByte(88);
                     anInt1134 = 0;
                 }
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 21);
-                aClass30_Sub2_Sub2_1192.method399(i1);
+                stream.method397((byte)6, 21);
+                stream.writeWord(i1);
             }
         }
         if(l == 413)
@@ -4780,9 +4780,9 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 131);
-                aClass30_Sub2_Sub2_1192.method433(0, i1);
-                aClass30_Sub2_Sub2_1192.method432(-431, anInt1137);
+                stream.method397((byte)6, 131);
+                stream.method433(0, i1);
+                stream.method432(-431, anInt1137);
             }
         }
         if(l == 200)
@@ -4809,10 +4809,10 @@ public class client extends Applet_Sub1 {
         if(l == 900)
         {
             method66(keyLong, k, j, -770);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 252);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
-            aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method432(-431, j + anInt1034);
+            stream.method397((byte)6, 252);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
+            stream.method431(true, k + anInt1035);
+            stream.method432(-431, j + anInt1034);
         }
         if(l == 412)
         {
@@ -4824,8 +4824,8 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 72);
-                aClass30_Sub2_Sub2_1192.method432(-431, i1);
+                stream.method397((byte)6, 72);
+                stream.method432(-431, i1);
             }
         }
         if(l == 365)
@@ -4838,9 +4838,9 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 249);
-                aClass30_Sub2_Sub2_1192.method432(-431, i1);
-                aClass30_Sub2_Sub2_1192.method431(true, anInt1137);
+                stream.method397((byte)6, 249);
+                stream.method432(-431, i1);
+                stream.method431(true, anInt1137);
             }
         }
         if(l == 729)
@@ -4853,8 +4853,8 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 39);
-                aClass30_Sub2_Sub2_1192.method431(true, i1);
+                stream.method397((byte)6, 39);
+                stream.method431(true, i1);
             }
         }
         if(l == 577)
@@ -4867,17 +4867,17 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 139);
-                aClass30_Sub2_Sub2_1192.method431(true, i1);
+                stream.method397((byte)6, 139);
+                stream.method431(true, i1);
             }
         }
         if(l == 956 && method66(keyLong, k, j, -770))
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 35);
-            aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method432(-431, anInt1137);
-            aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
+            stream.method397((byte)6, 35);
+            stream.method431(true, j + anInt1034);
+            stream.method432(-431, anInt1137);
+            stream.method432(-431, k + anInt1035);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
         }
         if(l == 567)
         {
@@ -4888,10 +4888,10 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 23);
-            aClass30_Sub2_Sub2_1192.method431(true, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method431(true, i1);
-            aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
+            stream.method397((byte)6, 23);
+            stream.method431(true, k + anInt1035);
+            stream.method431(true, i1);
+            stream.method431(true, j + anInt1034);
         }
         if(l == 867)
         {
@@ -4899,14 +4899,14 @@ public class client extends Applet_Sub1 {
                 anInt1175++;
             if(anInt1175 >= 59)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 200);
-                aClass30_Sub2_Sub2_1192.method399(25501);
+                stream.method397((byte)6, 200);
+                stream.writeWord(25501);
                 anInt1175 = 0;
             }
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 43);
-            aClass30_Sub2_Sub2_1192.method431(true, k);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
-            aClass30_Sub2_Sub2_1192.method432(-431, j);
+            stream.method397((byte)6, 43);
+            stream.method431(true, k);
+            stream.method432(-431, i1);
+            stream.method432(-431, j);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4918,11 +4918,11 @@ public class client extends Applet_Sub1 {
         }
         if(l == 543)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 237);
-            aClass30_Sub2_Sub2_1192.method399(j);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
-            aClass30_Sub2_Sub2_1192.method399(k);
-            aClass30_Sub2_Sub2_1192.method432(-431, anInt1137);
+            stream.method397((byte)6, 237);
+            stream.writeWord(j);
+            stream.method432(-431, i1);
+            stream.writeWord(k);
+            stream.method432(-431, anInt1137);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -4965,11 +4965,11 @@ public class client extends Applet_Sub1 {
                 anInt915 = super.anInt28;
                 anInt917 = 2;
                 anInt916 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 14);
-                aClass30_Sub2_Sub2_1192.method432(-431, anInt1284);
-                aClass30_Sub2_Sub2_1192.method399(i1);
-                aClass30_Sub2_Sub2_1192.method399(anInt1285);
-                aClass30_Sub2_Sub2_1192.method431(true, anInt1283);
+                stream.method397((byte)6, 14);
+                stream.method432(-431, anInt1284);
+                stream.writeWord(i1);
+                stream.writeWord(anInt1285);
+                stream.method431(true, anInt1283);
             }
         }
         if(l == 639)
@@ -5002,10 +5002,10 @@ public class client extends Applet_Sub1 {
         }
         if(l == 454)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 41);
-            aClass30_Sub2_Sub2_1192.method399(i1);
-            aClass30_Sub2_Sub2_1192.method432(-431, j);
-            aClass30_Sub2_Sub2_1192.method432(-431, k);
+            stream.method397((byte)6, 41);
+            stream.writeWord(i1);
+            stream.method432(-431, j);
+            stream.method432(-431, k);
             anInt1243 = 0;
             anInt1244 = k;
             anInt1245 = j;
@@ -5029,37 +5029,37 @@ public class client extends Applet_Sub1 {
                     anInt1155++;
                 if(anInt1155 >= 53)
                 {
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 85);
-                    aClass30_Sub2_Sub2_1192.method398(66);
+                    stream.method397((byte)6, 85);
+                    stream.writeUnsignedByte(66);
                     anInt1155 = 0;
                 }
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 18);
-                aClass30_Sub2_Sub2_1192.method431(true, i1);
+                stream.method397((byte)6, 18);
+                stream.method431(true, i1);
             }
         }
         if(l == 113)
         {
             method66(keyLong, k, j, -770);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 70);
-            aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method399(k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
+            stream.method397((byte)6, 70);
+            stream.method431(true, j + anInt1034);
+            stream.writeWord(k + anInt1035);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
         }
         if(l == 872)
         {
             method66(keyLong, k, j, -770);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 234);
-            aClass30_Sub2_Sub2_1192.method433(0, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
-            aClass30_Sub2_Sub2_1192.method433(0, k + anInt1035);
+            stream.method397((byte)6, 234);
+            stream.method433(0, j + anInt1034);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
+            stream.method433(0, k + anInt1035);
         }
         if(l == 502)
         {
             method66(keyLong, k, j, -770);
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 132);
-            aClass30_Sub2_Sub2_1192.method433(0, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method402(ObjectKey.getObjectId(keyLong));
-            aClass30_Sub2_Sub2_1192.method432(-431, k + anInt1035);
+            stream.method397((byte)6, 132);
+            stream.method433(0, j + anInt1034);
+            stream.writeDWord(ObjectKey.getObjectId(keyLong));
+            stream.method432(-431, k + anInt1035);
         }
         if(l == 1125)
         {
@@ -5077,8 +5077,8 @@ public class client extends Applet_Sub1 {
         }
         if(l == 169)
         {
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 185);
-            aClass30_Sub2_Sub2_1192.method399(k);
+            stream.method397((byte)6, 185);
+            stream.writeWord(k);
             Class9 class9_3 = Class9.aClass9Array210[k];
             if(class9_3.anIntArrayArray226 != null && class9_3.anIntArrayArray226[0][0] == 5)
             {
@@ -5119,10 +5119,10 @@ public class client extends Applet_Sub1 {
             anInt915 = super.anInt28;
             anInt917 = 2;
             anInt916 = 0;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 253);
-            aClass30_Sub2_Sub2_1192.method431(true, j + anInt1034);
-            aClass30_Sub2_Sub2_1192.method433(0, k + anInt1035);
-            aClass30_Sub2_Sub2_1192.method432(-431, i1);
+            stream.method397((byte)6, 253);
+            stream.method431(true, j + anInt1034);
+            stream.method433(0, k + anInt1035);
+            stream.method432(-431, i1);
         }
         if(l == 1448)
         {
@@ -5377,7 +5377,7 @@ public class client extends Applet_Sub1 {
         aClass42_Sub1_1068.method553();
         aClass42_Sub1_1068 = null;
         aClass30_Sub2_Sub2_834 = null;
-        aClass30_Sub2_Sub2_1192 = null;
+        stream = null;
         aClass30_Sub2_Sub2_847 = null;
         aClass30_Sub2_Sub2_1083 = null;
         mapCoordinates = null;
@@ -5569,12 +5569,12 @@ public class client extends Applet_Sub1 {
                     }
                     if(anInt1064 == 3 && aString1212.length() > 0)
                     {
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 126);
-                        aClass30_Sub2_Sub2_1192.method398(0);
-                        int k = aClass30_Sub2_Sub2_1192.anInt1406;
-                        aClass30_Sub2_Sub2_1192.method404(5, aLong953);
-                        Class35.method526(aString1212, aBoolean1277, aClass30_Sub2_Sub2_1192);
-                        aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - k, (byte)0);
+                        stream.method397((byte)6, 126);
+                        stream.writeUnsignedByte(0);
+                        int k = stream.anInt1406;
+                        stream.method404(5, aLong953);
+                        Class35.method526(aString1212, aBoolean1277, stream);
+                        stream.method407(stream.anInt1406 - k, (byte)0);
                         aString1212 = Class35.method527(aString1212, 0);
                         aString1212 = Class34.method497(aString1212, 0);
                         method77(aString1212, 6, Class50.method587(-45804, Class50.method584(aLong953, (byte)-99)), aBoolean991);
@@ -5582,10 +5582,10 @@ public class client extends Applet_Sub1 {
                         {
                             anInt845 = 1;
                             aBoolean1233 = true;
-                            aClass30_Sub2_Sub2_1192.method397((byte)6, 95);
-                            aClass30_Sub2_Sub2_1192.method398(anInt1287);
-                            aClass30_Sub2_Sub2_1192.method398(anInt845);
-                            aClass30_Sub2_Sub2_1192.method398(anInt1248);
+                            stream.method397((byte)6, 95);
+                            stream.writeUnsignedByte(anInt1287);
+                            stream.writeUnsignedByte(anInt845);
+                            stream.writeUnsignedByte(anInt1248);
                         }
                     }
                     if(anInt1064 == 4 && anInt822 < 100)
@@ -5622,8 +5622,8 @@ public class client extends Applet_Sub1 {
                             i1 = Integer.parseInt(aString1004);
                         }
                         catch(Exception _ex) { }
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 208);
-                        aClass30_Sub2_Sub2_1192.method402(i1);
+                        stream.method397((byte)6, 208);
+                        stream.writeDWord(i1);
                     }
                     anInt1225 = 0;
                     aBoolean1223 = true;
@@ -5645,8 +5645,8 @@ public class client extends Applet_Sub1 {
                 {
                     if(aString1004.length() > 0)
                     {
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 60);
-                        aClass30_Sub2_Sub2_1192.method404(5, Class50.method583(aString1004));
+                        stream.method397((byte)6, 60);
+                        stream.method404(5, Class50.method583(aString1004));
                     }
                     anInt1225 = 0;
                     aBoolean1223 = true;
@@ -5737,14 +5737,14 @@ public class client extends Applet_Sub1 {
                     {
                         aString887 = "::"+aString887+":clan";
                         System.out.println(aString887);
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 103);
-                        aClass30_Sub2_Sub2_1192.method398(aString887.length());
-                        aClass30_Sub2_Sub2_1192.method405(aString887.substring(1));
+                        stream.method397((byte)6, 103);
+                        stream.writeUnsignedByte(aString887.length());
+                        stream.writeString(aString887.substring(1));
                     }
                     if(aString887.startsWith("::")) {
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 103);
-                        aClass30_Sub2_Sub2_1192.method398(aString887.length() - 1);
-                        aClass30_Sub2_Sub2_1192.method405(aString887.substring(2));
+                        stream.method397((byte)6, 103);
+                        stream.writeUnsignedByte(aString887.length() - 1);
+                        stream.writeString(aString887.substring(2));
                     } else
                     {
                         String s = aString887.toLowerCase();
@@ -5916,15 +5916,15 @@ public class client extends Applet_Sub1 {
                             i3 = 5;
                             aString887 = aString887.substring(6);
                         }
-                        aClass30_Sub2_Sub2_1192.method397((byte)6, 4);
-                        aClass30_Sub2_Sub2_1192.method398(0);
-                        int j3 = aClass30_Sub2_Sub2_1192.anInt1406;
-                        aClass30_Sub2_Sub2_1192.method425(301, i3);
-                        aClass30_Sub2_Sub2_1192.method425(301, j2);
+                        stream.method397((byte)6, 4);
+                        stream.writeUnsignedByte(0);
+                        int j3 = stream.anInt1406;
+                        stream.method425(301, i3);
+                        stream.method425(301, j2);
                         aClass30_Sub2_Sub2_834.anInt1406 = 0;
                         Class35.method526(aString887, aBoolean1277, aClass30_Sub2_Sub2_834);
-                        aClass30_Sub2_Sub2_1192.method441(0, aByte1217, aClass30_Sub2_Sub2_834.aByteArray1405, aClass30_Sub2_Sub2_834.anInt1406);
-                        aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - j3, (byte)0);
+                        stream.method441(0, aByte1217, aClass30_Sub2_Sub2_834.aByteArray1405, aClass30_Sub2_Sub2_834.anInt1406);
+                        stream.method407(stream.anInt1406 - j3, (byte)0);
                         aString887 = Class35.method527(aString887, 0);
                         aString887 = Class34.method497(aString887, 0);
                         aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1506 = aString887;
@@ -5942,10 +5942,10 @@ public class client extends Applet_Sub1 {
                         {
                             anInt1287 = 3;
                             aBoolean1233 = true;
-                            aClass30_Sub2_Sub2_1192.method397((byte)6, 95);
-                            aClass30_Sub2_Sub2_1192.method398(anInt1287);
-                            aClass30_Sub2_Sub2_1192.method398(anInt845);
-                            aClass30_Sub2_Sub2_1192.method398(anInt1248);
+                            stream.method397((byte)6, 95);
+                            stream.writeUnsignedByte(anInt1287);
+                            stream.writeUnsignedByte(anInt845);
+                            stream.writeUnsignedByte(anInt1248);
                         }
                     }
                     aString887 = "";
@@ -6066,7 +6066,7 @@ public class client extends Applet_Sub1 {
     {
         int j = class9.anInt214;
         if(i <= 0)
-            aClass30_Sub2_Sub2_1192.method398(49);
+            stream.writeUnsignedByte(49);
         if(j >= 1 && j <= 100 || j >= 701 && j <= 800)
         {
             if(j == 1 && anInt900 == 0)
@@ -6742,10 +6742,10 @@ public class client extends Applet_Sub1 {
             aClass24_1168 = new Class24(this, -978, method19(Configuration.PORT + ondemand_offset));
             long l = Class50.method583(s);
             int i = (int)(l >> 16 & 31L);
-            aClass30_Sub2_Sub2_1192.anInt1406 = 0;
-            aClass30_Sub2_Sub2_1192.method398(14);
-            aClass30_Sub2_Sub2_1192.method398(i);
-            aClass24_1168.method271(2, 0, aClass30_Sub2_Sub2_1192.aByteArray1405, 0);
+            stream.anInt1406 = 0;
+            stream.writeUnsignedByte(14);
+            stream.writeUnsignedByte(i);
+            aClass24_1168.method271(2, 0, stream.aByteArray1405, 0);
             for(int j = 0; j < 8; j++)
                 aClass24_1168.method268();
 
@@ -6761,32 +6761,32 @@ public class client extends Applet_Sub1 {
                 ai[1] = (int)(Math.random() * 99999999D);
                 ai[2] = (int)(aLong1215 >> 32);
                 ai[3] = (int)aLong1215;
-                aClass30_Sub2_Sub2_1192.anInt1406 = 0;
-                aClass30_Sub2_Sub2_1192.method398(10);
-                aClass30_Sub2_Sub2_1192.method402(ai[0]);
-                aClass30_Sub2_Sub2_1192.method402(ai[1]);
-                aClass30_Sub2_Sub2_1192.method402(ai[2]);
-                aClass30_Sub2_Sub2_1192.method402(ai[3]);
-                aClass30_Sub2_Sub2_1192.method402(signlink.uid);
-
-                // aClass30_Sub2_Sub2_1192.method405(CreateUID.generateUID());
-                aClass30_Sub2_Sub2_1192.method405(s);
-                aClass30_Sub2_Sub2_1192.method405(s1);
-                aClass30_Sub2_Sub2_1192.method423(aBigInteger1032, aBigInteger856, (byte)0);
+                stream.anInt1406 = 0;
+                stream.writeUnsignedByte(10);
+                stream.writeDWord(ai[0]);
+                stream.writeDWord(ai[1]);
+                stream.writeDWord(ai[2]);
+                stream.writeDWord(ai[3]);
+                stream.writeDWord(signlink.uid);
+                stream.writeString(s);
+                stream.writeString(s1);
+                stream.writeString(macAddress);
+                stream.writeString(FingerPrint.getFingerprint());
+                stream.doKeys(aBigInteger1032, aBigInteger856, (byte)0);
                 aClass30_Sub2_Sub2_847.anInt1406 = 0;
                 if(flag)
-                    aClass30_Sub2_Sub2_847.method398(18);
+                    aClass30_Sub2_Sub2_847.writeUnsignedByte(18);
                 else
-                    aClass30_Sub2_Sub2_847.method398(16);
-                aClass30_Sub2_Sub2_847.method398(aClass30_Sub2_Sub2_1192.anInt1406 + 36 + 1 + 1 + 2);
-                aClass30_Sub2_Sub2_847.method398(255);
-                aClass30_Sub2_Sub2_847.method399(317);
-                aClass30_Sub2_Sub2_847.method398(aBoolean960 ? 1 : 0);
+                    aClass30_Sub2_Sub2_847.writeUnsignedByte(16);
+                aClass30_Sub2_Sub2_847.writeUnsignedByte(stream.anInt1406 + 36 + 1 + 1 + 2);
+                aClass30_Sub2_Sub2_847.writeUnsignedByte(255);
+                aClass30_Sub2_Sub2_847.writeWord(317);
+                aClass30_Sub2_Sub2_847.writeUnsignedByte(aBoolean960 ? 1 : 0);
                 for(int l1 = 0; l1 < 9; l1++)
-                    aClass30_Sub2_Sub2_847.method402(anIntArray1090[l1]);
+                    aClass30_Sub2_Sub2_847.writeDWord(anIntArray1090[l1]);
 
-                aClass30_Sub2_Sub2_847.method406(aClass30_Sub2_Sub2_1192.aByteArray1405, aClass30_Sub2_Sub2_1192.anInt1406, true, 0);
-                aClass30_Sub2_Sub2_1192.aClass17_1410 = new Class17(-436, ai);
+                aClass30_Sub2_Sub2_847.method406(stream.aByteArray1405, stream.anInt1406, true, 0);
+                stream.aClass17_1410 = new Class17(-436, ai);
                 for(int j2 = 0; j2 < 4; j2++)
                     ai[j2] += 50;
 
@@ -6814,7 +6814,7 @@ public class client extends Applet_Sub1 {
                 super.aBoolean17 = true;
                 aBoolean954 = true;
                 aBoolean1157 = true;
-                aClass30_Sub2_Sub2_1192.anInt1406 = 0;
+                stream.anInt1406 = 0;
                 aClass30_Sub2_Sub2_1083.anInt1406 = 0;
                 anInt1008 = -1;
                 anInt841 = -1;
@@ -6916,8 +6916,8 @@ public class client extends Applet_Sub1 {
                 return;
             }
             if(k == 4) {
-                aString1266 = "@whi@Your account has been disabled.";
-                aString1267 = "@whi@ check your message-centre for details.";
+                aString1266 = "@whi@You have been banned.";
+                aString1267 = "@whi@ Message on discord for details.";
                 return;
             }
             if(k == 5) {
@@ -6974,7 +6974,7 @@ public class client extends Applet_Sub1 {
             }
             if(k == 15) {
                 aBoolean1157 = true;
-                aClass30_Sub2_Sub2_1192.anInt1406 = 0;
+                stream.anInt1406 = 0;
                 aClass30_Sub2_Sub2_1083.anInt1406 = 0;
                 anInt1008 = -1;
                 anInt841 = -1;
@@ -7003,11 +7003,6 @@ public class client extends Applet_Sub1 {
                 aString1267 = "@blu@Please try using a different world.";
                 return;
             }
-            if(k == 42) {
-                aString1266 = "@blu@Client has been updated,";
-                aString1267 = "@blu@Redownload the client.";
-                return;
-            }
             if(k == 21) {
                 for(int k1 = aClass24_1168.method268(); k1 >= 0; k1--) {
                     aString1266 = "@gre@You have only just left another world";
@@ -7026,6 +7021,21 @@ public class client extends Applet_Sub1 {
             if(k == 22) {
                 aString1266 = "@blu@You not in the Private Beta.";
                 aString1267 = "@blu@Please apply on the discord.";
+                return;
+            }
+            if(k == 23) {
+                aString1266 = "@whi@You have been ip banned.";
+                aString1267 = "@whi@ Message on discord for details.";
+                return;
+            }
+            if(k == 24) {
+                aString1266 = "@whi@You have been mac banned.";
+                aString1267 = "@whi@Message on discord for details.";
+                return;
+            }
+            if(k == 25) {
+                aString1266 = "@blu@Client has been updated,";
+                aString1267 = "@blu@Redownload the client.";
                 return;
             }
             if(k == -1) {
@@ -7237,37 +7247,37 @@ public class client extends Applet_Sub1 {
             anInt1288 += k4;
             if(anInt1288 >= 92)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 36);
-                aClass30_Sub2_Sub2_1192.method402(0);
+                stream.method397((byte)6, 36);
+                stream.writeDWord(0);
                 anInt1288 = 0;
             }
             if(i == 0)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 164);
-                aClass30_Sub2_Sub2_1192.method398(k4 + k4 + 3);
+                stream.method397((byte)6, 164);
+                stream.writeUnsignedByte(k4 + k4 + 3);
             }
             if(i == 1)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 248);
-                aClass30_Sub2_Sub2_1192.method398(k4 + k4 + 3 + 14);
+                stream.method397((byte)6, 248);
+                stream.writeUnsignedByte(k4 + k4 + 3 + 14);
             }
             if(i == 2)
             {
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 98);
-                aClass30_Sub2_Sub2_1192.method398(k4 + k4 + 3);
+                stream.method397((byte)6, 98);
+                stream.writeUnsignedByte(k4 + k4 + 3);
             }
-            aClass30_Sub2_Sub2_1192.method433(0, k6 + anInt1034);
+            stream.method433(0, k6 + anInt1034);
             anInt1261 = anIntArray1280[0];
             anInt1262 = anIntArray1281[0];
             for(int j7 = 1; j7 < k4; j7++)
             {
                 i4--;
-                aClass30_Sub2_Sub2_1192.method398(anIntArray1280[i4] - k6);
-                aClass30_Sub2_Sub2_1192.method398(anIntArray1281[i4] - i7);
+                stream.writeUnsignedByte(anIntArray1280[i4] - k6);
+                stream.writeUnsignedByte(anIntArray1281[i4] - i7);
             }
 
-            aClass30_Sub2_Sub2_1192.method431(true, i7 + anInt1035);
-            aClass30_Sub2_Sub2_1192.method424(super.anIntArray30[5] != 1 ? 0 : 1, 0);
+            stream.method431(true, i7 + anInt1035);
+            stream.method424(super.anIntArray30[5] != 1 ? 0 : 1, 0);
             return true;
         }
         return i != 1;
@@ -7650,7 +7660,7 @@ public class client extends Applet_Sub1 {
 
     public final void method6()
     {
-        CacheDownloader.start(this, CacheDownloader.FileType.CACHE);
+        CacheDownloader.start(this, CacheDownloader.FileType.FILEDATA);
         method13(20, (byte)4, "Starting up");
 
         if(signlink.sunjava)
@@ -8038,6 +8048,17 @@ public class client extends Applet_Sub1 {
                 anIntArray1052[l6 - 5] = j7 - 25;
                 anIntArray1229[l6 - 5] = l7 - j7;
             }
+            try {
+                macAddress = GetNetworkAddress.GetAddress("mac");
+                if (macAddress == null)
+                    macAddress = "";
+                if (Configuration.developerMode) {
+                    System.out.println(macAddress);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                macAddress = "";
+            }
             setBounds();
             Class34.method487(class44_4);
             aClass48_879 = new Class48(this, anInt1096);
@@ -8116,40 +8137,40 @@ public class client extends Applet_Sub1 {
                 boolean flag1 = method85(1, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, j2, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], true, i2);
                 if(flag1)
                 {
-                    aClass30_Sub2_Sub2_1192.method398(i);
-                    aClass30_Sub2_Sub2_1192.method398(j);
-                    aClass30_Sub2_Sub2_1192.method399(anInt1185);
-                    aClass30_Sub2_Sub2_1192.method398(57);
-                    aClass30_Sub2_Sub2_1192.method398(anInt1209);
-                    aClass30_Sub2_Sub2_1192.method398(anInt1170);
-                    aClass30_Sub2_Sub2_1192.method398(89);
-                    aClass30_Sub2_Sub2_1192.method399(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550);
-                    aClass30_Sub2_Sub2_1192.method399(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551);
-                    aClass30_Sub2_Sub2_1192.method398(anInt1264);
-                    aClass30_Sub2_Sub2_1192.method398(63);
+                    stream.writeUnsignedByte(i);
+                    stream.writeUnsignedByte(j);
+                    stream.writeWord(anInt1185);
+                    stream.writeUnsignedByte(57);
+                    stream.writeUnsignedByte(anInt1209);
+                    stream.writeUnsignedByte(anInt1170);
+                    stream.writeUnsignedByte(89);
+                    stream.writeWord(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550);
+                    stream.writeWord(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551);
+                    stream.writeUnsignedByte(anInt1264);
+                    stream.writeUnsignedByte(63);
                 }
             }
             anInt1117++;
             if(anInt1117 > 1151)
             {
                 anInt1117 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 246);
-                aClass30_Sub2_Sub2_1192.method398(0);
-                int l = aClass30_Sub2_Sub2_1192.anInt1406;
+                stream.method397((byte)6, 246);
+                stream.writeUnsignedByte(0);
+                int l = stream.anInt1406;
                 if((int)(Math.random() * 2D) == 0)
-                    aClass30_Sub2_Sub2_1192.method398(101);
-                aClass30_Sub2_Sub2_1192.method398(197);
-                aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
-                aClass30_Sub2_Sub2_1192.method398((int)(Math.random() * 256D));
-                aClass30_Sub2_Sub2_1192.method398(67);
-                aClass30_Sub2_Sub2_1192.method399(14214);
+                    stream.writeUnsignedByte(101);
+                stream.writeUnsignedByte(197);
+                stream.writeWord((int)(Math.random() * 65536D));
+                stream.writeUnsignedByte((int)(Math.random() * 256D));
+                stream.writeUnsignedByte(67);
+                stream.writeWord(14214);
                 if((int)(Math.random() * 2D) == 0)
-                    aClass30_Sub2_Sub2_1192.method399(29487);
-                aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
+                    stream.writeWord(29487);
+                stream.writeWord((int)(Math.random() * 65536D));
                 if((int)(Math.random() * 2D) == 0)
-                    aClass30_Sub2_Sub2_1192.method398(220);
-                aClass30_Sub2_Sub2_1192.method398(180);
-                aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - l, (byte)0);
+                    stream.writeUnsignedByte(220);
+                stream.writeUnsignedByte(180);
+                stream.method407(stream.anInt1406 - l, (byte)0);
             }
         }
     }
@@ -8669,8 +8690,8 @@ public class client extends Applet_Sub1 {
             if(anInt1054 != -1 && anInt1054 == anInt1221)
             {
                 anInt1054 = -1;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 120);
-                aClass30_Sub2_Sub2_1192.method398(anInt1221);
+                stream.method397((byte)6, 120);
+                stream.writeUnsignedByte(anInt1221);
             }
             aBoolean1103 = false;
             aClass15_1125.method237(0);
@@ -9183,7 +9204,7 @@ public class client extends Applet_Sub1 {
     {
         int j = 256;
         if(i >= 0)
-            aClass30_Sub2_Sub2_1192.method398(126);
+            stream.writeUnsignedByte(126);
         for(int k = 0; k < anIntArray1190.length; k++)
             anIntArray1190[k] = 0;
 
@@ -9449,21 +9470,21 @@ public class client extends Applet_Sub1 {
             if(anInt1005 > 1512)
             {
                 anInt1005 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 77);
-                aClass30_Sub2_Sub2_1192.method398(0);
-                int i2 = aClass30_Sub2_Sub2_1192.anInt1406;
-                aClass30_Sub2_Sub2_1192.method398((int)(Math.random() * 256D));
-                aClass30_Sub2_Sub2_1192.method398(101);
-                aClass30_Sub2_Sub2_1192.method398(233);
-                aClass30_Sub2_Sub2_1192.method399(45092);
+                stream.method397((byte)6, 77);
+                stream.writeUnsignedByte(0);
+                int i2 = stream.anInt1406;
+                stream.writeUnsignedByte((int)(Math.random() * 256D));
+                stream.writeUnsignedByte(101);
+                stream.writeUnsignedByte(233);
+                stream.writeWord(45092);
                 if((int)(Math.random() * 2D) == 0)
-                    aClass30_Sub2_Sub2_1192.method399(35784);
-                aClass30_Sub2_Sub2_1192.method398((int)(Math.random() * 256D));
-                aClass30_Sub2_Sub2_1192.method398(64);
-                aClass30_Sub2_Sub2_1192.method398(38);
-                aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
-                aClass30_Sub2_Sub2_1192.method399((int)(Math.random() * 65536D));
-                aClass30_Sub2_Sub2_1192.method407(aClass30_Sub2_Sub2_1192.anInt1406 - i2, (byte)0);
+                    stream.writeWord(35784);
+                stream.writeUnsignedByte((int)(Math.random() * 256D));
+                stream.writeUnsignedByte(64);
+                stream.writeUnsignedByte(38);
+                stream.writeWord((int)(Math.random() * 65536D));
+                stream.writeWord((int)(Math.random() * 65536D));
+                stream.method407(stream.anInt1406 - i2, (byte)0);
             }
             int j2 = k1 * 192;
             if(j2 > 0x17f00)
@@ -9514,7 +9535,7 @@ public class client extends Applet_Sub1 {
                 return true;
 
         if(flag)
-            aClass30_Sub2_Sub2_1192.method398(138);
+            stream.writeUnsignedByte(138);
         return s.equalsIgnoreCase(aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703);
     }
 
@@ -9566,7 +9587,7 @@ public class client extends Applet_Sub1 {
             if(anInt1142 > 67)
             {
                 anInt1142 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 78);
+                stream.method397((byte)6, 78);
             }
         }
         if(anInt917 == 2)
@@ -9667,7 +9688,7 @@ public class client extends Applet_Sub1 {
             if(anInt849 > 75)
             {
                 anInt849 = 0;
-                aClass30_Sub2_Sub2_1192.method397((byte)6, 148);
+                stream.method397((byte)6, 148);
             }
         }
     }
@@ -9702,8 +9723,8 @@ public class client extends Applet_Sub1 {
 
             aLongArray925[anInt822++] = l;
             aBoolean1153 = true;
-            aClass30_Sub2_Sub2_1192.method397((byte)6, 133);
-            aClass30_Sub2_Sub2_1192.method404(5, l);
+            stream.method397((byte)6, 133);
+            stream.method404(5, l);
             return;
         }
         catch(RuntimeException runtimeexception)
@@ -9736,7 +9757,7 @@ public class client extends Applet_Sub1 {
         if(byte0 == 8)
             byte0 = 0;
         else
-            aClass30_Sub2_Sub2_1192.method398(101);
+            stream.writeUnsignedByte(101);
         if(anInt1023 == 2)
         {
             for(Class30_Sub1 class30_sub1 = (Class30_Sub1)aClass19_1179.method252(); class30_sub1 != null; class30_sub1 = (Class30_Sub1)aClass19_1179.method254(false))
@@ -10081,8 +10102,8 @@ public class client extends Applet_Sub1 {
                     for(int k = j; k < anInt822; k++)
                         aLongArray925[k] = aLongArray925[k + 1];
 
-                    aClass30_Sub2_Sub2_1192.method397((byte)6, 74);
-                    aClass30_Sub2_Sub2_1192.method404(5, l);
+                    stream.method397((byte)6, 74);
+                    stream.method404(5, l);
                     return;
                 }
 
@@ -10427,7 +10448,7 @@ public class client extends Applet_Sub1 {
         l = l * i2 - i * l1 >> 16;
         i = j2;
         if(k >= 0)
-            aClass30_Sub2_Sub2_1192.method398(27);
+            stream.writeUnsignedByte(27);
         j2 = i1 * k1 - l * j1 >> 16;
         l = i1 * j1 + l * k1 >> 16;
         i1 = j2;
@@ -12924,7 +12945,7 @@ public class client extends Applet_Sub1 {
 
     public final void method147(int i)
     {
-        aClass30_Sub2_Sub2_1192.method397((byte)6, 130);
+        stream.method397((byte)6, 130);
         if(anInt1189 != -1)
         {
             anInt1189 = -1;
@@ -12940,7 +12961,7 @@ public class client extends Applet_Sub1 {
         }
         anInt857 = -1;
         if(i <= 0)
-            aClass30_Sub2_Sub2_1192.method398(13);
+            stream.writeUnsignedByte(13);
     }
 
     public client()
@@ -13091,7 +13112,7 @@ public class client extends Applet_Sub1 {
         aClass19_1179 = new Class19(169);
         anInt1184 = 128;
         anInt1189 = -1;
-        aClass30_Sub2_Sub2_1192 = Class30_Sub2_Sub2.method396(1, 9);
+        stream = Class30_Sub2_Sub2.method396(1, 9);
         aByte1194 = 5;
         aStringArray1199 = new String[500];
         anIntArray1203 = new int[5];
@@ -13215,6 +13236,7 @@ public class client extends Applet_Sub1 {
     private Class15 aClass15_907;
     private Class15 aClass15_908;
     private Class15 aClass15_909;
+    private String macAddress;
     private Class15 aClass15_910;
     private Class15 aClass15_911;
     private byte aByteArray912[];
@@ -13524,7 +13546,7 @@ public class client extends Applet_Sub1 {
     private int anInt1189;
     private int anIntArray1190[];
     private int anIntArray1191[];
-    private Class30_Sub2_Sub2 aClass30_Sub2_Sub2_1192;
+    private Class30_Sub2_Sub2 stream;
     private int anInt1193;
     private byte aByte1194;
     private int anInt1195;

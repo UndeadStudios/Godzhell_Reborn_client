@@ -15,10 +15,12 @@ public class ClientWindow extends client implements ActionListener, WindowListen
 
     public void initUI() {
         try {
+            ImageIcon icon = new ImageIcon(new URL("https://i.imgur.com/4vcxosG.jpg"));
             //icon = new ImageIcon(new URL("https://i.stack.imgur.com/KSnus.gif")).getImage();
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             JPopupMenu.setDefaultLightWeightPopupEnabled(false);
             frame = new JFrame("Godzhell Reborn and Remastered.");
+            frame.setIconImage(icon.getImage());
             frame.setLayout(new BorderLayout());
             setFocusTraversalKeysEnabled(false);
             frame.setResizable(false);

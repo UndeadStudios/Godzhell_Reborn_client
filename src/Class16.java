@@ -1,5 +1,3 @@
-import sign.signlink;
-
 public class Class16
 {
 
@@ -91,10 +89,10 @@ public class Class16
     {
         int k = method245(i);
         aClass30_Sub2_Sub2_328.anInt1406 = 0;
-        aClass30_Sub2_Sub2_328.method402(0x52494646);
+        aClass30_Sub2_Sub2_328.writeDWord(0x52494646);
         aClass30_Sub2_Sub2_328.method403(0, 36 + k);
-        aClass30_Sub2_Sub2_328.method402(0x57415645);
-        aClass30_Sub2_Sub2_328.method402(0x666d7420);
+        aClass30_Sub2_Sub2_328.writeDWord(0x57415645);
+        aClass30_Sub2_Sub2_328.writeDWord(0x666d7420);
         aClass30_Sub2_Sub2_328.method403(0, 16);
         aClass30_Sub2_Sub2_328.method400(true, 1);
         if(j < 6 || j > 6)
@@ -106,7 +104,7 @@ public class Class16
         aClass30_Sub2_Sub2_328.method403(0, 22050);
         aClass30_Sub2_Sub2_328.method400(true, 1);
         aClass30_Sub2_Sub2_328.method400(true, 8);
-        aClass30_Sub2_Sub2_328.method402(0x64617461);
+        aClass30_Sub2_Sub2_328.writeDWord(0x64617461);
         aClass30_Sub2_Sub2_328.method403(0, k);
         aClass30_Sub2_Sub2_328.anInt1406 += k;
         return aClass30_Sub2_Sub2_328;

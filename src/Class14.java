@@ -1,82 +1,121 @@
 import java.io.*;
-import sign.signlink;
 
 public final class Class14
 {
+
+    /**
+     * Size of an entry in any index file.
+     * An error contains the file size and the sector where this file begins.
+     */
+    public static final int INDEX_SIZE = 6;
+
+    /**
+     * Size of a data block inside that data (.dat) file
+     */
+    public static final int DATA_BLOCK_SIZE = 512;
+
+    /**
+     * Size of a data block header inside that data (.dat) file
+     */
+    public static final int DATA_HEADER_SIZE = 8;
+
+    public static final int DATA_SIZE = DATA_HEADER_SIZE + DATA_BLOCK_SIZE;
 
     public Class14(int i, RandomAccessFile randomaccessfile, RandomAccessFile randomaccessfile1, int j, boolean flag)
     {
         anInt306 = 923;
         aBoolean307 = true;
         anInt312 = 65000;
-        anInt311 = j;
+        fileType = j;
         if(!flag)
         {
             throw new NullPointerException();
         } else
         {
-            aRandomAccessFile309 = randomaccessfile;
-            aRandomAccessFile310 = randomaccessfile1;
+            dataFile = randomaccessfile;
+            indexFile = randomaccessfile1;
             anInt312 = i;
             return;
         }
     }
-
-    public synchronized byte[] method233(boolean flag, int i)
+    /**
+     * Returns the number of files in the cache index.
+     * @return
+     */
+    public long getFileCount() {
+        try {
+            if (indexFile != null) {
+                return (indexFile.length() / INDEX_SIZE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    public synchronized byte[] method233(int fileId)
     {
-        if(!flag)
-            throw new NullPointerException();
-        try
-        {
-            method236(aRandomAccessFile310, -660, i * 6);
-            int l;
-            for(int j = 0; j < 6; j += l)
+        try {
+            seekTo(indexFile, -660, fileId * INDEX_SIZE);
+            int read;
+            for(int j = 0; j < INDEX_SIZE; j += read)
             {
-                l = aRandomAccessFile310.read(aByteArray308, j, 6 - j);
-                if(l == -1)
+                read = indexFile.read(buffer, j, INDEX_SIZE - j);
+                if(read == -1)
                     return null;
             }
 
-            int i1 = ((aByteArray308[0] & 0xff) << 16) + ((aByteArray308[1] & 0xff) << 8) + (aByteArray308[2] & 0xff);
-            int j1 = ((aByteArray308[3] & 0xff) << 16) + ((aByteArray308[4] & 0xff) << 8) + (aByteArray308[5] & 0xff);
-            if(i1 < 0 || i1 > anInt312)
+            int fileSIze = ((buffer[0] & 0xff) << 16) + ((buffer[1] & 0xff) << 8) + (buffer[2] & 0xff);
+            int sectorId = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
+            if(sectorId <= 0 || (long)sectorId > dataFile.length() / DATA_SIZE)
                 return null;
-            if(j1 <= 0 || (long)j1 > aRandomAccessFile309.length() / 520L)
-                return null;
-            byte abyte0[] = new byte[i1];
-            int k1 = 0;
-            for(int l1 = 0; k1 < i1; l1++)
+            byte fileData[] = new byte[fileSIze];
+            int readerIndex = 0;
+            int chunkLength = fileId <= 0xffff ? 512 : 510;
+            int headerLength = fileId <= 0xffff ? 8 : 10;
+            for(int l1 = 0; readerIndex < fileSIze; l1++)
             {
-                if(j1 == 0)
+                if(sectorId == 0)
                     return null;
-                method236(aRandomAccessFile309, -660, j1 * 520);
+                seekTo(dataFile, -660, sectorId * 520);
                 int k = 0;
-                int i2 = i1 - k1;
-                if(i2 > 512)
-                    i2 = 512;
-                int j2;
-                for(; k < i2 + 8; k += j2)
+                int remaining = fileSIze - readerIndex;
+                if(remaining > chunkLength)
+                    remaining = chunkLength;
+                int offset;
+                for(; k < remaining + headerLength; k += offset)
                 {
-                    j2 = aRandomAccessFile309.read(aByteArray308, k, (i2 + 8) - k);
-                    if(j2 == -1)
+                    offset = dataFile.read(buffer, k, (remaining + headerLength) - k);
+                    if(offset == -1)
                         return null;
                 }
 
-                int k2 = ((aByteArray308[0] & 0xff) << 8) + (aByteArray308[1] & 0xff);
-                int l2 = ((aByteArray308[2] & 0xff) << 8) + (aByteArray308[3] & 0xff);
-                int i3 = ((aByteArray308[4] & 0xff) << 16) + ((aByteArray308[5] & 0xff) << 8) + (aByteArray308[6] & 0xff);
-                int j3 = aByteArray308[7] & 0xff;
-                if(k2 != i || l2 != l1 || j3 != anInt311)
-                    return null;
-                if(i3 < 0 || (long)i3 > aRandomAccessFile309.length() / 520L)
-                    return null;
-                for(int k3 = 0; k3 < i2; k3++)
-                    abyte0[k1++] = aByteArray308[k3 + 8];
+                int currentIndex;
+                int currentPart;
+                int nextSector;
+                int currentFile;
 
-                j1 = i3;
+                if(fileId <= 0xffff) {
+                    currentIndex = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);//Short
+                    currentPart = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);//Short
+                    nextSector = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);//Medium
+                    currentFile = buffer[7] & 0xff;//Byte
+                } else {
+                    currentIndex = ((buffer[0] & 0xff) << 24) + ((buffer[1] & 0xff) << 16) + ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);//Int
+                    currentPart = ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);//Short
+                    nextSector = ((buffer[6] & 0xff) << 16) + ((buffer[7] & 0xff) << 8) + (buffer[8] & 0xff);//Medium
+                    currentFile = buffer[9] & 0xff;//Byte
+                }
+                if(currentIndex != fileId || currentPart != l1 || currentFile != fileType)
+                    return null;
+                if(nextSector < 0 || (long)nextSector > dataFile.length() / DATA_SIZE)
+                    return null;
+                for(int k3 = 0; k3 < remaining; k3++)
+                    fileData[readerIndex++] = buffer[k3 + 8];
+
+                sectorId = nextSector;
             }
 
-            return abyte0;
+            return fileData;
         }
         catch(IOException _ex)
         {
@@ -86,105 +125,132 @@ public final class Class14
 
     public synchronized boolean method234(int i, byte abyte0[], byte byte0, int j)
     {
-        boolean flag = method235(true, 923, j, i, abyte0);
+        boolean flag = method235(true, j, i, abyte0);
         if(byte0 == 2)
             byte0 = 0;
         else
             aBoolean307 = !aBoolean307;
         if(!flag)
-            flag = method235(false, 923, j, i, abyte0);
+            flag = method235(false, j, i, abyte0);
         return flag;
     }
 
-    private synchronized boolean method235(boolean flag, int i, int j, int k, byte abyte0[])
+    private synchronized boolean method235(boolean overwrite, int fileId, int fileSize, byte[] data)
     {
-        i = 27 / i;
         try
         {
-            int l;
-            if(flag)
+            int firstSectorId;
+            if(overwrite)
             {
-                method236(aRandomAccessFile310, -660, j * 6);
+                seekTo(indexFile, -660, fileId * INDEX_SIZE);
                 int k1;
-                for(int i1 = 0; i1 < 6; i1 += k1)
+                for(int i1 = 0; i1 < INDEX_SIZE; i1 += k1)
                 {
-                    k1 = aRandomAccessFile310.read(aByteArray308, i1, 6 - i1);
+                    k1 = indexFile.read(buffer, i1, INDEX_SIZE - i1);
                     if(k1 == -1)
                         return false;
                 }
 
-                l = ((aByteArray308[3] & 0xff) << 16) + ((aByteArray308[4] & 0xff) << 8) + (aByteArray308[5] & 0xff);
-                if(l <= 0 || (long)l > aRandomAccessFile309.length() / 520L)
+                firstSectorId = ((buffer[3] & 0xff) << 16) + ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);
+                if(firstSectorId <= 0 || (long)firstSectorId > dataFile.length() / DATA_SIZE)
                     return false;
             } else
             {
-                l = (int)((aRandomAccessFile309.length() + 519L) / 520L);
-                if(l == 0)
-                    l = 1;
+                firstSectorId = (int)((dataFile.length() + 519L) / DATA_SIZE);
+                if(firstSectorId == 0)
+                    firstSectorId = 1;
             }
-            aByteArray308[0] = (byte)(k >> 16);
-            aByteArray308[1] = (byte)(k >> 8);
-            aByteArray308[2] = (byte)k;
-            aByteArray308[3] = (byte)(l >> 16);
-            aByteArray308[4] = (byte)(l >> 8);
-            aByteArray308[5] = (byte)l;
-            method236(aRandomAccessFile310, -660, j * 6);
-            aRandomAccessFile310.write(aByteArray308, 0, 6);
+            buffer[0] = (byte)(fileSize >> 16);
+            buffer[1] = (byte)(fileSize >> 8);
+            buffer[2] = (byte)fileSize;
+            buffer[3] = (byte)(firstSectorId >> 16);
+            buffer[4] = (byte)(firstSectorId >> 8);
+            buffer[5] = (byte)firstSectorId;
+            seekTo(indexFile, -660, fileId * 6);
+            indexFile.write(buffer, 0, 6);
+            int chunkLength = fileId <= 0xffff ? 512 : 510;
+            int headerLength = fileId <= 0xffff ? 8 : 10;
+
             int j1 = 0;
-            for(int l1 = 0; j1 < k; l1++)
+            for(int chunkId = 0; j1 < fileSize; chunkId++)
             {
-                int i2 = 0;
-                if(flag)
+                int nextSector = 0;
+                if(overwrite)
                 {
-                    method236(aRandomAccessFile309, -660, l * 520);
+                    seekTo(dataFile, -660, firstSectorId * 520);
                     int j2;
                     int l2;
-                    for(j2 = 0; j2 < 8; j2 += l2)
+                    for(j2 = 0; j2 < headerLength; j2 += l2)
                     {
-                        l2 = aRandomAccessFile309.read(aByteArray308, j2, 8 - j2);
+                        l2 = dataFile.read(buffer, j2, headerLength - j2);
                         if(l2 == -1)
                             break;
                     }
 
-                    if(j2 == 8)
+                    if(j2 == headerLength)
                     {
-                        int i3 = ((aByteArray308[0] & 0xff) << 8) + (aByteArray308[1] & 0xff);
-                        int j3 = ((aByteArray308[2] & 0xff) << 8) + (aByteArray308[3] & 0xff);
-                        i2 = ((aByteArray308[4] & 0xff) << 16) + ((aByteArray308[5] & 0xff) << 8) + (aByteArray308[6] & 0xff);
-                        int k3 = aByteArray308[7] & 0xff;
-                        if(i3 != j || j3 != l1 || k3 != anInt311)
+                        int currentIndex;
+                        int currentPart;
+                        int currentFile;
+
+                        if(fileId <= 0xffff) {
+                            currentIndex = ((buffer[0] & 0xff) << 8) + (buffer[1] & 0xff);//Short
+                            currentPart = ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);//Short
+                            nextSector = ((buffer[4] & 0xff) << 16) + ((buffer[5] & 0xff) << 8) + (buffer[6] & 0xff);//Medium
+                            currentFile = buffer[7] & 0xff;//Byte
+                        } else {
+                            currentIndex = ((buffer[0] & 0xff) << 24) + ((buffer[1] & 0xff) << 16) + ((buffer[2] & 0xff) << 8) + (buffer[3] & 0xff);//Int
+                            currentPart = ((buffer[4] & 0xff) << 8) + (buffer[5] & 0xff);//Short
+                            nextSector = ((buffer[6] & 0xff) << 16) + ((buffer[7] & 0xff) << 8) + (buffer[8] & 0xff);//Medium
+                            currentFile = buffer[9] & 0xff;//Byte
+                        }
+
+                        if(currentIndex != fileId || currentPart != chunkId || currentFile != fileType)
                             return false;
-                        if(i2 < 0 || (long)i2 > aRandomAccessFile309.length() / 520L)
+                        if(nextSector < 0 || (long)nextSector > dataFile.length() / DATA_SIZE)
                             return false;
                     }
                 }
-                if(i2 == 0)
+                if(nextSector == 0)
                 {
-                    flag = false;
-                    i2 = (int)((aRandomAccessFile309.length() + 519L) / 520L);
-                    if(i2 == 0)
-                        i2++;
-                    if(i2 == l)
-                        i2++;
+                    overwrite = false;
+                    nextSector = (int)((dataFile.length() + 519L) / DATA_SIZE);
+                    if(nextSector == 0)
+                        nextSector++;
+                    if(nextSector == firstSectorId)
+                        nextSector++;
                 }
-                if(k - j1 <= 512)
-                    i2 = 0;
-                aByteArray308[0] = (byte)(j >> 8);
-                aByteArray308[1] = (byte)j;
-                aByteArray308[2] = (byte)(l1 >> 8);
-                aByteArray308[3] = (byte)l1;
-                aByteArray308[4] = (byte)(i2 >> 16);
-                aByteArray308[5] = (byte)(i2 >> 8);
-                aByteArray308[6] = (byte)i2;
-                aByteArray308[7] = (byte)anInt311;
-                method236(aRandomAccessFile309, -660, l * 520);
-                aRandomAccessFile309.write(aByteArray308, 0, 8);
-                int k2 = k - j1;
+                if(fileSize - j1 <= chunkLength)
+                    nextSector = 0;
+                if(fileId <= 0xffff) {
+                    buffer[0] = (byte) (fileId >> 8);//Short
+                    buffer[1] = (byte) fileId;
+                    buffer[2] = (byte) (chunkId >> 8);//Short
+                    buffer[3] = (byte) chunkId;
+                    buffer[4] = (byte) (nextSector >> 16);//Medium
+                    buffer[5] = (byte) (nextSector >> 8);
+                    buffer[6] = (byte) nextSector;
+                    buffer[7] = (byte) fileType;//Byte
+                } else {
+                    buffer[0] = (byte) (fileId >> 24);//Int
+                    buffer[1] = (byte) (fileId >> 16);
+                    buffer[2] = (byte) (fileId >> 8);
+                    buffer[3] = (byte) fileId;
+                    buffer[4] = (byte) (chunkId >> 8);//Short
+                    buffer[5] = (byte) chunkId;
+                    buffer[6] = (byte) (nextSector >> 16);//Medium
+                    buffer[7] = (byte) (nextSector >> 8);
+                    buffer[8] = (byte) nextSector;
+                    buffer[9] = (byte) fileType;//Byte
+                }
+                seekTo(dataFile, -660, firstSectorId * 520);
+                dataFile.write(buffer, 0, 8);
+                int k2 = fileSize - j1;
                 if(k2 > 512)
                     k2 = 512;
-                aRandomAccessFile309.write(abyte0, j1, k2);
+                dataFile.write(data, j1, k2);
                 j1 += k2;
-                l = i2;
+                firstSectorId = nextSector;
             }
 
             return true;
@@ -195,31 +261,21 @@ public final class Class14
         }
     }
 
-    public synchronized void method236(RandomAccessFile randomaccessfile, int i, int j)
-            throws IOException
-    {
-        while(i >= 0)
-            return;
-        if(j < 0 || j > 0x3c00000)
-        {
-            System.out.println("Badseek - pos:" + j + " len:" + randomaccessfile.length());
-            j = 0x3c00000;
-            try
-            {
-                Thread.sleep(1000L);
-            }
-            catch(Exception _ex) { }
+    public synchronized void seekTo(RandomAccessFile randomaccessfile, int i, int j) {
+        try {
+            randomaccessfile.seek(j);
+        } catch(Exception e) {
+            e.printStackTrace();
         }
-        randomaccessfile.seek(j);
     }
 
 
     private int anInt306;
     private boolean aBoolean307;
-    static byte aByteArray308[] = new byte[520];
-    RandomAccessFile aRandomAccessFile309;
-    RandomAccessFile aRandomAccessFile310;
-    int anInt311;
+    static byte buffer[] = new byte[520];
+    RandomAccessFile dataFile;
+    RandomAccessFile indexFile;
+    int fileType;
     int anInt312;
 
 }

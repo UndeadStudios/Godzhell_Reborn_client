@@ -116,12 +116,12 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         aByteArray1405[anInt1406++] = (byte)(i + aClass17_1410.method246());
     }
 
-    public void method398(int i)
+    public void writeUnsignedByte(int i)
     {
         aByteArray1405[anInt1406++] = (byte)i;
     }
 
-    public void method399(int i)
+    public void writeWord(int i)
     {
         aByteArray1405[anInt1406++] = (byte)(i >> 8);
         aByteArray1405[anInt1406++] = (byte)i;
@@ -142,7 +142,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         aByteArray1405[anInt1406++] = (byte)i;
     }
 
-    public void method402(int i)
+    public void writeDWord(int i)
     {
         aByteArray1405[anInt1406++] = (byte)(i >> 24);
         aByteArray1405[anInt1406++] = (byte)(i >> 16);
@@ -194,7 +194,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         }
     }
 
-    public void method405(String s)
+    public void writeString(String s)
     {
         s.getBytes(0, s.length(), aByteArray1405, anInt1406);
         anInt1406 += s.length();
@@ -412,7 +412,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
     private static final BigInteger RSA_EXPONENT = new BigInteger("65537");
 
 
-    public void method423(BigInteger biginteger, BigInteger biginteger1, byte byte0)
+    public void doKeys(BigInteger biginteger, BigInteger biginteger1, byte byte0)
     {
         int i = anInt1406;
         anInt1406 = 0;
@@ -424,7 +424,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         BigInteger biginteger3 = biginteger2;//.modPow(RSA_EXPONENT, RSA_MODULUS);
         byte abyte1[] = biginteger3.toByteArray();
         anInt1406 = 0;
-        method398(abyte1.length);
+        writeUnsignedByte(abyte1.length);
         method406(abyte1, abyte1.length, true, 0);
     }
 

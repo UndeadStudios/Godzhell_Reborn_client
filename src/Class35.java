@@ -4,8 +4,6 @@
 
 */
 
-import sign.signlink;
-
 public final class Class35
 {
 
@@ -85,15 +83,15 @@ public final class Class35
                 if(k < 13)
                     i = k;
                 else
-                    class30_sub2_sub2.method398(k);
+                    class30_sub2_sub2.writeUnsignedByte(k);
             } else
             if(k < 13)
             {
-                class30_sub2_sub2.method398((i << 4) + k);
+                class30_sub2_sub2.writeUnsignedByte((i << 4) + k);
                 i = -1;
             } else
             {
-                class30_sub2_sub2.method398((i << 4) + (k >> 4));
+                class30_sub2_sub2.writeUnsignedByte((i << 4) + (k >> 4));
                 i = k & 0xf;
             }
         }
@@ -101,7 +99,7 @@ public final class Class35
         if(!flag)
             anInt628 = -452;
         if(i != -1)
-            class30_sub2_sub2.method398(i << 4);
+            class30_sub2_sub2.writeUnsignedByte(i << 4);
     }
     public static String anArea435 = "y";
     public static String method527(String s, int i)

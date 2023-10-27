@@ -528,7 +528,7 @@ public class Class42_Sub1 extends Class42
             return;
         if(anIntArrayArray1364[i][j] == 0)
             return;
-        byte abyte0[] = aClient1343.aClass14Array970[i + 1].method233(true, j);
+        byte abyte0[] = aClient1343.aClass14Array970[i + 1].method233(j);
         if(crcMatches(anIntArrayArray1364[i][j], anIntArrayArray1365[i][j], abyte0))
             return;
         aByteArrayArray1342[i][j] = byte0;
@@ -603,7 +603,7 @@ public class Class42_Sub1 extends Class42
             aBoolean1357 = true;
             byte abyte0[] = null;
             if(aClient1343.aClass14Array970[0] != null)
-                abyte0 = aClient1343.aClass14Array970[class30_sub2_sub3.anInt1419 + 1].method233(flag, class30_sub2_sub3.anInt1421);
+                abyte0 = aClient1343.aClass14Array970[class30_sub2_sub3.anInt1419 + 1].method233(class30_sub2_sub3.anInt1421);
             if(!crcMatches(anIntArrayArray1364[class30_sub2_sub3.anInt1419][class30_sub2_sub3.anInt1421], anIntArrayArray1365[class30_sub2_sub3.anInt1419][class30_sub2_sub3.anInt1421], abyte0))
                 abyte0 = null;
             synchronized(aClass19_1370)

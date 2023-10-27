@@ -9,7 +9,6 @@ public class Class18
     public Class18(Class30_Sub2_Sub2 stream,int junk)
     {
         int anInt341 = stream.method410();
-				System.out.println("test1 = "+anInt341);
 	anIntArray342 = new int[anInt341];
         anIntArrayArray343 = new int[anInt341][];
         for(int j = 0; j < anInt341; j++)

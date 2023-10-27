@@ -236,7 +236,7 @@ return class5;
         aClass5Array80 = new Class5[20];
         for(int k = 0; k < 20; k++)
             aClass5Array80[k] = new Class5();
-        dumpNpc();
+       // dumpNpc();
 
     }
 	
