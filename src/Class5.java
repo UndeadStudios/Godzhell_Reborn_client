@@ -1,5 +1,6 @@
 import sign.signlink;
 import java.io.*;
+import java.util.stream.IntStream;
 
 final class Class5
 {
@@ -12,13 +13,13 @@ final class Class5
 
         anInt56 = (anInt56 + 1) % 20;
         Class5 class5 = aClass5Array80[anInt56] = new Class5();
-        aClass30_Sub2_Sub2_60.anInt1406 = anIntArray72[i];
+        aStream_60.anInt1406 = anIntArray72[i];
         class5.aLong78 = i;
-        class5.method165(aClass30_Sub2_Sub2_60);
+        class5.method165(aStream_60);
 
 		if(i == 97) {
-			aClass30_Sub2_Sub2_60.anInt1406 = anIntArray72[630];
-			class5.method165(aClass30_Sub2_Sub2_60);
+			aStream_60.anInt1406 = anIntArray72[630];
+			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 105;
@@ -29,8 +30,8 @@ final class Class5
  			class5.aByteArray89 = "It\'s Pikachu.".getBytes();
 		}
 				if(i == 96) {
-			aClass30_Sub2_Sub2_60.anInt1406 = anIntArray72[630];
-			class5.method165(aClass30_Sub2_Sub2_60);
+			aStream_60.anInt1406 = anIntArray72[630];
+			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 315;
@@ -41,8 +42,8 @@ final class Class5
  			class5.aByteArray89 = "It\'s a Charmander.".getBytes();
 		}
 				if(i == 95) {
-			aClass30_Sub2_Sub2_60.anInt1406 = anIntArray72[630];
-			class5.method165(aClass30_Sub2_Sub2_60);
+			aStream_60.anInt1406 = anIntArray72[630];
+			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 420;
@@ -53,8 +54,8 @@ final class Class5
  			class5.aByteArray89 = "It\'s a .... thug.".getBytes();
 		}
 				if(i == 98) {
-			aClass30_Sub2_Sub2_60.anInt1406 = anIntArray72[630];
-			class5.method165(aClass30_Sub2_Sub2_60);
+			aStream_60.anInt1406 = anIntArray72[630];
+			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 205;
@@ -204,16 +205,16 @@ return class5;
 	int j = -1;
         if(anInt57 != -1) {
         try{
-            VarBit varBit = VarBit.aVarBitArray646[anInt57];
+            VarBit varBit = VarBit.cache[anInt57];
             int k = varBit.anInt648;
             int l = varBit.anInt649;
             int i1 = varBit.anInt650;
             int j1 = client.anIntArray1232[i1 - l];
-            j = aClient82.anIntArray971[k] >> l & j1;
+            j = aClient82.variousSettings[k] >> l & j1;
 			} catch (Exception failed) {}
         } else
         if(anInt59 != -1)
-            j = aClient82.anIntArray971[anInt59];
+            j = aClient82.variousSettings[anInt59];
         if(j < 0 || j >= anIntArray88.length || anIntArray88[j] == -1)
             return null;
         else
@@ -222,22 +223,32 @@ return class5;
 
     public static final void method162(Class44 class44)
     {
-        aClass30_Sub2_Sub2_60 = new Class30_Sub2_Sub2(class44.method571("npc.dat", null), 891);
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("npc.idx", null), 891);
-        anInt62 = class30_sub2_sub2.method410();
+        aStream_60 = new Stream(class44.method571("npc.dat", null), 891);
+        Stream stream = new Stream(class44.method571("npc.idx", null), 891);
+        anInt62 = stream.readUnsignedShort();
         anIntArray72 = new int[anInt62+6000];
         int i = 2;
         for(int j = 0; j < anInt62; j++)
         {
             anIntArray72[j] = i;
-            i += class30_sub2_sub2.method410();
+            i += stream.readUnsignedShort();
         }
 
         aClass5Array80 = new Class5[20];
         for(int k = 0; k < 20; k++)
             aClass5Array80[k] = new Class5();
-       // dumpNpc();
+		if (Configuration.dumpDataLists) {
 
+			TempWriter writer2 = new TempWriter("npc_fields");
+			FieldGenerator generator = new FieldGenerator(writer2::writeLine);
+			IntStream.range(0, 100_000).forEach(id -> {
+				try {
+					Class5 definition = Class5.method159(id);
+					generator.add(definition.aString65, id);
+				} catch (Exception e) {}
+			});
+			writer2.close();
+		}
     }
 	
 		public static void dumpNpcList() {
@@ -280,7 +291,7 @@ return class5;
         if(i >= 0)
             anInt74 = 60;
         aClass5Array80 = null;
-        aClass30_Sub2_Sub2_60 = null;
+        aStream_60 = null;
     }
 
     public final Class30_Sub2_Sub4_Sub6 method164(int i, int j, int k, int ai[])
@@ -342,120 +353,120 @@ return class5;
         return class30_sub2_sub4_sub6_1;
     }
 
-	private void method165(Class30_Sub2_Sub2 class30_sub2_sub2)
+	private void method165(Stream stream)
 	{
 		do
 		{
-			int i = class30_sub2_sub2.method408();
+			int i = stream.readUnsignedByte();
 			if(i == 0)
 				return;
 			if(i == 1)
 			{
-				int j = class30_sub2_sub2.method408();
+				int j = stream.readUnsignedByte();
 				anIntArray94 = new int[j];
 				for(int j1 = 0; j1 < j; j1++)
-					anIntArray94[j1] = class30_sub2_sub2.method410();
+					anIntArray94[j1] = stream.readUnsignedShort();
 
 			} else
 			if(i == 2)
-				aString65 = class30_sub2_sub2.method415();
+				aString65 = stream.method415();
 			else
 			if(i == 3)
-				aByteArray89 = class30_sub2_sub2.method416((byte)30);
+				aByteArray89 = stream.method416((byte)30);
 			else
 			if(i == 12)
-				aByte68 = class30_sub2_sub2.method409();
+				aByte68 = stream.method409();
 			else
 			if(i == 13)
-				anInt77 = class30_sub2_sub2.method410();
+				anInt77 = stream.readUnsignedShort();
 			else
 			if(i == 14)
-				anInt67 = class30_sub2_sub2.method410();
+				anInt67 = stream.readUnsignedShort();
 			else
 			if(i == 17)
 			{
-				anInt67 = class30_sub2_sub2.method410();
-				anInt58 = class30_sub2_sub2.method410();
-				anInt83 = class30_sub2_sub2.method410();
-				anInt55 = class30_sub2_sub2.method410();
+				anInt67 = stream.readUnsignedShort();
+				anInt58 = stream.readUnsignedShort();
+				anInt83 = stream.readUnsignedShort();
+				anInt55 = stream.readUnsignedShort();
 			} else
 			if(i >= 30 && i < 40)
 			{
 				if(aStringArray66 == null)
 					aStringArray66 = new String[5];
-				aStringArray66[i - 30] = class30_sub2_sub2.method415();
+				aStringArray66[i - 30] = stream.method415();
 				if(aStringArray66[i - 30].equalsIgnoreCase("hidden"))
 					aStringArray66[i - 30] = null;
 			} else
 			if(i == 40)
 			{
-				int k = class30_sub2_sub2.method408();
+				int k = stream.readUnsignedByte();
 				anIntArray76 = new int[k];
 				anIntArray70 = new int[k];
 				for(int k1 = 0; k1 < k; k1++)
 				{
-					anIntArray76[k1] = class30_sub2_sub2.method410();
-					anIntArray70[k1] = class30_sub2_sub2.method410();
+					anIntArray76[k1] = stream.readUnsignedShort();
+					anIntArray70[k1] = stream.readUnsignedShort();
 				}
 
 			} else
 			if(i == 60)
 			{
-				int l = class30_sub2_sub2.method408();
+				int l = stream.readUnsignedByte();
 				anIntArray73 = new int[l];
 				for(int l1 = 0; l1 < l; l1++)
-					anIntArray73[l1] = class30_sub2_sub2.method410();
+					anIntArray73[l1] = stream.readUnsignedShort();
 
 			} else
 			if(i == 90)
-				class30_sub2_sub2.method410();
+				stream.readUnsignedShort();
 			else
 			if(i == 91)
-				class30_sub2_sub2.method410();
+				stream.readUnsignedShort();
 			else
 			if(i == 92)
-				class30_sub2_sub2.method410();
+				stream.readUnsignedShort();
 			else
 			if(i == 93)
 				aBoolean87 = false;
 			else
 			if(i == 95)
-				anInt61 = class30_sub2_sub2.method410();
+				anInt61 = stream.readUnsignedShort();
 			else
 			if(i == 97)
-				anInt91 = class30_sub2_sub2.method410();
+				anInt91 = stream.readUnsignedShort();
 			else
 			if(i == 98)
-				anInt86 = class30_sub2_sub2.method410();
+				anInt86 = stream.readUnsignedShort();
 			else
 			if(i == 99)
 				aBoolean93 = true;
 			else
 			if(i == 100)
-				anInt85 = class30_sub2_sub2.method409();
+				anInt85 = stream.method409();
 			else
 			if(i == 101)
-				anInt92 = class30_sub2_sub2.method409() * 5;
+				anInt92 = stream.method409() * 5;
 			else
 			if(i == 102)
-				anInt75 = class30_sub2_sub2.method410();
+				anInt75 = stream.readUnsignedShort();
 			else
 			if(i == 103)
-				anInt79 = class30_sub2_sub2.method410();
+				anInt79 = stream.readUnsignedShort();
 			else
 			if(i == 106)
 			{
-                anInt57 = class30_sub2_sub2.method410();
+                anInt57 = stream.readUnsignedShort();
                 if(anInt57 == 65535)
                     anInt57 = -1;
-                anInt59 = class30_sub2_sub2.method410();
+                anInt59 = stream.readUnsignedShort();
                 if(anInt59 == 65535)
                     anInt59 = -1;
-                int i1 = class30_sub2_sub2.method408();
+                int i1 = stream.readUnsignedByte();
                 anIntArray88 = new int[i1 + 1];
                 for(int i2 = 0; i2 <= i1; i2++)
                 {
-                    anIntArray88[i2] = class30_sub2_sub2.method410();
+                    anIntArray88[i2] = stream.readUnsignedShort();
                     if(anIntArray88[i2] == 65535)
                         anIntArray88[i2] = -1;
                 }
@@ -499,7 +510,7 @@ return class5;
     public int anInt57;
     public int anInt58;
     public int anInt59;
-    private static Class30_Sub2_Sub2 aClass30_Sub2_Sub2_60;
+    private static Stream aStream_60;
     public int anInt61;
     public static int anInt62;
     private int anInt63;

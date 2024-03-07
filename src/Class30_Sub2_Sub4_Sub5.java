@@ -8,7 +8,7 @@ public class Class30_Sub2_Sub4_Sub5 extends Class30_Sub2_Sub4
             anInt1613 = -272;
         if(aClass20_1607 != null)
         {
-            int k = client.anInt1161 - anInt1608;
+            int k = client.loopCycle - anInt1608;
             if(k > 100 && aClass20_1607.anInt356 > 0)
                 k = 100;
             while(k > aClass20_1607.method258(anInt1599, (byte)-39)) 
@@ -23,7 +23,7 @@ public class Class30_Sub2_Sub4_Sub5 extends Class30_Sub2_Sub4
                 aClass20_1607 = null;
                 break;
             }
-            anInt1608 = client.anInt1161 - k;
+            anInt1608 = client.loopCycle - k;
             if(aClass20_1607 != null)
                 j = aClass20_1607.anIntArray353[anInt1599];
         }
@@ -31,7 +31,7 @@ public class Class30_Sub2_Sub4_Sub5 extends Class30_Sub2_Sub4
         if(anIntArray1600 != null)
             class46 = method457();
         else
-            class46 = Class46.method572(anInt1610);
+            class46 = Class46.forID(anInt1610);
         if(class46 == null)
         {
             return null;
@@ -46,16 +46,16 @@ private Class46 method457() {
 		int i = -1;
 		if(anInt1601 != -1) {
 			try {
-            VarBit varBit = VarBit.aVarBitArray646[anInt1601];
+            VarBit varBit = VarBit.cache[anInt1601];
             int k = varBit.anInt648;
             int l = varBit.anInt649;
             int i1 = varBit.anInt650;
 				int j1 = client.anIntArray1232[i1 - l];
-				i = aClient1609.anIntArray971[k] >> l & j1;
+				i = aClient1609.variousSettings[k] >> l & j1;
 			} catch(Exception ex){ }
 		} else
-		if(anInt1602 != -1) {
-            i = aClient1609.anIntArray971[anInt1602];
+		if(anInt1602 != -1 && anInt1602 < aClient1609.variousSettings.length) {
+            i = aClient1609.variousSettings[anInt1602];
         }
     int var;
         if (i >= 0 && i < anIntArray1600.length) {
@@ -63,7 +63,7 @@ private Class46 method457() {
     } else
         var = anIntArray1600[anIntArray1600.length - 1];
 
-    return var != -1 ? Class46.method572(var) : null;
+    return var != -1 ? Class46.forID(var) : null;
 	}
 
     public Class30_Sub2_Sub4_Sub5(int i, int j, int k, int l, byte byte0, int i1, int j1, 
@@ -85,17 +85,17 @@ private Class46 method457() {
         {
             aClass20_1607 = Class20.aClass20Array351[l1];
             anInt1599 = 0;
-            anInt1608 = client.anInt1161;
+            anInt1608 = client.loopCycle;
             if(flag && aClass20_1607.anInt356 != -1)
             {
                 anInt1599 = (int)(Math.random() * (double)aClass20_1607.anInt352);
                 anInt1608 -= (int)(Math.random() * (double)aClass20_1607.method258(anInt1599, (byte)-39));
             }
         }
-        Class46 class46 = Class46.method572(anInt1610);
+        Class46 class46 = Class46.forID(anInt1610);
         anInt1601 = class46.anInt774;
         anInt1602 = class46.anInt749;
-        anIntArray1600 = class46.anIntArray759;
+        anIntArray1600 = class46.childrenIDs;
     }
 
     private byte aByte1598;

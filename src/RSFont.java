@@ -1,6 +1,6 @@
 import java.awt.Color;
 
-public class RSFont extends Class30_Sub2_Sub1 {
+public class RSFont extends DrawingArea {
 
     public int baseCharacterHeight = 0;
     public int anInt4142;
@@ -13,7 +13,7 @@ public class RSFont extends Class30_Sub2_Sub1 {
     public byte[] aByteArray4151;
     public byte[][] fontPixels;
     public int[] characterScreenWidths;
-    public Class30_Sub2_Sub1_Sub1[] chatImages;
+    public Sprite[] chatImages;
     public static String aRSString_4135;
     public static String startTransparency;
     public static String startDefaultShadow;
@@ -57,19 +57,19 @@ public class RSFont extends Class30_Sub2_Sub1 {
         characterDrawXOffsets = new int[256];
         characterDrawYOffsets = new int[256];
         characterScreenWidths = new int[256];
-        Class30_Sub2_Sub2 stream = new Class30_Sub2_Sub2(archive.method571(s + ".dat", null));
-        Class30_Sub2_Sub2 stream_1 = new Class30_Sub2_Sub2(archive.method571("index.dat", null));
-        stream_1.anInt1406 = stream.method410() + 4;
-        int k = stream_1.method408();
+        Stream stream = new Stream(archive.method571(s + ".dat", null));
+        Stream stream_1 = new Stream(archive.method571("index.dat", null));
+        stream_1.anInt1406 = stream.readUnsignedShort() + 4;
+        int k = stream_1.readUnsignedByte();
         if (k > 0) {
             stream_1.anInt1406 += 3 * (k - 1);
         }
         for (int l = 0; l < 256; l++) {
-            characterDrawXOffsets[l] = stream_1.method408();
-            characterDrawYOffsets[l] = stream_1.method408();
-            int i1 = characterWidths[l] = stream_1.method410();
-            int j1 = characterHeights[l] = stream_1.method410();
-            int k1 = stream_1.method408();
+            characterDrawXOffsets[l] = stream_1.readUnsignedByte();
+            characterDrawYOffsets[l] = stream_1.readUnsignedByte();
+            int i1 = characterWidths[l] = stream_1.readUnsignedShort();
+            int j1 = characterHeights[l] = stream_1.readUnsignedShort();
+            int k1 = stream_1.readUnsignedByte();
             int l1 = i1 * j1;
             fontPixels[l] = new byte[l1];
             if (k1 == 0) {
@@ -207,12 +207,13 @@ public class RSFont extends Class30_Sub2_Sub1 {
         }
     }
 
-    public void unpackChatImages(Class30_Sub2_Sub1_Sub1[] icons) {
+    public void unpackChatImages(Sprite[] icons) {
         chatImages = icons;
     }
 
     public void drawBasicString(String string, int drawX, int drawY) {
         drawY -= baseCharacterHeight;
+        string = handleOldSyntax(string);
         int startIndex = -1;
         int i_70_ = -1;
         for (int currentCharacter = 0; currentCharacter < string.length(); currentCharacter++) {
@@ -246,7 +247,7 @@ public class RSFont extends Class30_Sub2_Sub1 {
                         if (effectString.startsWith(startImage)) {
                             try {
                                 int imageId = Integer.valueOf(effectString.substring(4));
-                                Class30_Sub2_Sub1_Sub1 icon = chatImages[imageId];
+                                Sprite icon = chatImages[imageId];
                                 int iconModY = icon.anInt1445;
                                 if (transparency == 256) {
                                    // icon.method346(drawX, (drawY + baseCharacterHeight - iconModY));
@@ -364,7 +365,7 @@ public class RSFont extends Class30_Sub2_Sub1 {
                                 }
                                 modifierOffset++;
                                 int iconId = Integer.valueOf(effectString.substring(4));
-                                Class30_Sub2_Sub1_Sub1 class92 = chatImages[iconId];
+                                Sprite class92 = chatImages[iconId];
                                 int iconOffsetY = class92.anInt1445;
                                 if (transparency == 256) {
                                    // class92.drawSprite(drawX + xModI,
@@ -570,6 +571,7 @@ public class RSFont extends Class30_Sub2_Sub1 {
             int shadow) {
         if (string != null) {
             setColorAndShadow(color, shadow);
+            string = handleOldSyntax(string);
             drawBasicString(string, drawX - getTextWidth(string) / 2, drawY);
         }
     }
@@ -623,37 +625,37 @@ public class RSFont extends Class30_Sub2_Sub1 {
 
     public void drawTransparentCharacter(int i, int i_11_, int i_12_, int i_13_, int i_14_,
             int i_15_, int i_16_, boolean bool) {
-        int i_17_ = i_11_ + i_12_ * Class30_Sub2_Sub1.anInt1379;
-        int i_18_ = Class30_Sub2_Sub1.anInt1379 - i_13_;
+        int i_17_ = i_11_ + i_12_ * DrawingArea.width;
+        int i_18_ = DrawingArea.width - i_13_;
         int i_19_ = 0;
         int i_20_ = 0;
-        if (i_12_ < Class30_Sub2_Sub1.anInt1381) {
-            int i_21_ = Class30_Sub2_Sub1.anInt1381 - i_12_;
+        if (i_12_ < DrawingArea.topY) {
+            int i_21_ = DrawingArea.topY - i_12_;
             i_14_ -= i_21_;
-            i_12_ = Class30_Sub2_Sub1.anInt1381;
+            i_12_ = DrawingArea.topY;
             i_20_ += i_21_ * i_13_;
-            i_17_ += i_21_ * Class30_Sub2_Sub1.anInt1379;
+            i_17_ += i_21_ * DrawingArea.width;
         }
-        if (i_12_ + i_14_ > Class30_Sub2_Sub1.anInt1382) {
-            i_14_ -= i_12_ + i_14_ - Class30_Sub2_Sub1.anInt1382;
+        if (i_12_ + i_14_ > DrawingArea.bottomY) {
+            i_14_ -= i_12_ + i_14_ - DrawingArea.bottomY;
         }
-        if (i_11_ < Class30_Sub2_Sub1.anInt1383) {
-            int i_22_ = Class30_Sub2_Sub1.anInt1383 - i_11_;
+        if (i_11_ < DrawingArea.leftX) {
+            int i_22_ = DrawingArea.leftX - i_11_;
             i_13_ -= i_22_;
-            i_11_ = Class30_Sub2_Sub1.anInt1383;
+            i_11_ = DrawingArea.leftX;
             i_20_ += i_22_;
             i_17_ += i_22_;
             i_19_ += i_22_;
             i_18_ += i_22_;
         }
-        if (i_11_ + i_13_ > Class30_Sub2_Sub1.anInt1384) {
-            int i_23_ = i_11_ + i_13_ - Class30_Sub2_Sub1.anInt1384;
+        if (i_11_ + i_13_ > DrawingArea.bottomX) {
+            int i_23_ = i_11_ + i_13_ - DrawingArea.bottomX;
             i_13_ -= i_23_;
             i_19_ += i_23_;
             i_18_ += i_23_;
         }
         if (i_13_ > 0 && i_14_ > 0) {
-            createTransparentCharacterPixels(Class30_Sub2_Sub1.anIntArray1378, fontPixels[i], i_15_,
+            createTransparentCharacterPixels(DrawingArea.pixels, fontPixels[i], i_15_,
                                              i_20_, i_17_, i_13_, i_14_, i_18_, i_19_, i_16_);
         }
     }
@@ -697,40 +699,106 @@ public class RSFont extends Class30_Sub2_Sub1 {
             i_25_ += i_30_;
         }
     }
-
+    public static String handleOldSyntax(String text) {
+        text = text.replaceAll("@pur@", "<col=A10081>");
+        text = text.replaceAll("@red@", "<col=ff0000>");
+        text = text.replaceAll("@gre@", "<col=65280>");
+        text = text.replaceAll("@blu@", "<col=255>");
+        text = text.replaceAll("@bl2@", "<col=0F0085>");
+        text = text.replaceAll("@bl3@", "<col=00AFFF>");
+        text = text.replaceAll("@yel@", "<col=ffff00>");
+        text = text.replaceAll("@cya@", "<col=65535>");
+        text = text.replaceAll("@mag@", "<col=ff00ff>");
+        text = text.replaceAll("@whi@", "<col=ffffff>");
+        text = text.replaceAll("@lre@", "<col=ff9040>");
+        text = text.replaceAll("@dre@", "<col=800000>");
+        text = text.replaceAll("@bla@", "<col=0>");
+        text = text.replaceAll("@or0@", "<col=A67711>");
+        text = text.replaceAll("@or1@", "<col=ffb000>");
+        text = text.replaceAll("@or2@", "<col=ff7000>");
+        text = text.replaceAll("@or3@", "<col=ff3000>");
+        text = text.replaceAll("@gr0@", "<col=148200>");
+        text = text.replaceAll("@gr1@", "<col=c0ff00>");
+        text = text.replaceAll("@gr2@", "<col=80ff00>");
+        text = text.replaceAll("@gr3@", "<col=40ff00>");
+        text = text.replaceAll("@OR0", "<col=<A67711>");
+        text = text.replaceAll("@PUR@", "<col=A10081>");
+        text = text.replaceAll("@RED@", "<col=ffff00>");
+        text = text.replaceAll("@GRE@", "<col=65280>");
+        text = text.replaceAll("@BLU@", "<col=255>");
+        text = text.replaceAll("@YEL@", "<col=ff0000>");
+        text = text.replaceAll("@CYA@", "<col=65535>");
+        text = text.replaceAll("@MAG@", "<col=ff00ff>");
+        text = text.replaceAll("@WHI@", "<col=ffffff>");
+        text = text.replaceAll("@LRE@", "<col=ff9040>");
+        text = text.replaceAll("@DRE@", "<col=800000>");
+        text = text.replaceAll("@BLA@", "<col=0>");
+        text = text.replaceAll("@OR1@", "<col=ffb000>");
+        text = text.replaceAll("@OR2@", "<col=ff7000>");
+        text = text.replaceAll("@OR3@", "<col=ff3000>");
+        text = text.replaceAll("@GR1@", "<col=c0ff00>");
+        text = text.replaceAll("@GR2@", "<col=80ff00>");
+        text = text.replaceAll("@GR3@", "<col=40ff00>");
+        text = text.replaceAll("@cr1@", "<img=0>");
+        text = text.replaceAll("@cr2@", "<img=2>");
+        text = text.replaceAll("@cr3@", "<img=3>");
+        text = text.replaceAll("@cr4@", "<img=4>");
+        text = text.replaceAll("@cr5@", "<img=5>");
+        text = text.replaceAll("@cr6@", "<img=6>");
+        text = text.replaceAll("@cr7@", "<img=7>");
+        text = text.replaceAll("@cr8@", "<img=8>");
+        text = text.replaceAll("@cr9@", "<img=9>");
+        text = text.replaceAll("@cr10@", "<img=10>");
+        text = text.replaceAll("@cr11@", "<img=11>");
+        text = text.replaceAll("@cr12@", "<img=12>");
+        text = text.replaceAll("@cr13@", "<img=13>");
+        text = text.replaceAll("@cr14@", "<img=14>");
+        text = text.replaceAll("@cr15@", "<img=15>");
+        text = text.replaceAll("@cr16@", "<img=16>");
+        text = text.replaceAll("@cr17@", "<img=17>");
+        text = text.replaceAll("@cr18@", "<img=18>");
+        text = text.replaceAll("@cr19@", "<img=19>");
+        text = text.replaceAll("@cr20@", "<img=20>");
+        text = text.replaceAll("@cr21@", "<img=21>");
+        text = text.replaceAll("@cr22@", "<img=22>");
+        text = text.replaceAll("@cr23@", "<img=23>");
+        text = text.replaceAll("@cr24@", "<img=24>");
+        text = text.replaceAll("@str@", "<img=24>");
+        return text;
+    }
     public void drawCharacter(int character, int i_35_, int i_36_, int i_37_, int i_38_,
             int i_39_, boolean bool) {
-        int i_40_ = i_35_ + i_36_ * Class30_Sub2_Sub1.anInt1379;
-        int i_41_ = Class30_Sub2_Sub1.anInt1379 - i_37_;
+        int i_40_ = i_35_ + i_36_ * DrawingArea.width;
+        int i_41_ = DrawingArea.width - i_37_;
         int i_42_ = 0;
         int i_43_ = 0;
-        if (i_36_ < Class30_Sub2_Sub1.anInt1381) {
-            int i_44_ = Class30_Sub2_Sub1.anInt1381 - i_36_;
+        if (i_36_ < DrawingArea.topY) {
+            int i_44_ = DrawingArea.topY - i_36_;
             i_38_ -= i_44_;
-            i_36_ = Class30_Sub2_Sub1.anInt1381;
+            i_36_ = DrawingArea.topY;
             i_43_ += i_44_ * i_37_;
-            i_40_ += i_44_ * Class30_Sub2_Sub1.anInt1379;
+            i_40_ += i_44_ * DrawingArea.width;
         }
-        if (i_36_ + i_38_ > Class30_Sub2_Sub1.anInt1382) {
-            i_38_ -= i_36_ + i_38_ - Class30_Sub2_Sub1.anInt1382;
+        if (i_36_ + i_38_ > DrawingArea.bottomY) {
+            i_38_ -= i_36_ + i_38_ - DrawingArea.bottomY;
         }
-        if (i_35_ < Class30_Sub2_Sub1.anInt1383) {
-            int i_45_ = Class30_Sub2_Sub1.anInt1383 - i_35_;
+        if (i_35_ < DrawingArea.leftX) {
+            int i_45_ = DrawingArea.leftX - i_35_;
             i_37_ -= i_45_;
-            i_35_ = Class30_Sub2_Sub1.anInt1383;
+            i_35_ = DrawingArea.leftX;
             i_43_ += i_45_;
             i_40_ += i_45_;
             i_42_ += i_45_;
             i_41_ += i_45_;
         }
-        if (i_35_ + i_37_ > Class30_Sub2_Sub1.anInt1384) {
-            int i_46_ = i_35_ + i_37_ - Class30_Sub2_Sub1.anInt1384;
+        if (i_35_ + i_37_ > DrawingArea.bottomX) {
+            int i_46_ = i_35_ + i_37_ - DrawingArea.bottomX;
             i_37_ -= i_46_;
             i_42_ += i_46_;
             i_41_ += i_46_;
         }
         if (i_37_ > 0 && i_38_ > 0) {
-            createCharacterPixels(Class30_Sub2_Sub1.anIntArray1378, fontPixels[character],
+            createCharacterPixels(DrawingArea.pixels, fontPixels[character],
                                   i_39_, i_43_, i_40_, i_37_, i_38_, i_41_, i_42_);
 
         }

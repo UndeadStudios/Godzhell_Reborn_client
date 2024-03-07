@@ -2,16 +2,13 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-import java.io.PrintStream;
-import sign.signlink;
-
 public class Class23
 {
 
     public static void method264(int i, Class44 class44)
     {
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("spotanim.dat", null));
-        anInt402 = class30_sub2_sub2.method410();
+        Stream stream = new Stream(class44.method571("spotanim.dat", null));
+        anInt402 = stream.readUnsignedShort();
         if(aClass23Array403 == null)
             aClass23Array403 = new Class23[anInt402];
         for(int j = 0; j < anInt402; j++)
@@ -19,24 +16,24 @@ public class Class23
             if(aClass23Array403[j] == null)
                 aClass23Array403[j] = new Class23();
             aClass23Array403[j].anInt404 = j;
-            aClass23Array403[j].method265(class30_sub2_sub2);
+            aClass23Array403[j].method265(stream);
 		}
     }
-	public void method265(Class30_Sub2_Sub2 class30_sub2_sub2)
+	public void method265(Stream stream)
     {
         do {
-		anInt405 = class30_sub2_sub2.method410();
-		anInt406 = class30_sub2_sub2.method410();
+		anInt405 = stream.readUnsignedShort();
+		anInt406 = stream.readUnsignedShort();
         if(Class20.aClass20Array351 != null && anInt406 != 65535 && anInt406 != -1)
          aClass20_407 = Class20.aClass20Array351[anInt406];
-        anInt410 = class30_sub2_sub2.method408();
-        anInt411 = class30_sub2_sub2.method408();
-		int j = class30_sub2_sub2.method408();
+        anInt410 = stream.readUnsignedByte();
+        anInt411 = stream.readUnsignedByte();
+		int j = stream.readUnsignedByte();
 		if(j != 0){
 			for (int k = 0; k < j; k++)
-				anIntArray408[k] = class30_sub2_sub2.method410();
+				anIntArray408[k] = stream.readUnsignedShort();
 			for (int k = 0; k < j; k++)
-				anIntArray409[k] = class30_sub2_sub2.method410();
+				anIntArray409[k] = stream.readUnsignedShort();
 		}
 		break;
         } while(true);

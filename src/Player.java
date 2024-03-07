@@ -1,7 +1,6 @@
-import sign.signlink;
-
-final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
+final class Player extends Class30_Sub2_Sub4_Sub1
 {
+
 
     public final Class30_Sub2_Sub4_Sub6 method444(int i)
     {
@@ -39,9 +38,9 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
         }
         if(aClass30_Sub2_Sub4_Sub6_1714 != null)
         {
-            if(client.anInt1161 >= anInt1708)
+            if(client.loopCycle >= anInt1708)
                 aClass30_Sub2_Sub4_Sub6_1714 = null;
-            if(client.anInt1161 >= anInt1707 && client.anInt1161 < anInt1708)
+            if(client.loopCycle >= anInt1707 && client.loopCycle < anInt1708)
             {
                 Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_1 = aClass30_Sub2_Sub4_Sub6_1714;
                 class30_sub2_sub4_sub6_1.method475(anInt1711 - super.anInt1550, anInt1712 - anInt1709, 16384, anInt1713 - super.anInt1551);
@@ -83,28 +82,28 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
         return class30_sub2_sub4_sub6;
     }
 
-    public final void method451(int i, Class30_Sub2_Sub2 class30_sub2_sub2)
+    public final void method451(int i, Stream stream)
     {
-        class30_sub2_sub2.anInt1406 = 0;
-        anInt1702 = class30_sub2_sub2.method408();
-        anInt1706 = class30_sub2_sub2.method408();
+        stream.anInt1406 = 0;
+        gender = stream.readUnsignedByte();
+        anInt1706 = stream.readUnsignedByte();
         if(i != 0)
             return;
         aClass5_1698 = null;
         anInt1701 = 0;
         for(int j = 0; j < 12; j++)
         {
-            int k = class30_sub2_sub2.method408();
+            int k = stream.readUnsignedByte();
             if(k == 0)
             {
                 anIntArray1717[j] = 0;
                 continue;
             }
-            int i1 = class30_sub2_sub2.method408();
+            int i1 = stream.readUnsignedByte();
             anIntArray1717[j] = (k << 8) + i1;
             if(j == 0 && anIntArray1717[0] == 65535)
             {
-                aClass5_1698 = Class5.method159(class30_sub2_sub2.method410());
+                aClass5_1698 = Class5.method159(stream.readUnsignedShort());
                 break;
             }
             if(anIntArray1717[j] >= 512 && anIntArray1717[j] - 512 < Class8.anInt203)
@@ -117,36 +116,36 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
 
         for(int l = 0; l < 5; l++)
         {
-            int j1 = class30_sub2_sub2.method408();
+            int j1 = stream.readUnsignedByte();
             if(j1 < 0 || j1 >= client.anIntArrayArray1003[l].length)
                 j1 = 0;
             anIntArray1700[l] = j1;
         }
 
-        super.anInt1511 = class30_sub2_sub2.method410();
+        super.anInt1511 = stream.readUnsignedShort();
         if(super.anInt1511 == 65535)
             super.anInt1511 = -1;
-        super.anInt1512 = class30_sub2_sub2.method410();
+        super.anInt1512 = stream.readUnsignedShort();
         if(super.anInt1512 == 65535)
             super.anInt1512 = -1;
-        super.anInt1554 = class30_sub2_sub2.method410();
+        super.anInt1554 = stream.readUnsignedShort();
         if(super.anInt1554 == 65535)
             super.anInt1554 = -1;
-        super.anInt1555 = class30_sub2_sub2.method410();
+        super.anInt1555 = stream.readUnsignedShort();
         if(super.anInt1555 == 65535)
             super.anInt1555 = -1;
-        super.anInt1556 = class30_sub2_sub2.method410();
+        super.anInt1556 = stream.readUnsignedShort();
         if(super.anInt1556 == 65535)
             super.anInt1556 = -1;
-        super.anInt1557 = class30_sub2_sub2.method410();
+        super.anInt1557 = stream.readUnsignedShort();
         if(super.anInt1557 == 65535)
             super.anInt1557 = -1;
-        super.anInt1505 = class30_sub2_sub2.method410();
+        super.anInt1505 = stream.readUnsignedShort();
         if(super.anInt1505 == 65535)
             super.anInt1505 = -1;
-        aString1703 = Class50.method587(-45804, Class50.method584(class30_sub2_sub2.method414(-35089), (byte)-99));
-        anInt1705 = class30_sub2_sub2.method408();
-        anInt1723 = class30_sub2_sub2.method410();
+        name = TextClass.fixName(TextClass.nameForLong(stream.method414(-35089)));
+        anInt1705 = stream.readUnsignedByte();
+        anInt1723 = stream.readUnsignedShort();
         aBoolean1710 = true;
         aLong1718 = 0L;
         for(int k1 = 0; k1 < 12; k1++)
@@ -167,10 +166,10 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
         }
 
         aLong1718 <<= 1;
-        aLong1718 += anInt1702;
+        aLong1718 += gender;
     }
 
-    private final Class30_Sub2_Sub4_Sub6 method452(int i)
+    public final Class30_Sub2_Sub4_Sub6 method452(int i)
     {
         if(aClass5_1698 != null)
         {
@@ -224,7 +223,7 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
                     k2 = j1;
                 if(k2 >= 256 && k2 < 512 && !Class38.aClass38Array656[k2 - 256].method537((byte)2))
                     flag = true;
-                if(k2 >= 512 && !Class8.method198(k2 - 512).method195(40903, anInt1702))
+                if(k2 >= 512 && !Class8.method198(k2 - 512).method195(40903, gender))
                     flag = true;
             }
 
@@ -255,7 +254,7 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
                 }
                 if(i3 >= 512)
                 {
-                    Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_4 = Class8.method198(i3 - 512).method196(false, anInt1702);
+                    Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_4 = Class8.method198(i3 - 512).method196(false, gender);
                     if(class30_sub2_sub4_sub6_4 != null)
                         aclass30_sub2_sub4_sub6[j2++] = class30_sub2_sub4_sub6_4;
                 }
@@ -311,7 +310,7 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
             int j = anIntArray1717[i];
             if(j >= 256 && j < 512 && !Class38.aClass38Array656[j - 256].method539(false))
                 flag = true;
-            if(j >= 512 && !Class8.method198(j - 512).method192(-2836, anInt1702))
+            if(j >= 512 && !Class8.method198(j - 512).method192(-2836, gender))
                 flag = true;
         }
 
@@ -330,7 +329,7 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
             }
             if(i1 >= 512)
             {
-                Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_2 = Class8.method198(i1 - 512).method194(-705, anInt1702);
+                Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_2 = Class8.method198(i1 - 512).method194(-705, gender);
                 if(class30_sub2_sub4_sub6_2 != null)
                     aclass30_sub2_sub4_sub6[k++] = class30_sub2_sub4_sub6_2;
             }
@@ -348,7 +347,7 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
         return class30_sub2_sub4_sub6;
     }
 
-    Class30_Sub2_Sub4_Sub1_Sub2()
+    Player()
     {
         aLong1697 = -1L;
         aBoolean1699 = false;
@@ -364,8 +363,8 @@ final class Class30_Sub2_Sub4_Sub1_Sub2 extends Class30_Sub2_Sub4_Sub1
     boolean aBoolean1699;
     int anIntArray1700[];
     int anInt1701;
-    int anInt1702;
-    String aString1703;
+    int gender;
+    String name;
     static Class12 aClass12_1704 = new Class12(false, 260);
     int anInt1705;
     int anInt1706;

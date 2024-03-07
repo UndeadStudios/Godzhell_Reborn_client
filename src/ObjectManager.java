@@ -1,4 +1,4 @@
-final class Class7 {
+final class ObjectManager {
 
 	private static int anInt123 = (int)(Math.random() * 17D) - 8;
 	private int anIntArray124[];
@@ -40,7 +40,7 @@ final class Class7 {
 	};
 	private static int anInt153 = -388;
 
-	public Class7(byte abyte0[][][], int i, int j, int k, int ai[][][]) {
+	public ObjectManager(byte abyte0[][][], int i, int j, int k, int ai[][][]) {
 		aBoolean132 = true;
 		aBoolean143 = false;
 		anInt150 = -53;
@@ -463,7 +463,7 @@ final class Class7 {
 		return k;
 	}
 
-	public static final void method173(byte byte0, Class30_Sub2_Sub2 class30_sub2_sub2, Class42_Sub1 class42_sub1) {
+	public static final void method173(byte byte0, Stream stream, Class42_Sub1 class42_sub1) {
 		label0:
 		{
 			int i = -1;
@@ -472,20 +472,20 @@ final class Class7 {
 			}
 			do
 			{
-				int j = class30_sub2_sub2.method422();
+				int j = stream.readUSmart2();
 				if(j == 0) {
 					break label0;
 				}
 				i += j;
-				Class46 class46 = Class46.method572(i);
+				Class46 class46 = Class46.forID(i);
 				class46.method574(class42_sub1, -235);
 				do
 				{
-					int k = class30_sub2_sub2.method422();
+					int k = stream.readUSmart();
 					if(k == 0) {
 						break;
 					}
-					class30_sub2_sub2.method408();
+					stream.readUnsignedByte();
 				} while(true);
 			} while(true);
 		}
@@ -518,8 +518,8 @@ final class Class7 {
 		}
 	}
 
-	private final void method175(int y, Class25 class25, Class11 class11, int type, int z, int x, int id,
-		boolean flag, int orientation) {
+	private final void renderObject(int y, Class25 class25, Class11 class11, int type, int z, int x, int id,
+									boolean flag, int orientation) {
 		if(aBoolean151 && (aByteArrayArrayArray149[0][x][y] & 2) == 0) {
 			if((aByteArrayArrayArray149[z][x][y] & 0x10) != 0) {
 				return;
@@ -531,7 +531,7 @@ final class Class7 {
 		if(z < anInt145) {
 			anInt145 = z;
 		}
-		Class46 class46 = Class46.method572(id);
+		Class46 class46 = Class46.forID(id);
 		int size1;
 		int size2;
 		if (orientation == 1 || orientation == 3) {
@@ -581,7 +581,7 @@ final class Class7 {
 				return;
 			}
 			Object obj;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj = class46.method578(22, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -594,7 +594,7 @@ final class Class7 {
 		}
 		if(type == 10 || type == 11) {
 			Object obj1;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj1 = class46.method578(10, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -644,7 +644,7 @@ final class Class7 {
 		}
 		if(type >= 12) {
 			Object obj2;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj2 = class46.method578(type, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -660,7 +660,7 @@ final class Class7 {
 		}
 		if(type == 0) {
 			Object obj3;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj3 = class46.method578(0, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -712,7 +712,7 @@ final class Class7 {
 		}
 		if(type == 1) {
 			Object obj4;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj4 = class46.method578(1, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -741,7 +741,7 @@ final class Class7 {
 			int i3 = orientation + 1 & 3;
 			Object obj11;
 			Object obj12;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj11 = class46.method578(2, 4 + orientation, k1, l1, i2, j2, -1);
 				obj12 = class46.method578(2, i3, k1, l1, i2, j2, -1);
 			} else {
@@ -777,7 +777,7 @@ final class Class7 {
 		}
 		if(type == 3) {
 			Object obj5;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj5 = class46.method578(3, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -804,7 +804,7 @@ final class Class7 {
 		}
 		if(type == 9) {
 			Object obj6;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj6 = class46.method578(type, orientation, k1, l1, i2, j2, -1);
 			} else {
 				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -841,7 +841,7 @@ final class Class7 {
 		}
 		if(type == 4) {
 			Object obj7;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj7 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
 				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -853,10 +853,10 @@ final class Class7 {
 			int i4 = 16;
 			long k4 = class25.method300(z, x, y);
 			if(k4 > 0) {
-				i4 = Class46.method572(ObjectKey.getObjectId(k4)).anInt775;
+				i4 = Class46.forID(ObjectKey.getObjectId(k4)).anInt775;
 			}
 			Object obj13;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj13 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
 				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -866,7 +866,7 @@ final class Class7 {
 		}
 		if(type == 6) {
 			Object obj8;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj8 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
 				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -876,7 +876,7 @@ final class Class7 {
 		}
 		if(type == 7) {
 			Object obj9;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj9 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
 				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -886,7 +886,7 @@ final class Class7 {
 		}
 		if(type == 8) {
 			Object obj10;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj10 = class46.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
 				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
@@ -927,7 +927,7 @@ final class Class7 {
 	}
 
 	public static final boolean method178(int i, int j, int k) {
-		Class46 class46 = Class46.method572(i);
+		Class46 class46 = Class46.forID(i);
 		if(k != 8) {
 			for(int l = 1; l > 0; l++) { }
 		}
@@ -954,14 +954,14 @@ final class Class7 {
 		if(k < 9 || k > 9) {
 			for(int k2 = 1; k2 > 0; k2++) { }
 		}
-		Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte0, 891);
+		Stream stream = new Stream(abyte0, 891);
 		for(int l2 = 0; l2 < 4; l2++) {
 			for(int i3 = 0; i3 < 64; i3++) {
 				for(int j3 = 0; j3 < 64; j3++) {
 					if(l2 == i && i3 >= i1 && i3 < i1 + 8 && j3 >= j1 && j3 < j1 + 8) {
-						method181(l1 + Class4.method156(j3 & 7, j, -383, i3 & 7), 0, class30_sub2_sub2, l + Class4.method155(j, j3 & 7, i3 & 7, false), k1, j, 942, 0);
+						method181(l1 + Class4.method156(j3 & 7, j, -383, i3 & 7), 0, stream, l + Class4.method155(j, j3 & 7, i3 & 7, false), k1, j, 942, 0);
 					} else {
-						method181(-1, 0, class30_sub2_sub2, -1, 0, 0, 942, 0);
+						method181(-1, 0, stream, -1, 0, 0, 942, 0);
 					}
 				}
 
@@ -984,11 +984,11 @@ final class Class7 {
 
 		}
 
-		Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte0, 891);
+		Stream stream = new Stream(abyte0, 891);
 		for(int l1 = 0; l1 < 4; l1++) {
 			for(int i2 = 0; i2 < 64; i2++) {
 				for(int j2 = 0; j2 < 64; j2++) {
-					method181(j2 + i, l, class30_sub2_sub2, i2 + j, l1, 0, 942, k);
+					method181(j2 + i, l, stream, i2 + j, l1, 0, 942, k);
 				}
 
 			}
@@ -1000,14 +1000,14 @@ final class Class7 {
 		}
 	}
 
-	private final void method181(int i, int j, Class30_Sub2_Sub2 class30_sub2_sub2, int k, int l, int i1, int j1,
-		int k1) {
+	private final void method181(int i, int j, Stream stream, int k, int l, int i1, int j1,
+								 int k1) {
 		j1 = 36 / j1;
 		if(k >= 0 && k < 104 && i >= 0 && i < 104) {
 			aByteArrayArrayArray149[l][k][i] = 0;
 			do
 			{
-				int l1 = class30_sub2_sub2.method408();
+				int l1 = stream.readUnsignedByte();
 				if(l1 == 0) {
 					if(l == 0) {
 						anIntArrayArrayArray129[0][k][i] = -method172(0xe3b7b + k + k1, 0x87cce + i + j) * 8;
@@ -1018,7 +1018,7 @@ final class Class7 {
 					}
 				}
 				if(l1 == 1) {
-					int j2 = class30_sub2_sub2.method408();
+					int j2 = stream.readUnsignedByte();
 					if(j2 == 1) {
 						j2 = 0;
 					}
@@ -1031,7 +1031,7 @@ final class Class7 {
 					}
 				}
 				if(l1 <= 49) {
-					aByteArrayArrayArray130[l][k][i] = class30_sub2_sub2.method409();
+					aByteArrayArrayArray130[l][k][i] = stream.method409();
 					aByteArrayArrayArray136[l][k][i] = (byte)((l1 - 2) / 4);
 					aByteArrayArrayArray148[l][k][i] = (byte)((l1 - 2) + i1 & 3);
 				} else
@@ -1044,16 +1044,16 @@ final class Class7 {
 		}
 		do
 		{
-			int i2 = class30_sub2_sub2.method408();
+			int i2 = stream.readUnsignedByte();
 			if(i2 == 0) {
 				break;
 			}
 			if(i2 == 1) {
-				class30_sub2_sub2.method408();
+				stream.readUnsignedByte();
 				return;
 			}
 			if(i2 <= 49) {
-				class30_sub2_sub2.method408();
+				stream.readUnsignedByte();
 			}
 		} while(true);
 	}
@@ -1076,14 +1076,14 @@ final class Class7 {
 		byte abyte0[], int i1, int j1, int k1) {
 		label0:
 		{
-			Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte0, 891);
+			Stream stream = new Stream(abyte0, 891);
 			int l1 = -1;
 			if(!flag) {
 				aBoolean143 = !aBoolean143;
 			}
 			do
 			{
-				int i2 = class30_sub2_sub2.method422();
+				int i2 = stream.readUSmart2();
 				if(i2 == 0) {
 					break label0;
 				}
@@ -1091,7 +1091,7 @@ final class Class7 {
 				int j2 = 0;
 				do
 				{
-					int k2 = class30_sub2_sub2.method422();
+					int k2 = stream.readUSmart();
 					if(k2 == 0) {
 						break;
 					}
@@ -1099,11 +1099,11 @@ final class Class7 {
 					int l2 = j2 & 0x3f;
 					int i3 = j2 >> 6 & 0x3f;
 					int j3 = j2 >> 12;
-					int k3 = class30_sub2_sub2.method408();
+					int k3 = stream.readUnsignedByte();
 					int l3 = k3 >> 2;
 					int i4 = k3 & 3;
 					if(j3 == i && i3 >= i1 && i3 < i1 + 8 && l2 >= k && l2 < k + 8) {
-						Class46 class46 = Class46.method572(l1);
+						Class46 class46 = Class46.forID(l1);
 						int j4 = j + Class4.method157(j1, class46.anInt761, i3 & 7, (byte)113, l2 & 7, class46.anInt744);
 						int k4 = k1 + Class4.method158(-433, l2 & 7, class46.anInt761, j1, class46.anInt744, i3 & 7);
 						if(j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
@@ -1115,7 +1115,11 @@ final class Class7 {
 							if(l4 >= 0) {
 								class11 = aclass11[l4];
 							}
-							method175(k4, class25, class11, l3, l, j4, l1, false, i4 + j1 & 3);
+							try {
+							renderObject(k4, class25, class11, l3, l, j4, l1, false, i4 + j1 & 3);
+						}catch(Exception e){
+								e.printStackTrace();
+							}
 						}
 					}
 				} while(true);
@@ -1183,7 +1187,7 @@ final class Class7 {
 			anInt153 = -145;
 		}
 		int l2 = l1 + i2 + j2 + k2 >> 2;
-		Class46 class46 = Class46.method572(id);
+		Class46 class46 = Class46.forID(id);
 		long key = (long) (orientation << 20 | type << 14 | (y << 7 | x) + 0x40000000);
 		if(!class46.hasactions) {
 			key |= ~0x7fffffffffffffffL;
@@ -1195,7 +1199,7 @@ final class Class7 {
 		byte byte1 = (byte)((orientation << 6) + type);
 		if(type == 22) {
 			Object obj;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj = class46.method578(22, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1208,7 +1212,7 @@ final class Class7 {
 		}
 		if(type == 10 || type == 11) {
 			Object obj1;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj1 = class46.method578(10, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1236,7 +1240,7 @@ final class Class7 {
 		}
 		if(type >= 12) {
 			Object obj2;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj2 = class46.method578(type, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1249,7 +1253,7 @@ final class Class7 {
 		}
 		if(type == 0) {
 			Object obj3;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj3 = class46.method578(0, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1262,7 +1266,7 @@ final class Class7 {
 		}
 		if(type == 1) {
 			Object obj4;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj4 = class46.method578(1, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1277,7 +1281,7 @@ final class Class7 {
 			int j3 = orientation + 1 & 3;
 			Object obj11;
 			Object obj12;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj11 = class46.method578(2, 4 + orientation, l1, i2, j2, k2, -1);
 				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
 			} else {
@@ -1292,7 +1296,7 @@ final class Class7 {
 		}
 		if(type == 3) {
 			Object obj5;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj5 = class46.method578(3, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1305,7 +1309,7 @@ final class Class7 {
 		}
 		if(type == 9) {
 			Object obj6;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj6 = class46.method578(type, orientation, l1, i2, j2, k2, -1);
 			} else {
 				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1342,7 +1346,7 @@ final class Class7 {
 		}
 		if(type == 4) {
 			Object obj7;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
 				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1354,10 +1358,10 @@ final class Class7 {
 			int j4 = 16;
 			long l4 = class25.method300(k1, x, y);
 			if(l4 > 0) {
-				j4 = Class46.method572(ObjectKey.getObjectId(l4)).anInt775;
+				j4 = Class46.forID(ObjectKey.getObjectId(l4)).anInt775;
 			}
 			Object obj13;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
 				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1367,7 +1371,7 @@ final class Class7 {
 		}
 		if(type == 6) {
 			Object obj8;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
 				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1377,7 +1381,7 @@ final class Class7 {
 		}
 		if(type == 7) {
 			Object obj9;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
 				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1387,7 +1391,7 @@ final class Class7 {
 		}
 		if(type == 8) {
 			Object obj10;
-			if(class46.anInt781 == -1 && class46.anIntArray759 == null) {
+			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
 				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
 				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
@@ -1400,10 +1404,10 @@ final class Class7 {
 		if (i_251_ < 6 || i_251_ > 6)
 			throw new NullPointerException();
 		boolean bool = true;
-		Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(is, 891);
+		Stream stream = new Stream(is, 891);
 		int i_252_ = -1;
 		for (;;) {
-			int i_253_ = class30_sub2_sub2.method1606();
+			int i_253_ = stream.method1606();
 			if (i_253_ == 0)
 				break;
 			i_252_ += i_253_;
@@ -1411,22 +1415,22 @@ final class Class7 {
 			boolean bool_255_ = false;
 			for (;;) {
 				if (bool_255_) {
-					int i_256_ = class30_sub2_sub2.readUShortSmart();
+					int i_256_ = stream.readUShortSmart();
 					if (i_256_ == 0)
 						break;
-					class30_sub2_sub2.method408();
+					stream.readUnsignedByte();
 				} else {
-					int i_257_ = class30_sub2_sub2.readUShortSmart();
+					int i_257_ = stream.readUShortSmart();
 					if (i_257_ == 0)
 						break;
 					i_254_ += i_257_ - 1;
 					int i_258_ = i_254_ & 0x3f;
 					int i_259_ = i_254_ >> 6 & 0x3f;
-					int i_260_ = class30_sub2_sub2.method408() >> 2;
+					int i_260_ = stream.readUnsignedByte() >> 2;
 					int i_261_ = i_259_ + i;
 					int i_262_ = i_258_ + i_250_;
 					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103) {
-						Class46 class46 = Class46.method572(i_252_);
+						Class46 class46 = Class46.forID(i_252_);
 						if (i_260_ != 22 || !aBoolean151 || class46.hasactions || class46.aBoolean736) {
 							bool &= class46.method579(true);
 							bool_255_ = true;
@@ -1444,17 +1448,17 @@ final class Class7 {
 			if(k < 7 || k > 7) {
 				return;
 			}
-			Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte0, 891);
+			Stream stream = new Stream(abyte0, 891);
 			int l = -1;
 			do {
-				int i1 = class30_sub2_sub2.method422();
+				int i1 = stream.readUSmart2();
 				if(i1 == 0) {
 					break label0;
 				}
 				l += i1;
 				int j1 = 0;
 				do {
-					int k1 = class30_sub2_sub2.method422();
+					int k1 = stream.readUSmart();
 					if(k1 == 0) {
 						break;
 					}
@@ -1462,7 +1466,7 @@ final class Class7 {
 					int l1 = j1 & 0x3f;
 					int i2 = j1 >> 6 & 0x3f;
 					int j2 = j1 >> 12;
-					int k2 = class30_sub2_sub2.method408();
+					int k2 = stream.readUnsignedByte();
 					int l2 = k2 >> 2;
 					int i3 = k2 & 3;
 					int j3 = i2 + i;
@@ -1476,7 +1480,7 @@ final class Class7 {
 						if(l3 >= 0) {
 							class11 = aclass11[l3];
 						}
-						method175(k3, class25, class11, l2, j2, j3, l, false, i3);
+						renderObject(k3, class25, class11, l2, j2, j3, l, false, i3);
 					}
 				} while(true);
 			} while(true);

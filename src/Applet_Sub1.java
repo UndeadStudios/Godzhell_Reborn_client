@@ -2,44 +2,56 @@ import javax.swing.*;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+import java.net.MalformedURLException;
 
 public class Applet_Sub1 extends Applet
     implements Runnable, MouseListener, MouseMotionListener, KeyListener, FocusListener, WindowListener, MouseWheelListener
 {
-
-    public final void method1(int i, boolean flag, int j)
-    {
-        anInt10 = j;
-        anInt11 = i;
-        if(flag)
-        {
-            return;
-        } else
-        {
-            aFrame_Sub1_15 = new Frame_Sub1(this, anInt10, (byte)5, anInt11);
-            aGraphics12 = method11(0).getGraphics();
-            aClass15_13 = new Class15(anInt10, anInt11, method11(0), 0);
-            method12(this, 1);
-            return;
+    public int key;
+    public boolean isApplet;
+    ClientFrame gameFrame;
+    public void refreshFrameSize(boolean undecorated, int width, int height, boolean resizable, boolean full) throws MalformedURLException {
+        boolean createdByApplet = this.isApplet && !full;
+        this.myWidth = width;
+        this.myHeight = height;
+        if(this.gameFrame != null) {
+            this.gameFrame.dispose();
         }
+
+        if(!createdByApplet) {
+            this.gameFrame = new ClientFrame(this, width, height, resizable, undecorated);
+            this.gameFrame.addWindowListener(this);
+        }
+
+        this.aGraphics12 = ((Container)(createdByApplet?this:this.gameFrame)).getGraphics();
+        if(!createdByApplet) {
+            this.method11(0).addMouseWheelListener(this);
+            this.method11(0).addMouseListener(this);
+            this.method11(0).addMouseMotionListener(this);
+            this.method11(0).addKeyListener(this);
+            this.method11(0).addFocusListener(this);
+        }
+
     }
-	public void switchToFullscreen(){
-		aFrame_Sub1_15.dispose(); 
-		aFrame_Sub1_15.setFullscreen();
-		aGraphics12 = method11(0).getGraphics();
-	}
-	
-	public void switchToNormalscreen(){
-		aFrame_Sub1_15.dispose(); 
-		aFrame_Sub1_15.setNormalscreen(765, 503);
-		aGraphics12 = method11(0).getGraphics();
-	}
+    public boolean appletClient() {
+        return this.gameFrame == null && this.isApplet;
+    }
+    final void method1(int i, int j) throws MalformedURLException {
+        this.isApplet = false;
+        this.myWidth = j;
+        this.myHeight = i;
+            this.gameFrame = new ClientFrame(this, this.myWidth, this.myHeight, client.currentScreenMode == client.ScreenMode.RESIZABLE, client.currentScreenMode == client.ScreenMode.FULLSCREEN);
+        this.aGraphics12 = this.method11(0).getGraphics();
+        this.aRSImageProducer_13 = new RSImageProducer(this.myWidth, this.myHeight);
+        this.method12(this, 1);
+    }
     public final void method2(int i, boolean flag, int j)
     {
-        anInt10 = j;
-        anInt11 = i;
+        this.isApplet = true;
+        myWidth = j;
+        myHeight = i;
         aGraphics12 = method11(0).getGraphics();
-        aClass15_13 = new Class15(anInt10, anInt11, method11(0), 0);
+        aRSImageProducer_13 = new RSImageProducer(myWidth, myHeight);
         method12(this, 1);
         if(!flag);
     }
@@ -47,36 +59,36 @@ public class Applet_Sub1 extends Applet
     {
 	int notches = e.getWheelRotation();
         /** ZOOMING **/
-        boolean zoom = client.currentScreenMode == client.ScreenMode.FIXED ? (anInt20 < 512)
-                : (anInt20 < client.currentGameWidth - 200);
-        if (zoom && client.anInt857 == -1) {
-            client.clientZoom += notches * 35;
+        boolean zoom = client.currentScreenMode == client.ScreenMode.FIXED ? (mouseX < 512)
+                : (mouseX < client.currentGameWidth - 200);
+        if (zoom && client.openInterfaceID == -1) {
+            client.cameraZoom += notches * 35;
 
             int max_zoom_1 = (client.currentScreenMode == client.ScreenMode.FIXED ? -150 : -300);
-            if (client.clientZoom < max_zoom_1) {
-                client.clientZoom = max_zoom_1;
+            if (client.cameraZoom < max_zoom_1) {
+                client.cameraZoom = max_zoom_1;
             }
-            if (client.clientZoom > 1200) {
-                client.clientZoom = 1200;
+            if (client.cameraZoom > 2200) {
+                client.cameraZoom = 2200;
             }
             if (client.currentScreenMode == client.ScreenMode.FIXED) {
-                if (client.clientZoom < 70) {
-                    client.clientZoom = 70;
+                if (client.cameraZoom < 70) {
+                    client.cameraZoom = 70;
                 }
             } else {
-                if (client.clientZoom < 130) {
-                    client.clientZoom = 130;
+                if (client.cameraZoom < 130) {
+                    client.cameraZoom = 130;
                 }
             }
 
             int setting = 0;
-            if (client.clientZoom > 1000) {
+            if (client.cameraZoom > 1000) {
                 setting = 4;
-            } else if (client.clientZoom > 800) {
+            } else if (client.cameraZoom > 800) {
                 setting = 3;
-            } else if (client.clientZoom > 600) {
+            } else if (client.cameraZoom > 600) {
                 setting = 2;
-            } else if (client.clientZoom > 400) {
+            } else if (client.cameraZoom > 400) {
                 setting = 1;
             }
 
@@ -92,17 +104,24 @@ public class Applet_Sub1 extends Applet
 			*/
             //RSInterface.interfaceCache[SettingsWidget.ZOOM_SLIDER].slider.setValue(client.clientZoom);
         }
-	if (anInt20 > 0 && anInt21 > 340 && anInt20 < 510 && anInt21 < 500) {//Chatbox
-	  client.anInt1089 -= notches*30;		
-	}
-	if (anInt21 > 210 && anInt21 < 473 && anInt20 > 514 && anInt20 < 762) {//Invertory
-if(client.anIntArray1130[client.anInt1221] == 638)
-Class9.aClass9Array210[639].anInt224 += notches*30;	
+        if(this.mouseX > client.currentGameWidth / 2 + 0 && this.mouseY > client.currentGameHeight / 2 + 340 && this.mouseX < client.currentGameWidth / 2 - 510 && this.mouseY < client.currentGameHeight / 2 - 500) {
+            client.anInt1089 -= notches * 30;
+        }
 
-}	if (anInt20 > 0 && anInt20 < 512 && anInt21 > 0 && anInt21 < 334) {//Ingame
-if(client.anInt857 == 5292)
-Class9.aClass9Array210[5385].anInt224 += notches*30;
-}}
+        if(this.mouseY > 210 && this.mouseY < 473 && this.mouseX > 514 && this.mouseX < 762 && client.tabInterfaceIDs[client.tabID] == 638) {
+            Widget.interfaceCache[639].scrollPosition += notches * 30;
+        }
+
+        if(this.mouseX > (client.currentGameWidth - 765) / 2 && this.mouseY > (client.currentGameHeight - 503) / 2 && this.mouseX < (client.currentGameWidth + 765) / 2 && this.mouseY < (client.currentGameHeight + 503) / 2 && client.openInterfaceID == 5292) {
+            Widget.interfaceCache[5385].scrollPosition += notches * 30;
+        }
+        if(this.mouseX > (client.currentGameWidth - 765) / 2 && this.mouseY > (client.currentGameHeight - 503) / 2 && this.mouseX < (client.currentGameWidth + 765) / 2 && this.mouseY < (client.currentGameHeight + 503) / 2 && client.tabInterfaceIDs[client.tabID] == 962) {
+            Widget.interfaceCache[962].scrollPosition += notches * 30;
+        }
+        if(this.mouseX > (client.currentGameWidth - 765) / 2 && this.mouseY > (client.currentGameHeight - 503) / 2 && this.mouseX < (client.currentGameWidth + 765) / 2 && this.mouseY < (client.currentGameHeight + 503) / 2 && client.tabInterfaceIDs[client.tabID] == 18891) {
+            Widget.interfaceCache[18892].scrollPosition += notches * 30;
+        }
+    }
 
     public void run()
     {
@@ -112,8 +131,8 @@ Class9.aClass9Array210[5385].anInt224 += notches*30;
         method11(0).addFocusListener(this);
         method11(0).addMouseWheelListener(this);
 	method11(0).setFocusTraversalKeysEnabled(false);
-        if(aFrame_Sub1_15 != null)
-            aFrame_Sub1_15.addWindowListener(this);
+        if(gameFrame != null)
+            gameFrame.addWindowListener(this);
         method13(0, (byte)4, "Loading...");
         method6();
         int i = 0;
@@ -178,9 +197,9 @@ Class9.aClass9Array210[5385].anInt224 += notches*30;
             }
             for(; i1 < 256; i1 += j)
             {
-                anInt26 = anInt22;
-                anInt27 = anInt23;
-                anInt28 = anInt24;
+                clickMode3 = anInt22;
+                saveClickX = anInt23;
+                saveClickY = anInt24;
                 aLong29 = aLong25;
                 anInt22 = 0;
                 method7(24869);
@@ -217,7 +236,7 @@ Class9.aClass9Array210[5385].anInt224 += notches*30;
         method8(493);
         if(i != 4747)
             return;
-        if(aFrame_Sub1_15 != null)
+        if(gameFrame != null)
         {
             try
             {
@@ -295,7 +314,7 @@ public boolean mouseWheelDown;
         if(mouseevent.isControlDown()) {
             client.controlIsDown = true;
         }
-        if(aFrame_Sub1_15 != null)
+        if(gameFrame != null)
         {
             i -= 4;
             j -= 22;
@@ -330,7 +349,7 @@ public boolean mouseWheelDown;
 
         int i = mouseevent.getX();
         int j = mouseevent.getY();
-        if(aFrame_Sub1_15 != null)
+        if(gameFrame != null)
         {
             i -= 4;
             j -= 22;
@@ -344,8 +363,8 @@ public boolean mouseWheelDown;
 			return;
 		}
         anInt18 = 0;
-        anInt20 = i;
-        anInt21 = j;
+        mouseX = i;
+        mouseY = j;
     }
 
 void mouseWheelDragged(int param1, int param2) {
@@ -370,22 +389,22 @@ mouseWheelDown = false;
     public final void mouseExited(MouseEvent mouseevent)
     {
         anInt18 = 0;
-        anInt20 = -1;
-        anInt21 = -1;
+        mouseX = -1;
+        mouseY = -1;
     }
 
     public final void mouseMoved(MouseEvent mouseevent)
     {
         int i = mouseevent.getX();
         int j = mouseevent.getY();
-        if(aFrame_Sub1_15 != null)
+        if(gameFrame != null)
         {
             i -= 4;
             j -= 22;
         }
         anInt18 = 0;
-        anInt20 = i;
-        anInt21 = j;
+        mouseX = i;
+        mouseY = j;
     }
 
      public final void keyPressed(KeyEvent keyevent)
@@ -394,16 +413,16 @@ mouseWheelDown = false;
         int i = keyevent.getKeyCode();
         int j = keyevent.getKeyChar();
         if (i == KeyEvent.VK_PAGE_UP) {
-            if (client.clientZoom == 150) {
+            if (client.cameraZoom == 150) {
                 return;
             }
-            client.clientZoom -= 50;
+            client.cameraZoom -= 50;
         }
         if (i == KeyEvent.VK_PAGE_DOWN) {
-            if (client.clientZoom == 1300) {
+            if (client.cameraZoom == 1300) {
                 return;
             }
-            client.clientZoom += 50;
+            client.cameraZoom += 50;
         }
         if(j < 30)
             j = 0;
@@ -567,17 +586,16 @@ mouseWheelDown = false;
             byte0 = 0;
     }
 
-    public Component method11(int i)
-    {
-        if(i != 0)
-        {
-            for(int j = 1; j > 0; j++);
+    public Component method11(int i) {
+        if(i != 0) {
+            for(int j = 1; j > 0; ++j) {
+                ;
+            }
         }
-        if(aFrame_Sub1_15 != null)
-            return aFrame_Sub1_15;
-        else
-            return this;
+
+        return (Component)(this.gameFrame != null?this.gameFrame:this);
     }
+
 
     public void method12(Runnable runnable, int i)
     {
@@ -609,24 +627,24 @@ mouseWheelDown = false;
         if(aBoolean16)
         {
             aGraphics12.setColor(Color.black);
-            aGraphics12.fillRect(0, 0, anInt10, anInt11);
+            aGraphics12.fillRect(0, 0, client.currentGameWidth, client.currentGameHeight);
             aBoolean16 = false;
         }
         Color color = new Color(140, 17, 17);
-        int j = anInt11 / 2 - 18;
+        int j = myHeight / 2 - 18;
         aGraphics12.setColor(color);
-        aGraphics12.drawRect(anInt10 / 2 - 152, j, 304, 34);
-        aGraphics12.fillRect(anInt10 / 2 - 150, j + 2, i * 3, 30);
+        aGraphics12.drawRect(client.currentGameWidth / 2 - 152, j, 304, 34);
+        aGraphics12.fillRect(client.currentGameWidth / 2 - 150, j + 2, i * 3, 30);
         aGraphics12.setColor(Color.black);
         if(byte0 != 4)
         {
             return;
         } else
         {
-            aGraphics12.fillRect((anInt10 / 2 - 150) + i * 3, j + 2, 300 - i * 3, 30);
+            aGraphics12.fillRect((client.currentGameWidth / 2 - 150) + i * 3, j + 2, 300 - i * 3, 30);
             aGraphics12.setFont(font);
             aGraphics12.setColor(Color.white);
-            aGraphics12.drawString(s, (anInt10 - fontmetrics.stringWidth(s)) / 2, j + 22);
+            aGraphics12.drawString(s, (client.currentGameWidth - fontmetrics.stringWidth(s)) / 2, j + 22);
             return;
         }
     }
@@ -640,7 +658,7 @@ mouseWheelDown = false;
         anInt6 = 1;
         aLongArray7 = new long[10];
         aBoolean9 = false;
-        aClass30_Sub2_Sub1_Sub1Array14 = new Class30_Sub2_Sub1_Sub1[6];
+        aSpriteArray14 = new Sprite[6];
         aBoolean16 = true;
         aBoolean17 = true;
         anIntArray30 = new int[128];
@@ -656,32 +674,30 @@ mouseWheelDown = false;
     private long aLongArray7[];
     public int anInt8;
     public boolean aBoolean9;
-    public int anInt10;
-    public int anInt11;
+    public int myWidth;
+    public int myHeight;
     public Graphics aGraphics12;
-    public Class15 aClass15_13;
-    public Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array14[];
-    public Frame_Sub1 aFrame_Sub1_15;
+    public RSImageProducer aRSImageProducer_13;
+    public Sprite aSpriteArray14[];
     public boolean aBoolean16;
     public boolean aBoolean17;
     public int anInt18;
     public int anInt19;
-    public int anInt20;
-    public int anInt21;
+    public int mouseX;
+    public int mouseY;
     public int anInt22;
     public int anInt23;
     public int anInt24;
     public long aLong25;
-    public int anInt26;
-    public int anInt27;
-    public int anInt28;
+    public int clickMode3;
+    public int saveClickX;
+    public int saveClickY;
     public long aLong29;
     public int anIntArray30[];
     private int anIntArray31[];
     private int anInt32;
     private int anInt33;
     public static int anInt34;
-    public int key;
 
     public int getFps() {
         return anInt8;

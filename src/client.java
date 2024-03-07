@@ -8,16 +8,10 @@ import java.util.zip.CRC32;
 
 import sign.signlink;
 
-import javax.swing.*;
 import java.net.URL;
-import java.net.URLConnection;
-
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 public class client extends Applet_Sub1 {
-    public static int clientZoom = 600;
+    public static int cameraZoom;
     public static boolean controlIsDown;
     private FogHandler fogHandler = new FogHandler();
     public static int cameratoggle;
@@ -26,13 +20,13 @@ public class client extends Applet_Sub1 {
     public static final ClientDiscordRPC RICH_PRESENCE = new ClientDiscordRPC();
     public static int lftrit;
     public static int fwdbwd;
-    public static int log_view_dist = 10;
+    public static int log_view_dist = 9;
     public static boolean flip = false;
     public static boolean newDamage = false;
     public static boolean flip_s = false;
     public static boolean flip_r = false;
     public boolean FogToggle = false;
-    public boolean roofsOff = true;
+    public boolean roofsOff = false;
     public boolean skyLoad = true;
     public boolean hp = true;
     public int resizeable = 0;
@@ -40,18 +34,27 @@ public class client extends Applet_Sub1 {
     public static int MapY;
     public static int mapX;
     public static int mapY;
-    public static int cameraPos2= 600;
-    public static int clientWidth = 765, clientHeight = 503;
-    public static int clientSize = 0;
-    public int appletWidth = 765;
-    public int appletHeight = 503;
-    private static final int resizableWidth = 900;
-    private static final int resizableHeight = 600;
-    private int gameAreaWidth = 512;
-    private int gameAreaHeight = 334;
+
+    public RSFont newSmallFont;
+    public RSFont newRegularFont;
+    public RSFont newBoldFont;
+    public RSFont newFancyFont;
+    private static boolean showTabComponents;
+    private static boolean changeTabArea;
+    private static boolean showChatComponents;
+    private boolean transparentTabArea = false;
+    private static boolean changeChatArea;
+    private int chatTypeView = 0;
+    public static client instance;
+    private String clanname;
+    public PlayerTitles playerTitle = new PlayerTitles();
+    private Sprite[] BlackMap;
+    private RSImageProducer leftFrame;
+    private RSImageProducer topFrame;
+    private int setChannel;
 
     public void appearInChat(String x) {
-        method77(" ", 80, x, false);
+        pushMessage(" ", 80, x);
         System.out.println("Reached appearInChat for: "+x);
     }
 
@@ -60,9 +63,9 @@ public class client extends Applet_Sub1 {
         if (packet == 103)
         {
             stream.method397((byte) 6, 103);
-            stream.writeUnsignedByte(aString887.length() - 1);
-            stream.writeString(aString887.substring(2));
-            aString887 = "";
+            stream.writeUnsignedByte(inputString.length() - 1);
+            stream.writeString(inputString.substring(2));
+            inputString = "";
         }
     }
 
@@ -75,28 +78,6 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public static int REGULAR_WIDTH = 765, REGULAR_HEIGHT = 503;
-
-    private void updateGameArea() {
-        Class30_Sub2_Sub1_Sub3.method365(clientSize == 0 ? REGULAR_WIDTH : clientWidth, clientSize == 0 ? REGULAR_HEIGHT : clientHeight, 96);
-        fullScreenTextureArray = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-        Class30_Sub2_Sub1_Sub3.method365(clientSize == 0 ? 516 : clientWidth, clientSize == 0 ? 165 : clientHeight, 261);
-        anIntArray1180 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-        //Texture.method365(clientSize == 0 ? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.anInt316 : 250) : clientWidth,clientSize == 0 ? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.anInt317 : 335) : clientHeight);
-        anIntArray1181 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-        //Texture.method365(clientSize == 0 ? 512 : clientWidth, clientSize == 0 ? 334 : clientHeight);
-        anIntArray1182 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-
-        int ai[] = new int[9];
-        for (int i8 = 0; i8 < 9; i8++) {
-            int k8 = 128 + i8 * 32 + 15;
-            int l8 = 600 + k8 * 3;
-            int i9 = Class30_Sub2_Sub1_Sub3.anIntArray1470[k8];
-            ai[i8] = l8 * i9 >> 16;
-        }
-
-        Class25.method310(500, 800, clientSize == 0 ? 512 : clientWidth, clientSize == 0 ? 334 : clientHeight, ai, aBoolean1231);
-    }
     public static final Rectangle MAXIMUM_SCREEN_BOUNDS = GraphicsEnvironment.getLocalGraphicsEnvironment()
             .getMaximumWindowBounds();
     void mouseWheelDragged(int i, int j) {
@@ -150,81 +131,77 @@ public class client extends Applet_Sub1 {
         }
 
     }
-    public static ScreenMode currentScreenMode = ScreenMode.FIXED;
-    public static int currentGameWidth = currentScreenMode.equals(ScreenMode.FIXED) ? 765 : 0;
-    public static int currentGameHeight = currentScreenMode.equals(ScreenMode.FIXED) ? 503 : 0;
-    public static int gameScreenWidth = 516;
-    public static int gameScreenHeight = 338;
+    public static ScreenMode currentScreenMode;
+    public static int currentGameWidth;
+    public static int currentGameHeight;
+    public static int screenAreaWidth;
+    public static int screenAreaHeight;
+    private int cButtonHPos = -1;
+    private int cButtonCPos = 0;
     public static int IDLE_TIME = 60000; // 1 minute = 3000
-    public void currentScreenMode(client.ScreenMode mode) {
-        if (currentScreenMode == mode)
-            return;
+    public static void currentScreenMode(client.ScreenMode mode) {
+        if (currentScreenMode != mode) {
+            currentScreenMode = mode;
+            if (mode == ScreenMode.FIXED) {
+                currentGameWidth = 765;
+                currentGameHeight = 503;
+                screenAreaWidth = 512;
+                screenAreaHeight = 334;
+                changeChatArea = false;
+                changeTabArea = false;
+                cameraZoom = 600;
+                log_view_dist = 9;
+                changeChatArea = false;
+                changeTabArea = false;
+            } else if (mode == ScreenMode.RESIZABLE) {
+                currentGameWidth = 766;
+                currentGameHeight = 529;
+                cameraZoom = 850;
+                log_view_dist = 10;
+            } else if (mode == ScreenMode.FULLSCREEN) {
+                cameraZoom = 600;
+                log_view_dist = 10;
+                currentGameWidth = (int) Toolkit.getDefaultToolkit().getScreenSize().getWidth();
+                currentGameHeight = (int) Toolkit.getDefaultToolkit().getScreenSize().getHeight();
+            }
 
-        JFrame component = ClientWindow.getFrame();
+            rebuildFrameSize(mode, currentGameWidth, currentGameHeight);
+            setBounds();
+            System.out.println("ScreenMode: " + mode.toString());
+        }
 
-        component.dispose();
-        currentScreenMode = mode;
-        if (mode.isUndecorated()) {
-            component.setUndecorated(true);
-            component.setLocation(0, 0);
-            component.setVisible(true);
-        } else {
-            if (component.isUndecorated()) {
-                component.setUndecorated(false);
-                component.setVisible(true);
+        showChatComponents = currentScreenMode == ScreenMode.FIXED ? true : showChatComponents;
+        showTabComponents = currentScreenMode == ScreenMode.FIXED ? true : showTabComponents;
+    }
+    public void refreshFrameSize() {
+        if (currentScreenMode == ScreenMode.RESIZABLE) {
+            if (currentGameWidth != (this.appletClient() ? this.method11(0).getWidth() : this.gameFrame.getFrameWidth())) {
+                currentGameWidth = this.appletClient() ? this.method11(0).getWidth() : this.gameFrame.getFrameWidth();
+                screenAreaWidth = currentGameWidth;
+                setBounds();
+            }
+
+            if (currentGameHeight != (this.appletClient() ? this.method11(0).getHeight() : this.gameFrame.getFrameHeight())) {
+                currentGameHeight = this.appletClient() ? this.method11(0).getHeight() : this.gameFrame.getFrameHeight();
+                screenAreaHeight = currentGameHeight;
+                setBounds();
             }
         }
 
-        component.setMinimumSize(new Dimension(765, mode == ScreenMode.FIXED ? 503 : 610));
-        //component.setMinimumSize(new Dimension(
-        // mode == ScreenMode.FIXED ? 765+30 : 850,
-        //mode == ScreenMode.FIXED ? 503+39 : 600));
-
-        component.setResizable(mode.isResizable());
-        Insets insets = ClientWindow.getInset();
-
-        int clientWidth = mode.getWidth();
-        int clientHeight = mode.getHeight();
-
-        final int xInsetOffset = insets.left + insets.right;
-        final int yInsetOffset = insets.top + insets.bottom;
-
-        int totalClientWidth = clientWidth;
-        int totalClientHeight = clientHeight;
-        if (mode == ScreenMode.FIXED) {
-            log_view_dist = 9;
-            // WorldController.viewDistance = 9;
-        } else if (mode == ScreenMode.RESIZABLE) {
-            log_view_dist = 10;
-            // WorldController.viewDistance = 10;
-        } else if (mode == ScreenMode.FULLSCREEN) {
-            log_view_dist = 10;
-            // WorldController.viewDistance = 10;
-        }
-        if (mode == ScreenMode.FULLSCREEN) {
-/*			if (SystemUtils.IS_OS_MAC)
-				component.setLocation(0, insets.top);*/
-            totalClientWidth = (int) MAXIMUM_SCREEN_BOUNDS.getWidth();
-            totalClientHeight = (int) MAXIMUM_SCREEN_BOUNDS.getHeight();
-        } else {
-            totalClientWidth += xInsetOffset;
-            totalClientHeight += yInsetOffset;
+    }
+    public static void rebuildFrameSize(ScreenMode screenMode, int screenWidth, int screenHeight) {
+        try {
+            screenAreaWidth = screenMode == ScreenMode.FIXED ? 512 : screenWidth;
+            screenAreaHeight = screenMode == ScreenMode.FIXED ? 334 : screenHeight;
+            currentGameWidth = screenWidth;
+            currentGameHeight = screenHeight;
+            instance.refreshFrameSize(screenMode == ScreenMode.FULLSCREEN, screenWidth, screenHeight,
+                    screenMode == ScreenMode.RESIZABLE, screenMode != ScreenMode.FIXED);
+            setBounds();
+        } catch (Exception var4) {
+            var4.printStackTrace();
         }
 
-        component.setSize(totalClientWidth, totalClientHeight);
-
-        currentGameWidth = totalClientWidth;
-        currentGameHeight = totalClientHeight;
-
-        gameScreenWidth = currentScreenMode == ScreenMode.FIXED ? 516 : totalClientWidth;
-        gameScreenHeight = currentScreenMode == ScreenMode.FIXED ? 338 : totalClientHeight;
-
-        if (mode != ScreenMode.FULLSCREEN)
-            component.setLocationRelativeTo(null);
-
-        component.setVisible(true);
-        aGraphics12 = super.method11(0).getGraphics();
-        setBounds();
     }
     private boolean stackTabs() {
         return !(currentGameWidth >= 1100);
@@ -247,32 +224,35 @@ public class client extends Applet_Sub1 {
 
     private boolean checkBounds(int type, int x1, int y1, int x2, int y2) {
         if (type == 0)
-            return anInt20 >= x1 && anInt20 <= x2 && anInt21 >= y1 && anInt21 <= y2;
+            return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
         else
             return Math.pow((x1 + type - x2), 2) + Math.pow((y1 + type - y2), 2) < Math.pow(type, 2);
     }
 
-    private void setBounds() {
-        Class30_Sub2_Sub1_Sub3.method365(-950,gameScreenHeight, gameScreenHeight);
-        Class30_Sub2_Sub1_Sub3.method365(-950,gameScreenWidth, gameScreenHeight);
-        fullScreenTextureArray = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+    private static void setBounds() {
+        Class30_Sub2_Sub1_Sub3.method365(-950,currentGameWidth, currentGameHeight);
+        fullScreenTextureArray = Class30_Sub2_Sub1_Sub3.lineOffsets;
         Class30_Sub2_Sub1_Sub3.method365(-950,
-                currentScreenMode == ScreenMode.FIXED ? 516
-                        : gameScreenWidth,
-                currentScreenMode == ScreenMode.FIXED ? 168
-                        : gameScreenHeight);
-        anIntArray1180 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+                currentScreenMode == ScreenMode.FIXED
+                        ? (aRSImageProducer_1166 != null ? aRSImageProducer_1166.anInt316 : 519)
+                        : currentGameWidth,
+                currentScreenMode == ScreenMode.FIXED
+                        ? (aRSImageProducer_1166 != null ? aRSImageProducer_1166.anInt317 : 165)
+                        : currentGameHeight);
+        anIntArray1180 = Class30_Sub2_Sub1_Sub3.lineOffsets;
         Class30_Sub2_Sub1_Sub3.method365(-950,
-                currentScreenMode == ScreenMode.FIXED ? 249
-                        : gameScreenWidth,
-                currentScreenMode == ScreenMode.FIXED ? 335
-                        : gameScreenHeight);
-        anIntArray1181 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
-        Class30_Sub2_Sub1_Sub3.method365(-950,gameScreenWidth, gameScreenHeight);
-        anIntArray1182 = Class30_Sub2_Sub1_Sub3.anIntArray1472;
+                currentScreenMode == ScreenMode.FIXED
+                        ? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.anInt316 : 249)
+                        : currentGameWidth,
+                currentScreenMode == ScreenMode.FIXED
+                        ? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.anInt317 : 335)
+                        : currentGameHeight);
+        anIntArray1181 = Class30_Sub2_Sub1_Sub3.lineOffsets;
+        Class30_Sub2_Sub1_Sub3.method365(-950, screenAreaWidth, screenAreaHeight);
+        anIntArray1182 = Class30_Sub2_Sub1_Sub3.lineOffsets;
         method456();
     }
-    public void method456() {
+    public static void method456() {
         int[] ai = new int[9];
         for (int i8 = 0; i8 < 9; i8++) {
             int k8 = 128 + i8 * 32 + 15;
@@ -280,21 +260,22 @@ public class client extends Applet_Sub1 {
             int i9 = Class30_Sub2_Sub1_Sub3.anIntArray1470[k8];
             ai[i8] = (l8 * i9 >> 16);
         }
-        if (currentScreenMode == ScreenMode.FIXED && (currentGameWidth >= 756) && (currentGameWidth <= 1025)
-                && (currentGameHeight >= 494) && (currentGameHeight <= 850)) {
-            //Class25.viewDistance = 9;
-            // cameraZoom = 575;
+        if (currentScreenMode == ScreenMode.RESIZABLE && currentGameWidth >= 766 && currentGameWidth <= 1025 && currentGameHeight >= 504
+                && currentGameHeight <= 850) {
+            log_view_dist = 9;
+            cameraZoom = 575;
         } else if (currentScreenMode == ScreenMode.FIXED) {
-            //cameraZoom = 600;
+            cameraZoom = 600;
+
         } else if (currentScreenMode != ScreenMode.FIXED) {
-            //Class25.viewDistance = 10;
-            //cameraZoom = 600;
+            log_view_dist = 10;
+            cameraZoom = 600;
         }
-        Class25.method310(500, 800, currentScreenMode == ScreenMode.FIXED ? 516 : currentGameWidth,
-                currentScreenMode == ScreenMode.FIXED ? 335 : currentGameHeight, ai, aBoolean1231);
-        // if (loggedIn) {
-        aClass15_1165 = new Class15(gameScreenWidth, gameScreenHeight, method11(0), 0);
-        // }
+        Class25.method310(500, 800, screenAreaWidth,
+                screenAreaHeight, ai, aBoolean1231);
+         if (aBoolean1157) {
+        aRSImageProducer_1165 = new RSImageProducer(screenAreaWidth, screenAreaHeight);
+         }
     }
     public byte[] GetMap(int Index) {
         try {
@@ -385,10 +366,21 @@ public class client extends Applet_Sub1 {
     }
     public void processExtraMenus(){
 
-        if(super.anInt20 >= 545 && super.anInt20 <= 579 && super.anInt21 >= 5 && super.anInt21 < 40){
-            aStringArray1199[1] = "Face North";
-            anIntArray1093[1] = 1150;
-            anInt1133++;
+        boolean fixed = currentScreenMode == ScreenMode.FIXED;
+        if (fixed ? super.mouseX >= 542 && super.mouseX <= 579 && super.mouseY >= 2 && super.mouseY <= 38
+                : super.mouseX >= currentGameWidth - 180 && super.mouseX <= currentGameWidth - 139 && super.mouseY >= 0
+                && super.mouseY <= 40) {
+
+            this.menuActionName[1] = "Look North";
+            this.menuActionID[1] = 1150;
+            this.menuActionRow = 2;
+        }
+
+        if (currentScreenMode != ScreenMode.FIXED && changeTabArea && super.mouseX >= currentGameWidth - 26
+                && super.mouseX <= currentGameWidth - 1 && super.mouseY >= 2 && super.mouseY <= 24) {
+            this.menuActionName[1] = "Logout";
+            this.menuActionID[1] = 700;
+            this.menuActionRow = 2;
         }
 
     }
@@ -448,13 +440,13 @@ public class client extends Applet_Sub1 {
             try
             {
                 DataInputStream datainputstream = method132("crc" + (int)(Math.random() * 99999999D) + "-" + 317);
-                Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(new byte[40], 891);
-                datainputstream.readFully(class30_sub2_sub2.aByteArray1405, 0, 40);
+                Stream stream = new Stream(new byte[40], 891);
+                datainputstream.readFully(stream.aByteArray1405, 0, 40);
                 datainputstream.close();
                 for(int i1 = 0; i1 < 9; i1++)
-                    anIntArray1090[i1] = class30_sub2_sub2.method413();
+                    anIntArray1090[i1] = stream.method413();
 
-                int j1 = class30_sub2_sub2.method413();
+                int j1 = stream.method413();
                 int k1 = 1234;
                 for(int l1 = 0; l1 < 9; l1++)
                     k1 = (k1 << 1) + anIntArray1090[l1];
@@ -512,9 +504,9 @@ public class client extends Applet_Sub1 {
     public final boolean method17(int i, int j) {
         if(j < 0)
             return false;
-        int k = anIntArray1093[j];
+        int k = menuActionID[j];
         if(i != 9)
-            anInt1008 = -1;
+            packet = -1;
         if(k >= 2000)
             k -= 2000;
         return k == 337;
@@ -600,242 +592,745 @@ public class client extends Applet_Sub1 {
             default: return "@or2@";
         }
     }
+    private boolean chatStateCheck() {
+        return this.messagePromptRaised || this.inputDialogState != 0 || this.aString844 != null
+                || this.backDialogID != -1 || this.dialogID != -1;
+    }
+    public final void drawChatArea(int i) {
+        int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 165;
+        final int yOffset2 = currentScreenMode == ScreenMode.FIXED ? 338 : 0;
+        if (currentScreenMode == ScreenMode.FIXED) {
+            aRSImageProducer_1166.initDrawingArea();
+        }
+        Class30_Sub2_Sub1_Sub3.lineOffsets = anIntArray1180;
+        if (this.chatStateCheck()) {
+            showChatComponents = true;
+            this.gameframe[0].drawSprite(0, yOffset);
+        }
 
-    public final void method18(int i) {
-        aClass15_1166.method237(0);
-        Class30_Sub2_Sub1_Sub3.anIntArray1472 = anIntArray1180;
-        aClass30_Sub2_Sub1_Sub1_1198.method348(0, 16083, 0);
-        if(aBoolean1256) {
-            aClass30_Sub2_Sub1_Sub4_1272.method381(0, aString1121, 23693, 40, 239);
-            aClass30_Sub2_Sub1_Sub4_1272.method381(128, aString1212 + "*", 23693, 60, 239);
-        } else
-        if(anInt1225 == 1) {
-            aClass30_Sub2_Sub1_Sub4_1272.method381(0, "Enter amount:", 23693, 40, 239);
-            aClass30_Sub2_Sub1_Sub4_1272.method381(128, aString1004 + "*", 23693, 60, 239);
-        } else
-        if(anInt1225 == 2) {
-            aClass30_Sub2_Sub1_Sub4_1272.method381(0, "Enter name:", 23693, 40, 239);
-            aClass30_Sub2_Sub1_Sub4_1272.method381(128, aString1004 + "*", 23693, 60, 239);
-        } else
-        if(aString844 != null) {
-            aClass30_Sub2_Sub1_Sub4_1272.method381(0, aString844, 23693, 40, 239);
-            aClass30_Sub2_Sub1_Sub4_1272.method381(128, "Click to continue", 23693, 60, 239);
-        } else
-        if(anInt1276 != -1)
-            drawInterface( 0, 0, Class9.aClass9Array210[anInt1276], 0);
-        else if(anInt1042 != -1) {
-            drawInterface(0, 0, Class9.aClass9Array210[anInt1042], 0);
-        } else {
-            Class30_Sub2_Sub1_Sub4 class30_sub2_sub1_sub4 = aClass30_Sub2_Sub1_Sub4_1271;
+        if (showChatComponents) {
+            if (changeChatArea && !this.chatStateCheck()) {
+                DrawingArea.method339(7 + yOffset, 5723991, 506, 7);
+                DrawingArea.drawAlphaGradient(7, 7 + yOffset, 506, 135, 0, 16777215, 20);
+            } else {
+                this.gameframe[0].drawSprite(0,yOffset);
+            }
+        }
+
+        if (!showChatComponents || changeChatArea) {
+            DrawingArea.drawAlphaPixels(7, currentGameHeight - 23, 506, 24, 0, 100);
+        }
+        this.drawChannelButtons();
+        TextDrawingArea textDrawingArea = this.regularText;
+        if (messagePromptRaised) {
+            this.newBoldFont.drawCenteredString(this.aString1121, 259, 60 + yOffset, 0, -1);
+            this.newBoldFont.drawCenteredString(this.promptInput + "*", 259, 80 + yOffset, 128, -1);
+
+        } else if (inputDialogState == 1) {
+            this.newBoldFont.drawCenteredString("Enter amount:", 259, yOffset + 60, 0, -1);
+            this.newBoldFont.drawCenteredString(this.amountOrNameInput + "*", 259, 80 + yOffset, 128, -1);
+
+        } else if (inputDialogState == 2) {
+            this.newBoldFont.drawCenteredString("Enter Name:", 259, 60 + yOffset, 0, -1);
+            this.newBoldFont.drawCenteredString(this.amountOrNameInput + "*", 259, 80 + yOffset, 128, -1);
+        } else if (aString844 != null) {
+            this.newBoldFont.drawCenteredString(this.aString844, 259, 60 + yOffset, 0, -1);
+            this.newBoldFont.drawCenteredString("Click to continue", 259, 80 + yOffset, 128, -1);
+        } else if (backDialogID != -1)
+            drawInterface(0, 20, Widget.interfaceCache[backDialogID], 20 + yOffset);
+        else if (dialogID != -1) {
+            drawInterface(0, 20, Widget.interfaceCache[dialogID], 20 + yOffset);
+        } else if (showChatComponents) {
+            int j77 = -3;
             int j = 0;
-            Class30_Sub2_Sub1.method333(77, 0, false, 463, 0);
-            for(int k = 0; k < 100; k++)
-                if(aStringArray944[k] != null)
-                {
-                    int l = anIntArray942[k];
-                    int i1 = (70 - j * 14) + anInt1089;
-                    String s1 = aStringArray943[k];
+            int shadow = changeChatArea ? 0 : -1;
+            DrawingArea.setDrawingArea(122 + yOffset, 8, 497, 7 + yOffset);
+
+            int xOffset;
+            for (int var16 = 0; var16 < 500; ++var16) {
+                if (this.chatMessages[var16] != null) {
+                    xOffset = this.chatTypes[var16];
+                    int yPos = 70 - j77 * 14 + anInt1089 + 5;
+                    String s1 = this.chatNames[var16];
                     byte byte0 = 0;
-                    if(s1 != null && s1.startsWith("@cr1@")) //mod icons
-                    {
+                    if (s1 != null && s1.startsWith("@cr1@")) {
                         s1 = s1.substring(5);
                         byte0 = 1;
-                    }
-                    if(s1 != null && s1.startsWith("@cr2@")) {
+                    } else if (s1 != null && s1.startsWith("@cr2@")) {
                         s1 = s1.substring(5);
                         byte0 = 2;
+                    } else if (s1 != null && s1.startsWith("@cr3@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 3;
+                    } else if (s1 != null && s1.startsWith("@cr4@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 4;
+                    } else if (s1 != null && s1.startsWith("@cr5@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 5;
+                    } else if (s1 != null && s1.startsWith("@cr6@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 6;
+                    } else if (s1 != null && s1.startsWith("@cr7@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 7;
+                    } else if (s1 != null && s1.startsWith("@cr8@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 8;
+                    } else if (s1 != null && s1.startsWith("@cr9@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 9;
+                    } else if (s1 != null && s1.startsWith("@cr10@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 10;
+                    } else if (s1 != null && s1.startsWith("@cr11@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 11;
+                    } else if (s1 != null && s1.startsWith("@cr12@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 12;
+                    } else if (s1 != null && s1.startsWith("@cr13@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 13;
+                    } else if (s1 != null && s1.startsWith("@cr14@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 14;
+                    } else if (s1 != null && s1.startsWith("@cr15@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 15;
+                    } else if (s1 != null && s1.startsWith("@cr16@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 16;
+                    } else if (s1 != null && s1.startsWith("@cr17@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 17;
+                    } else if (s1 != null && s1.startsWith("@cr18@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 18;
+                    } else if (s1 != null && s1.startsWith("@cr19@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 19;
+                    } else if (s1 != null && s1.startsWith("@cr20@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 20;
+                    } else if (s1 != null && s1.startsWith("@cr21@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 21;
+                    } else if (s1 != null && s1.startsWith("@cr22@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 22;
+                    } else if (s1 != null && s1.startsWith("@cr23@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 23;
+                    } else if (s1 != null && s1.startsWith("@cr24@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 24;
+                    } else if (s1 != null && s1.startsWith("@cr25@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 25;
                     }
 
-
-
-                    if(l == 0) {
-
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method389(false, false, 4, 0, aStringArray944[k], i1);
-                        j++;
+                    if (xOffset == 0 && (this.chatTypeView == 5 || this.chatTypeView == 0)) {
+                        this.newRegularFont.drawBasicString(this.chatMessages[var16], 11, yPos + yOffset,
+                                changeChatArea ? 16777215 : 0, shadow);
+                        ++j;
+                        ++j77;
                     }
 
-
-
-                    if((l == 1 || l == 2 ) && (l == 1 || anInt1287 == 0 || anInt1287 == 1 && method109(false, s1))) {
-                        if(i1 > 0 && i1 < 120) {
-
-
-
-                            int k1 = 4;
-                            int j1 = 4;
-
-                            if(byte0 == 1) { //draws mod icons
-                                aClass30_Sub2_Sub1_Sub2Array1219[0].method361(j1, 16083, i1 - 12);
-                                j1 += 14;
-                            }
-                            if(byte0 == 2) {
-
-                                aClass30_Sub2_Sub1_Sub2Array1219[1].method361(j1, 16083, i1 - 12);
-                                j1 += 14;
-                            }
-
-
-                            class30_sub2_sub1_sub4.method385(0, s1 + ":", i1, 822, j1);
-                            j1 += class30_sub2_sub1_sub4.method383(anInt1116, s1) + 8;
-                            class30_sub2_sub1_sub4.method385(255, aStringArray944[k], i1, 822, j1);
+                    int xPos;
+                    if ((xOffset == 1 || xOffset == 2)
+                            && (xOffset == 1 || this.publicChatMode == 0
+                            || this.publicChatMode == 1 && method109(false, s1))
+                            && (this.chatTypeView == 1 || this.chatTypeView == 0)) {
+                        xPos = 11;
+                        switch (byte0) {
+                            case 1:
+                                this.ModIcons[0].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 2:
+                                this.ModIcons[1].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 3:
+                                this.ModIcons[2].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 4:
+                                this.ModIcons[3].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 5:
+                                this.ModIcons[4].drawSprite(xPos, yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 6:
+                                this.ModIcons[5].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 7:
+                                this.ModIcons[6].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 8:
+                                this.ModIcons[7].drawSprite(xPos, yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 9:
+                                this.ModIcons[8].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 10:
+                                this.ModIcons[9].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 11:
+                                this.ModIcons[10].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 12:
+                                this.ModIcons[11].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 13:
+                                this.ModIcons[12].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 14:
+                                this.ModIcons[13].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 15:
+                                this.ModIcons[14].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 16:
+                                this.ModIcons[15].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 17:
+                                this.ModIcons[16].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 18:
+                                this.ModIcons[17].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 19:
+                                this.ModIcons[18].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 20:
+                                this.ModIcons[19].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 21:
+                                this.ModIcons[20].drawSprite(xPos, yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 22:
+                                this.ModIcons[21].drawSprite(xPos, yPos - 12 + yOffset);
+                                xPos += 14;
+                                break;
+                            case 23:
+                                this.ModIcons[22].drawSprite(xPos, yPos - 12 + yOffset);
+                                xPos += 14;
+                            case 24:
+                                this.ModIcons[23].drawSprite(xPos, yPos - 12 + yOffset);
+                                xPos += 14;
+                            case 25:
+                                this.ModIcons[24].drawSprite(xPos,yPos - 12 + yOffset);
+                                xPos += 14;
                         }
-                        j++;
+
+                        this.newRegularFont.drawBasicString(s1 + ":", xPos, yPos + yOffset,
+                                changeChatArea ? 16777215 : 0, shadow);
+                        xPos += textDrawingArea.getTextWidth(s1) + 8;
+                        this.newRegularFont.drawBasicString(this.chatMessages[var16], xPos, yPos + yOffset,
+                                changeChatArea ? 8366591 : 255, shadow);
+                        ++j;
+                        ++j77;
                     }
 
-                    if(l == 10 && anInt1195 == 0) {
-                        if(i1 > 0 && i1 < 120)
-                            if(s1 != null && s1.startsWith("@cr4@")) {
-                                s1 = s1.substring(5);
-                                byte0 = 6;
-                            }
-                        class30_sub2_sub1_sub4.method385(255, aStringArray944[k], i1, 822, 4);
-                    }
-
-
-
-
-                    if((l == 3 || l == 7) && anInt1195 == 0 && (l == 7 || anInt845 == 0 || anInt845 == 1 && method109(false, s1))) { //(pm system)
-                        if(i1 > 0 && i1 < 120) {
-                            int k1 = 4;
-                            class30_sub2_sub1_sub4.method385(0x800000, "From", i1, 822, k1);//friends(pm system)
-                            k1 += class30_sub2_sub1_sub4.method383(anInt1116, "From ");
-                            if(byte0 == 1) {
-                                //aClass30_Sub2_Sub1_Sub1Array1219[0].method348(k1, 16083, i1 - 12);
-                                aClass30_Sub2_Sub1_Sub2Array1219[0].method361(k1, 16083, i1 - 12);
-                                k1 += 14;
-                            }
-                            if(byte0 == 2) {
-                                //aClass30_Sub2_Sub1_Sub1Array1219[1].method348(k1, 16083, i1 - 12);
-                                aClass30_Sub2_Sub1_Sub2Array1219[1].method361(k1, 16083, i1 - 12);
-                                k1 += 14;
-                            }
-
-                            class30_sub2_sub1_sub4.method385(0x800000, s1 + ":", i1, 822, k1);
-                            k1 += class30_sub2_sub1_sub4.method383(anInt1116, s1) + 8;
-
-
-                            //class30_sub2_sub1_sub4.method385(0x800000, aStringArray944[k], i1, 822, k1);
-                            class30_sub2_sub1_sub4.method385(0x800000, aStringArray944[k], i1, 822, k1);
+                    if ((xOffset == 3 || xOffset == 7) && (this.splitPrivateChat == 0 || this.chatTypeView == 2)
+                            && (xOffset == 7 || this.privateChatMode == 0
+                            || this.privateChatMode == 1 && this.method109(false,s1))
+                            && (this.chatTypeView == 2 || this.chatTypeView == 0)) {
+                        byte j2 = 11;
+                        this.newRegularFont.drawBasicString("From", j2, yPos + yOffset, changeChatArea ? 0 : 16777215,
+                                shadow);
+                        xPos = j2 + textDrawingArea.getTextWidth("From ");
+                        switch (byte0) {
+                            case 1:
+                                this.ModIcons[0].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 2:
+                                this.ModIcons[1].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 3:
+                                this.ModIcons[2].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 4:
+                                this.ModIcons[3].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 5:
+                                this.ModIcons[4].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 6:
+                                this.ModIcons[5].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 7:
+                                this.ModIcons[6].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 8:
+                                this.ModIcons[7].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 9:
+                                this.ModIcons[8].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 10:
+                                this.ModIcons[9].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 11:
+                                this.ModIcons[10].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 12:
+                                this.ModIcons[11].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 13:
+                                this.ModIcons[12].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 14:
+                                this.ModIcons[13].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 15:
+                                this.ModIcons[14].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 16:
+                                this.ModIcons[15].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 17:
+                                this.ModIcons[16].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 18:
+                                this.ModIcons[17].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 19:
+                                this.ModIcons[18].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 20:
+                                this.ModIcons[19].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 21:
+                                this.ModIcons[20].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 22:
+                                this.ModIcons[21].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 23:
+                                this.ModIcons[22].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 24:
+                                this.ModIcons[23].drawSprite(xPos, yPos - 12);
+                                xPos += 14;
+                                break;
+                            case 25:
+                                this.ModIcons[24].drawSprite(xPos,yPos - 12);
+                                xPos += 14;
+                                break;
                         }
-                        j++;
+                        this.newRegularFont.drawBasicString(s1 + ":", xPos, yPos + yOffset,
+                                changeChatArea ? 16777215 : 0, shadow);
+                        xPos += textDrawingArea.getTextWidth(s1) + 8;
+                        this.newRegularFont.drawBasicString(this.chatMessages[var16], xPos, yPos + yOffset, 8388736,
+                                shadow);
+                        ++j;
+                        ++j77;
                     }
-                    if(l == 4 && (anInt1248 == 0 || anInt1248 == 1 && method109(false, s1))) {
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0x800080, s1 + " " + aStringArray944[k], i1, 822, 4);
-                        j++;
+
+                    if (xOffset == 4 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(false,s1))
+                            && (this.chatTypeView == 3 || this.chatTypeView == 0)) {
+                        this.newRegularFont.drawBasicString(s1 + " " + this.chatMessages[var16], 11, yPos + yOffset,
+                                8388736, shadow);
+                        ++j;
+                        ++j77;
                     }
-                    if(l == 5 && anInt1195 == 0 && anInt845 < 2) {
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0x800000, aStringArray944[k], i1, 822, 4);
-                        j++;
+
+                    if (xOffset == 5 && this.splitPrivateChat == 0 && this.privateChatMode < 2
+                            && (this.chatTypeView == 2 || this.chatTypeView == 0)) {
+                        this.newRegularFont.drawBasicString(s1 + " " + this.chatMessages[var16], 11, yPos + yOffset,
+                                8388736, shadow);
+                        ++j;
+                        ++j77;
                     }
-                    if(l == 6 && anInt1195 == 0 && anInt845 < 2) {
-                        if(i1 > 0 && i1 < 120) {
-                            class30_sub2_sub1_sub4.method385(0x800000, "To " + s1 + ":", i1, 822, 4);
-                            class30_sub2_sub1_sub4.method385(0x800000, aStringArray944[k], i1, 822, 12 + class30_sub2_sub1_sub4.method383(anInt1116, "To " + s1));
+
+                    if (xOffset == 6 && (this.splitPrivateChat == 0 || this.chatTypeView == 2)
+                            && this.privateChatMode < 2 && (this.chatTypeView == 2 || this.chatTypeView == 0)) {
+                        this.newRegularFont.drawBasicString("To " + s1 + ":", 11, yPos + yOffset,
+                                changeChatArea ? 16777215 : 0, shadow);
+                        this.newRegularFont.drawBasicString(this.chatMessages[var16],
+                                15 + textDrawingArea.getTextWidth("To :" + s1), yPos + yOffset, 8388736, shadow);
+                        ++j;
+                        ++j77;
+                    }
+
+                    if (xOffset == 8 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(false,s1))) {
+                        if (this.chatTypeView == 3 || this.chatTypeView == 0) {
+                            this.newRegularFont.drawBasicString(s1 + " " + this.chatMessages[var16], 11, yPos + yOffset,
+                                    8270336, shadow);
+                            ++j;
+                            ++j77;
                         }
-                        j++;
-                    }
-                    if(l == 80)
-                    {
-                        if(i1 > 0 && i1 < 120)
-                        {
-                            class30_sub2_sub1_sub4.method385(0x800000, s1 + " " + aStringArray944[k], i1, 822, 4);
-                        }
-                        j++;
-                    }
-                    if(l == 8 && (anInt1248 == 0 || anInt1248 == 1 && method109(false, s1))) {
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0x7e3200, s1 + " " + aStringArray944[k], i1, 822, 4);
-                        j++;
-                    }
 
-
-                    if((l == 9) && (l == 1 || anInt1287 == 0 || anInt1287 == 1 && method109(false, s1))) {
-                        if(i1 > 0 && i1 < 120) {
-
-                            int j1 = 4;
-
-                            if(byte0 == 1) {
-                                aClass30_Sub2_Sub1_Sub2Array1219[0].method361(j1, 16083, i1 - 12);
-                                j1 += 14;
+                        if (xOffset == 11 && this.clanChatMode == 0) {
+                            if (this.chatTypeView == 11) {
+                                this.newRegularFont.drawBasicString(s1 + " " + this.chatMessages[var16], 11,
+                                        yPos + yOffset, 8270336, shadow);
+                                ++j;
+                                ++j77;
                             }
-                            if(byte0 == 2) {
-                                aClass30_Sub2_Sub1_Sub2Array1219[1].method361(j1, 16083, i1 - 12);
-                                j1 += 14;
+
+                            if (xOffset == 12) {
+                                this.newRegularFont.drawBasicString(this.chatMessages[var16], 11, yPos + yOffset,
+                                        8270336, shadow);
+                                ++j;
                             }
-                            j1 += class30_sub2_sub1_sub4.method383(anInt1116, s1) + 8;
-                            class30_sub2_sub1_sub4.method385(0xFF0000, aStringArray944[k], i1, 822, j1); //name colour chatbox
-
-
-
                         }
-                        j++;
                     }
 
+                    if (xOffset == 16) {
+                        int var161 = 51;
+                        int clanNameWidth = textDrawingArea.getTextWidth(this.clanname);
+                        if (this.chatTypeView == 11 || this.chatTypeView == 0) {
+                            if (yPos > 0 && yPos < 110) {
+                                switch (this.chatRights[var16]) {
+                                    case 1:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[0].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 2:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[1].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 3:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[2].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 4:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[3].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 5:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[4].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 6:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[5].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 7:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[6].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 8:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[7].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 9:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[8].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 10:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[9].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 11:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[10].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 12:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[11].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 13:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[12].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 14:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[13].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 15:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[14].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 16:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[15].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 17:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[16].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 18:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[17].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 19:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[18].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 20:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[19].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 21:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[20].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 22:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[21].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 23:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[22].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 24:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[23].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 25:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[24].drawSprite(var161 - 18,yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    default:
+                                        var161 += clanNameWidth;
+                                }
+                            }
 
-                    if(l == 14) { //@or1@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0xEE8700, aStringArray944[k], i1, 822, 0);
-                        j++;
-                    }
-                    if(l == 15) { //@yel@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0xEEEE00, aStringArray944[k], i1, 822, 0);
-                        j++;
-                    }
-                    if(l == 16) { //@red@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0xCC0000, aStringArray944[k], i1, 822, 0);
-                        j++;
-                    }
-                    if(l == 17) { //@gre@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0x00A403, aStringArray944[k], i1, 822, 0);
-                        j++;
-                    }
-                    if(l == 19) { //@blu@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0x006FA4, aStringArray944[k], i1, 822, 0);
-                        j++;
-                    }
-                    if(l == 20) { //@pur@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0xEE009B, aStringArray944[k], i1, 822, 0);
-                        j++;
-                    }
-                    if(l == 21) { //@gre@ +msg
-                        if(i1 > 0 && i1 < 120)
-                            class30_sub2_sub1_sub4.method385(0x006600, aStringArray944[k], i1, 822, 0);
-                        j++;
+                            this.newRegularFont.drawBasicString("[", 8, yPos + yOffset, changeChatArea ? 16777215 : 0,
+                                    shadow);
+                            this.newRegularFont.drawBasicString(this.clanname, 14, yPos + yOffset,
+                                    changeChatArea ? 8366591 : 255, shadow);
+                            this.newRegularFont.drawBasicString("]", clanNameWidth + 14, yPos + yOffset,
+                                    changeChatArea ? 16777215 : 0, shadow);
+                            this.newRegularFont.drawBasicString(this.chatNames[var16] + ":", var161 - 17,
+                                    yPos + yOffset, changeChatArea ? 16777215 : 0, shadow);
+                            var161 += textDrawingArea.getTextWidth(this.chatNames[var16]) + 7;
+                            this.newRegularFont.drawBasicString(this.chatMessages[var16], var161 - 16, yPos + yOffset,
+                                    8388736, shadow);
+                            ++j;
+                            ++j77;
+                        }
                     }
                 }
+            }
 
+            DrawingArea.defaultDrawingAreaSize();
+            this.anInt1211 = j * 14 + 7 + 5;
+            if (this.anInt1211 < 111) {
+                this.anInt1211 = 111;
+            }
 
-            Class30_Sub2_Sub1.method332(4);
-            anInt1211 = j * 14 + 7;
-            if(anInt1211 < 78)
-                anInt1211 = 78;
-            method30(519, 77, anInt1211 - anInt1089 - 77, 0, 463, anInt1211);
+            //this.method30(114, this.anInt1211 - anInt1089 - 113, 7 + yOffset, 496, this.anInt1211, changeChatArea);
+            this.drawScrollbar(114, this.anInt1211 - anInt1089 - 113, 7 + yOffset, 496, this.anInt1211, changeChatArea);
             String s;
-            if(aClass30_Sub2_Sub4_Sub1_Sub2_1126 != null && aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 != null)
-                s = prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723);
+            if(aPlayer_1126 != null && aPlayer_1126.name != null)
+                s = prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723);
             else
-                s = Class50.method587(-45804, aString1173);
-            class30_sub2_sub1_sub4.method385(0, s + ":", 90, 822, 4);
-            class30_sub2_sub1_sub4.method385(255, aString887 + "*", 90, 822, 6 + class30_sub2_sub1_sub4.method383(anInt1116, s + ": "));
-            Class30_Sub2_Sub1.method339(77, 0, 479, 0, (byte)4);
+                s = TextClass.fixName(myUsername);
+            DrawingArea.setDrawingArea(140 + yOffset, 8, 509, 120 + yOffset);
+            xOffset = 0;
+            if (this.rights > 0) {
+                this.ModIcons[this.rights - 1].drawSprite(10,122 + yOffset);
+                xOffset += 14;
+            }
+
+            this.newRegularFont.drawBasicString(s + ":", xOffset + 11, 133 + yOffset, changeChatArea ? 16777215 : 0,
+                    shadow);
+            this.newRegularFont.drawBasicString(this.inputString + "*",
+                    xOffset + 12 + textDrawingArea.getTextWidth(s + ": "), 133 + yOffset,
+                    changeChatArea ? 8366591 : 255, shadow);
+            DrawingArea.method339(121 + yOffset, changeChatArea ? 5723991 : 8418912, 506, 7);
+            DrawingArea.defaultDrawingAreaSize();
         }
-        if(aBoolean885 && anInt948 == 2)
-            method40((byte)9);
-        aClass15_1166.method238(357, 23680, super.aGraphics12, 17);
-        aClass15_1165.method237(0);
-        Class30_Sub2_Sub1_Sub3.anIntArray1472 = anIntArray1182;
+        if (menuOpen) {
+            drawMenu(0, currentScreenMode == ScreenMode.FIXED ? 338 : 0);
+        }
+        if (currentScreenMode == ScreenMode.FIXED) {
+        aRSImageProducer_1166.method238(338, 23680, super.aGraphics12, 0);
+    }
+        aRSImageProducer_1165.initDrawingArea();
+        Class30_Sub2_Sub1_Sub3.lineOffsets = anIntArray1182;
         if(i < 6 || i > 6)
             aBoolean991 = !aBoolean991;
     }
+    private int clanChatMode = 0;
+    public void drawChannelButtons() {
+        int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 165;
+        this.gameframe[27].drawSprite(0,143 + yOffset);
+        String text[] = { "On", "Friends", "Off", "Hide", "Autochat" };
+        int textColor[] = { 65280, 0xffff00, 0xff0000, 65535, 0x0d9ddc };
+        switch (this.cButtonCPos) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+            case 4:
+            case 5:
+            case 6:
+                this.gameframe[5].drawSprite(this.channelButtonsX[this.cButtonCPos],143 + yOffset);
+            default:
+                if (this.cButtonHPos == this.cButtonCPos) {
+                    switch (this.cButtonHPos) {
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                        case 6:
+                        case 7:
+                            this.gameframe[6].drawSprite(this.channelButtonsX[this.cButtonHPos],143 + yOffset);
+                    }
+                } else {
+                    switch (this.cButtonHPos) {
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                        case 4:
+                        case 5:
+                            this.gameframe[3].drawSprite(this.channelButtonsX[this.cButtonHPos],143 + yOffset);
+                            break;
+                        case 6:
+                            this.gameframe[8].drawSprite(this.channelButtonsX[this.cButtonHPos],143 + yOffset);
+                    }
+                }
 
+            int[] modes = new int[] { this.publicChatMode, this.privateChatMode, this.clanChatMode, this.tradeMode };
+
+                int i;
+                for (i = 0; i < this.modeNamesX.length; ++i) {
+                    this.smallText.method389(true, true, this.modeNamesX[i], 16777215, this.modeNames[i],
+                            this.modeNamesY[i] + yOffset);
+                }
+
+                for (i = 0; i < this.modeX.length; ++i) {
+                    this.smallText.method382(textColor[modes[i]], this.modeX[i], anInt939, text[modes[i]], 164 + yOffset, true);
+                }
+
+        }
+    }
+    public void rightClickChatButtons() {
+        if (this.mouseY >= currentGameHeight - 22 && this.mouseY <= currentGameHeight) {
+            if (super.mouseX >= 5 && super.mouseX <= 61) {
+                this.menuActionName[1] = "View All";
+                this.menuActionCmd3[1] = 999;
+                this.menuActionRow = 2;
+            } else if (super.mouseX >= 71 && super.mouseX <= 127) {
+                this.menuActionName[1] = "View Game";
+                this.menuActionCmd3[1] = 998;
+                this.menuActionRow = 2;
+            } else if (super.mouseX >= 137 && super.mouseX <= 193) {
+                this.menuActionName[1] = "Hide public";
+                this.menuActionCmd3[1] = 997;
+                this.menuActionName[2] = "Off public";
+                this.menuActionCmd3[2] = 996;
+                this.menuActionName[3] = "Friends public";
+                this.menuActionCmd3[3] = 995;
+                this.menuActionName[4] = "On public";
+                this.menuActionCmd3[4] = 994;
+                this.menuActionName[5] = "View public";
+                this.menuActionCmd3[5] = 993;
+                this.menuActionRow = 6;
+            } else if (super.mouseX >= 203 && super.mouseX <= 259) {
+                this.menuActionName[1] = "Off private";
+                this.menuActionCmd3[1] = 992;
+                this.menuActionName[2] = "Friends private";
+                this.menuActionCmd3[2] = 991;
+                this.menuActionName[3] = "On private";
+                this.menuActionCmd3[3] = 990;
+                this.menuActionName[4] = "View private";
+                this.menuActionCmd3[4] = 989;
+                this.menuActionRow = 5;
+            } else if (super.mouseX >= 269 && super.mouseX <= 325) {
+                this.menuActionName[1] = "Off clan chat";
+                this.menuActionCmd3[1] = 1003;
+                this.menuActionName[2] = "Friends clan chat";
+                this.menuActionCmd3[2] = 1002;
+                this.menuActionName[3] = "On clan chat";
+                this.menuActionCmd3[3] = 1001;
+                this.menuActionName[4] = "View clan chat";
+                this.menuActionCmd3[4] = 1000;
+                this.menuActionRow = 5;
+            } else if (super.mouseX >= 335 && super.mouseX <= 391) {
+                this.menuActionName[1] = "Off trade";
+                this.menuActionCmd3[1] = 987;
+                this.menuActionName[2] = "Friends trade";
+                this.menuActionCmd3[2] = 986;
+                this.menuActionName[3] = "On trade";
+                this.menuActionCmd3[3] = 985;
+                this.menuActionName[4] = "View trade";
+                this.menuActionCmd3[4] = 984;
+                this.menuActionRow = 5;
+            } else if (super.mouseX >= 404 && super.mouseX <= 515) {
+                this.menuActionName[1] = "Report Abuse";
+                this.menuActionCmd3[1] = 606;
+                this.menuActionRow = 2;
+            }
+        }
+
+    }
     public final void init()
     {
         try
@@ -847,8 +1342,9 @@ public class client extends Applet_Sub1 {
             aBoolean959 = true;
             signlink.storeid = 32;
             signlink.startpriv(InetAddress.getLocalHost());
-            setserver(Configuration.SERVER_ADDRESS);
-            method2(503, false, 765);
+            server = Configuration.SERVER_ADDRESS;
+            method2(currentGameWidth, false, currentGameWidth);
+            instance = this;
         }
         catch (Exception exception)
         {
@@ -877,99 +1373,109 @@ public class client extends Applet_Sub1 {
 
     public final void method20(int i) {
         if(i != 4)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
+            packet = aStream_1083.readUnsignedByte();
         if(anInt1086 != 0)
             return;
-        int j = super.anInt26;
-        if(anInt1136 == 1 && super.anInt27 >= 516 && super.anInt28 >= 160 && super.anInt27 <= 765 && super.anInt28 <= 205)
+        int j = super.clickMode3;
+        if(anInt1136 == 1 && super.saveClickX >= 516 && super.saveClickY >= 160 && super.saveClickX <= 765 && super.saveClickY <= 205)
             j = 0;
-        if(aBoolean885) {
+        if(menuOpen) {
             if(j != 1) {
-                int k = super.anInt20;
-                int j1 = super.anInt21;
-                if(anInt948 == 0) {
+                int k = super.mouseX;
+                int j1 = super.mouseY;
+                if (menuScreenArea == 0) {
                     k -= 4;
                     j1 -= 4;
                 }
-                if(anInt948 == 1) {
-                    k -= 553;
-                    j1 -= 205;
+                if (menuScreenArea == 1) {
+                    k -= 519;
+                    j1 -= 168;
                 }
-                if(anInt948 == 2) {
+                if (menuScreenArea == 2) {
                     k -= 17;
-                    j1 -= 357;
+                    j1 -= 338;
+                }
+                if (menuScreenArea == 3) {
+                    k -= 519;
+                    j1 -= 0;
                 }
                 if(k < anInt949 - 10 || k > anInt949 + anInt951 + 10 || j1 < anInt950 - 10 || j1 > anInt950 + anInt952 + 10) {
-                    aBoolean885 = false;
-                    if(anInt948 == 1)
-                        aBoolean1153 = true;
-                    if(anInt948 == 2)
-                        aBoolean1223 = true;
+                    menuOpen = false;
+                    if(menuScreenArea == 1) {
+                    }
+                    if(menuScreenArea == 2)
+                        inputTaken = true;
                 }
             }
             if(j == 1) {
                 int l = anInt949;
                 int k1 = anInt950;
                 int i2 = anInt951;
-                int k2 = super.anInt27;
-                int l2 = super.anInt28;
-                if(anInt948 == 0) {
-                    k2 -= 4;
-                    l2 -= 4;
-                }
-                if(anInt948 == 1) {
-                    k2 -= 553;
-                    l2 -= 205;
-                }
-                if(anInt948 == 2) {
-                    k2 -= 17;
-                    l2 -= 357;
+                int k2 = super.saveClickX;
+                int l2 = super.saveClickY;
+                switch (menuScreenArea) {
+                    case 0:
+                        k2 -= 0;
+                        l2 -= 0;
+                        break;
+                    case 1:
+                        k2 -= 519;
+                        l2 -= 168;
+                        break;
+                    case 2:
+                        k2 -= 5;
+                        l2 -= 338;
+                        break;
+                    case 3:
+                        k2 -= 519;
+                        l2 -= 0;
+                        break;
                 }
                 int i3 = -1;
-                for(int j3 = 0; j3 < anInt1133; j3++) {
-                    int k3 = k1 + 31 + (anInt1133 - 1 - j3) * 15;
+                for(int j3 = 0; j3 < menuActionRow; j3++) {
+                    int k3 = k1 + 31 + (menuActionRow - 1 - j3) * 15;
                     if(k2 > l && k2 < l + i2 && l2 > k3 - 13 && l2 < k3 + 3)
                         i3 = j3;
                 }
 
                 if(i3 != -1)
                     method69(i3, false);
-                aBoolean885 = false;
-                if(anInt948 == 1)
-                    aBoolean1153 = true;
-                if(anInt948 == 2) {
-                    aBoolean1223 = true;
+                menuOpen = false;
+                if(menuScreenArea == 1) {
+                }
+                if(menuScreenArea == 2) {
+                    inputTaken = true;
                     return;
                 }
             }
         } else {
-            if(j == 1 && anInt1133 > 0) {
-                int i1 = anIntArray1093[anInt1133 - 1];
+            if(j == 1 && menuActionRow > 0) {
+                int i1 = menuActionID[menuActionRow - 1];
                 if(i1 == 632 || i1 == 78 || i1 == 867 || i1 == 431 || i1 == 53 || i1 == 74 || i1 == 454 || i1 == 539 || i1 == 493 || i1 == 847 || i1 == 447 || i1 == 1125) {
-                    int l1 = anIntArray1091[anInt1133 - 1];
-                    int j2 = anIntArray1092[anInt1133 - 1];
-                    Class9 class9 = Class9.aClass9Array210[j2];
+                    int l1 = menuActionCmd2[menuActionRow - 1];
+                    int j2 = menuActionCmd3[menuActionRow - 1];
+                    Widget class9 = Widget.interfaceCache[j2];
                     if(class9.aBoolean259 || class9.aBoolean235) {
                         aBoolean1242 = false;
                         anInt989 = 0;
                         anInt1084 = j2;
                         anInt1085 = l1;
                         anInt1086 = 2;
-                        anInt1087 = super.anInt27;
-                        anInt1088 = super.anInt28;
-                        if(Class9.aClass9Array210[j2].anInt236 == anInt857)
+                        anInt1087 = super.saveClickX;
+                        anInt1088 = super.saveClickY;
+                        if(Widget.interfaceCache[j2].parentID == openInterfaceID)
                             anInt1086 = 1;
-                        if(Class9.aClass9Array210[j2].anInt236 == anInt1276)
+                        if(Widget.interfaceCache[j2].parentID == backDialogID)
                             anInt1086 = 3;
                         return;
                     }
                 }
             }
-            if(j == 1 && (anInt1253 == 1 || method17(9, anInt1133 - 1)) && anInt1133 > 2)
+            if(j == 1 && (anInt1253 == 1 || method17(9, menuActionRow - 1)) && menuActionRow > 2)
                 j = 2;
-            if(j == 1 && anInt1133 > 0)
-                method69(anInt1133 - 1, false);
-            if(j == 2 && anInt1133 > 0)
+            if(j == 1 && menuActionRow > 0)
+                method69(menuActionRow - 1, false);
+            if(j == 2 && menuActionRow > 0)
                 method116(true);
         }
     }
@@ -978,7 +1484,7 @@ public class client extends Applet_Sub1 {
         signlink.midifade = flag ? 1 : 0;
         signlink.midisave(abyte0, abyte0.length);
         if(i != 0)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
+            packet = aStream_1083.readUnsignedByte();
     }
     public final void method22(boolean flag)
     {
@@ -1006,7 +1512,7 @@ public class client extends Applet_Sub1 {
 
             }
 
-            Class7 class7 = new Class7(aByteArrayArrayArray1258, -60, 104, 104, anIntArrayArrayArray1214);
+            ObjectManager objectManager = new ObjectManager(aByteArrayArrayArray1258, -60, 104, 104, anIntArrayArrayArray1214);
             int k2 = terrainData.length;
             int k18 = 62;
             for(int A = 0; A < k2; A++)
@@ -1023,24 +1529,21 @@ public class client extends Applet_Sub1 {
             {
                 for(int i3 = 0; i3 < k2; i3++)
                 {
-                    int i4 = (mapCoordinates[i3] >> 8) * 64 - anInt1034;
-                    int k5 = (mapCoordinates[i3] & 0xff) * 64 - anInt1035;
+                    int i4 = (mapCoordinates[i3] >> 8) * 64 - baseX;
+                    int k5 = (mapCoordinates[i3] & 0xff) * 64 - baseY;
                     byte abyte0[] = terrainData[i3];
-                    if (FileOperations.FileExists(signlink.findcachedir()+"/maps/FloorMaps/"+ terrainIndices[i3]+".dat"))
-                        abyte0 = FileOperations.ReadFile(signlink.findcachedir()+"/maps/FloorMaps/"+ terrainIndices[i3]+".dat");
-
                     if(abyte0 != null)
-                        class7.method180(abyte0, k5, i4, (currentRegionX - 6) * 8, (currentRegionY - 6) * 8, (byte)4, aClass11Array1230);
+                        objectManager.method180(abyte0, k5, i4, (currentRegionX - 6) * 8, (currentRegionY - 6) * 8, (byte)4, aClass11Array1230);
                 }
 
                 for(int j4 = 0; j4 < k2; j4++)
                 {
-                    int l5 = (mapCoordinates[j4] >> 8) * 64 - anInt1034;
-                    int k7 = (mapCoordinates[j4] & 0xff) * 64 - anInt1035;
+                    int l5 = (mapCoordinates[j4] >> 8) * 64 - baseX;
+                    int k7 = (mapCoordinates[j4] & 0xff) * 64 - baseY;
                     byte abyte2[] = terrainData[j4];
                     if(abyte2 == null && currentRegionY < 800)
                         //class7.method174(k7, 64, 0, 64, l5);
-                        class7.method174(k7 * 8, 8, 0, 8, l5 * 8);
+                        objectManager.method174(k7 * 8, 8, 0, 8, l5 * 8);
                 }
 
                 anInt1097++;
@@ -1054,13 +1557,11 @@ public class client extends Applet_Sub1 {
                 for(int i6 = 0; i6 < k2; i6++)
                 {
                     byte abyte1[] = mapData[i6];
-                    if (FileOperations.FileExists(signlink.findcachedir()+"/maps/ObjectMaps/"+ objectIndices[i6]+".dat"))
-                        abyte1 = FileOperations.ReadFile(signlink.findcachedir()+"/maps/ObjectMaps/"+ objectIndices[i6]+".dat");
                     if(abyte1 != null)
                     {
-                        int l8 = (mapCoordinates[i6] >> 8) * 64 - anInt1034;
-                        int k9 = (mapCoordinates[i6] & 0xff) * 64 - anInt1035;
-                        class7.method190(l8, aClass11Array1230, k9, 7, aClass25_946, abyte1);
+                        int l8 = (mapCoordinates[i6] >> 8) * 64 - baseX;
+                        int k9 = (mapCoordinates[i6] & 0xff) * 64 - baseY;
+                        objectManager.method190(l8, aClass11Array1230, k9, 7, aClass25_946, abyte1);
                     }
                 }
 
@@ -1085,7 +1586,7 @@ public class client extends Applet_Sub1 {
                                 {
                                     if(mapCoordinates[l11] != j11 || terrainData[l11] == null)
                                         continue;
-                                    class7.method179(i9, l9, aClass11Array1230, 9, k4 * 8, (j10 & 7) * 8, terrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
+                                    objectManager.method179(i9, l9, aClass11Array1230, 9, k4 * 8, (j10 & 7) * 8, terrainData[l11], (l10 & 7) * 8, j3, j6 * 8);
                                     break;
                                 }
 
@@ -1102,7 +1603,7 @@ public class client extends Applet_Sub1 {
                     {
                         int i8 = anIntArrayArrayArray1129[0][l4][k6];
                         if(i8 == -1)
-                            class7.method174(k6 * 8, 8, 0, 8, l4 * 8);
+                            objectManager.method174(k6 * 8, 8, 0, 8, l4 * 8);
                     }
 
                 }
@@ -1126,7 +1627,7 @@ public class client extends Applet_Sub1 {
                                 {
                                     if(mapCoordinates[k12] != j12 || mapData[k12] == null)
                                         continue;
-                                    class7.method183(aClass11Array1230, aClass25_946, k10, j8 * 8, (i12 & 7) * 8, true, l6, mapData[k12], (k11 & 7) * 8, i11, j9 * 8);
+                                    objectManager.method183(aClass11Array1230, aClass25_946, k10, j8 * 8, (i12 & 7) * 8, true, l6, mapData[k12], (k11 & 7) * 8, i11, j9 * 8);
                                     break;
                                 }
 
@@ -1139,16 +1640,16 @@ public class client extends Applet_Sub1 {
 
             }
             stream.method397((byte)6, 0);
-            class7.method171(aClass11Array1230, aClass25_946, 2);
-            aClass15_1165.method237(0);
+            objectManager.method171(aClass11Array1230, aClass25_946, 2);
+            aRSImageProducer_1165.initDrawingArea();
             stream.method397((byte)6, 0);
-            int k3 = Class7.anInt145;
+            int k3 = ObjectManager.anInt145;
             if(k3 > anInt918)
                 k3 = anInt918;
             if(k3 < anInt918 - 1)
                 k3 = anInt918 - 1;
             if(aBoolean960)
-                aClass25_946.method275(Class7.anInt145, -34686);
+                aClass25_946.method275(ObjectManager.anInt145, -34686);
             else
                 aClass25_946.method275(0, -34686);
             for(int i5 = 0; i5 < 104; i5++)
@@ -1169,7 +1670,7 @@ public class client extends Applet_Sub1 {
         catch(Exception exception) { }
         Class46.aClass12_785.method224();
         aBoolean1157 &= flag;
-        if(super.aFrame_Sub1_15 != null)
+        if(super.gameFrame != null)
         {
             stream.method397((byte)6, 210);
             stream.writeDWord(0x3f008edd);
@@ -1224,14 +1725,14 @@ public class client extends Applet_Sub1 {
         Class8.aClass12_159.method224();
         Class8.aClass12_158.method224();
         if(flag)
-            anInt1008 = -1;
-        Class30_Sub2_Sub4_Sub1_Sub2.aClass12_1704.method224();
+            packet = -1;
+        Player.aClass12_1704.method224();
         Class23.aClass12_415.method224();
     }
 
     public final void method24(boolean flag, int i)
     {
-        int ai[] = aClass30_Sub2_Sub1_Sub1_1263.anIntArray1439;
+        int ai[] = minimapImage.myPixels;
         int j = ai.length;
         for(int k = 0; k < j; k++)
             ai[k] = 0;
@@ -1252,7 +1753,7 @@ public class client extends Applet_Sub1 {
 
         int j1 = ((238 + (int)(Math.random() * 20D)) - 10 << 16) + ((238 + (int)(Math.random() * 20D)) - 10 << 8) + ((238 + (int)(Math.random() * 20D)) - 10);
         int l1 = (238 + (int)(Math.random() * 20D)) - 10 << 16;
-        aClass30_Sub2_Sub1_Sub1_1263.method343(0);
+        minimapImage.method343(0);
         for(int i2 = 1; i2 < 103; i2++)
         {
             for(int j2 = 1; j2 < 103; j2++)
@@ -1265,7 +1766,7 @@ public class client extends Applet_Sub1 {
 
         }
 
-        aClass15_1165.method237(0);
+        aRSImageProducer_1165.initDrawingArea();
         aBoolean1157 &= flag;
         anInt1071 = 0;
         for(int k2 = 0; k2 < 104; k2++)
@@ -1276,7 +1777,7 @@ public class client extends Applet_Sub1 {
                 if(i3 != 0)
                 {
                     int objId = ObjectKey.getObjectId(i3);
-                    int j3 = Class46.method572(objId).anInt746;
+                    int j3 = Class46.forID(objId).anInt746;
                     if(j3 >= 0)
                     {
                         int k3 = k2;
@@ -1300,7 +1801,7 @@ public class client extends Applet_Sub1 {
                             }
 
                         }
-                        aClass30_Sub2_Sub1_Sub1Array1140[anInt1071] = aClass30_Sub2_Sub1_Sub1Array1033[j3];
+                        aSpriteArray1140[anInt1071] = aSpriteArray1033[j3];
                         anIntArray1072[anInt1071] = k3;
                         anIntArray1073[anInt1071] = l3;
                         anInt1071++;
@@ -1352,25 +1853,25 @@ public class client extends Applet_Sub1 {
 
     public final void method26(boolean flag, int i)
     {
-        for(int j = 0; j < anInt836; j++)
+        for(int j = 0; j < npcCount; j++)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[anIntArray837[j]];
-            long k = 0x20000000L | (long)  anIntArray837[j] << 32;
-            if(class30_sub2_sub4_sub1_sub1 == null || !class30_sub2_sub4_sub1_sub1.method449(aBoolean1224) || class30_sub2_sub4_sub1_sub1.aClass5_1696.aBoolean93 != flag)
+            Npc npc = npcs[npcIndices[j]];
+            long k = 0x20000000L | (long)  npcIndices[j] << 32;
+            if(npc == null || !npc.method449(aBoolean1224) || npc.desc.aBoolean93 != flag)
                 continue;
-            int l = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 >> 7;
-            int i1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551 >> 7;
+            int l = npc.anInt1550 >> 7;
+            int i1 = npc.anInt1551 >> 7;
             if(l < 0 || l >= 104 || i1 < 0 || i1 >= 104)
                 continue;
-            if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1540 == 1 && (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551 & 0x7f) == 64)
+            if(npc.anInt1540 == 1 && (npc.anInt1550 & 0x7f) == 64 && (npc.anInt1551 & 0x7f) == 64)
             {
                 if(anIntArrayArray929[l][i1] == anInt1265)
                     continue;
                 anIntArrayArray929[l][i1] = anInt1265;
             }
-            if(!class30_sub2_sub4_sub1_sub1.aClass5_1696.aBoolean84)
+            if(!npc.desc.aBoolean84)
                 k |= ~0x7fffffffffffffffL;
-            aClass25_946.method285(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1552, (byte)6, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550), k, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551, (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1540 - 1) * 64 + 60, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550, class30_sub2_sub4_sub1_sub1, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).aBoolean1541);
+            aClass25_946.method285(anInt918, npc.anInt1552, (byte)6, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550), k, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551, (((Class30_Sub2_Sub4_Sub1) (npc)).anInt1540 - 1) * 64 + 60, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550, npc, ((Class30_Sub2_Sub4_Sub1) (npc)).aBoolean1541);
         }
 
         if(i == -30815);
@@ -1399,7 +1900,7 @@ public class client extends Applet_Sub1 {
         while(true);
     }
 
-    public final void method29(int i, int j, Class9 class9, int k, int l, int i1, int j1) {
+    public final void buildInterfaceMenu(int i, int j, Widget class9, int k, int l, int i1, int j1) {
         if(class9.anInt262 != 0 || class9.anIntArray240 == null || class9.aBoolean266)
             return;
         if(k < i || i1 < l || k > i + class9.anInt220 || i1 > l + class9.anInt267)
@@ -1410,7 +1911,7 @@ public class client extends Applet_Sub1 {
         for(int l1 = 0; l1 < k1; l1++) {
             int i2 = class9.anIntArray241[l1] + i;
             int j2 = (class9.anIntArray272[l1] + l) - j1;
-            Class9 class9_1 = Class9.aClass9Array210[class9.anIntArray240[l1]];
+            Widget class9_1 = Widget.interfaceCache[class9.anIntArray240[l1]];
             i2 += class9_1.anInt263;
             j2 += class9_1.anInt265;
             if((class9_1.anInt230 >= 0 || class9_1.anInt216 != 0) && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267)
@@ -1419,53 +1920,53 @@ public class client extends Applet_Sub1 {
                 else
                     anInt886 = class9_1.anInt250;
             if(class9_1.anInt262 == 0) {
-                method29(i2, 13037, class9_1, k, j2, i1, class9_1.anInt224);
+                buildInterfaceMenu(i2, 13037, class9_1, k, j2, i1, class9_1.scrollPosition);
                 if(class9_1.anInt261 > class9_1.anInt267)
                     method65(i2 + class9_1.anInt220, class9_1.anInt267, k, i1, class9_1, j2, true, class9_1.anInt261, 0);
             } else {
                 if(class9_1.anInt217 == 1 && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267) {
                     boolean flag = false;
-                    if(class9_1.anInt214 != 0)
+                    if(class9_1.contentType != 0)
                         flag = method103(class9_1, false);
-                    if(!flag && (class9_1.anInt250 != 5985 || rights >= 1)) {
-                        aStringArray1199[anInt1133] = class9_1.aString221;
-                        anIntArray1093[anInt1133] = 315;
-                        anIntArray1092[anInt1133] = class9_1.anInt250;
-                        anInt1133++;
+                    if(!flag) {
+                        menuActionName[menuActionRow] = class9_1.aString221;
+                        menuActionID[menuActionRow] = 315;
+                        menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                        menuActionRow++;
                     }
                 }
                 if(class9_1.anInt217 == 2 && anInt1136 == 0 && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267) {
                     String s = class9_1.aString222;
                     if(s.indexOf(" ") != -1)
                         s = s.substring(0, s.indexOf(" "));
-                    aStringArray1199[anInt1133] = s + " @gre@" + class9_1.aString218;
-                    anIntArray1093[anInt1133] = 626;
-                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = s + " @gre@" + class9_1.aString218;
+                    menuActionID[menuActionRow] = 626;
+                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                    menuActionRow++;
                 }
                 if(class9_1.anInt217 == 3 && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267) {
-                    aStringArray1199[anInt1133] = "Close";
-                    anIntArray1093[anInt1133] = 200;
-                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = "Close";
+                    menuActionID[menuActionRow] = 200;
+                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                    menuActionRow++;
                 }
                 if(class9_1.anInt217 == 4 && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267) {
-                    aStringArray1199[anInt1133] = class9_1.aString221;
-                    anIntArray1093[anInt1133] = 169;
-                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = class9_1.aString221;
+                    menuActionID[menuActionRow] = 169;
+                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                    menuActionRow++;
                 }
                 if(class9_1.anInt217 == 5 && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267) {
-                    aStringArray1199[anInt1133] = class9_1.aString221;
-                    anIntArray1093[anInt1133] = 646;
-                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = class9_1.aString221;
+                    menuActionID[menuActionRow] = 646;
+                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                    menuActionRow++;
                 }
                 if(class9_1.anInt217 == 6 && !aBoolean1149 && k >= i2 && i1 >= j2 && k < i2 + class9_1.anInt220 && i1 < j2 + class9_1.anInt267) {
-                    aStringArray1199[anInt1133] = class9_1.aString221;
-                    anIntArray1093[anInt1133] = 679;
-                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = class9_1.aString221;
+                    menuActionID[menuActionRow] = 679;
+                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                    menuActionRow++;
                 }
                 if(class9_1.anInt262 == 2) {
                     int k2 = 0;
@@ -1484,101 +1985,101 @@ public class client extends Applet_Sub1 {
                                     Class8 class8 = Class8.method198(class9_1.anIntArray253[k2] - 1);
                                     if(anInt1282 == 1 && class9_1.aBoolean249) {
                                         if(class9_1.anInt250 != anInt1284 || k2 != anInt1283) {
-                                            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @lre@" + class8.name;
-                                            anIntArray1093[anInt1133] = 870;
-                                            anIntArray1094[anInt1133] = class8.anInt157;
-                                            anIntArray1091[anInt1133] = k2;
-                                            anIntArray1092[anInt1133] = class9_1.anInt250;
-                                            anInt1133++;
+                                            menuActionName[menuActionRow] = "Use " + aString1286 + " with @lre@" + class8.name;
+                                            menuActionID[menuActionRow] = 870;
+                                            menuActionCmd1[menuActionRow] = class8.anInt157;
+                                            menuActionCmd2[menuActionRow] = k2;
+                                            menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                            menuActionRow++;
                                         }
                                     } else
                                     if(anInt1136 == 1 && class9_1.aBoolean249) {
                                         if((anInt1138 & 0x10) == 16) {
-                                            aStringArray1199[anInt1133] = aString1139 + " @lre@" + class8.name;
-                                            anIntArray1093[anInt1133] = 543;
-                                            anIntArray1094[anInt1133] = class8.anInt157;
-                                            anIntArray1091[anInt1133] = k2;
-                                            anIntArray1092[anInt1133] = class9_1.anInt250;
-                                            anInt1133++;
+                                            menuActionName[menuActionRow] = aString1139 + " @lre@" + class8.name;
+                                            menuActionID[menuActionRow] = 543;
+                                            menuActionCmd1[menuActionRow] = class8.anInt157;
+                                            menuActionCmd2[menuActionRow] = k2;
+                                            menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                            menuActionRow++;
                                         }
                                     } else {
                                         if(class9_1.aBoolean249) {
                                             for(int l3 = 4; l3 >= 3; l3--)
                                                 if(class8.aStringArray189 != null && class8.aStringArray189[l3] != null) {
-                                                    aStringArray1199[anInt1133] = class8.aStringArray189[l3] + " @lre@" + class8.name;
+                                                    menuActionName[menuActionRow] = class8.aStringArray189[l3] + " @lre@" + class8.name;
                                                     if(l3 == 3)
-                                                        anIntArray1093[anInt1133] = 493;
+                                                        menuActionID[menuActionRow] = 493;
                                                     if(l3 == 4)
-                                                        anIntArray1093[anInt1133] = 847;
-                                                    anIntArray1094[anInt1133] = class8.anInt157;
-                                                    anIntArray1091[anInt1133] = k2;
-                                                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                                                    anInt1133++;
+                                                        menuActionID[menuActionRow] = 847;
+                                                    menuActionCmd1[menuActionRow] = class8.anInt157;
+                                                    menuActionCmd2[menuActionRow] = k2;
+                                                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                                    menuActionRow++;
                                                 } else if(l3 == 4) {
-                                                    aStringArray1199[anInt1133] = "Drop @lre@" + class8.name;
-                                                    anIntArray1093[anInt1133] = 847;
-                                                    anIntArray1094[anInt1133] = class8.anInt157;
-                                                    anIntArray1091[anInt1133] = k2;
-                                                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                                                    anInt1133++;
+                                                    menuActionName[menuActionRow] = "Drop @lre@" + class8.name;
+                                                    menuActionID[menuActionRow] = 847;
+                                                    menuActionCmd1[menuActionRow] = class8.anInt157;
+                                                    menuActionCmd2[menuActionRow] = k2;
+                                                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                                    menuActionRow++;
                                                 }
 
                                         }
                                         if(class9_1.aBoolean242) {
-                                            aStringArray1199[anInt1133] = "Use @lre@" + class8.name;
-                                            anIntArray1093[anInt1133] = 447;
-                                            anIntArray1094[anInt1133] = class8.anInt157;
-                                            anIntArray1091[anInt1133] = k2;
-                                            anIntArray1092[anInt1133] = class9_1.anInt250;
-                                            anInt1133++;
+                                            menuActionName[menuActionRow] = "Use @lre@" + class8.name;
+                                            menuActionID[menuActionRow] = 447;
+                                            menuActionCmd1[menuActionRow] = class8.anInt157;
+                                            menuActionCmd2[menuActionRow] = k2;
+                                            menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                            menuActionRow++;
                                         }
                                         if(class9_1.aBoolean249 && class8.aStringArray189 != null) {
                                             for(int i4 = 2; i4 >= 0; i4--)
                                                 if(class8.aStringArray189[i4] != null) {
-                                                    aStringArray1199[anInt1133] = class8.aStringArray189[i4] + " @lre@" + class8.name;
+                                                    menuActionName[menuActionRow] = class8.aStringArray189[i4] + " @lre@" + class8.name;
                                                     if(i4 == 0)
-                                                        anIntArray1093[anInt1133] = 74;
+                                                        menuActionID[menuActionRow] = 74;
                                                     if(i4 == 1)
-                                                        anIntArray1093[anInt1133] = 454;
+                                                        menuActionID[menuActionRow] = 454;
                                                     if(i4 == 2)
-                                                        anIntArray1093[anInt1133] = 539;
-                                                    anIntArray1094[anInt1133] = class8.anInt157;
-                                                    anIntArray1091[anInt1133] = k2;
-                                                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                                                    anInt1133++;
+                                                        menuActionID[menuActionRow] = 539;
+                                                    menuActionCmd1[menuActionRow] = class8.anInt157;
+                                                    menuActionCmd2[menuActionRow] = k2;
+                                                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                                    menuActionRow++;
                                                 }
 
                                         }
                                         if(class9_1.aStringArray225 != null) {
                                             for(int j4 = 4; j4 >= 0; j4--)
                                                 if(class9_1.aStringArray225[j4] != null) {
-                                                    aStringArray1199[anInt1133] = class9_1.aStringArray225[j4] + " @lre@" + class8.name;
+                                                    menuActionName[menuActionRow] = class9_1.aStringArray225[j4] + " @lre@" + class8.name;
                                                     if(j4 == 0)
-                                                        anIntArray1093[anInt1133] = 632;
+                                                        menuActionID[menuActionRow] = 632;
                                                     if(j4 == 1)
-                                                        anIntArray1093[anInt1133] = 78;
+                                                        menuActionID[menuActionRow] = 78;
                                                     if(j4 == 2)
-                                                        anIntArray1093[anInt1133] = 867;
+                                                        menuActionID[menuActionRow] = 867;
                                                     if(j4 == 3)
-                                                        anIntArray1093[anInt1133] = 431;
+                                                        menuActionID[menuActionRow] = 431;
                                                     if(j4 == 4)
-                                                        anIntArray1093[anInt1133] = 53;
-                                                    anIntArray1094[anInt1133] = class8.anInt157;
-                                                    anIntArray1091[anInt1133] = k2;
-                                                    anIntArray1092[anInt1133] = class9_1.anInt250;
-                                                    anInt1133++;
+                                                        menuActionID[menuActionRow] = 53;
+                                                    menuActionCmd1[menuActionRow] = class8.anInt157;
+                                                    menuActionCmd2[menuActionRow] = k2;
+                                                    menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                                    menuActionRow++;
                                                 }
 
                                         }
                                         if(rights >= 2)
-                                            aStringArray1199[anInt1133] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
+                                            menuActionName[menuActionRow] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
                                         if(rights <= 1)
-                                            aStringArray1199[anInt1133] = "Examine @lre@"+class8.name;
-                                        anIntArray1093[anInt1133] = 1125;
-                                        anIntArray1094[anInt1133] = class8.anInt157;
-                                        anIntArray1091[anInt1133] = k2;
-                                        anIntArray1092[anInt1133] = class9_1.anInt250;
-                                        anInt1133++;
+                                            menuActionName[menuActionRow] = "Examine @lre@"+class8.name;
+                                        menuActionID[menuActionRow] = 1125;
+                                        menuActionCmd1[menuActionRow] = class8.anInt157;
+                                        menuActionCmd2[menuActionRow] = k2;
+                                        menuActionCmd3[menuActionRow] = class9_1.anInt250;
+                                        menuActionRow++;
                                     }
                                 }
                             }
@@ -1589,203 +2090,219 @@ public class client extends Applet_Sub1 {
             }
         }
     }
+    public void drawTransparentScrollBar(int x, int y, int height, int maxScroll, int pos) {
+        this.gameframe[33].drawARGBSprite(x, y, 120);
+        this.gameframe[34].drawARGBSprite(x, y + height - 16, 120);
+        DrawingArea.drawVerticalLine(x, y + 16, height - 32, 16777215, 64);
+        DrawingArea.drawVerticalLine(x + 15, y + 16, height - 32, 16777215, 64);
+        int barHeight = (height - 32) * height / maxScroll;
+        if (barHeight < 10) {
+            barHeight = 10;
+        }
 
-    public final void method30(int i, int j, int k, int l, int i1, int j1) {
-        aClass30_Sub2_Sub1_Sub1_1024.method348(i1, 16083, l);
-        aClass30_Sub2_Sub1_Sub1_1025.method348(i1, 16083, (l + j) - 16);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x000001, 16, 0);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x3d3426, 15, 0);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x342d21, 13, 0);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x2e281d, 11, 0);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x29241b, 10, 0);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x252019, 9, 0);
-        Class30_Sub2_Sub1.method336(j - 32, l + 16, i1, 0x000001, 1, 0);
-        int k1 = ((j - 32) * j) / j1;
-        if(k1 < 8)
-            k1 = 8;
-        int l1 = ((j - 32 - k1) * k) / (j1 - j);
-        Class30_Sub2_Sub1.method336(k1, l + 16 + l1, i1, anInt1063, 16, 0);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x000001, k1, i1, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x817051, k1, i1 + 1, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x73654a, k1, i1 + 2, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x6a5c43, k1, i1 + 3, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x6a5c43, k1, i1 + 4, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x655841, k1, i1 + 5, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x655841, k1, i1 + 6, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x61553e, k1, i1 + 7, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x61553e, k1, i1 + 8, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x5d513c, k1, i1 + 9, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x5d513c, k1, i1 + 10, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x594e3a, k1, i1 + 11, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x594e3a, k1, i1 + 12, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x514635, k1, i1 + 13, anInt1135);
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x4b4131, k1, i1 + 14, anInt1135);
-        Class30_Sub2_Sub1.method339(l + 16 + l1, 0x000001, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x000001, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x655841, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x6a5c43, 13, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x6d5f48, 11, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x73654a, 10, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x76684b, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x7b6a4d, 5, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x7e6e50, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x817051, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 17 + l1, 0x000001, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x564b38, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x5d513c, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x625640, 11, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x655841, 10, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x6a5c43, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x6e6046, 5, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x716247, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x7b6a4d, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x817051, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 18 + l1, 0x000001, 1, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x514635, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x564b38, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x5d513c, 11, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x61553e, 9, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x655841, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x6a5c43, 5, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x6e6046, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x73654a, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x817051, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 19 + l1, 0x000001, 1, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x4b4131, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x544936, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x594e3a, 13, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x5d513c, 10, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x61553e, 8, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x655841, 6, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x6a5c43, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x73654a, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x817051, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 20 + l1, 0x000001, 1, i1, (byte)4);
-        if(i <= 0)
-            anInt1105 = aClass17_1000.method246();
-        Class30_Sub2_Sub1.method341(l + 16 + l1, 0x000001, k1, i1 + 15, anInt1135);
-        Class30_Sub2_Sub1.method339(l + 15 + l1 + k1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x000001, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x3f372a, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x443c2d, 10, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x483e2f, 9, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x4a402f, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x4b4131, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x564b38, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 14 + l1 + k1, 0x000001, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x443c2d, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x4b4131, 11, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x514635, 9, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x544936, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x564b38, 6, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x594e3a, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x625640, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x6a5c43, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 13 + l1 + k1, 0x000001, 1, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x443c2d, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x4b4131, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x544936, 12, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x564b38, 11, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x594e3a, 10, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x5d513c, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x61553e, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x6e6046, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x7b6a4d, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 12 + l1 + k1, 0x000001, 1, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x000001, 16, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x4b4131, 15, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x514635, 14, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x564b38, 13, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x594e3a, 11, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x5d513c, 9, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x61553e, 7, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x655841, 5, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x6a5c43, 4, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x73654a, 3, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x7b6a4d, 2, i1, (byte)4);
-        Class30_Sub2_Sub1.method339(l + 11 + l1 + k1, 0x000001, 1, i1, (byte)4);
+        int barPos = 0;
+        if (maxScroll != height) {
+            barPos = (height - 32 - barHeight) * pos / (maxScroll - height);
+        }
+
+        DrawingArea.drawRectangle(x, y + 16 + barPos, 16, 5 + y + 16 + barPos + barHeight - 5 - (y + 16 + barPos),
+                16777215, 32);
+    }
+    public void drawScrollbar(int height, int pos, int y, int x, int maxScroll, boolean transparent) {
+        if (transparent) {
+            this.drawTransparentScrollBar(x, y, height, maxScroll, pos);
+        } else {
+            this.aSprite_1024.drawSprite(x, y);
+            this.aSprite_1025.drawSprite(x,y + height - 16);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 1, 16);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 4011046, 15);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 3419425, 13);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 3024925, 11);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 2696219, 10);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 2433049, 9);
+            DrawingArea.drawPixels(height - 32, y + 16, x, 1, 1);
+            int k1 = (height - 32) * height / maxScroll;
+            if (k1 < 8) {
+                k1 = 8;
+            }
+
+            int l1 = (height - 32 - k1) * pos / (maxScroll - height);
+            DrawingArea.drawPixels(k1, y + 16 + l1, x, this.anInt1063, 16);
+            DrawingArea.method341(y + 16 + l1, 1, k1, x);
+            DrawingArea.method341(y + 16 + l1, 8482897, k1, x + 1);
+            DrawingArea.method341(y + 16 + l1, 7562570, k1, x + 2);
+            DrawingArea.method341(y + 16 + l1, 6970435, k1, x + 3);
+            DrawingArea.method341(y + 16 + l1, 6970435, k1, x + 4);
+            DrawingArea.method341(y + 16 + l1, 6641729, k1, x + 5);
+            DrawingArea.method341(y + 16 + l1, 6641729, k1, x + 6);
+            DrawingArea.method341(y + 16 + l1, 6378814, k1, x + 7);
+            DrawingArea.method341(y + 16 + l1, 6378814, k1, x + 8);
+            DrawingArea.method341(y + 16 + l1, 6115644, k1, x + 9);
+            DrawingArea.method341(y + 16 + l1, 6115644, k1, x + 10);
+            DrawingArea.method341(y + 16 + l1, 5852730, k1, x + 11);
+            DrawingArea.method341(y + 16 + l1, 5852730, k1, x + 12);
+            DrawingArea.method341(y + 16 + l1, 5326389, k1, x + 13);
+            DrawingArea.method341(y + 16 + l1, 4931889, k1, x + 14);
+            DrawingArea.method339(y + 16 + l1, 1, 15, x);
+            DrawingArea.method339(y + 17 + l1, 1, 15, x);
+            DrawingArea.method339(y + 17 + l1, 6641729, 14, x);
+            DrawingArea.method339(y + 17 + l1, 6970435, 13, x);
+            DrawingArea.method339(y + 17 + l1, 7167816, 11, x);
+            DrawingArea.method339(y + 17 + l1, 7562570, 10, x);
+            DrawingArea.method339(y + 17 + l1, 7759947, 7, x);
+            DrawingArea.method339(y + 17 + l1, 8088141, 5, x);
+            DrawingArea.method339(y + 17 + l1, 8285776, 4, x);
+            DrawingArea.method339(y + 17 + l1, 8482897, 3, x);
+            DrawingArea.method339(y + 17 + l1, 1, 2, x);
+            DrawingArea.method339(y + 18 + l1, 1, 16, x);
+            DrawingArea.method339(y + 18 + l1, 5655352, 15, x);
+            DrawingArea.method339(y + 18 + l1, 6115644, 14, x);
+            DrawingArea.method339(y + 18 + l1, 6444608, 11, x);
+            DrawingArea.method339(y + 18 + l1, 6641729, 10, x);
+            DrawingArea.method339(y + 18 + l1, 6970435, 7, x);
+            DrawingArea.method339(y + 18 + l1, 7233606, 5, x);
+            DrawingArea.method339(y + 18 + l1, 7430727, 4, x);
+            DrawingArea.method339(y + 18 + l1, 8088141, 3, x);
+            DrawingArea.method339(y + 18 + l1, 8482897, 2, x);
+            DrawingArea.method339(y + 18 + l1, 1, 1, x);
+            DrawingArea.method339(y + 19 + l1, 1, 16, x);
+            DrawingArea.method339(y + 19 + l1, 5326389, 15, x);
+            DrawingArea.method339(y + 19 + l1, 5655352, 14, x);
+            DrawingArea.method339(y + 19 + l1, 6115644, 11, x);
+            DrawingArea.method339(y + 19 + l1, 6378814, 9, x);
+            DrawingArea.method339(y + 19 + l1, 6641729, 7, x);
+            DrawingArea.method339(y + 19 + l1, 6970435, 5, x);
+            DrawingArea.method339(y + 19 + l1, 7233606, 4, x);
+            DrawingArea.method339(y + 19 + l1, 7562570, 3, x);
+            DrawingArea.method339(y + 19 + l1, 8482897, 2, x);
+            DrawingArea.method339(y + 19 + l1, 1, 1, x);
+            DrawingArea.method339(y + 20 + l1, 1, 16, x);
+            DrawingArea.method339(y + 20 + l1, 4931889, 15, x);
+            DrawingArea.method339(y + 20 + l1, 5523766, 14, x);
+            DrawingArea.method339(y + 20 + l1, 5852730, 13, x);
+            DrawingArea.method339(y + 20 + l1, 6115644, 10, x);
+            DrawingArea.method339(y + 20 + l1, 6378814, 8, x);
+            DrawingArea.method339(y + 20 + l1, 6641729, 6, x);
+            DrawingArea.method339(y + 20 + l1, 6970435, 4, x);
+            DrawingArea.method339(y + 20 + l1, 7562570, 3, x);
+            DrawingArea.method339(y + 20 + l1, 8482897, 2, x);
+            DrawingArea.method339(y + 20 + l1, 1, 1, x);
+            DrawingArea.method341(y + 16 + l1, 1, k1, x + 15);
+            DrawingArea.method339(y + 15 + l1 + k1, 1, 16, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 1, 15, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 4142890, 14, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 4471853, 10, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 4734511, 9, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 4866095, 7, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 4931889, 4, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 5655352, 3, x);
+            DrawingArea.method339(y + 14 + l1 + k1, 1, 2, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 1, 16, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 4471853, 15, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 4931889, 11, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 5326389, 9, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 5523766, 7, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 5655352, 6, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 5852730, 4, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 6444608, 3, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 6970435, 2, x);
+            DrawingArea.method339(y + 13 + l1 + k1, 1, 1, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 1, 16, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 4471853, 15, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 4931889, 14, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 5523766, 12, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 5655352, 11, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 5852730, 10, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 6115644, 7, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 6378814, 4, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 7233606, 3, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 8088141, 2, x);
+            DrawingArea.method339(y + 12 + l1 + k1, 1, 1, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 1, 16, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 4931889, 15, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 5326389, 14, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 5655352, 13, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 5852730, 11, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 6115644, 9, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 6378814, 7, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 6641729, 5, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 6970435, 4, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 7562570, 3, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 8088141, 2, x);
+            DrawingArea.method339(y + 11 + l1 + k1, 1, 1, x);
+        }
+
     }
 
-    private final void method31(Class30_Sub2_Sub2 class30_sub2_sub2, int i, int j)
+
+    private final void method31(Stream stream, int i, int j)
     {
         anInt839 = 0;
         anInt893 = 0;
-        if(j <= 0)
-            anInt877 = aClass17_1000.method246();
-        method139(class30_sub2_sub2, -45, i);
-        method46(i, class30_sub2_sub2, (byte)2);
-        method86(i, class30_sub2_sub2, true);
+        method139(stream, -45, i);
+        method46(i, stream, (byte)2);
+        updateNpcState(i, stream, true);
         for(int k = 0; k < anInt839; k++)
         {
             int l = anIntArray840[k];
-            if(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub1Array835[l])).anInt1537 != anInt1161)
+            if(npcs[l].anInt1537 != loopCycle)
             {
-                aClass30_Sub2_Sub4_Sub1_Sub1Array835[l].aClass5_1696 = null;
-                aClass30_Sub2_Sub4_Sub1_Sub1Array835[l] = null;
+                npcs[l].desc = null;
+                npcs[l] = null;
             }
         }
 
-        if(class30_sub2_sub2.anInt1406 != i)
-        {
-            signlink.reporterror(aString1173 + " size mismatch in getnpcpos - pos:" + class30_sub2_sub2.anInt1406 + " psize:" + i);
-            throw new RuntimeException("eek");
-        }
-        for(int i1 = 0; i1 < anInt836; i1++)
-            if(aClass30_Sub2_Sub4_Sub1_Sub1Array835[anIntArray837[i1]] == null)
+        for(int i1 = 0; i1 < npcCount; i1++)
+            if(npcs[npcIndices[i1]] == null)
             {
-                signlink.reporterror(aString1173 + " null entry in npc list - pos:" + i1 + " size:" + anInt836);
+                signlink.reporterror(myUsername + " null entry in npc list - pos:" + i1 + " size:" + npcCount);
                 throw new RuntimeException("eek");
             }
 
     }
     public final void method32(boolean flag) {
         aBoolean1157 &= flag;
-        if(super.anInt26 == 1) {
-            if(super.anInt27 >= 6 && super.anInt27 <= 106 && super.anInt28 >= 467 && super.anInt28 <= 499) {
-                anInt1287 = (anInt1287 + 1) % 4;
+        if(super.clickMode3 == 1) {
+            if(super.saveClickX >= 6 && super.saveClickX <= 106 && super.saveClickY >= 467 && super.saveClickY <= 499) {
+                publicChatMode = (publicChatMode + 1) % 4;
                 aBoolean1233 = true;
-                aBoolean1223 = true;
+                inputTaken = true;
                 stream.method397((byte)6, 95);
-                stream.writeUnsignedByte(anInt1287);
-                stream.writeUnsignedByte(anInt845);
-                stream.writeUnsignedByte(anInt1248);
+                stream.writeUnsignedByte(publicChatMode);
+                stream.writeUnsignedByte(privateChatMode);
+                stream.writeUnsignedByte(tradeMode);
             }
-            if(super.anInt27 >= 135 && super.anInt27 <= 235 && super.anInt28 >= 467 && super.anInt28 <= 499) {
-                anInt845 = (anInt845 + 1) % 3;
+            if(super.saveClickX >= 135 && super.saveClickX <= 235 && super.saveClickY >= 467 && super.saveClickY <= 499) {
+                privateChatMode = (privateChatMode + 1) % 3;
                 aBoolean1233 = true;
-                aBoolean1223 = true;
+                inputTaken = true;
                 stream.method397((byte)6, 95);
-                stream.writeUnsignedByte(anInt1287);
-                stream.writeUnsignedByte(anInt845);
-                stream.writeUnsignedByte(anInt1248);
+                stream.writeUnsignedByte(publicChatMode);
+                stream.writeUnsignedByte(privateChatMode);
+                stream.writeUnsignedByte(tradeMode);
             }
-            if(super.anInt27 >= 273 && super.anInt27 <= 373 && super.anInt28 >= 467 && super.anInt28 <= 499) {
-                anInt1248 = (anInt1248 + 1) % 3;
+            if(super.saveClickX >= 273 && super.saveClickX <= 373 && super.saveClickY >= 467 && super.saveClickY <= 499) {
+                tradeMode = (tradeMode + 1) % 3;
                 aBoolean1233 = true;
-                aBoolean1223 = true;
+                inputTaken = true;
                 stream.method397((byte)6, 95);
-                stream.writeUnsignedByte(anInt1287);
-                stream.writeUnsignedByte(anInt845);
-                stream.writeUnsignedByte(anInt1248);
+                stream.writeUnsignedByte(publicChatMode);
+                stream.writeUnsignedByte(privateChatMode);
+                stream.writeUnsignedByte(tradeMode);
             }
-            if(super.anInt27 >= 412 && super.anInt27 <= 512 && super.anInt28 >= 467 && super.anInt28 <= 499)
-                if(anInt857 == -1) {
-                    method147(537);
-                    aString881 = "";
-                    aBoolean1158 = false;
-                    for(int i = 0; i < Class9.aClass9Array210.length; i++) {
-                        if(Class9.aClass9Array210[i] == null || Class9.aClass9Array210[i].anInt214 != 600)
+            if(super.saveClickX >= 412 && super.saveClickX <= 512 && super.saveClickY >= 467 && super.saveClickY <= 499)
+                if(openInterfaceID == -1) {
+                    clearTopInterfaces(537);
+                    reportAbuseInput = "";
+                    canMute = false;
+                    for(int i = 0; i < Widget.interfaceCache.length; i++) {
+                        if(Widget.interfaceCache[i] == null || Widget.interfaceCache[i].contentType != 600)
                             continue;
-                        anInt1178 = anInt857 = Class9.aClass9Array210[i].anInt236;
+                        reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache[i].parentID;
                         break;
                     }
                 } else {
-                    method77("Please close the interface you have open before using 'report abuse'", 0, "", aBoolean991);
+                    pushMessage("Please close the interface you have open before using 'report abuse'", 0, "");
                 }
             anInt940++;
             if(anInt940 > 1386)
@@ -1816,7 +2333,7 @@ public class client extends Applet_Sub1 {
         int j = Class41.aClass41Array701[i].anInt709;
         if(j == 0)
             return;
-        int k = anIntArray971[i];
+        int k = variousSettings[i];
         if(flag)
             anInt961 = aClass17_1000.method246();
         if(j == 1)
@@ -1902,8 +2419,8 @@ public class client extends Applet_Sub1 {
             anInt1249 = k;
         if(j == 8)
         {
-            anInt1195 = k;
-            aBoolean1223 = true;
+            splitPrivateChat = k;
+            inputTaken = true;
         }
         if(j == 9)
             anInt913 = k;
@@ -1915,20 +2432,20 @@ public class client extends Applet_Sub1 {
         int var2;
         int var6;
         int var14;
-        for(var2 = -1; var2 < this.anInt891 + this.anInt836; ++var2) {
-            Object var3;
+        for(var2 = -1; var2 < this.anInt891 + this.npcCount; ++var2) {
+            Class30_Sub2_Sub4_Sub1 var3;
             if(var2 == -1) {
-                var3 = aClass30_Sub2_Sub4_Sub1_Sub2_1126;
+                var3 = aPlayer_1126;
             } else if(var2 < this.anInt891) {
-                var3 = this.aClass30_Sub2_Sub4_Sub1_Sub2Array890[this.anIntArray892[var2]];
+                var3 = this.aPlayerArray890[this.anIntArray892[var2]];
             } else {
-                var3 = this.aClass30_Sub2_Sub4_Sub1_Sub1Array835[this.anIntArray837[var2 - this.anInt891]];
+                var3 = this.npcs[this.npcIndices[var2 - this.anInt891]];
             }
 
-            if(var3 != null && ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).method449(aBoolean1224)) {
+            if(var3 != null && ((Class30_Sub2_Sub4_Sub1) var3).method449(aBoolean1224)) {
                 Class5 var4;
-                if(var3 instanceof Class30_Sub2_Sub4_Sub1_Sub1) {
-                    var4 = ((Class30_Sub2_Sub4_Sub1_Sub1)var3).aClass5_1696;
+                if(var3 instanceof Npc) {
+                    var4 = ((Npc)var3).desc;
                     if(var4.anIntArray88 != null) {
                         var4 = var4.method161();
                     }
@@ -1940,13 +2457,13 @@ public class client extends Applet_Sub1 {
 
                 if(var2 < this.anInt891) {
                     var14 = 30;
-                    Class30_Sub2_Sub4_Sub1_Sub2 var5 = (Class30_Sub2_Sub4_Sub1_Sub2)var3;
+                    Player var5 = (Player)var3;
                     if(var5.anInt1706 != 0) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507 + 15);
+                        this.method127(true, (Class30_Sub2_Sub4_Sub1) var3, ((Class30_Sub2_Sub4_Sub1) var3).anInt1507 + 15);
                         if(this.anInt963 > -1) {
                             for(var6 = 0; var6 < 8; ++var6) {
                                 if((var5.anInt1706 & 1 << var6) != 0) {
-                                    this.aClass30_Sub2_Sub1_Sub1Array1095[var6].method348(this.anInt963 - 12, 16083, this.anInt964 - var14);
+                                    this.aSpriteArray1095[var6].drawSprite(this.anInt963 - 12, this.anInt964 - var14);
                                     var14 -= 25;
                                 }
                             }
@@ -1954,74 +2471,75 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(var2 >= 0 && this.anInt855 == 10 && this.anInt933 == this.anIntArray892[var2]) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507 + 15);
+                        this.method127(true, (Class30_Sub2_Sub4_Sub1) var3, ((Class30_Sub2_Sub4_Sub1) var3).anInt1507 + 15);
                         if(this.anInt963 > -1) {
-                            this.aClass30_Sub2_Sub1_Sub1Array1095[7].method348(this.anInt963 - 12, 16083, this.anInt964 - var14);
+                            this.aSpriteArray1095[7].drawSprite(this.anInt963 - 12, this.anInt964 - var14);
                         }
                     }
                 } else {
-                    var4 = ((Class30_Sub2_Sub4_Sub1_Sub1)var3).aClass5_1696;
-                    if(var4.anInt75 >= 0 && var4.anInt75 < this.aClass30_Sub2_Sub1_Sub1Array1095.length) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507 + 15);
+                    var4 = ((Npc)var3).desc;
+                    if(var4.anInt75 >= 0 && var4.anInt75 < this.aSpriteArray1095.length) {
+                        this.method127(true, (Class30_Sub2_Sub4_Sub1) var3, ((Class30_Sub2_Sub4_Sub1) var3).anInt1507 + 15);
                         if(this.anInt963 > -1) {
-                            this.aClass30_Sub2_Sub1_Sub1Array1095[var4.anInt75].method348(this.anInt963 - 12, 16083, this.anInt964 - 30);
+                            this.aSpriteArray1095[var4.anInt75].drawSprite(this.anInt963 - 12, this.anInt964 - 30);
                         }
                     }
 
-                    if(this.anInt855 == 1 && this.anInt1222 == this.anIntArray837[var2 - this.anInt891] && anInt1161 % 20 < 10) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507 + 15);
+                    if(this.anInt855 == 1 && this.anInt1222 == this.npcIndices[var2 - this.anInt891] && loopCycle % 20 < 10) {
+                        this.method127(true, (Class30_Sub2_Sub4_Sub1) var3, ((Class30_Sub2_Sub4_Sub1) var3).anInt1507 + 15);
                         if(this.anInt963 > -1) {
-                            this.aClass30_Sub2_Sub1_Sub1Array1095[2].method348(this.anInt963 - 12, 16083, this.anInt964 - 28);
+                            this.aSpriteArray1095[2].drawSprite(this.anInt963 - 12, this.anInt964 - 28);
                         }
                     }
                 }
 
-                if(((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).aString1506 != null && (var2 >= this.anInt891 || this.anInt1287 == 0 || this.anInt1287 == 3 || this.anInt1287 == 1 && this.method109(false, ((Class30_Sub2_Sub4_Sub1_Sub2)var3).aString1703))) {
-                    this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507);
+                if(((Class30_Sub2_Sub4_Sub1) var3).aString1506 != null && (var2 >= this.anInt891 || this.publicChatMode == 0 || this.publicChatMode == 3 || this.publicChatMode == 1 && this.method109(false, ((Player)var3).name))) {
+                    this.method127(true, (Class30_Sub2_Sub4_Sub1) var3, ((Class30_Sub2_Sub4_Sub1) var3).anInt1507);
                     if(this.anInt963 > -1 && this.anInt974 < this.anInt975) {
-                        this.anIntArray979[this.anInt974] = this.aClass30_Sub2_Sub1_Sub4_1272.method384(((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).aString1506, true) / 2;
-                        this.anIntArray978[this.anInt974] = this.aClass30_Sub2_Sub1_Sub4_1272.anInt1497;
+                        this.anIntArray979[this.anInt974] = this.boldText.method384(((Class30_Sub2_Sub4_Sub1) var3).aString1506, true) / 2;
+                        this.anIntArray978[this.anInt974] = this.boldText.anInt1497;
                         this.anIntArray976[this.anInt974] = this.anInt963;
                         this.anIntArray977[this.anInt974] = this.anInt964;
-                        this.anIntArray980[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1513;
-                        this.anIntArray981[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1531;
-                        this.anIntArray982[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1535;
-                        this.aStringArray983[this.anInt974++] = ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).aString1506;
-                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1531 >= 1 && ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1531 <= 3) {
+                        this.anIntArray980[this.anInt974] = ((Class30_Sub2_Sub4_Sub1) var3).anInt1513;
+                        this.anIntArray981[this.anInt974] = ((Class30_Sub2_Sub4_Sub1) var3).anInt1531;
+                        this.anIntArray982[this.anInt974] = ((Class30_Sub2_Sub4_Sub1) var3).textCycle;
+                        this.aStringArray983[this.anInt974++] = ((Class30_Sub2_Sub4_Sub1) var3).aString1506;
+                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1) var3).anInt1531 >= 1 && ((Class30_Sub2_Sub4_Sub1) var3).anInt1531 <= 3) {
                             this.anIntArray978[this.anInt974] += 10;
                             this.anIntArray977[this.anInt974] += 5;
                         }
 
-                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1531 == 4) {
+                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1) var3).anInt1531 == 4) {
                             this.anIntArray979[this.anInt974] = 60;
                         }
 
-                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1531 == 5) {
+                        if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1) var3).anInt1531 == 5) {
                             this.anIntArray978[this.anInt974] += 5;
                         }
+
                     }
                 }
 
-                if(((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1532 > anInt1161) {
-                    this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507 + 15);
+                if(var3.anInt1532 > loopCycle) {
+                    this.method127(true, var3, var3.anInt1507 + 15);
                     if(this.anInt963 > -1) {
-                        var14 = ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1533 * 30 / ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1534;
+                        var14 = var3.anInt1533 * 30 / var3.anInt1534;
                         if(var14 > 30) {
                             var14 = 30;
                         }
 
                         if(this.hp) {
-                            this.aClass30_Sub2_Sub1_Sub4_1272.method382(16711680, this.anInt963, -918, ((Class30_Sub2_Sub4_Sub1)var3).anInt1533 + "/" + ((Class30_Sub2_Sub4_Sub1)var3).anInt1534, this.anInt964 - 9, true);
+                            this.boldText.method382(16711680, this.anInt963, -918, var3.anInt1533 + "/" + var3.anInt1534, this.anInt964 - 9, true);
                         }
 
-                        Class30_Sub2_Sub1.method336(5, this.anInt964 - 3, this.anInt963 - 15, '\uff00', var14, 0);
-                        Class30_Sub2_Sub1.method336(5, this.anInt964 - 3, this.anInt963 - 15 + var14, 16711680, 30 - var14, 0);
+                        DrawingArea.drawPixels(5, this.anInt964 - 3, this.anInt963 - 15, '\uff00', var14);
+                        DrawingArea.drawPixels(5, this.anInt964 - 3, this.anInt963 - 15 + var14, 16711680, 30 - var14);
                     }
                 }
 
                 for(var14 = 0; var14 < 4; ++var14) {
-                    if(((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anIntArray1516[var14] > anInt1161) {
-                        this.method127(true, (Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3), ((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anInt1507 / 2);
+                    if(var3.anIntArray1516[var14] > loopCycle) {
+                        this.method127(true, var3, var3.anInt1507 / 2);
                         if(this.anInt963 > -1) {
                             if(var14 == 1) {
                                 this.anInt964 -= 20;
@@ -2036,10 +2554,15 @@ public class client extends Applet_Sub1 {
                                 this.anInt963 += 15;
                                 this.anInt964 -= 10;
                             }
+                            try {
+                                this.aSpriteArray987[var3.anIntArray1515[var14]].drawSprite(this.anInt963 - 12, this.anInt964 - 12);
+                                this.smallText.method381(0, String.valueOf(var3.anIntArray1514[var14]), 23693, this.anInt964 + 4, this.anInt963);
+                                this.smallText.method381(16777215, String.valueOf(var3.anIntArray1514[var14]), 23693, this.anInt964 + 3, this.anInt963 - 1);
 
-                            this.aClass30_Sub2_Sub1_Sub1Array987[((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anIntArray1515[var14]].method348(this.anInt963 - 12, 16083, this.anInt964 - 12);
-                            this.aClass30_Sub2_Sub1_Sub4_1270.method381(0, String.valueOf(((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anIntArray1514[var14]), 23693, this.anInt964 + 4, this.anInt963);
-                            this.aClass30_Sub2_Sub1_Sub4_1270.method381(16777215, String.valueOf(((Class30_Sub2_Sub4_Sub1)((Class30_Sub2_Sub4_Sub1)var3)).anIntArray1514[var14]), 23693, this.anInt964 + 3, this.anInt963 - 1);
+                            }catch (ArrayIndexOutOfBoundsException e){
+                            } catch(NullPointerException e){
+
+                            }
                         }
                     }
                 }
@@ -2124,33 +2647,33 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(this.anIntArray981[var2] == 0) {
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method381(0, var15, 23693, this.anInt964 + 1, this.anInt963);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method381(var9, var15, 23693, this.anInt964, this.anInt963);
+                    this.boldText.method381(0, var15, 23693, this.anInt964 + 1, this.anInt963);
+                    this.boldText.method381(var9, var15, 23693, this.anInt964, this.anInt963);
                 }
 
                 if(this.anIntArray981[var2] == 1) {
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method386(0, true, var15, this.anInt963, this.anInt1265, this.anInt964 + 1);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method386(var9, true, var15, this.anInt963, this.anInt1265, this.anInt964);
+                    this.boldText.method386(0, true, var15, this.anInt963, this.anInt1265, this.anInt964 + 1);
+                    this.boldText.method386(var9, true, var15, this.anInt963, this.anInt1265, this.anInt964);
                 }
 
                 if(this.anIntArray981[var2] == 2) {
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method387(this.anInt963, var15, this.anInt1265, this.anInt964 + 1, this.aByte1194, 0);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method387(this.anInt963, var15, this.anInt1265, this.anInt964, this.aByte1194, var9);
+                    this.boldText.method387(this.anInt963, var15, this.anInt1265, this.anInt964 + 1, this.aByte1194, 0);
+                    this.boldText.method387(this.anInt963, var15, this.anInt1265, this.anInt964, this.aByte1194, var9);
                 }
 
                 if(this.anIntArray981[var2] == 3) {
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method388(150 - this.anIntArray982[var2], var15, true, this.anInt1265, this.anInt964 + 1, this.anInt963, 0);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method388(150 - this.anIntArray982[var2], var15, true, this.anInt1265, this.anInt964, this.anInt963, var9);
+                    this.boldText.method388(150 - this.anIntArray982[var2], var15, true, this.anInt1265, this.anInt964 + 1, this.anInt963, 0);
+                    this.boldText.method388(150 - this.anIntArray982[var2], var15, true, this.anInt1265, this.anInt964, this.anInt963, var9);
                 }
 
                 int var11;
                 if(this.anIntArray981[var2] == 4) {
-                    var10 = this.aClass30_Sub2_Sub1_Sub4_1272.method384(var15, true);
+                    var10 = this.boldText.method384(var15, true);
                     var11 = (150 - this.anIntArray982[var2]) * (var10 + 100) / 150;
-                    Class30_Sub2_Sub1.method333(334, this.anInt963 - 50, false, this.anInt963 + 50, 0);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method385(0, var15, this.anInt964 + 1, 822, this.anInt963 + 50 - var11);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method385(var9, var15, this.anInt964, 822, this.anInt963 + 50 - var11);
-                    Class30_Sub2_Sub1.method332(4);
+                    DrawingArea.setDrawingArea(334, this.anInt963 - 50, this.anInt963 + 50, 0);
+                    this.boldText.method385(0, var15, this.anInt964 + 1, 822, this.anInt963 + 50 - var11);
+                    this.boldText.method385(var9, var15, this.anInt964, 822, this.anInt963 + 50 - var11);
+                    DrawingArea.method332(4);
                 }
 
                 if(this.anIntArray981[var2] == 5) {
@@ -2162,14 +2685,14 @@ public class client extends Applet_Sub1 {
                         var11 = var10 - 125;
                     }
 
-                    Class30_Sub2_Sub1.method333(this.anInt964 + 5, 0, false, 512, this.anInt964 - this.aClass30_Sub2_Sub1_Sub4_1272.anInt1497 - 1);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method381(0, var15, 23693, this.anInt964 + 1 + var11, this.anInt963);
-                    this.aClass30_Sub2_Sub1_Sub4_1272.method381(var9, var15, 23693, this.anInt964 + var11, this.anInt963);
-                    Class30_Sub2_Sub1.method332(4);
+                    DrawingArea.setDrawingArea(this.anInt964 + 5, 0,  512, this.anInt964 - this.boldText.anInt1497 - 1);
+                    this.boldText.method381(0, var15, 23693, this.anInt964 + 1 + var11, this.anInt963);
+                    this.boldText.method381(var9, var15, 23693, this.anInt964 + var11, this.anInt963);
+                    DrawingArea.method332(4);
                 }
             } else {
-                this.aClass30_Sub2_Sub1_Sub4_1272.method381(0, var15, 23693, this.anInt964 + 1, this.anInt963);
-                this.aClass30_Sub2_Sub1_Sub4_1272.method381(16776960, var15, 23693, this.anInt964, this.anInt963);
+                this.boldText.method381(0, var15, 23693, this.anInt964 + 1, this.anInt963);
+                this.boldText.method381(16776960, var15, 23693, this.anInt964, this.anInt963);
             }
         }
 
@@ -2182,7 +2705,7 @@ public class client extends Applet_Sub1 {
                 if(aLongArray955[i] != l)
                     continue;
                 anInt899--;
-                aBoolean1153 = true;
+                tabAreaAltered = true;
                 for(int j = i; j < anInt899; j++) {
                     aStringArray1082[j] = aStringArray1082[j + 1];
                     anIntArray826[j] = anIntArray826[j + 1];
@@ -2202,32 +2725,162 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method36(byte byte0) {
-        aClass15_1163.method237(0);
-        Class30_Sub2_Sub1_Sub3.anIntArray1472 = anIntArray1181;
+    public final void drawTabArea(byte byte0) {
+        int xOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 241;
+        int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 336;
+        if(currentScreenMode == ScreenMode.FIXED) {
+            aRSImageProducer_1163.initDrawingArea();
+        }
+        Class30_Sub2_Sub1_Sub3.lineOffsets = anIntArray1181;
+        int x;
+        int y;
         if(byte0 != -81)
             return;
-        aClass30_Sub2_Sub1_Sub1_1196.method348(0, 16083, 0);
-        if(anInt1189 != -1)
-            drawInterface(0, 0, Class9.aClass9Array210[anInt1189], 0);
-        else
-        if(anIntArray1130[anInt1221] != -1)
-            drawInterface( 0, 0, Class9.aClass9Array210[anIntArray1130[anInt1221]], 0);
-        if(aBoolean885 && anInt948 == 1)
-            method40((byte)9);
-        aClass15_1163.method238(205, 23680, super.aGraphics12, 553);
-        aClass15_1165.method237(0);
-        Class30_Sub2_Sub1_Sub3.anIntArray1472 = anIntArray1182;
+        if (currentScreenMode == ScreenMode.FIXED) {
+            this.gameframe[14].drawSprite(0, 0);
+        } else if (currentScreenMode != ScreenMode.FIXED && !changeTabArea) {
+            DrawingArea.method335(4076841, currentGameHeight - 304, 195, 270, transparentTabArea ? 80 : 256, 0,
+                    currentGameWidth - 217);
+            this.gameframe[25].drawSprite(xOffset, yOffset);
+        } else {
+            int index;
+            if (currentGameWidth >= 1000) {
+                if (showTabComponents) {
+                    DrawingArea.method335(4076841, currentGameHeight - 304, 197, 265, transparentTabArea ? 80 : 256,0,
+                            currentGameWidth - 197);
+                    this.gameframe[28].drawSprite(currentGameWidth - 204, currentGameHeight - 311);
+                }
+
+                x = currentGameWidth - 417;
+                y = currentGameHeight - 37;
+
+                for (index = 0; x <= currentGameWidth - 30 && index < 13; ++index) {
+                    this.gameframe[24].drawSprite(x, y);
+                    x += 32;
+                }
+            } else if (currentGameWidth < 1000) {
+                if (showTabComponents) {
+                    DrawingArea.method335(4076841, currentGameHeight - 341, 195, 265, transparentTabArea ? 80 : 256,0,
+                            currentGameWidth - 197);
+                    this.gameframe[28].drawSprite(currentGameWidth - 204,currentGameHeight - 348);
+                }
+
+                x = currentGameWidth - 226;
+                y = currentGameHeight - 73;
+
+                for (index = 0; x <= currentGameWidth - 32 && index < 7; ++index) {
+                    this.gameframe[24].drawSprite(x, y);
+                    x += 32;
+                }
+
+                x = currentGameWidth - 226;
+                y = currentGameHeight - 37;
+
+                for (index = 0; x <= currentGameWidth - 32 && index < 7; ++index) {
+                    this.gameframe[24].drawSprite(x, y);
+                    x += 32;
+                }
+            }
+        }
+        if (this.invOverlayInterfaceID == -1) {
+            this.drawRedStones();
+            this.drawSideIcons();
+        }
+
+        if (showTabComponents) {
+            x = currentScreenMode == ScreenMode.FIXED ? 31 : currentGameWidth - 215;
+            y = currentScreenMode ==ScreenMode.FIXED ? 37 : currentGameHeight - 299;
+            if (changeTabArea) {
+                x = currentGameWidth - 197;
+                y = currentGameWidth >= 1000 ? currentGameHeight - 303 : currentGameHeight - 340;
+            }
+            if (this.invOverlayInterfaceID != -1) {
+                this.drawInterface(0, x, Widget.interfaceCache[this.invOverlayInterfaceID], y);
+            } else if (tabInterfaceIDs[tabID] != -1) {
+                this.drawInterface(0, x, Widget.interfaceCache[tabInterfaceIDs[tabID]], y);
+            }
+        }
+        if(menuOpen) {
+            drawMenu(currentScreenMode == ScreenMode.FIXED ? 516 : 0, currentScreenMode == ScreenMode.FIXED ? 168 : 0);
+        }
+        if(currentScreenMode == ScreenMode.FIXED) {
+            aRSImageProducer_1163.method238(168, 23680, super.aGraphics12, 516);
+            aRSImageProducer_1165.initDrawingArea();
+        }
+        Class30_Sub2_Sub1_Sub3.lineOffsets = anIntArray1182;
+    }
+    public void drawSideIcons() {
+        int xOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 247;
+        int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 336;
+        if (currentScreenMode != ScreenMode.FIXED && (currentScreenMode == ScreenMode.FIXED || changeTabArea)) {
+            int i;
+            if (changeTabArea && currentGameWidth < 1000) {
+                int[] iconId = { 0, 1, 2, 3, 4, 5, 6, -1, 8, 9, 7, 11, 12, 13 };
+                int[] iconX = { 219, 189, 156, 126, 93, 62, 30, 219, 189, 156, 124, 92, 59, 28 };
+                int[] iconY = { 67, 69, 67, 69, 72, 72, 69, 32, 29, 29, 32, 30, 33, 31, 32 };
+
+                for (i = 0; i < this.sideIconsTab.length; ++i) {
+                    if (tabInterfaceIDs[this.sideIconsTab[i]] != -1 && iconId[i] != -1) {
+                        this.sideIcons[iconId[i]].drawSprite(currentGameWidth - iconX[i],currentGameHeight - iconY[i]);
+                    }
+                }
+            } else if (changeTabArea && currentGameWidth >= 1000) {
+                int[] iconId = { 0, 1, 2, 3, 4, 5, 6, -1, 8, 9, 7, 11, 12, 13 };
+                int[] iconX = { 50, 80, 114, 143, 176, 208, 240, 242, 273, 306, 338, 370, 404, 433 };
+                int[] iconY = { 30, 32, 30, 32, 34, 34, 32, 32, 29, 29, 32, 31, 32, 32, 32 };
+
+                for (i = 0; i < this.sideIconsTab.length; ++i) {
+                    if (tabInterfaceIDs[this.sideIconsTab[i]] != -1 && iconId[i] != -1) {
+                        this.sideIcons[iconId[i]].drawSprite(currentGameWidth - 461 + iconX[i], currentGameHeight - iconY[i]);
+                    }
+                }
+            }
+        } else {
+            for (int iconId = 0; iconId < this.sideIconsTab.length; ++iconId) {
+                if (tabInterfaceIDs[this.sideIconsTab[iconId]] != -1 && this.sideIconsId[iconId] != -1) {
+                    this.sideIcons[this.sideIconsId[iconId]].drawSprite(this.sideIconsX[iconId] + xOffset,
+                            this.sideIconsY[iconId] + yOffset);
+                }
+            }
+        }
+
     }
 
+    private void drawRedStones() {
+        int xOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 247;
+        int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 336;
+        if (currentScreenMode != ScreenMode.FIXED && (currentScreenMode == ScreenMode.FIXED || changeTabArea)) {
+            int[] stoneX;
+            if (changeTabArea && currentGameWidth < 1000) {
+                stoneX = new int[] { 226, 194, 162, 130, 99, 65, 34, 219, 195, 161, 130, 98, 65, 33 };
+                int[] stoneY = new int[] { 73, 73, 73, 73, 73, 73, 73, -1, 37, 37, 37, 37, 37, 37, 37 };
+                if (tabInterfaceIDs[tabID] != -1 && tabID != 10 && showTabComponents) {
+                    if (tabID == 7) {
+                        this.gameframe[13].drawSprite(currentGameWidth - 130, currentGameHeight - 37);
+                    }
+
+                    this.gameframe[13].drawSprite(currentGameWidth - stoneX[tabID], currentGameHeight - stoneY[tabID]);
+                }
+            } else if (changeTabArea && currentGameWidth >= 1000) {
+                stoneX = new int[] { 417, 385, 353, 321, 289, 256, 224, 129, 193, 161, 130, 98, 65, 33 };
+                if (tabInterfaceIDs[tabID] != -1 && tabID != 10 && showTabComponents) {
+                    this.gameframe[13].drawSprite(currentGameWidth - stoneX[tabID], currentGameHeight - 37);
+                }
+            }
+        } else if (tabInterfaceIDs[tabID] != -1 && tabID != 15) {
+            this.gameframe[this.redStonesId[tabID]].drawSprite(this.redStonesX[tabID] + xOffset,
+                    this.redStonesY[tabID] + yOffset);
+        }
+
+    }
     public final void method37(int i, int j)
     {
         if(i <= 0)
-            anInt1008 = -1;
+            packet = -1;
         if(!aBoolean960)
         {
             if(Class30_Sub2_Sub1_Sub3.anIntArray1480[24] >= j) {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2_2 = Class30_Sub2_Sub1_Sub3.aClass30_Sub2_Sub1_Sub2Array1474[24];
+                Background class30_sub2_sub1_sub2_2 = Class30_Sub2_Sub1_Sub3.aBackgroundArray1474[24];
                 int l = class30_sub2_sub1_sub2_2.anInt1452 * class30_sub2_sub1_sub2_2.anInt1453 - 1;
                 int k1 = class30_sub2_sub1_sub2_2.anInt1452 * anInt945 * 2;
                 byte abyte1[] = class30_sub2_sub1_sub2_2.aByteArray1450;
@@ -2241,15 +2894,15 @@ public class client extends Applet_Sub1 {
             }
             if(Class30_Sub2_Sub1_Sub3.anIntArray1480[17] >= j)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2 = Class30_Sub2_Sub1_Sub3.aClass30_Sub2_Sub1_Sub2Array1474[17];
-                int k = class30_sub2_sub1_sub2.anInt1452 * class30_sub2_sub1_sub2.anInt1453 - 1;
-                int j1 = class30_sub2_sub1_sub2.anInt1452 * anInt945 * 2;
-                byte abyte0[] = class30_sub2_sub1_sub2.aByteArray1450;
+                Background background = Class30_Sub2_Sub1_Sub3.aBackgroundArray1474[17];
+                int k = background.anInt1452 * background.anInt1453 - 1;
+                int j1 = background.anInt1452 * anInt945 * 2;
+                byte abyte0[] = background.aByteArray1450;
                 byte abyte3[] = aByteArray912;
                 for(int i2 = 0; i2 <= k; i2++)
                     abyte3[i2] = abyte0[i2 - j1 & k];
 
-                class30_sub2_sub1_sub2.aByteArray1450 = abyte3;
+                background.aByteArray1450 = abyte3;
                 aByteArray912 = abyte0;
                 Class30_Sub2_Sub1_Sub3.method370(17, -477);
                 anInt854++;
@@ -2275,7 +2928,7 @@ public class client extends Applet_Sub1 {
             }
             if(Class30_Sub2_Sub1_Sub3.anIntArray1480[24] >= j)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2_1 = Class30_Sub2_Sub1_Sub3.aClass30_Sub2_Sub1_Sub2Array1474[24];
+                Background class30_sub2_sub1_sub2_1 = Class30_Sub2_Sub1_Sub3.aBackgroundArray1474[24];
                 int l = class30_sub2_sub1_sub2_1.anInt1452 * class30_sub2_sub1_sub2_1.anInt1453 - 1;
                 int k1 = class30_sub2_sub1_sub2_1.anInt1452 * anInt945 * 2;
                 byte abyte1[] = class30_sub2_sub1_sub2_1.aByteArray1450;
@@ -2289,7 +2942,7 @@ public class client extends Applet_Sub1 {
             }
             if(Class30_Sub2_Sub1_Sub3.anIntArray1480[40] >= j)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2_1 = Class30_Sub2_Sub1_Sub3.aClass30_Sub2_Sub1_Sub2Array1474[40];
+                Background class30_sub2_sub1_sub2_1 = Class30_Sub2_Sub1_Sub3.aBackgroundArray1474[40];
                 int l = class30_sub2_sub1_sub2_1.anInt1452 * class30_sub2_sub1_sub2_1.anInt1453 - 1;
                 int k1 = class30_sub2_sub1_sub2_1.anInt1452 * anInt945 * 2;
                 byte abyte1[] = class30_sub2_sub1_sub2_1.aByteArray1450;
@@ -2303,7 +2956,7 @@ public class client extends Applet_Sub1 {
             }
             if(Class30_Sub2_Sub1_Sub3.anIntArray1480[34] >= j)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2_2 = Class30_Sub2_Sub1_Sub3.aClass30_Sub2_Sub1_Sub2Array1474[34];
+                Background class30_sub2_sub1_sub2_2 = Class30_Sub2_Sub1_Sub3.aBackgroundArray1474[34];
                 int i1 = class30_sub2_sub1_sub2_2.anInt1452 * class30_sub2_sub1_sub2_2.anInt1453 - 1;
                 int l1 = class30_sub2_sub1_sub2_2.anInt1452 * anInt945 * 2;
                 byte abyte2[] = class30_sub2_sub1_sub2_2.aByteArray1450;
@@ -2329,24 +2982,24 @@ public class client extends Applet_Sub1 {
                 j = anInt889;
             else
                 j = anIntArray892[i];
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[j];
-            if(class30_sub2_sub4_sub1_sub2 != null && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1535 > 0)
+            Player player = aPlayerArray890[j];
+            if(player != null && ((Class30_Sub2_Sub4_Sub1) (player)).textCycle > 0)
             {
-                class30_sub2_sub4_sub1_sub2.anInt1535--;
-                if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1535 == 0)
-                    class30_sub2_sub4_sub1_sub2.aString1506 = null;
+                player.textCycle--;
+                if(((Class30_Sub2_Sub4_Sub1) (player)).textCycle == 0)
+                    player.aString1506 = null;
             }
         }
 
-        for(int k = 0; k < anInt836; k++)
+        for(int k = 0; k < npcCount; k++)
         {
-            int l = anIntArray837[k];
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[l];
-            if(class30_sub2_sub4_sub1_sub1 != null && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1535 > 0)
+            int l = npcIndices[k];
+            Npc npc = npcs[l];
+            if(npc != null && ((Class30_Sub2_Sub4_Sub1) (npc)).textCycle > 0)
             {
-                class30_sub2_sub4_sub1_sub1.anInt1535--;
-                if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1535 == 0)
-                    class30_sub2_sub4_sub1_sub1.aString1506 = null;
+                npc.textCycle--;
+                if(((Class30_Sub2_Sub4_Sub1) (npc)).textCycle == 0)
+                    npc.aString1506 = null;
             }
         }
 
@@ -2446,45 +3099,29 @@ public class client extends Applet_Sub1 {
             xCameraCurve = i2;
     }
 
-    public final void method40(byte byte0)
+    public final void drawMenu(int x, int y)
     {
-        int i = anInt949;
-        int j = anInt950;
+        int xPos = anInt949- (x);
+        int yPos = -y + anInt950;
         int k = anInt951;
-        int l = anInt952;
+        int l = anInt952 + 1;
+       // needDrawTabArea = true;
+        inputTaken = true;
+        tabAreaAltered = true;
         int i1 = 0x5d5447;
-        Class30_Sub2_Sub1.method336(l, j, i, i1, k, 0);
-        if(byte0 == 9)
-            byte0 = 0;
-        else
-            return;
-        Class30_Sub2_Sub1.method336(16, j + 1, i + 1, 0, k - 2, 0);
-        Class30_Sub2_Sub1.method337(i + 1, k - 2, l - 19, 0, j + 18, true);
-        aClass30_Sub2_Sub1_Sub4_1272.method385(i1, "Choose Option", j + 14, 822, i + 3);
-        int j1 = super.anInt20;
-        int k1 = super.anInt21;
-        if(anInt948 == 0)
+        DrawingArea.drawPixels(l, yPos, xPos, i1, k);
+        DrawingArea.drawPixels(16, yPos + 1, xPos + 1, 0, k - 2);
+        DrawingArea.method337(xPos + 1, k - 2, l - 19, 0, yPos + 18, true);
+        boldText.method385(i1, "Choose Option", yPos + 14, 822, xPos + 3);
+        int j1 = super.mouseX - x;
+        int k1 = -y + super.mouseY;
+        for(int l1 = 0; l1 < menuActionRow; l1++)
         {
-            j1 -= 4;
-            k1 -= 4;
-        }
-        if(anInt948 == 1)
-        {
-            j1 -= 553;
-            k1 -= 205;
-        }
-        if(anInt948 == 2)
-        {
-            j1 -= 17;
-            k1 -= 357;
-        }
-        for(int l1 = 0; l1 < anInt1133; l1++)
-        {
-            int i2 = j + 31 + (anInt1133 - 1 - l1) * 15;
+            int i2 = yPos + 31 + (menuActionRow - 1 - l1) * 15;
             int j2 = 0xffffff;
-            if(j1 > i && j1 < i + k && k1 > i2 - 13 && k1 < i2 + 3)
+            if(j1 > xPos && j1 < xPos + k && k1 > i2 - 13 && k1 < i2 + 3)
                 j2 = 0xffff00;
-            aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, i + 3, j2, aStringArray1199[l1], i2);
+            boldText.method389(false, true, xPos + 3, j2, menuActionName[l1], i2);
         }
 
     }
@@ -2497,32 +3134,32 @@ public class client extends Applet_Sub1 {
                 return;
             if(anInt899 >= 100 && anInt1046 != 1)
             {
-                method77("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "", aBoolean991);
+                pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
                 return;
             }
             if(anInt899 >= 200)
             {
-                method77("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "", aBoolean991);
+                pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
                 return;
             }
-            String s = Class50.method587(-45804, Class50.method584(l, (byte)-99));
+            String s = TextClass.fixName(TextClass.nameForLong(l));
             for(int i = 0; i < anInt899; i++)
                 if(aLongArray955[i] == l)
                 {
-                    method77(s + " is already on your friend list", 0, "", aBoolean991);
+                    pushMessage(s + " is already on your friend list", 0, "");
                     return;
                 }
 
             if(byte0 != 68)
-                anInt1008 = -1;
+                packet = -1;
             for(int j = 0; j < anInt822; j++)
                 if(aLongArray925[j] == l)
                 {
-                    method77("Please remove " + s + " from your ignore list first", 0, "", aBoolean991);
+                    pushMessage("Please remove " + s + " from your ignore list first", 0, "");
                     return;
                 }
 
-            if(s.equals(aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703))
+            if(s.equals(aPlayer_1126.name))
             {
                 return;
             } else
@@ -2531,7 +3168,7 @@ public class client extends Applet_Sub1 {
                 aLongArray955[anInt899] = l;
                 anIntArray826[anInt899] = 0;
                 anInt899++;
-                aBoolean1153 = true;
+                tabAreaAltered = true;
                 stream.method397((byte)6, 188);
                 stream.method404(5, l);
                 return;
@@ -2601,7 +3238,7 @@ public class client extends Applet_Sub1 {
     public final void method45(int i)
     {
         if(i != 0)
-            anInt1008 = -1;
+            packet = -1;
         aBoolean1031 = true;
         for(int j = 0; j < 7; j++)
         {
@@ -2618,50 +3255,51 @@ public class client extends Applet_Sub1 {
 
     }
 
-    private final void method46(int i, Class30_Sub2_Sub2 class30_sub2_sub2, byte byte0)
+    private final void method46(int i, Stream stream, byte byte0)
     {
         if(byte0 != 2)
         {
             for(int j = 1; j > 0; j++);
         }
-        while(class30_sub2_sub2.anInt1407 + 21 < i * 8)
+        while(stream.anInt1407 + 21 < i * 8)
         {
-            int k = class30_sub2_sub2.method419(14, 0);
+            int k = stream.readBits(14);
             if(k == 16383)
                 break;
-            if(aClass30_Sub2_Sub4_Sub1_Sub1Array835[k] == null)
-                aClass30_Sub2_Sub4_Sub1_Sub1Array835[k] = new Class30_Sub2_Sub4_Sub1_Sub1();
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[k];
-            anIntArray837[anInt836++] = k;
-            class30_sub2_sub4_sub1_sub1.anInt1537 = anInt1161;
-            int l = class30_sub2_sub2.method419(5, 0);
+            if(npcs[k] == null)
+                npcs[k] = new Npc();
+            Npc npc = npcs[k];
+            npcIndices[npcCount++] = k;
+            npc.anInt1537 = loopCycle;
+            int l = stream.readBits(5);
             if(l > 15)
                 l -= 32;
-            int i1 = class30_sub2_sub2.method419(5, 0);
+            int i1 = stream.readBits(5);
             if(i1 > 15)
                 i1 -= 32;
-            int j1 = class30_sub2_sub2.method419(1, 0);
-            class30_sub2_sub4_sub1_sub1.aClass5_1696 = Class5.method159(class30_sub2_sub2.method419(14, 0));
-            int k1 = class30_sub2_sub2.method419(1, 0);
+            int j1 = stream.readBits(1);
+            int npcId = stream.readBits(14);
+            npc.desc = Class5.method159(npcId);
+            int k1 = stream.readBits(1);
             if(k1 == 1)
                 anIntArray894[anInt893++] = k;
-            class30_sub2_sub4_sub1_sub1.anInt1540 = class30_sub2_sub4_sub1_sub1.aClass5_1696.aByte68;
-            class30_sub2_sub4_sub1_sub1.anInt1504 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt79;
-            class30_sub2_sub4_sub1_sub1.anInt1554 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt67;
-            class30_sub2_sub4_sub1_sub1.anInt1555 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt58;
-            class30_sub2_sub4_sub1_sub1.anInt1556 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt83;
-            class30_sub2_sub4_sub1_sub1.anInt1557 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt55;
-            class30_sub2_sub4_sub1_sub1.anInt1511 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt77;
-            class30_sub2_sub4_sub1_sub1.method445(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0] + i1, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0] + l, j1 == 1, false);
+            npc.anInt1540 = npc.desc.aByte68;
+            npc.anInt1504 = npc.desc.anInt79;
+            npc.anInt1554 = npc.desc.anInt67;
+            npc.anInt1555 = npc.desc.anInt58;
+            npc.anInt1556 = npc.desc.anInt83;
+            npc.anInt1557 = npc.desc.anInt55;
+            npc.anInt1511 = npc.desc.anInt77;
+            npc.method445(aPlayer_1126.anIntArray1500[0] + i1, aPlayer_1126.anIntArray1501[0] + l, j1 == 1, false);
         }
-        class30_sub2_sub2.method420(true);
+        stream.method420(true);
     }
 
     public final void method7(int i)
     {
         if(aBoolean1252 || aBoolean926 || aBoolean1176)
             return;
-        anInt1161++;
+        loopCycle++;
         if(!aBoolean1157)
             method140(true);
         else
@@ -2673,7 +3311,7 @@ public class client extends Applet_Sub1 {
 
     public final void method47(int i, boolean flag)
     {
-        if(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 >> 7 == anInt1261 && ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 >> 7 == anInt1262)
+        if(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 >> 7 == anInt1261 && ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 >> 7 == anInt1262)
             anInt1261 = 0;
         int j = anInt891;
         if(i != 0)
@@ -2684,67 +3322,67 @@ public class client extends Applet_Sub1 {
             j = 1;
         for(int l = 0; l < j; l++)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2;
+            Player player;
             long i1;
             if(flag)
             {
-                class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2_1126;
+                player = aPlayer_1126;
                 i1 = (long) anInt889 << 32;
             } else
             {
-                class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[l]];
+                player = aPlayerArray890[anIntArray892[l]];
                 i1 = (long) anIntArray892[l] << 32;
             }
-            if(class30_sub2_sub4_sub1_sub2 == null || !class30_sub2_sub4_sub1_sub2.method449(aBoolean1224))
+            if(player == null || !player.method449(aBoolean1224))
                 continue;
-            class30_sub2_sub4_sub1_sub2.aBoolean1699 = false;
-            if((aBoolean960 && anInt891 > 50 || anInt891 > 200) && !flag && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1517 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1511)
-                class30_sub2_sub4_sub1_sub2.aBoolean1699 = true;
-            int j1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 >> 7;
-            int k1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551 >> 7;
+            player.aBoolean1699 = false;
+            if((aBoolean960 && anInt891 > 50 || anInt891 > 200) && !flag && ((Class30_Sub2_Sub4_Sub1) (player)).anInt1517 == ((Class30_Sub2_Sub4_Sub1) (player)).anInt1511)
+                player.aBoolean1699 = true;
+            int j1 = ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 >> 7;
+            int k1 = ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 >> 7;
             if(j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104)
                 continue;
-            if(class30_sub2_sub4_sub1_sub2.aClass30_Sub2_Sub4_Sub6_1714 != null && anInt1161 >= class30_sub2_sub4_sub1_sub2.anInt1707 && anInt1161 < class30_sub2_sub4_sub1_sub2.anInt1708)
+            if(player.aClass30_Sub2_Sub4_Sub6_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708)
             {
-                class30_sub2_sub4_sub1_sub2.aBoolean1699 = false;
-                class30_sub2_sub4_sub1_sub2.anInt1709 = method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550);
-                aClass25_946.method286(60, anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551, class30_sub2_sub4_sub1_sub2, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1552, class30_sub2_sub4_sub1_sub2.anInt1722, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550, class30_sub2_sub4_sub1_sub2.anInt1709, class30_sub2_sub4_sub1_sub2.anInt1719, class30_sub2_sub4_sub1_sub2.anInt1721, i1, class30_sub2_sub4_sub1_sub2.anInt1720, (byte)35);
+                player.aBoolean1699 = false;
+                player.anInt1709 = method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550);
+                aClass25_946.method286(60, anInt918, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, player, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1552, player.anInt1722, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720, (byte)35);
                 continue;
             }
-            if((((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551 & 0x7f) == 64)
+            if((((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 & 0x7f) == 64)
             {
                 if(anIntArrayArray929[j1][k1] == anInt1265)
                     continue;
                 anIntArrayArray929[j1][k1] = anInt1265;
             }
-            class30_sub2_sub4_sub1_sub2.anInt1709 = method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550);
-            aClass25_946.method285(anInt918, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1552, (byte)6, class30_sub2_sub4_sub1_sub2.anInt1709, i1, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551, 60, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550, class30_sub2_sub4_sub1_sub2, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).aBoolean1541);
+            player.anInt1709 = method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550);
+            aClass25_946.method285(anInt918, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1552, (byte)6, player.anInt1709, i1, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, 60, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550, player, ((Class30_Sub2_Sub4_Sub1) (player)).aBoolean1541);
         }
 
     }
 
-    public final boolean method48(int i, Class9 class9)
+    public final boolean method48(int i, Widget class9)
     {
         if(i <= 0)
-            anInt1008 = -1;
-        int j = class9.anInt214;
+            packet = -1;
+        int j = class9.contentType;
         if(anInt900 == 2)
         {
             if(j == 201)
             {
-                aBoolean1223 = true;
-                anInt1225 = 0;
-                aBoolean1256 = true;
-                aString1212 = "";
+                inputTaken = true;
+                inputDialogState = 0;
+                messagePromptRaised = true;
+                promptInput = "";
                 anInt1064 = 1;
                 aString1121 = "Enter name of friend to add to list";
             }
             if(j == 202)
             {
-                aBoolean1223 = true;
-                anInt1225 = 0;
-                aBoolean1256 = true;
-                aString1212 = "";
+                inputTaken = true;
+                inputDialogState = 0;
+                messagePromptRaised = true;
+                promptInput = "";
                 anInt1064 = 2;
                 aString1121 = "Enter name of friend to delete from list";
             }
@@ -2756,19 +3394,19 @@ public class client extends Applet_Sub1 {
         }
         if(j == 501)
         {
-            aBoolean1223 = true;
-            anInt1225 = 0;
-            aBoolean1256 = true;
-            aString1212 = "";
+            inputTaken = true;
+            inputDialogState = 0;
+            messagePromptRaised = true;
+            promptInput = "";
             anInt1064 = 4;
             aString1121 = "Enter name of player to add to list";
         }
         if(j == 502)
         {
-            aBoolean1223 = true;
-            anInt1225 = 0;
-            aBoolean1256 = true;
-            aString1212 = "";
+            inputTaken = true;
+            inputDialogState = 0;
+            messagePromptRaised = true;
+            promptInput = "";
             anInt1064 = 5;
             aString1121 = "Enter name of player to delete from list";
         }
@@ -2826,10 +3464,10 @@ public class client extends Applet_Sub1 {
         }
         if(j == 620)
         {
-            aBoolean1158 = !aBoolean1158;
+            canMute = !canMute;
             if(rights >= 1)
             {
-                if(aBoolean1158)
+                if(canMute)
                 {
                     class9.aString248 = "Moderator option: Mute player for 48 hours: <ON>";
                 } else
@@ -2840,19 +3478,19 @@ public class client extends Applet_Sub1 {
         }
         if(j >= 601 && j <= 613)
         {
-            method147(537);
-            if(aString881.length() > 0)
+            clearTopInterfaces(537);
+            if(reportAbuseInput.length() > 0)
             {
                 stream.method397((byte)6, 218);
-                stream.method404(5, Class50.method583(aString881));
+                stream.method404(5, TextClass.longForName(reportAbuseInput));
                 stream.writeUnsignedByte(j - 601);
-                stream.writeUnsignedByte(aBoolean1158 ? 1 : 0);
+                stream.writeUnsignedByte(canMute ? 1 : 0);
             }
         }
         return false;
     }
 
-    private final void method49(int i, byte byte0, Class30_Sub2_Sub2 class30_sub2_sub2)
+    private final void method49(int i, byte byte0, Stream stream)
     {
         if(byte0 == 2)
             byte0 = 0;
@@ -2861,11 +3499,11 @@ public class client extends Applet_Sub1 {
         for(int j = 0; j < anInt893; j++)
         {
             int k = anIntArray894[j];
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[k];
-            int l = class30_sub2_sub2.method408();
+            Player player = aPlayerArray890[k];
+            int l = stream.readUnsignedByte();
             if((l & 0x40) != 0)
-                l += class30_sub2_sub2.method408() << 8;
-            method107(l, k, class30_sub2_sub2, aByte923, class30_sub2_sub4_sub1_sub2);
+                l += stream.readUnsignedByte() << 8;
+            method107(l, k, stream, aByte923, player);
         }
 
     }
@@ -2883,18 +3521,18 @@ public class client extends Applet_Sub1 {
             int k3 = k;
             if(k1 > 0)
                 k3 = i1;
-            int ai[] = aClass30_Sub2_Sub1_Sub1_1263.anIntArray1439;
+            int ai[] = minimapImage.myPixels;
             int k4 = 24624 + l * 4 + (103 - i) * 512 * 4;
             int i5 = ObjectKey.getObjectId(k1);
-            Class46 class46_2 = Class46.method572(i5);
+            Class46 class46_2 = Class46.forID(i5);
             if(class46_2.anInt758 != -1)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2_2 = aClass30_Sub2_Sub1_Sub2Array1060[class46_2.anInt758];
+                Background class30_sub2_sub1_sub2_2 = aBackgroundArray1060[class46_2.anInt758];
                 if(class30_sub2_sub1_sub2_2 != null)
                 {
                     int i6 = (class46_2.anInt744 * 4 - class30_sub2_sub1_sub2_2.anInt1452) / 2;
                     int j6 = (class46_2.anInt761 * 4 - class30_sub2_sub1_sub2_2.anInt1453) / 2;
-                    class30_sub2_sub1_sub2_2.method361(48 + l * 4 + i6, 16083, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
+                    class30_sub2_sub1_sub2_2.method361(48 + l * 4 + i6, 48 + (104 - i - class46_2.anInt761) * 4 + j6);
                 }
             } else
             {
@@ -2977,15 +3615,15 @@ public class client extends Applet_Sub1 {
             int l2 = i2 >> 6 & 3;
             int j3 = i2 & 0x1f;
             int l3 = ObjectKey.getObjectId(k1);
-            Class46 class46_1 = Class46.method572(l3);
+            Class46 class46_1 = Class46.forID(l3);
             if(class46_1.anInt758 != -1)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2_1 = aClass30_Sub2_Sub1_Sub2Array1060[class46_1.anInt758];
+                Background class30_sub2_sub1_sub2_1 = aBackgroundArray1060[class46_1.anInt758];
                 if(class30_sub2_sub1_sub2_1 != null)
                 {
                     int j5 = (class46_1.anInt744 * 4 - class30_sub2_sub1_sub2_1.anInt1452) / 2;
                     int k5 = (class46_1.anInt761 * 4 - class30_sub2_sub1_sub2_1.anInt1453) / 2;
-                    class30_sub2_sub1_sub2_1.method361(48 + l * 4 + j5, 16083, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
+                    class30_sub2_sub1_sub2_1.method361(48 + l * 4 + j5, 48 + (104 - i - class46_1.anInt761) * 4 + k5);
                 }
             } else
             if(j3 == 9)
@@ -2993,7 +3631,7 @@ public class client extends Applet_Sub1 {
                 int l4 = 0xeeeeee;
                 if(k1 > 0)
                     l4 = 0xee0000;
-                int ai1[] = aClass30_Sub2_Sub1_Sub1_1263.anIntArray1439;
+                int ai1[] = minimapImage.myPixels;
                 int l5 = 24624 + l * 4 + (103 - i) * 512 * 4;
                 if(l2 == 0 || l2 == 2)
                 {
@@ -3014,27 +3652,27 @@ public class client extends Applet_Sub1 {
         if(k1 != 0)
         {
             int j2 = ObjectKey.getObjectId(k1);
-            Class46 class46 = Class46.method572(j2);
+            Class46 class46 = Class46.forID(j2);
             if(class46.anInt758 != -1)
             {
-                Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2 = aClass30_Sub2_Sub1_Sub2Array1060[class46.anInt758];
-                if(class30_sub2_sub1_sub2 != null)
+                Background background = aBackgroundArray1060[class46.anInt758];
+                if(background != null)
                 {
-                    int i4 = (class46.anInt744 * 4 - class30_sub2_sub1_sub2.anInt1452) / 2;
-                    int j4 = (class46.anInt761 * 4 - class30_sub2_sub1_sub2.anInt1453) / 2;
-                    class30_sub2_sub1_sub2.method361(48 + l * 4 + i4, 16083, 48 + (104 - i - class46.anInt761) * 4 + j4);
+                    int i4 = (class46.anInt744 * 4 - background.anInt1452) / 2;
+                    int j4 = (class46.anInt761 * 4 - background.anInt1453) / 2;
+                    background.method361(48 + l * 4 + i4, 48 + (104 - i - class46.anInt761) * 4 + j4);
                 }
             }
         }
     }
 
-    public final void method51(int i)
+    public final void loadTitleScreen(int i)
     {
-        aClass30_Sub2_Sub1_Sub2_966 = new Class30_Sub2_Sub1_Sub2(aClass44_1053, "titlebox", 0);
+        aBackground_966 = new Background(titleStreamLoader, "titlebox", 0);
         if(i <= 0)
             aBoolean1231 = !aBoolean1231;
-        aClass30_Sub2_Sub1_Sub2_967 = new Class30_Sub2_Sub1_Sub2(aClass44_1053, "titlebutton", 0);
-        aClass30_Sub2_Sub1_Sub2Array1152 = new Class30_Sub2_Sub1_Sub2[12];
+        aBackground_967 = new Background(titleStreamLoader, "titlebutton", 0);
+        aBackgroundArray1152 = new Background[12];
         int j = 0;
         try
         {
@@ -3052,13 +3690,13 @@ public class client extends Applet_Sub1 {
 //               aClass30_Sub2_Sub1_Sub2Array1152[l] = new Class30_Sub2_Sub1_Sub2(aClass44_1053, "runes", 12 + (l & 3));
 
         }
-        aClass30_Sub2_Sub1_Sub1_1201 = new Class30_Sub2_Sub1_Sub1(128, 265);
-        aClass30_Sub2_Sub1_Sub1_1202 = new Class30_Sub2_Sub1_Sub1(128, 265);
+        aSprite_1201 = new Sprite(128, 265);
+        aSprite_1202 = new Sprite(128, 265);
         for(int i1 = 0; i1 < 33920; i1++)
-            aClass30_Sub2_Sub1_Sub1_1201.anIntArray1439[i1] = aClass15_1110.anIntArray315[i1];
+            aSprite_1201.myPixels[i1] = aRSImageProducer_1110.anIntArray315[i1];
 
         for(int j1 = 0; j1 < 33920; j1++)
-            aClass30_Sub2_Sub1_Sub1_1202.anIntArray1439[j1] = aClass15_1111.anIntArray315[j1];
+            aSprite_1202.myPixels[j1] = aRSImageProducer_1111.anIntArray315[j1];
 
         anIntArray851 = new int[256];
         for(int k1 = 0; k1 < 64; k1++)
@@ -3119,7 +3757,7 @@ public class client extends Applet_Sub1 {
         Class25.aBoolean436 = false;
         Class30_Sub2_Sub1_Sub3.aBoolean1461 = false;
         aBoolean960 = false;
-        Class7.aBoolean151 = false;
+        ObjectManager.aBoolean151 = false;
         if(flag)
             aBoolean919 = !aBoolean919;
         Class46.aBoolean752 = false;
@@ -3134,17 +3772,17 @@ public class client extends Applet_Sub1 {
             aBoolean959 = true;//members
             signlink.storeid = 32;
             signlink.startpriv(InetAddress.getLocalHost());
-            client client1 = new client();
-            client1 = new ClientWindow(args);
+            instance = new client();
+        currentScreenMode(ScreenMode.FIXED);
             //setserver("ghreborn.ddns.net", "59999");
-            setserver(Configuration.SERVER_ADDRESS);
+            server = Configuration.SERVER_ADDRESS;
             System.out.println("Connecting to "+Configuration.SERVER_ADDRESS);
+            instance.method1(screenAreaWidth, currentGameWidth);
             RICH_PRESENCE.initialize();
-            return;
         }
         catch(Exception exception)
         {
-            return;
+            exception.printStackTrace();
         }
     }
     public static void setserver(String s)
@@ -3155,12 +3793,12 @@ public class client extends Applet_Sub1 {
     {
         if(i != -48877)
             return;
-        if(aBoolean960 && anInt1023 == 2 && Class7.anInt131 != anInt918)
+        if(aBoolean960 && anInt1023 == 2 && ObjectManager.anInt131 != anInt918)
         {
-            aClass15_1165.method237(0);
-            aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Loading - please wait.", 23693, 151, 257);
-            aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Loading - please wait.", 23693, 150, 256);
-            aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
+            aRSImageProducer_1165.initDrawingArea();
+            regularText.method381(0, "Loading - please wait.", 23693, 151, 257);
+            regularText.method381(0xffffff, "Loading - please wait.", 23693, 150, 256);
+            aRSImageProducer_1165.method238(currentScreenMode == ScreenMode.FIXED ? 0 : 0, 23680, super.aGraphics12, currentScreenMode == ScreenMode.FIXED ? 0 : 0);
             anInt1023 = 1;
             aLong824 = System.currentTimeMillis();
         }
@@ -3169,7 +3807,7 @@ public class client extends Applet_Sub1 {
             int j = method54((byte)-95);
             if(j != 0 && System.currentTimeMillis() - aLong824 > 0x57e40L)
             {
-                signlink.reporterror(aString1173 + " glcfb " + aLong1215 + "," + j + "," + aBoolean960 + "," + aClass14Array970[0] + "," + aClass42_Sub1_1068.method552() + "," + anInt918 + "," + currentRegionX + "," + currentRegionY);
+                signlink.reporterror(myUsername + " glcfb " + aLong1215 + "," + j + "," + aBoolean960 + "," + aClass14Array970[0] + "," + aClass42_Sub1_1068.method552() + "," + anInt918 + "," + currentRegionX + "," + currentRegionY);
                 aLong824 = System.currentTimeMillis();
             }
         }
@@ -3200,14 +3838,14 @@ public class client extends Applet_Sub1 {
             byte abyte0[] = mapData[j];
             if(abyte0 != null)
             {
-                int k = (mapCoordinates[j] >> 8) * 64 - anInt1034;
-                int l = (mapCoordinates[j] & 0xff) * 64 - anInt1035;
+                int k = (mapCoordinates[j] >> 8) * 64 - baseX;
+                int l = (mapCoordinates[j] & 0xff) * 64 - baseY;
                 if(aBoolean1159)
                 {
                     k = 10;
                     l = 10;
                 }
-                flag &= Class7.method189(k, abyte0, l, 6);
+                flag &= ObjectManager.method189(k, abyte0, l, 6);
             }
         }
 
@@ -3219,7 +3857,7 @@ public class client extends Applet_Sub1 {
         } else
         {
             anInt1023 = 2;
-            Class7.anInt131 = anInt918;
+            ObjectManager.anInt131 = anInt918;
             method22(true);
             stream.method397((byte)6, 121);
             return 0;
@@ -3231,27 +3869,27 @@ public class client extends Applet_Sub1 {
         while(i >= 0)
             method6();
         for(Class30_Sub2_Sub4_Sub4 class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)aClass19_1013.method252(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)aClass19_1013.method254(false))
-            if(class30_sub2_sub4_sub4.anInt1597 != anInt918 || anInt1161 > class30_sub2_sub4_sub4.anInt1572)
+            if(class30_sub2_sub4_sub4.anInt1597 != anInt918 || loopCycle > class30_sub2_sub4_sub4.anInt1572)
                 class30_sub2_sub4_sub4.method329();
             else
-            if(anInt1161 >= class30_sub2_sub4_sub4.anInt1571)
+            if(loopCycle >= class30_sub2_sub4_sub4.anInt1571)
             {
                 if(class30_sub2_sub4_sub4.anInt1590 > 0)
                 {
-                    Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[class30_sub2_sub4_sub4.anInt1590 - 1];
-                    if(class30_sub2_sub4_sub1_sub1 != null && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 >= 0 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 < 13312 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551 >= 0 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551 < 13312)
-                        class30_sub2_sub4_sub4.method455(anInt1161, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551, method42(class30_sub2_sub4_sub4.anInt1597, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550) - class30_sub2_sub4_sub4.anInt1583, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550, (byte)-83);
+                    Npc npc = npcs[class30_sub2_sub4_sub4.anInt1590 - 1];
+                    if(npc != null && ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550 >= 0 && ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550 < 13312 && ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551 >= 0 && ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551 < 13312)
+                        class30_sub2_sub4_sub4.method455(loopCycle, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551, method42(class30_sub2_sub4_sub4.anInt1597, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550) - class30_sub2_sub4_sub4.anInt1583, ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550, (byte)-83);
                 }
                 if(class30_sub2_sub4_sub4.anInt1590 < 0)
                 {
                     int j = -class30_sub2_sub4_sub4.anInt1590 - 1;
-                    Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2;
+                    Player player;
                     if(j == anInt884)
-                        class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2_1126;
+                        player = aPlayer_1126;
                     else
-                        class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[j];
-                    if(class30_sub2_sub4_sub1_sub2 != null && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 >= 0 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 < 13312 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551 >= 0 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551 < 13312)
-                        class30_sub2_sub4_sub4.method455(anInt1161, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551, method42(class30_sub2_sub4_sub4.anInt1597, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550) - class30_sub2_sub4_sub4.anInt1583, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550, (byte)-83);
+                        player = aPlayerArray890[j];
+                    if(player != null && ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 >= 0 && ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 < 13312 && ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 >= 0 && ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 < 13312)
+                        class30_sub2_sub4_sub4.method455(loopCycle, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, method42(class30_sub2_sub4_sub4.anInt1597, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550) - class30_sub2_sub4_sub4.anInt1583, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550, (byte)-83);
                 }
                 class30_sub2_sub4_sub4.method456(anInt945, anInt1020);
                 aClass25_946.method285(anInt918, class30_sub2_sub4_sub4.anInt1595, (byte)6, (int)class30_sub2_sub4_sub4.aDouble1587, -1, (int)class30_sub2_sub4_sub4.aDouble1586, 60, (int)class30_sub2_sub4_sub4.aDouble1585, class30_sub2_sub4_sub4, false);
@@ -3267,41 +3905,41 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method56(int i) {
-        byte abyte0[] = aClass44_1053.method571("title.dat", null);
-        Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(abyte0, this);
-        aClass15_1110.method237(0);
-        class30_sub2_sub1_sub1.method346(0, 0, -32357);
-        aClass15_1111.method237(0);
-        class30_sub2_sub1_sub1.method346(-637, 0, -32357);
-        aClass15_1107.method237(0);
-        class30_sub2_sub1_sub1.method346(-128, 0, -32357);
-        aClass15_1108.method237(0);
-        class30_sub2_sub1_sub1.method346(-202, -371, -32357);
-        aClass15_1109.method237(0);
-        class30_sub2_sub1_sub1.method346(-202, -171, -32357);
-        aClass15_1112.method237(0);
-        class30_sub2_sub1_sub1.method346(0, -265, -32357);
-        aClass15_1113.method237(0);
-        class30_sub2_sub1_sub1.method346(-562, -265, -32357);
-        aClass15_1114.method237(0);
-        class30_sub2_sub1_sub1.method346(-128, -171, -32357);
-        aClass15_1115.method237(0);
-        class30_sub2_sub1_sub1.method346(-562, -171, -32357);
-        int ai[] = new int[class30_sub2_sub1_sub1.anInt1440];
-        for(int j = 0; j < class30_sub2_sub1_sub1.anInt1441; j++)
+        byte abyte0[] = titleStreamLoader.method571("title.dat", null);
+        Sprite sprite = new Sprite(abyte0, this);
+        aRSImageProducer_1110.initDrawingArea();
+        sprite.method346(0, 0, -32357);
+        aRSImageProducer_1111.initDrawingArea();
+        sprite.method346(-637, 0, -32357);
+        aRSImageProducer_1107.initDrawingArea();
+        sprite.method346(-128, 0, -32357);
+        aRSImageProducer_1108.initDrawingArea();
+        sprite.method346(-202, -371, -32357);
+        aRSImageProducer_1109.initDrawingArea();
+        sprite.method346(-202, -171, -32357);
+        aRSImageProducer_1112.initDrawingArea();
+        sprite.method346(0, -265, -32357);
+        aRSImageProducer_1113.initDrawingArea();
+        sprite.method346(-562, -265, -32357);
+        aRSImageProducer_1114.initDrawingArea();
+        sprite.method346(-128, -171, -32357);
+        aRSImageProducer_1115.initDrawingArea();
+        sprite.method346(-562, -171, -32357);
+        int ai[] = new int[sprite.myWidth];
+        for(int j = 0; j < sprite.myHeight; j++)
         {
-            for(int k = 0; k < class30_sub2_sub1_sub1.anInt1440; k++)
-                ai[k] = class30_sub2_sub1_sub1.anIntArray1439[(class30_sub2_sub1_sub1.anInt1440 - k - 1) + class30_sub2_sub1_sub1.anInt1440 * j];
+            for(int k = 0; k < sprite.myWidth; k++)
+                ai[k] = sprite.myPixels[(sprite.myWidth - k - 1) + sprite.myWidth * j];
 
-            for(int l = 0; l < class30_sub2_sub1_sub1.anInt1440; l++)
-                class30_sub2_sub1_sub1.anIntArray1439[l + class30_sub2_sub1_sub1.anInt1440 * j] = ai[l];
+            for(int l = 0; l < sprite.myWidth; l++)
+                sprite.myPixels[l + sprite.myWidth * j] = ai[l];
         }
         if(i != 0)
         {
             return;
         } else
         {
-            class30_sub2_sub1_sub1 = null;
+            sprite = null;
             Object obj = null;
             Object obj1 = null;
             System.gc();
@@ -3326,9 +3964,9 @@ public class client extends Applet_Sub1 {
                     Class30_Sub2_Sub4_Sub6.method460(class30_sub2_sub3.aByteArray1420, class30_sub2_sub3.anInt1421);
                     if((aClass42_Sub1_1068.method559(class30_sub2_sub3.anInt1421, -203) & 0x62) != 0)
                     {
-                        aBoolean1153 = true;
-                        if(anInt1276 != -1)
-                            aBoolean1223 = true;
+                        tabAreaAltered = true;
+                        if(backDialogID != -1)
+                            inputTaken = true;
                     }
                 }
                 if(class30_sub2_sub3.anInt1419 == 2 && class30_sub2_sub3.anInt1421 == anInt1227 && class30_sub2_sub3.aByteArray1420 != null)
@@ -3354,7 +3992,7 @@ public class client extends Applet_Sub1 {
 
                 }
             } while(class30_sub2_sub3.anInt1419 != 93 || !aClass42_Sub1_1068.method564(class30_sub2_sub3.anInt1421, -520));
-            Class7.method173((byte)-107, new Class30_Sub2_Sub2(class30_sub2_sub3.aByteArray1420, 891), aClass42_Sub1_1068);
+            ObjectManager.method173((byte)-107, new Stream(class30_sub2_sub3.aByteArray1420, 891), aClass42_Sub1_1068);
         } while(true);
     }
 
@@ -3438,12 +4076,12 @@ public class client extends Applet_Sub1 {
 
     public final void method60(int i, byte byte0)
     {
-        Class9 class9 = Class9.aClass9Array210[i];
+        Widget class9 = Widget.interfaceCache[i];
         for(int j = 0; j < class9.anIntArray240.length; j++)
         {
             if(class9.anIntArray240[j] == -1)
                 break;
-            Class9 class9_1 = Class9.aClass9Array210[class9.anIntArray240[j]];
+            Widget class9_1 = Widget.interfaceCache[class9.anIntArray240[j]];
             if(class9_1.anInt262 == 1)
                 method60(class9_1.anInt250, (byte)6);
             class9_1.anInt246 = 0;
@@ -3458,29 +4096,16 @@ public class client extends Applet_Sub1 {
     {
         if(anInt855 != 2)
             return;
-        method128((anInt934 - anInt1034 << 7) + anInt937, anInt936 * 2, anInt875, (anInt935 - anInt1035 << 7) + anInt938);
+        method128((anInt934 - baseX << 7) + anInt937, anInt936 * 2, anInt875, (anInt935 - baseY << 7) + anInt938);
         if(i >= 0)
             aBoolean1224 = !aBoolean1224;
-        if(anInt963 > -1 && anInt1161 % 20 < 10)
-            aClass30_Sub2_Sub1_Sub1Array1095[2].method348(anInt963 - 12, 16083, anInt964 - 28);
+        if(anInt963 > -1 && loopCycle % 20 < 10)
+            aSpriteArray1095[2].drawSprite(anInt963 - 12, anInt964 - 28);
     }
 
     public final void method62(int i)
     {
-        if (currentScreenMode != ScreenMode.FIXED && currentScreenMode != ScreenMode.FULLSCREEN) {
-            if (currentGameWidth != method11(0).getWidth()) {
-                currentGameWidth = method11(0).getWidth();
-                gameScreenWidth = method11(0).getWidth();
-                aGraphics12 = super.method11(0).getGraphics();
-                setBounds();
-            }
-            if (currentGameHeight != method11(0).getHeight()) {
-                currentGameHeight = method11(0).getHeight();
-                gameScreenHeight = method11(0).getHeight();
-                aGraphics12 = super.method11(0).getGraphics();
-                setBounds();
-            }
-        }
+        this.refreshFrameSize();
         if(anInt1104 > 1)
             anInt1104--;
         if(anInt1011 > 0)
@@ -3495,7 +4120,7 @@ public class client extends Applet_Sub1 {
         {
             if(aBoolean1205)
             {
-                if(super.anInt26 != 0 || aClass48_879.anInt810 >= 40)
+                if(super.clickMode3 != 0 || aClass48_879.anInt810 >= 40)
                 {
                     stream.method397((byte)6, 45);
                     stream.writeUnsignedByte(0);
@@ -3574,19 +4199,19 @@ public class client extends Applet_Sub1 {
                 aClass48_879.anInt810 = 0;
             }
         }
-        if(super.anInt26 != 0)
+        if(super.clickMode3 != 0)
         {
             long l = (super.aLong29 - aLong1220) / 50L;
             if(l > 4095L)
                 l = 4095L;
             aLong1220 = super.aLong29;
-            int k2 = super.anInt28;
+            int k2 = super.saveClickY;
             if(k2 < 0)
                 k2 = 0;
             else
             if(k2 > 502)
                 k2 = 502;
-            int k3 = super.anInt27;
+            int k3 = super.saveClickX;
             if(k3 < 0)
                 k3 = 0;
             else
@@ -3594,7 +4219,7 @@ public class client extends Applet_Sub1 {
                 k3 = 764;
             int k4 = k2 * 765 + k3;
             int j5 = 0;
-            if(super.anInt26 == 2)
+            if(super.clickMode3 == 2)
                 j5 = 1;
             int l5 = (int)l;
             stream.method397((byte)6, 241);
@@ -3634,11 +4259,11 @@ public class client extends Applet_Sub1 {
         method95(-8066);
         method38((byte)-92);
         anInt945++;
-        if(anInt917 != 0)
+        if(crossType != 0)
         {
             anInt916 += 20;
             if(anInt916 >= 400)
-                anInt917 = 0;
+                crossType = 0;
         }
         if(anInt1246 != 0)
         {
@@ -3646,33 +4271,33 @@ public class client extends Applet_Sub1 {
             if(anInt1243 >= 15)
             {
                 if(anInt1246 == 2)
-                    aBoolean1153 = true;
+                    tabAreaAltered = true;
                 if(anInt1246 == 3)
-                    aBoolean1223 = true;
+                    inputTaken = true;
                 anInt1246 = 0;
             }
         }
         if(anInt1086 != 0)
         {
             anInt989++;
-            if(super.anInt20 > anInt1087 + 5 || super.anInt20 < anInt1087 - 5 || super.anInt21 > anInt1088 + 5 || super.anInt21 < anInt1088 - 5)
+            if(super.mouseX > anInt1087 + 5 || super.mouseX < anInt1087 - 5 || super.mouseY > anInt1088 + 5 || super.mouseY < anInt1088 - 5)
                 aBoolean1242 = true;
             if(super.anInt19 == 0)
             {
                 if(anInt1086 == 2)
-                    aBoolean1153 = true;
+                    tabAreaAltered = true;
                 if(anInt1086 == 3)
-                    aBoolean1223 = true;
+                    inputTaken = true;
                 anInt1086 = 0;
                 if(aBoolean1242 && anInt989 >= 10)
                 {
                     anInt1067 = -1;
-                    method82(0);
+                    processRightClick(0);
                     if(anInt1067 == anInt1084 && anInt1066 != anInt1085)
                     {
-                        Class9 class9 = Class9.aClass9Array210[anInt1084];
+                        Widget class9 = Widget.interfaceCache[anInt1084];
                         int j1 = 0;
-                        if(anInt913 == 1 && class9.anInt214 == 206)
+                        if(anInt913 == 1 && class9.contentType == 206)
                             j1 = 1;
                         if(class9.anIntArray253[anInt1066] <= 0)
                             j1 = 0;
@@ -3711,40 +4336,45 @@ public class client extends Applet_Sub1 {
                         stream.method431(true, anInt1066);
                     }
                 } else
-                if((anInt1253 == 1 || method17(9, anInt1133 - 1)) && anInt1133 > 2)
+                if((anInt1253 == 1 || method17(9, menuActionRow - 1)) && menuActionRow > 2)
                     method116(true);
                 else
-                if(anInt1133 > 0)
-                    method69(anInt1133 - 1, false);
+                if(menuActionRow > 0)
+                    method69(menuActionRow - 1, false);
                 anInt1243 = 10;
-                super.anInt26 = 0;
+                super.clickMode3 = 0;
             }
         }
         if(Class25.anInt470 != -1)
         {
             int k = Class25.anInt470;
             int k1 = Class25.anInt471;
-            boolean flag = method85(0, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k1, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], true, k);
+            boolean flag = false;
+            if (rights >= 2 && controlIsDown) {
+                teleport(baseX + k, baseY + k1);
+            } else {
+                 flag = doWalkTo(0, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k1, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], true, k);
+            }
             Class25.anInt470 = -1;
             if(flag)
             {
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 1;
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 1;
                 anInt916 = 0;
             }
         }
-        if(super.anInt26 == 1 && aString844 != null)
+        if(super.clickMode3 == 1 && aString844 != null)
         {
             aString844 = null;
-            aBoolean1223 = true;
-            super.anInt26 = 0;
+            inputTaken = true;
+            super.clickMode3 = 0;
         }
         method20(4);
         method92(true);
-        method78(19);
-        method32(true);
-        if(super.anInt19 == 1 || super.anInt26 == 1)
+        method78();
+        processChatModeClick();
+        if(super.anInt19 == 1 || super.clickMode3 == 1)
             anInt1213++;
         if(anInt1023 == 2)
             method108(3);
@@ -3828,7 +4458,161 @@ public class client extends Applet_Sub1 {
             method44(true);
         }
     }
-
+    public void processChatModeClick() {
+        final int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 503;
+        if (super.mouseX >= 5 && super.mouseX <= 61 && super.mouseY >= yOffset + 482 && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 0;
+            inputTaken = true;
+        } else if (super.mouseX >= 71 && super.mouseX <= 127 && super.mouseY >= yOffset + 482
+                && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 1;
+            inputTaken = true;
+        } else if (super.mouseX >= 137 && super.mouseX <= 193 && super.mouseY >= yOffset + 482
+                && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 2;
+            inputTaken = true;
+        } else if (super.mouseX >= 203 && super.mouseX <= 259 && super.mouseY >= yOffset + 482
+                && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 3;
+            inputTaken = true;
+        } else if (super.mouseX >= 269 && super.mouseX <= 325 && super.mouseY >= yOffset + 482
+                && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 4;
+            inputTaken = true;
+        } else if (super.mouseX >= 335 && super.mouseX <= 391 && super.mouseY >= yOffset + 482
+                && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 5;
+            inputTaken = true;
+        } else if (super.mouseX >= 404 && super.mouseX <= 515 && super.mouseY >= yOffset + 482
+                && super.mouseY <= yOffset + 503) {
+            cButtonHPos = 6;
+            inputTaken = true;
+        } else {
+            cButtonHPos = -1;
+            inputTaken = true;
+        }
+        if (super.clickMode3 == 1) {
+            if (super.saveClickX >= 5 && super.saveClickX <= 61 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (currentScreenMode != ScreenMode.FIXED) {
+                    if (setChannel != 0) {
+                        cButtonCPos = 0;
+                        chatTypeView = 0;
+                        inputTaken = true;
+                        setChannel = 0;
+                    } else {
+                        showChatComponents = showChatComponents ? false : true;
+                    }
+                } else {
+                    cButtonCPos = 0;
+                    chatTypeView = 0;
+                    inputTaken = true;
+                    setChannel = 0;
+                }
+            } else if (super.saveClickX >= 71 && super.saveClickX <= 127 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (currentScreenMode != ScreenMode.FIXED) {
+                    if (setChannel != 1 && currentScreenMode != ScreenMode.FIXED) {
+                        cButtonCPos = 1;
+                        chatTypeView = 5;
+                        inputTaken = true;
+                        setChannel = 1;
+                    } else {
+                        showChatComponents = showChatComponents ? false : true;
+                    }
+                } else {
+                    cButtonCPos = 1;
+                    chatTypeView = 5;
+                    inputTaken = true;
+                    setChannel = 1;
+                }
+            } else if (super.saveClickX >= 137 && super.saveClickX <= 193 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (currentScreenMode != ScreenMode.FIXED) {
+                    if (setChannel != 2 && currentScreenMode != ScreenMode.FIXED) {
+                        cButtonCPos = 2;
+                        chatTypeView = 1;
+                        inputTaken = true;
+                        setChannel = 2;
+                    } else {
+                        showChatComponents = showChatComponents ? false : true;
+                    }
+                } else {
+                    cButtonCPos = 2;
+                    chatTypeView = 1;
+                    inputTaken = true;
+                    setChannel = 2;
+                }
+            } else if (super.saveClickX >= 203 && super.saveClickX <= 259 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (currentScreenMode != ScreenMode.FIXED) {
+                    if (setChannel != 3 && currentScreenMode != ScreenMode.FIXED) {
+                        cButtonCPos = 3;
+                        chatTypeView = 2;
+                        inputTaken = true;
+                        setChannel = 3;
+                    } else {
+                        showChatComponents = showChatComponents ? false : true;
+                    }
+                } else {
+                    cButtonCPos = 3;
+                    chatTypeView = 2;
+                    inputTaken = true;
+                    setChannel = 3;
+                }
+            } else if (super.saveClickX >= 269 && super.saveClickX <= 325 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (currentScreenMode != ScreenMode.FIXED) {
+                    if (setChannel != 4 && currentScreenMode != ScreenMode.FIXED) {
+                        cButtonCPos = 4;
+                        chatTypeView = 11;
+                        inputTaken = true;
+                        setChannel = 4;
+                    } else {
+                        showChatComponents = showChatComponents ? false : true;
+                    }
+                } else {
+                    cButtonCPos = 4;
+                    chatTypeView = 11;
+                    inputTaken = true;
+                    setChannel = 4;
+                }
+            } else if (super.saveClickX >= 335 && super.saveClickX <= 391 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (currentScreenMode != ScreenMode.FIXED) {
+                    if (setChannel != 5 && currentScreenMode != ScreenMode.FIXED) {
+                        cButtonCPos = 5;
+                        chatTypeView = 3;
+                        inputTaken = true;
+                        setChannel = 5;
+                    } else {
+                        showChatComponents = showChatComponents ? false : true;
+                    }
+                } else {
+                    cButtonCPos = 5;
+                    chatTypeView = 3;
+                    inputTaken = true;
+                    setChannel = 5;
+                }
+            } else if (super.saveClickX >= 404 && super.saveClickX <= 515 && super.saveClickY >= yOffset + 482
+                    && super.saveClickY <= yOffset + 505) {
+                if (openInterfaceID == -1) {
+                    clearTopInterfaces(537);
+                    reportAbuseInput = "";
+                    canMute = false;
+                    for (int i = 0; i < Widget.interfaceCache.length; i++) {
+                        if (Widget.interfaceCache[i] == null || Widget.interfaceCache[i].contentType != 600) {
+                            continue;
+                        }
+                        reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache[i].parentID;
+                        break;
+                    }
+                } else {
+                    pushMessage("Please close the interface you have open before using 'report abuse'", 0, "");
+                }
+            }
+        }
+    }
     private final void method63(int i)
     {
         Class30_Sub1 class30_sub1 = (Class30_Sub1)aClass19_1179.method252();
@@ -3848,42 +4632,40 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method64(int i)
+    public final void resetImageProducers(int i)
     {
-        if(aClass15_1107 != null)
+        if(aRSImageProducer_1107 != null)
             return;
-        super.aClass15_13 = null;
-        aClass15_1166 = null;
-        aClass15_1164 = null;
-        aClass15_1163 = null;
-        aClass15_1165 = null;
-        aClass15_1123 = null;
-        aClass15_1124 = null;
-        aClass15_1125 = null;
-        aClass15_1110 = new Class15(128, 265, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1111 = new Class15(128, 265, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1107 = new Class15(509, 171, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1108 = new Class15(360, 132, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1109 = new Class15(360, 200, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1112 = new Class15(202, 238, method11(0), 0);
+        super.aRSImageProducer_13 = null;
+        aRSImageProducer_1166 = null;
+        aRSImageProducer_1164 = null;
+        aRSImageProducer_1163 = null;
+        aRSImageProducer_1165 = null;
+        aRSImageProducer_1125 = null;
+        aRSImageProducer_1110 = new RSImageProducer(128, 265);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1111 = new RSImageProducer(128, 265);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1107 = new RSImageProducer(509, 171);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1108 = new RSImageProducer(360, 132);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1109 = new RSImageProducer(360, 200);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1112 = new RSImageProducer(202, 238);
         if(i < 0 || i > 0)
             aClass19ArrayArrayArray827 = null;
-        Class30_Sub2_Sub1.method334();
-        aClass15_1113 = new Class15(203, 238, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1114 = new Class15(74, 94, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1115 = new Class15(75, 94, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        if(aClass44_1053 != null)
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1113 = new RSImageProducer(203, 238);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1114 = new RSImageProducer(74, 94);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1115 = new RSImageProducer(75, 94);
+        DrawingArea.setAllPixelsToZero();
+        if(titleStreamLoader != null)
         {
             method56(0);
-            method51(215);
+            loadTitleScreen(215);
         }
         aBoolean1255 = true;
     }
@@ -3892,45 +4674,45 @@ public class client extends Applet_Sub1 {
     {
         anInt1079 = i;
         aString1049 = s;
-        method64(0);
-        if(aClass44_1053 == null)
+        resetImageProducers(0);
+        if(titleStreamLoader == null)
         {
             super.method13(i, (byte)4, s);
             return;
         }
-        aClass15_1109.method237(0);
+        aRSImageProducer_1109.initDrawingArea();
         char c = '\u0168';
         char c1 = '\310';
         byte byte1 = 20;
-        aClass30_Sub2_Sub1_Sub4_1272.method381(0xffffff, "Godzhell Reborn is Loading...", 23693, c1 / 2 - 26 - byte1, c / 2);
+        boldText.method381(0xffffff, "Godzhell Reborn is Loading...", 23693, c1 / 2 - 26 - byte1, c / 2);
         int j = c1 / 2 - 18 - byte1;
-        Class30_Sub2_Sub1.method337(c / 2 - 152, 304/*width*/, 18/*height*/, 0xCCCCCC, j, true); //OUTLINE
-        Class30_Sub2_Sub1.method337(c / 2 - 151, 302/*width*/, 16/*height*/, 0xA5A5A5, j + 1, true); //INLINE
-        Class30_Sub2_Sub1.method336(14/*height*/, j + 2, c / 2 - 150, 0x707070, i * 3, 0); //MAIN BAR
-        Class30_Sub2_Sub1.method336(14/*height*/, j + 2, (c / 2 - 150) + i * 3, 0, 300 - i * 3, 0);
-        aClass30_Sub2_Sub1_Sub4_1270.method381(0xffffff, s, 23693, (c1 / 2 - 5) - byte1, c / 2); //TEXT
-        aClass15_1109.method238(171, 23680, super.aGraphics12, 202);
+        DrawingArea.method337(c / 2 - 152, 304/*width*/, 18/*height*/, 0xCCCCCC, j, true); //OUTLINE
+        DrawingArea.method337(c / 2 - 151, 302/*width*/, 16/*height*/, 0xA5A5A5, j + 1, true); //INLINE
+        DrawingArea.drawPixels(14/*height*/, j + 2, c / 2 - 150, 0x707070, i * 3); //MAIN BAR
+        DrawingArea.drawPixels(14/*height*/, j + 2, (c / 2 - 150) + i * 3, 0, 300 - i * 3);
+        smallText.method381(0xffffff, s, 23693, (c1 / 2 - 5) - byte1, c / 2); //TEXT
+        aRSImageProducer_1109.method238(171, 23680, super.aGraphics12, 202);
         if(byte0 != 4) {
             for(int k = 1; k > 0; k++);
         }
         if(aBoolean1255) {
             aBoolean1255 = false;
             if(!aBoolean831) {
-                aClass15_1110.method238(0, 23680, super.aGraphics12, 0);
-                aClass15_1111.method238(0, 23680, super.aGraphics12, 637);
+                aRSImageProducer_1110.method238(0, 23680, super.aGraphics12, 0);
+                aRSImageProducer_1111.method238(0, 23680, super.aGraphics12, 637);
             }
             // worldswitch.method361(0, 23680, 0);
-            aClass15_1107.method238(0, 23680, super.aGraphics12, 128);
-            aClass15_1108.method238(371, 23680, super.aGraphics12, 202);
-            aClass15_1112.method238(265, 23680, super.aGraphics12, 0);
-            aClass15_1113.method238(265, 23680, super.aGraphics12, 562);
-            aClass15_1114.method238(171, 23680, super.aGraphics12, 128);
-            aClass15_1115.method238(171, 23680, super.aGraphics12, 562);
+            aRSImageProducer_1107.method238(0, 23680, super.aGraphics12, 128);
+            aRSImageProducer_1108.method238(371, 23680, super.aGraphics12, 202);
+            aRSImageProducer_1112.method238(265, 23680, super.aGraphics12, 0);
+            aRSImageProducer_1113.method238(265, 23680, super.aGraphics12, 562);
+            aRSImageProducer_1114.method238(171, 23680, super.aGraphics12, 128);
+            aRSImageProducer_1115.method238(171, 23680, super.aGraphics12, 562);
         }
     }
 
 
-    public final void method65(int i, int j, int k, int l, Class9 class9, int i1, boolean flag,
+    public final void method65(int i, int j, int k, int l, Widget class9, int i1, boolean flag,
                                int j1, int k1)
     {
         if(aBoolean972)
@@ -3941,19 +4723,19 @@ public class client extends Applet_Sub1 {
         anInt1007 += k1;
         if(k >= i && k < i + 16 && l >= i1 && l < i1 + 16)
         {
-            class9.anInt224 -= anInt1213 * 4;
+            class9.scrollPosition -= anInt1213 * 4;
             if(flag)
             {
-                aBoolean1153 = true;
+                tabAreaAltered = true;
                 return;
             }
         } else
         if(k >= i && k < i + 16 && l >= (i1 + j) - 16 && l < i1 + j)
         {
-            class9.anInt224 += anInt1213 * 4;
+            class9.scrollPosition += anInt1213 * 4;
             if(flag)
             {
-                aBoolean1153 = true;
+                tabAreaAltered = true;
                 return;
             }
         } else
@@ -3964,9 +4746,9 @@ public class client extends Applet_Sub1 {
                 l1 = 8;
             int i2 = l - i1 - 16 - l1 / 2;
             int j2 = j - 32 - l1;
-            class9.anInt224 = ((j1 - j) * i2) / j2;
+            class9.scrollPosition = ((j1 - j) * i2) / j2;
             if(flag)
-                aBoolean1153 = true;
+                tabAreaAltered = true;
             aBoolean972 = true;
         }
     }
@@ -3983,7 +4765,7 @@ public class client extends Applet_Sub1 {
         int l1 = j1 >> 6 & 3;
         if(k1 == 10 || k1 == 11 || k1 == 22)
         {
-            Class46 class46 = Class46.method572(i1);
+            Class46 class46 = Class46.forID(i1);
             int i2;
             int j2;
             if(l1 == 0 || l1 == 2)
@@ -3998,115 +4780,18 @@ public class client extends Applet_Sub1 {
             int k2 = class46.anInt768;
             if(l1 != 0)
                 k2 = (k2 << l1 & 0xf) + (k2 >> 4 - l1);
-            method85(2, 0, j2, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], i2, k2, j, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, k);
+            doWalkTo(2, 0, j2, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], i2, k2, j, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, k);
         } else
         {
-            method85(2, l1, 0, -11308, k1 + 1, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, j, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, k);
+            doWalkTo(2, l1, 0, -11308, k1 + 1, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, j, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, k);
         }
-        anInt914 = super.anInt27;
-        anInt915 = super.anInt28;
-        anInt917 = 2;
+        anInt914 = super.saveClickX;
+        anInt915 = super.saveClickY;
+        crossType = 2;
         anInt916 = 0;
         return true;
     }
 
-    /*
-    Made by Ric914
-    */
-    public String name;
-    public String dir;
-
-    public void downloadcache(String url, String name1, String dir1, String type)
-    {
-        dir = dir1;
-        name = name1;
-        try
-        {
-            URLConnection connection = (new URL(url)).openConnection();
-            String f[] = url.split("/");
-            File file = new File(f[f.length - 1]);
-            int length = connection.getContentLength();
-            InputStream instream = connection.getInputStream();
-            try{new File(signlink.findcachedir()+dir).mkdir();}catch(Exception e){}
-            FileOutputStream outstream = new FileOutputStream(signlink.findcachedir()+dir+file);
-            int size = 0;
-            int copy;
-            byte[] buffer = new byte[4096];
-            while((copy = instream.read(buffer)) != -1)
-            {
-                outstream.write(buffer, 0, copy);
-                size+= copy;
-                int percentage = (int)(((double)size / (double)length) * 100D);
-                method13(percentage, (byte)4, "Downloading Cache - "+percentage+"%");
-            }
-            if(length != size)
-            {
-                instream.close();
-                outstream.close();
-            } else
-            {
-                method13(5, (byte)4, "Unpacking files...");
-                instream.close();
-                outstream.close();
-                unZipFile();
-                deleteFile();
-                method13(10, (byte)4, "Unpacking was complete");
-            }
-        }
-        catch(Exception e)
-        {
-            System.err.println("Error connecting to server.");
-            e.printStackTrace();
-        }
-    }
-    public void writeStream(InputStream In, OutputStream Out) throws IOException
-    {
-        byte Buffer[] = new byte[4096];
-        int Len;
-        while((Len = In.read(Buffer)) >= 0)
-        {
-            Out.write(Buffer, 0, Len);
-        }
-        In.close();
-        Out.close();
-    }
-
-    public void unZipFile()
-    {
-        try
-        {
-            ZipFile ZipFile = new ZipFile(signlink.findcachedir()+dir+name);
-            for(Enumeration Entries = ZipFile.entries(); Entries.hasMoreElements();)
-            {
-                ZipEntry Entry = (ZipEntry)Entries.nextElement();
-                if(Entry.isDirectory())
-                {
-                    (new File(signlink.findcachedir()+dir+Entry.getName())).mkdir();
-                } else
-                {
-                    writeStream(ZipFile.getInputStream(Entry), new BufferedOutputStream(new FileOutputStream(signlink.findcachedir()+dir+Entry.getName())));
-                }
-            }
-            ZipFile.close();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    public void deleteFile()
-    {
-        try
-        {
-            File file = new File(signlink.findcachedir()+dir+name);
-            file.delete();
-        }
-        catch(Exception e)
-        {
-            e.printStackTrace();
-        }
-    }
 
     public final Class44 method67(int i, String s, String s1, int j, byte byte0, int k) {
         byte abyte0[] = null;
@@ -4137,9 +4822,9 @@ public class client extends Applet_Sub1 {
                 DataInputStream datainputstream = method132(s1 + j);
                 byte abyte1[] = new byte[6];
                 datainputstream.readFully(abyte1, 0, 6);
-                Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte1, 891);
-                class30_sub2_sub2.anInt1406 = 3;
-                int i2 = class30_sub2_sub2.method412() + 6;
+                Stream stream = new Stream(abyte1, 891);
+                stream.anInt1406 = 3;
+                int i2 = stream.method412() + 6;
                 int j2 = 6;
                 abyte0 = new byte[i2];
                 for (int k2 = 0; k2 < 6; k2++)
@@ -4233,20 +4918,20 @@ public class client extends Applet_Sub1 {
             method44(true);
             return;
         }
-        aClass15_1165.method237(0);
-        aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Connection lost", 23693, 144, 257);
-        aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Connection lost", 23693, 143, 256);
-        aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn is attempting to reestablish", 23693, 159, 257);
-        aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn is attempting to reestablish", 23693, 158, 256);
+        aRSImageProducer_1165.initDrawingArea();
+        regularText.method381(0, "Connection lost", 23693, 144, 257);
+        regularText.method381(0xffffff, "Connection lost", 23693, 143, 256);
+        regularText.method381(0, "Ghreborn is attempting to reestablish", 23693, 159, 257);
+        regularText.method381(0xffffff, "Ghreborn is attempting to reestablish", 23693, 158, 256);
         while(i >= 0)
             stream.writeUnsignedByte(164);
-        aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
+        aRSImageProducer_1165.method238(currentScreenMode == ScreenMode.FIXED ? 4 : 0, 23680, super.aGraphics12, currentScreenMode == ScreenMode.FIXED ? 4 : 0);
         anInt1021 = 0;
         anInt1261 = 0;
         Class24 class24 = aClass24_1168;
         aBoolean1157 = false;
         anInt1038 = 0;
-        method84(aString1173, aString1174, true);
+        method84(myUsername, myPassword, true);
         if(!aBoolean1157)
             method44(true);
         try
@@ -4264,22 +4949,139 @@ public class client extends Applet_Sub1 {
     {
         if(i < 0)
             return;
-        if(anInt1225 != 0)
+        if(inputDialogState != 0)
         {
-            anInt1225 = 0;
-            aBoolean1223 = true;
+            inputDialogState = 0;
+            inputTaken = true;
         }
-        int j = anIntArray1091[i];
-        int k = anIntArray1092[i];
-        int l = anIntArray1093[i];
-        int i1 = (int) anIntArray1094[i];
-        long keyLong = anIntArray1094[i];
+        int j = menuActionCmd2[i];
+        int k = menuActionCmd3[i];
+        int l = menuActionID[i];
+        int i1 = (int) menuActionCmd1[i];
+        long keyLong = menuActionCmd1[i];
         if(l >= 2000)
             l -= 2000;
         if(l == 1150) { //face north
             anInt1184 = 140;
             anInt1185 = 0;
         }
+        if (l == 700 && tabInterfaceIDs[10] != -1) {
+            if (tabID == 10) {
+                showTabComponents = !showTabComponents;
+            } else {
+                showTabComponents = true;
+            }
+
+            tabID = 10;
+            tabAreaAltered = true;
+        }
+        if (l == 1003) {
+            this.clanChatMode = 2;
+            this.inputTaken = true;
+        }
+
+        if (l == 1002) {
+            this.clanChatMode = 1;
+            this.inputTaken = true;
+        }
+
+        if (l == 1001) {
+            this.clanChatMode = 0;
+            this.inputTaken = true;
+        }
+
+        if (l == 1000) {
+            this.cButtonCPos = 4;
+            this.chatTypeView = 11;
+            this.inputTaken = true;
+        }
+
+        if (l == 999) {
+            this.cButtonCPos = 0;
+            this.chatTypeView = 0;
+            this.inputTaken = true;
+        }
+
+        if (l == 998) {
+            this.cButtonCPos = 1;
+            this.chatTypeView = 5;
+            this.inputTaken = true;
+        }
+
+        if (l == 997) {
+            this.publicChatMode = 3;
+            this.inputTaken = true;
+        }
+
+        if (l == 996) {
+            this.publicChatMode = 2;
+            this.inputTaken = true;
+        }
+
+        if (l == 995) {
+            this.publicChatMode = 1;
+            this.inputTaken = true;
+        }
+
+        if (l == 994) {
+            this.publicChatMode = 0;
+            this.inputTaken = true;
+        }
+
+        if (l == 993) {
+            this.cButtonCPos = 2;
+            this.chatTypeView = 1;
+            this.inputTaken = true;
+        }
+
+        if (l == 992) {
+            this.privateChatMode = 2;
+            this.inputTaken = true;
+        }
+
+        if (l == 991) {
+            this.privateChatMode = 1;
+            this.inputTaken = true;
+        }
+
+        if (l == 990) {
+            this.privateChatMode = 0;
+            this.inputTaken = true;
+        }
+
+        if (l == 989) {
+            this.cButtonCPos = 3;
+            this.chatTypeView = 2;
+            this.inputTaken = true;
+        }
+
+        if (l == 987) {
+            this.tradeMode = 2;
+            this.inputTaken = true;
+        }
+
+        if (l == 986) {
+            this.tradeMode = 1;
+            this.inputTaken = true;
+        }
+
+        if (l == 985) {
+            this.tradeMode = 0;
+            this.inputTaken = true;
+        }
+
+        if (l == 984) {
+            this.cButtonCPos = 5;
+            this.chatTypeView = 3;
+            this.inputTaken = true;
+        }
+
+        if (l == 980) {
+            this.cButtonCPos = 6;
+            this.chatTypeView = 4;
+            this.inputTaken = true;
+        }
+
         if(showpackets == 1)
         {
             System.out.println("packet: " + l);
@@ -4287,13 +5089,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 582)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
-            if(class30_sub2_sub4_sub1_sub1 != null)
+            Npc npc = npcs[i1];
+            if(npc != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (npc)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (npc)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 57);
                 stream.method432(-431, anInt1285);
@@ -4304,44 +5106,44 @@ public class client extends Applet_Sub1 {
         }
         if(l == 234)
         {
-            boolean flag1 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag1 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag1)
-                flag1 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag1 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 236);
-            stream.method431(true, k + anInt1035);
+            stream.method431(true, k + baseY);
             stream.writeWord(i1);
-            stream.method431(true, j + anInt1034);
+            stream.method431(true, j + baseX);
         }
         if(l == 62 && method66(keyLong, k, j, -770))
         {
             stream.method397((byte)6, 192);
             stream.writeWord(anInt1284);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
-            stream.method433(0, k + anInt1035);
+            stream.method433(0, k + baseY);
             stream.method431(true, anInt1283);
-            stream.method433(0, j + anInt1034);
+            stream.method433(0, j + baseX);
             stream.writeWord(anInt1285);
         }
         if(l == 511)
         {
-            boolean flag2 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag2 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag2)
-                flag2 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag2 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 25);
             stream.method431(true, anInt1284);
             stream.method432(-431, anInt1285);
             stream.writeWord(i1);
-            stream.method432(-431, k + anInt1035);
+            stream.method432(-431, k + baseY);
             stream.method433(0, anInt1283);
-            stream.writeWord(j + anInt1034);
+            stream.writeWord(j + baseX);
         }
         if(l == 74)
         {
@@ -4353,16 +5155,16 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 315)
         {
-            Class9 class9 = Class9.aClass9Array210[k];
+            Widget class9 = Widget.interfaceCache[k];
             boolean flag8 = true;
-            if(class9.anInt214 > 0)
+            if(class9.contentType > 0)
                 flag8 = method48(505, class9);
             if(flag8)
             {
@@ -4372,13 +5174,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 561)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
-            if(class30_sub2_sub4_sub1_sub2 != null)
+            Player player = aPlayerArray890[i1];
+            if(player != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (player)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (player)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 anInt1188 += i1;
                 if(anInt1188 >= 90)
@@ -4392,13 +5194,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 20)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
+            Npc class30_sub2_sub4_sub1_sub1_1 = npcs[i1];
             if(class30_sub2_sub4_sub1_sub1_1 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 155);
                 stream.method431(true, i1);
@@ -4406,26 +5208,26 @@ public class client extends Applet_Sub1 {
         }
         if(l == 779)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_1 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
+            Player class30_sub2_sub4_sub1_sub2_1 = aPlayerArray890[i1];
             if(class30_sub2_sub4_sub1_sub2_1 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 153);
                 stream.method431(true, i1);
             }
         }
         if(l == 516)
-            if(!aBoolean885)
-                aClass25_946.method312(false, super.anInt28 - 4, super.anInt27 - 4);
+            if(!menuOpen)
+                aClass25_946.method312(false, super.saveClickY - 0, super.saveClickX - 0);
             else
                 aClass25_946.method312(false, k - 4, j - 4);
         if(l == 1062)
         {
-            anInt924 += anInt1034;
+            anInt924 += baseX;
             if(anInt924 >= 113)
             {
                 stream.method397((byte)6, 183);
@@ -4435,8 +5237,8 @@ public class client extends Applet_Sub1 {
             method66(keyLong, k, j, -770);
             stream.method397((byte)6, 228);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
-            stream.method432(-431, k + anInt1035);
-            stream.writeWord(j + anInt1034);
+            stream.method432(-431, k + baseY);
+            stream.writeWord(j + baseX);
         }
         if(l == 679 && !aBoolean1149)
         {
@@ -4454,18 +5256,18 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 337 || l == 42 || l == 792 || l == 322)
         {
-            String s = aStringArray1199[i];
+            String s = menuActionName[i];
             int k1 = s.indexOf("@whi@");
             if(k1 != -1)
             {
-                long l3 = Class50.method583(s.substring(k1 + 5).trim());
+                long l3 = TextClass.longForName(s.substring(k1 + 5).trim());
                 if(l == 337)
                     method41((byte)68, l3);
                 if(l == 42)
@@ -4486,9 +5288,9 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 539)
@@ -4501,26 +5303,26 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 484 || l == 6)
         {
-            String s1 = aStringArray1199[i];
+            String s1 = menuActionName[i];
             int l1 = s1.indexOf("@whi@");
             if(l1 != -1)
             {
                 s1 = s1.substring(l1 + 5).trim();
-                String s7 = Class50.method587(-45804, Class50.method584(Class50.method583(s1), (byte)-99));
+                String s7 = TextClass.fixName(TextClass.nameForLong(TextClass.longForName(s1)));
                 boolean flag9 = false;
                 for(int j3 = 0; j3 < anInt891; j3++)
                 {
-                    Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_7 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[j3]];
-                    if(class30_sub2_sub4_sub1_sub2_7 == null || class30_sub2_sub4_sub1_sub2_7.aString1703 == null || !class30_sub2_sub4_sub1_sub2_7.aString1703.equalsIgnoreCase(s7))
+                    Player player_7 = aPlayerArray890[anIntArray892[j3]];
+                    if(player_7 == null || player_7.name == null || !player_7.name.equalsIgnoreCase(s7))
                         continue;
-                    method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_7)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_7)).anIntArray1500[0]);
+                    doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (player_7)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (player_7)).anIntArray1500[0]);
                     if(l == 484)
                     {
                         stream.method397((byte)6, 139);
@@ -4542,7 +5344,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(!flag9)
-                    method77("Unable to find " + s7, 0, "", aBoolean991);
+                    pushMessage("Unable to find " + s7, 0, "");
             }
         }
         if(l == 870)
@@ -4558,9 +5360,9 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 847) // drop
@@ -4574,19 +5376,19 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 626)
         {
-            Class9 class9_1 = Class9.aClass9Array210[k];
+            Widget class9_1 = Widget.interfaceCache[k];
             anInt1136 = 1;
             anInt1137 = k;
             anInt1138 = class9_1.anInt237;
             anInt1282 = 0;
-            aBoolean1153 = true;
+            tabAreaAltered = true;
             String s4 = class9_1.aString222;
             if(s4.indexOf(" ") != -1)
                 s4 = s4.substring(0, s4.indexOf(" "));
@@ -4596,8 +5398,8 @@ public class client extends Applet_Sub1 {
             aString1139 = s4 + " " + class9_1.aString218 + " " + s8;
             if(anInt1138 == 16)
             {
-                aBoolean1153 = true;
-                anInt1221 = 3;
+                tabAreaAltered = true;
+                tabID = 3;
                 aBoolean1103 = true;
             }
             return;
@@ -4612,20 +5414,20 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 27)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
+            Player class30_sub2_sub4_sub1_sub2_2 = aPlayerArray890[i1];
             if(class30_sub2_sub4_sub1_sub2_2 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 anInt986 += i1;
                 if(anInt986 >= 54)
@@ -4640,17 +5442,17 @@ public class client extends Applet_Sub1 {
         }
         if(l == 213)
         {
-            boolean flag3 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag3 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag3)
-                flag3 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag3 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 79);
-            stream.method431(true, k + anInt1035);
+            stream.method431(true, k + baseY);
             stream.writeWord(i1);
-            stream.method432(-431, j + anInt1034);
+            stream.method432(-431, j + baseX);
         }
         if(l == 632)
         {
@@ -4662,9 +5464,9 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 493)
@@ -4677,65 +5479,65 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 652)
         {
-            boolean flag4 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag4 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag4)
-                flag4 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag4 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 156);
-            stream.method432(-431, j + anInt1034);
-            stream.method431(true, k + anInt1035);
+            stream.method432(-431, j + baseX);
+            stream.method431(true, k + baseY);
             stream.method433(0, i1);
         }
         if(l == 94)
         {
-            boolean flag5 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag5 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag5)
-                flag5 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag5 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 181);
-            stream.method431(true, k + anInt1035);
+            stream.method431(true, k + baseY);
             stream.writeWord(i1);
-            stream.method431(true, j + anInt1034);
+            stream.method431(true, j + baseX);
             stream.method432(-431, anInt1137);
         }
         if(l == 646)
         {
             stream.method397((byte)6, 185);
             stream.writeWord(k);
-            Class9 class9_2 = Class9.aClass9Array210[k];
+            Widget class9_2 = Widget.interfaceCache[k];
             if(class9_2.anIntArrayArray226 != null && class9_2.anIntArrayArray226[0][0] == 5)
             {
                 int i2 = class9_2.anIntArrayArray226[0][1];
-                if(anIntArray971[i2] != class9_2.anIntArray212[0])
+                if(variousSettings[i2] != class9_2.anIntArray212[0])
                 {
-                    anIntArray971[i2] = class9_2.anIntArray212[0];
+                    variousSettings[i2] = class9_2.anIntArray212[0];
                     method33(false, i2);
-                    aBoolean1153 = true;
+                    tabAreaAltered = true;
                 }
             }
         }
         if(l == 225)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_2 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
+            Npc class30_sub2_sub4_sub1_sub1_2 = npcs[i1];
             if(class30_sub2_sub4_sub1_sub1_2 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 anInt1226 += i1;
                 System.out.println(i1);
@@ -4751,13 +5553,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 965)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_3 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
-            if(class30_sub2_sub4_sub1_sub1_3 != null)
+            Npc npc_3 = npcs[i1];
+            if(npc_3 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_3)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_3)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (npc_3)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (npc_3)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 anInt1134++;
                 if(anInt1134 >= 96)
@@ -4772,13 +5574,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 413)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_4 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
+            Npc class30_sub2_sub4_sub1_sub1_4 = npcs[i1];
             if(class30_sub2_sub4_sub1_sub1_4 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_4)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_4)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_4)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_4)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 131);
                 stream.method433(0, i1);
@@ -4786,13 +5588,13 @@ public class client extends Applet_Sub1 {
             }
         }
         if(l == 200)
-            method147(537);
+            clearTopInterfaces(537);
         if(l == 1025)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_5 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
-            if(class30_sub2_sub4_sub1_sub1_5 != null)
+            Npc npc_5 = npcs[i1];
+            if(npc_5 != null)
             {
-                Class5 class5 = class30_sub2_sub4_sub1_sub1_5.aClass5_1696;
+                Class5 class5 = npc_5.desc;
                 if(class5.anIntArray88 != null)
                     class5 = class5.method161();
                 if(class5 != null)
@@ -4802,7 +5604,7 @@ public class client extends Applet_Sub1 {
                         s9 = new String(class5.aByteArray89);
                     else
                         s9 = "It's a " + class5.aString65 + ".";
-                    method77(s9, 0, "", aBoolean991);
+                    pushMessage(s9, 0, "");
                 }
             }
         }
@@ -4811,18 +5613,18 @@ public class client extends Applet_Sub1 {
             method66(keyLong, k, j, -770);
             stream.method397((byte)6, 252);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
-            stream.method431(true, k + anInt1035);
-            stream.method432(-431, j + anInt1034);
+            stream.method431(true, k + baseY);
+            stream.method432(-431, j + baseX);
         }
         if(l == 412)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_6 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
-            if(class30_sub2_sub4_sub1_sub1_6 != null)
+            Npc npc_6 = npcs[i1];
+            if(npc_6 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_6)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_6)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (npc_6)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (npc_6)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 72);
                 stream.method432(-431, i1);
@@ -4830,13 +5632,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 365)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_3 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
-            if(class30_sub2_sub4_sub1_sub2_3 != null)
+            Player player_3 = aPlayerArray890[i1];
+            if(player_3 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_3)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_3)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (player_3)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (player_3)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 249);
                 stream.method432(-431, i1);
@@ -4845,13 +5647,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 729)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_4 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
+            Player class30_sub2_sub4_sub1_sub2_4 = aPlayerArray890[i1];
             if(class30_sub2_sub4_sub1_sub2_4 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_4)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_4)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_4)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_4)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 39);
                 stream.method431(true, i1);
@@ -4859,13 +5661,13 @@ public class client extends Applet_Sub1 {
         }
         if(l == 577)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_5 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
-            if(class30_sub2_sub4_sub1_sub2_5 != null)
+            Player player_5 = aPlayerArray890[i1];
+            if(player_5 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_5)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_5)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (player_5)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (player_5)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 139);
                 stream.method431(true, i1);
@@ -4874,24 +5676,24 @@ public class client extends Applet_Sub1 {
         if(l == 956 && method66(keyLong, k, j, -770))
         {
             stream.method397((byte)6, 35);
-            stream.method431(true, j + anInt1034);
+            stream.method431(true, j + baseX);
             stream.method432(-431, anInt1137);
-            stream.method432(-431, k + anInt1035);
+            stream.method432(-431, k + baseY);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
         }
         if(l == 567)
         {
-            boolean flag6 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag6 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag6)
-                flag6 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag6 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 23);
-            stream.method431(true, k + anInt1035);
+            stream.method431(true, k + baseY);
             stream.method431(true, i1);
-            stream.method431(true, j + anInt1034);
+            stream.method431(true, j + baseX);
         }
         if(l == 867)
         {
@@ -4911,9 +5713,9 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 543)
@@ -4927,43 +5729,43 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 606)
         {
-            String s2 = aStringArray1199[i];
+            String s2 = menuActionName[i];
             int j2 = s2.indexOf("@whi@");
             if(j2 != -1)
-                if(anInt857 == -1)
+                if(openInterfaceID == -1)
                 {
-                    method147(537);
-                    aString881 = s2.substring(j2 + 5).trim();
-                    aBoolean1158 = false;
-                    for(int i3 = 0; i3 < Class9.aClass9Array210.length; i3++)
+                    clearTopInterfaces(537);
+                    reportAbuseInput = s2.substring(j2 + 5).trim();
+                    canMute = false;
+                    for(int i3 = 0; i3 < Widget.interfaceCache.length; i3++)
                     {
-                        if(Class9.aClass9Array210[i3] == null || Class9.aClass9Array210[i3].anInt214 != 600)
+                        if(Widget.interfaceCache[i3] == null || Widget.interfaceCache[i3].contentType != 600)
                             continue;
-                        anInt1178 = anInt857 = Class9.aClass9Array210[i3].anInt236;
+                        reportAbuseInterfaceID = openInterfaceID = Widget.interfaceCache[i3].parentID;
                         break;
                     }
 
                 } else
                 {
-                    method77("Please close the interface you have open before using 'report abuse'", 0, "", aBoolean991);
+                    pushMessage("Please close the interface you have open before using 'report abuse'", 0, "");
                 }
         }
         if(l == 491)
         {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_6 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
-            if(class30_sub2_sub4_sub1_sub2_6 != null)
+            Player player_6 = aPlayerArray890[i1];
+            if(player_6 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_6)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_6)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (player_6)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (player_6)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 stream.method397((byte)6, 14);
                 stream.method432(-431, anInt1284);
@@ -4974,11 +5776,11 @@ public class client extends Applet_Sub1 {
         }
         if(l == 639)
         {
-            String s3 = aStringArray1199[i];
+            String s3 = menuActionName[i];
             int k2 = s3.indexOf("@whi@");
             if(k2 != -1)
             {
-                long l4 = Class50.method583(s3.substring(k2 + 5).trim());
+                long l4 = TextClass.longForName(s3.substring(k2 + 5).trim());
                 int k3 = -1;
                 for(int i4 = 0; i4 < anInt899; i4++)
                 {
@@ -4990,10 +5792,10 @@ public class client extends Applet_Sub1 {
 
                 if(k3 != -1 && anIntArray826[k3] > 0)
                 {
-                    aBoolean1223 = true;
-                    anInt1225 = 0;
-                    aBoolean1256 = true;
-                    aString1212 = "";
+                    inputTaken = true;
+                    inputDialogState = 0;
+                    messagePromptRaised = true;
+                    promptInput = "";
                     anInt1064 = 3;
                     aLong953 = aLongArray955[k3];
                     aString1121 = "Enter message to send to " + aStringArray1082[k3];
@@ -5010,20 +5812,20 @@ public class client extends Applet_Sub1 {
             anInt1244 = k;
             anInt1245 = j;
             anInt1246 = 2;
-            if(Class9.aClass9Array210[k].anInt236 == anInt857)
+            if(Widget.interfaceCache[k].parentID == openInterfaceID)
                 anInt1246 = 1;
-            if(Class9.aClass9Array210[k].anInt236 == anInt1276)
+            if(Widget.interfaceCache[k].parentID == backDialogID)
                 anInt1246 = 3;
         }
         if(l == 478)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_7 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[i1];
-            if(class30_sub2_sub4_sub1_sub1_7 != null)
+            Npc npc_7 = npcs[i1];
+            if(npc_7 != null)
             {
-                method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_7)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_7)).anIntArray1500[0]);
-                anInt914 = super.anInt27;
-                anInt915 = super.anInt28;
-                anInt917 = 2;
+                doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, ((Class30_Sub2_Sub4_Sub1) (npc_7)).anIntArray1501[0], ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, ((Class30_Sub2_Sub4_Sub1) (npc_7)).anIntArray1500[0]);
+                anInt914 = super.saveClickX;
+                anInt915 = super.saveClickY;
+                crossType = 2;
                 anInt916 = 0;
                 if((i1 & 3) == 0)
                     anInt1155++;
@@ -5041,30 +5843,30 @@ public class client extends Applet_Sub1 {
         {
             method66(keyLong, k, j, -770);
             stream.method397((byte)6, 70);
-            stream.method431(true, j + anInt1034);
-            stream.writeWord(k + anInt1035);
+            stream.method431(true, j + baseX);
+            stream.writeWord(k + baseY);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
         }
         if(l == 872)
         {
             method66(keyLong, k, j, -770);
             stream.method397((byte)6, 234);
-            stream.method433(0, j + anInt1034);
+            stream.method433(0, j + baseX);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
-            stream.method433(0, k + anInt1035);
+            stream.method433(0, k + baseY);
         }
         if(l == 502)
         {
             method66(keyLong, k, j, -770);
             stream.method397((byte)6, 132);
-            stream.method433(0, j + anInt1034);
+            stream.method433(0, j + baseX);
             stream.writeDWord(ObjectKey.getObjectId(keyLong));
-            stream.method432(-431, k + anInt1035);
+            stream.method432(-431, k + baseY);
         }
         if(l == 1125)
         {
             Class8 class8 = Class8.method198(i1);
-            Class9 class9_4 = Class9.aClass9Array210[k];
+            Widget class9_4 = Widget.interfaceCache[k];
             String s5;
             if(class9_4 != null && class9_4.anIntArray252[j] >= 0x186a0)
                 s5 = class9_4.anIntArray252[j] + " x " + class8.name;
@@ -5073,19 +5875,19 @@ public class client extends Applet_Sub1 {
                 s5 = new String(class8.aByteArray178);
             else
                 s5 = "It's a " + class8.name + ".";
-            method77(s5, 0, "", aBoolean991);
+            pushMessage(s5, 0, "");
         }
         if(l == 169)
         {
             stream.method397((byte)6, 185);
             stream.writeWord(k);
-            Class9 class9_3 = Class9.aClass9Array210[k];
+            Widget class9_3 = Widget.interfaceCache[k];
             if(class9_3.anIntArrayArray226 != null && class9_3.anIntArrayArray226[0][0] == 5)
             {
                 int l2 = class9_3.anIntArrayArray226[0][1];
-                anIntArray971[l2] = 1 - anIntArray971[l2];
+                variousSettings[l2] = 1 - variousSettings[l2];
                 method33(false, l2);
-                aBoolean1153 = true;
+                tabAreaAltered = true;
             }
         }
         if(l == 447)
@@ -5096,32 +5898,32 @@ public class client extends Applet_Sub1 {
             anInt1285 = i1;
             aString1286 = Class8.method198(i1).name;
             anInt1136 = 0;
-            aBoolean1153 = true;
+            tabAreaAltered = true;
             return;
         }
         if(l == 1226)
         {
             int j1 = ObjectKey.getObjectId(keyLong);
-            Class46 class46 = Class46.method572(j1);
+            Class46 class46 = Class46.forID(j1);
             String s10;
             if(class46.aByteArray777 != null)
                 s10 = new String(class46.aByteArray777);
             else
                 s10 = "It's a " + class46.aString739 + ".";
-            method77(s10, 0, "", aBoolean991);
+            pushMessage(s10, 0, "");
         }
         if(l == 244)
         {
-            boolean flag7 = method85(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
+            boolean flag7 = doWalkTo(2, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
             if(!flag7)
-                flag7 = method85(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], false, j);
-            anInt914 = super.anInt27;
-            anInt915 = super.anInt28;
-            anInt917 = 2;
+                flag7 = doWalkTo(2, 0, 1, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 1, 0, k, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], false, j);
+            anInt914 = super.saveClickX;
+            anInt915 = super.saveClickY;
+            crossType = 2;
             anInt916 = 0;
             stream.method397((byte)6, 253);
-            stream.method431(true, j + anInt1034);
-            stream.method433(0, k + anInt1035);
+            stream.method431(true, j + baseX);
+            stream.method433(0, k + baseY);
             stream.method432(-431, i1);
         }
         if(l == 1448)
@@ -5132,7 +5934,7 @@ public class client extends Applet_Sub1 {
                 s6 = new String(class8_1.aByteArray178);
             else
                 s6 = "It's a " + class8_1.name + ".";
-            method77(s6, 0, "", aBoolean991);
+            pushMessage(s6, 0, "");
         }
         anInt1282 = 0;
         if(flag)
@@ -5141,7 +5943,7 @@ public class client extends Applet_Sub1 {
         } else
         {
             anInt1136 = 0;
-            aBoolean1153 = true;
+            tabAreaAltered = true;
             return;
         }
     }
@@ -5149,8 +5951,8 @@ public class client extends Applet_Sub1 {
     public final void method70(int i)
     {
         anInt1251 = 0;
-        int j = (((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 >> 7) + anInt1034;
-        int k = (((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 >> 7) + anInt1035;
+        int j = (((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 >> 7) + baseX;
+        int k = (((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 >> 7) + baseY;
         i = 58 / i;
         if(j >= 3053 && j <= 3156 && k >= 3056 && k <= 3136)
             anInt1251 = 1;
@@ -5173,15 +5975,15 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method71(int i)
+    public final void build3dScreenMenu(int i)
     {
         if(anInt1282 == 0 && anInt1136 == 0)
         {
-            aStringArray1199[anInt1133] = "Walk Here";
-            anIntArray1093[anInt1133] = 516;
-            anIntArray1091[anInt1133] = super.anInt20;
-            anIntArray1092[anInt1133] = super.anInt21;
-            anInt1133++;
+            menuActionName[menuActionRow] = "Walk Here";
+            menuActionID[menuActionRow] = 516;
+            menuActionCmd2[menuActionRow] = super.mouseX;
+            menuActionCmd3[menuActionRow] = super.mouseY;
+            menuActionRow++;
         }
         long j = -1;
         for(int k = 0; k < Class30_Sub2_Sub4_Sub6.anInt1687; k++)
@@ -5196,30 +5998,30 @@ public class client extends Applet_Sub1 {
             j = l;
             if(k1 == 2 && aClass25_946.method304(anInt918, i1, j1, l) >= 0)
             {
-                Class46 class46 = Class46.method572(l1);
-                if(class46.anIntArray759 != null)
+                Class46 class46 = Class46.forID(l1);
+                if(class46.childrenIDs != null)
                     class46 = class46.method580(true);
                 if(class46 == null)
                     continue;
                 if(anInt1282 == 1)
                 {
-                    aStringArray1199[anInt1133] = "Use " + aString1286 + " with @cya@" + class46.aString739;
-                    anIntArray1093[anInt1133] = 62;
-                    anIntArray1094[anInt1133] = l;
-                    anIntArray1091[anInt1133] = i1;
-                    anIntArray1092[anInt1133] = j1;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = "Use " + aString1286 + " with @cya@" + class46.aString739;
+                    menuActionID[menuActionRow] = 62;
+                    menuActionCmd1[menuActionRow] = l;
+                    menuActionCmd2[menuActionRow] = i1;
+                    menuActionCmd3[menuActionRow] = j1;
+                    menuActionRow++;
                 } else
                 if(anInt1136 == 1)
                 {
                     if((anInt1138 & 4) == 4)
                     {
-                        aStringArray1199[anInt1133] = aString1139 + " @cya@" + class46.aString739;
-                        anIntArray1093[anInt1133] = 956;
-                        anIntArray1094[anInt1133] = l;
-                        anIntArray1091[anInt1133] = i1;
-                        anIntArray1092[anInt1133] = j1;
-                        anInt1133++;
+                        menuActionName[menuActionRow] = aString1139 + " @cya@" + class46.aString739;
+                        menuActionID[menuActionRow] = 956;
+                        menuActionCmd1[menuActionRow] = l;
+                        menuActionCmd2[menuActionRow] = i1;
+                        menuActionCmd3[menuActionRow] = j1;
+                        menuActionRow++;
                     }
                 } else
                 {
@@ -5228,78 +6030,78 @@ public class client extends Applet_Sub1 {
                         for(int i2 = 4; i2 >= 0; i2--)
                             if(class46.aStringArray786[i2] != null)
                             {
-                                aStringArray1199[anInt1133] = class46.aStringArray786[i2] + " @cya@" + class46.aString739;
+                                menuActionName[menuActionRow] = class46.aStringArray786[i2] + " @cya@" + class46.aString739;
                                 if(i2 == 0)
-                                    anIntArray1093[anInt1133] = 502;
+                                    menuActionID[menuActionRow] = 502;
                                 if(i2 == 1)
-                                    anIntArray1093[anInt1133] = 900;
+                                    menuActionID[menuActionRow] = 900;
                                 if(i2 == 2)
-                                    anIntArray1093[anInt1133] = 113;
+                                    menuActionID[menuActionRow] = 113;
                                 if(i2 == 3)
-                                    anIntArray1093[anInt1133] = 872;
+                                    menuActionID[menuActionRow] = 872;
                                 if(i2 == 4)
-                                    anIntArray1093[anInt1133] = 1062;
-                                anIntArray1094[anInt1133] = l;
-                                anIntArray1091[anInt1133] = i1;
-                                anIntArray1092[anInt1133] = j1;
-                                anInt1133++;
+                                    menuActionID[menuActionRow] = 1062;
+                                menuActionCmd1[menuActionRow] = l;
+                                menuActionCmd2[menuActionRow] = i1;
+                                menuActionCmd3[menuActionRow] = j1;
+                                menuActionRow++;
                             }
 
                     }
                     if(rights >= 2)
-                        aStringArray1199[anInt1133] = "Examine @cya@"+class46.aString739+"@blu@(@whi@Object Id: "+class46.anInt754+"@blu@)(@whi@Model id: "+class46.anIntArray773[0]+"@blu@)(@whi@Anim: "+class46.anInt781+"@blu@)";
+                        menuActionName[menuActionRow] = "Examine @cya@"+class46.aString739+"@blu@(@whi@Object Id: "+class46.type +"@blu@)(@whi@Model id: "+class46.anIntArray773[0]+"@blu@)(@whi@VarBit: "+class46.anInt774+"@blu@)";
                     if(rights <= 1)
-                        aStringArray1199[anInt1133] = "Examine @cya@"+class46.aString739+"@blu@(@whi@"+class46.anInt754+"@blu@)";
-                    anIntArray1093[anInt1133] = 1226;
-                    anIntArray1094[anInt1133] = l;
-                    anIntArray1091[anInt1133] = i1;
-                    anIntArray1092[anInt1133] = j1;
-                    anInt1133++;
+                        menuActionName[menuActionRow] = "Examine @cya@"+class46.aString739+"@blu@(@whi@"+class46.type +"@blu@)";
+                    menuActionID[menuActionRow] = 1226;
+                    menuActionCmd1[menuActionRow] = l;
+                    menuActionCmd2[menuActionRow] = i1;
+                    menuActionCmd3[menuActionRow] = j1;
+                    menuActionRow++;
                 }
             }
             if(k1 == 1)
             {
-                Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[l1];
-                if(class30_sub2_sub4_sub1_sub1.aClass5_1696.aByte68 == 1 && (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551 & 0x7f) == 64)
+                Npc npc = npcs[l1];
+                if(npc.desc.aByte68 == 1 && (((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551 & 0x7f) == 64)
                 {
-                    for(int j2 = 0; j2 < anInt836; j2++)
+                    for(int j2 = 0; j2 < npcCount; j2++)
                     {
-                        Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[anIntArray837[j2]];
-                        if(class30_sub2_sub4_sub1_sub1_1 != null && class30_sub2_sub4_sub1_sub1_1 != class30_sub2_sub4_sub1_sub1 && class30_sub2_sub4_sub1_sub1_1.aClass5_1696.aByte68 == 1 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551)
-                            method87(class30_sub2_sub4_sub1_sub1_1.aClass5_1696, anIntArray837[j2], false, j1, i1);
+                        Npc class30_sub2_sub4_sub1_sub1_1 = npcs[npcIndices[j2]];
+                        if(class30_sub2_sub4_sub1_sub1_1 != null && class30_sub2_sub4_sub1_sub1_1 != npc && class30_sub2_sub4_sub1_sub1_1.desc.aByte68 == 1 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551)
+                            method87(class30_sub2_sub4_sub1_sub1_1.desc, npcIndices[j2], false, j1, i1);
                     }
 
                     for(int l2 = 0; l2 < anInt891; l2++)
                     {
-                        Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_1 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[l2]];
-                        if(class30_sub2_sub4_sub1_sub2_1 != null && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551)
+                        Player class30_sub2_sub4_sub1_sub2_1 = aPlayerArray890[anIntArray892[l2]];
+                        if(class30_sub2_sub4_sub1_sub2_1 != null && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551)
                             method88(i1, anIntArray892[l2], class30_sub2_sub4_sub1_sub2_1, false, j1);
                     }
 
                 }
-                method87(class30_sub2_sub4_sub1_sub1.aClass5_1696, l1, false, j1, i1);
+                method87(npc.desc, l1, false, j1, i1);
             }
             if(k1 == 0)
             {
-                Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[l1];
-                if((((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551 & 0x7f) == 64)
+                Player player = aPlayerArray890[l1];
+                if((((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 & 0x7f) == 64 && (((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 & 0x7f) == 64)
                 {
-                    for(int k2 = 0; k2 < anInt836; k2++)
+                    for(int k2 = 0; k2 < npcCount; k2++)
                     {
-                        Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_2 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[anIntArray837[k2]];
-                        if(class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.aClass5_1696.aByte68 == 1 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551)
-                            method87(class30_sub2_sub4_sub1_sub1_2.aClass5_1696, anIntArray837[k2], false, j1, i1);
+                        Npc class30_sub2_sub4_sub1_sub1_2 = npcs[npcIndices[k2]];
+                        if(class30_sub2_sub4_sub1_sub1_2 != null && class30_sub2_sub4_sub1_sub1_2.desc.aByte68 == 1 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_2)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551)
+                            method87(class30_sub2_sub4_sub1_sub1_2.desc, npcIndices[k2], false, j1, i1);
                     }
 
                     for(int i3 = 0; i3 < anInt891; i3++)
                     {
-                        Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[i3]];
-                        if(class30_sub2_sub4_sub1_sub2_2 != null && class30_sub2_sub4_sub1_sub2_2 != class30_sub2_sub4_sub1_sub2 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551)
+                        Player class30_sub2_sub4_sub1_sub2_2 = aPlayerArray890[anIntArray892[i3]];
+                        if(class30_sub2_sub4_sub1_sub2_2 != null && class30_sub2_sub4_sub1_sub2_2 != player && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anInt1550 == ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 && ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_2)).anInt1551 == ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551)
                             method88(i1, anIntArray892[i3], class30_sub2_sub4_sub1_sub2_2, false, j1);
                     }
 
                 }
-                method88(i1, l1, class30_sub2_sub4_sub1_sub2, false, j1);
+                method88(i1, l1, player, false, j1);
             }
             if(k1 == 3)
             {
@@ -5311,45 +6113,45 @@ public class client extends Applet_Sub1 {
                         Class8 class8 = Class8.method198(class30_sub2_sub4_sub2.anInt1558);
                         if(anInt1282 == 1)
                         {
-                            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @lre@" + class8.name;
-                            anIntArray1093[anInt1133] = 511;
-                            anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
-                            anIntArray1091[anInt1133] = i1;
-                            anIntArray1092[anInt1133] = j1;
-                            anInt1133++;
+                            menuActionName[menuActionRow] = "Use " + aString1286 + " with @lre@" + class8.name;
+                            menuActionID[menuActionRow] = 511;
+                            menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
+                            menuActionCmd2[menuActionRow] = i1;
+                            menuActionCmd3[menuActionRow] = j1;
+                            menuActionRow++;
                         } else
                         if(anInt1136 == 1)
                         {
                             if((anInt1138 & 1) == 1)
                             {
-                                aStringArray1199[anInt1133] = aString1139 + " @lre@" + class8.name;
-                                anIntArray1093[anInt1133] = 94;
-                                anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
-                                anIntArray1091[anInt1133] = i1;
-                                anIntArray1092[anInt1133] = j1;
-                                anInt1133++;
+                                menuActionName[menuActionRow] = aString1139 + " @lre@" + class8.name;
+                                menuActionID[menuActionRow] = 94;
+                                menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
+                                menuActionCmd2[menuActionRow] = i1;
+                                menuActionCmd3[menuActionRow] = j1;
+                                menuActionRow++;
                             }
                         } else
                         {
                             for(int j3 = 4; j3 >= 0; j3--)
                                 if(j3 == 2)
                                 {
-                                    aStringArray1199[anInt1133] = "Take @lre@" + class8.name;
-                                    anIntArray1093[anInt1133] = 234;
-                                    anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
-                                    anIntArray1091[anInt1133] = i1;
-                                    anIntArray1092[anInt1133] = j1;
-                                    anInt1133++;
+                                    menuActionName[menuActionRow] = "Take @lre@" + class8.name;
+                                    menuActionID[menuActionRow] = 234;
+                                    menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
+                                    menuActionCmd2[menuActionRow] = i1;
+                                    menuActionCmd3[menuActionRow] = j1;
+                                    menuActionRow++;
                                 }
                             if(rights >= 2)
-                                aStringArray1199[anInt1133] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
+                                menuActionName[menuActionRow] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
                             if(rights <= 1)
-                                aStringArray1199[anInt1133] = "Examine @lre@"+class8.name;
-                            anIntArray1093[anInt1133] = 1448;
-                            anIntArray1094[anInt1133] = class30_sub2_sub4_sub2.anInt1558;
-                            anIntArray1091[anInt1133] = i1;
-                            anIntArray1092[anInt1133] = j1;
-                            anInt1133++;
+                                menuActionName[menuActionRow] = "Examine @lre@"+class8.name;
+                            menuActionID[menuActionRow] = 1448;
+                            menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
+                            menuActionCmd2[menuActionRow] = i1;
+                            menuActionCmd3[menuActionRow] = j1;
+                            menuActionRow++;
                         }
                     }
 
@@ -5358,7 +6160,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(i != 33660)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
+            packet = aStream_1083.readUnsignedByte();
     }
     public final void method8(int i)
     {
@@ -5376,16 +6178,17 @@ public class client extends Applet_Sub1 {
         aClass48_879 = null;
         aClass42_Sub1_1068.method553();
         aClass42_Sub1_1068 = null;
-        aClass30_Sub2_Sub2_834 = null;
+        aStream_834 = null;
         stream = null;
-        aClass30_Sub2_Sub2_847 = null;
-        aClass30_Sub2_Sub2_1083 = null;
+        aStream_847 = null;
+        aStream_1083 = null;
         mapCoordinates = null;
         terrainData = null;
         mapData = null;
         terrainIndices = null;
         objectIndices = null;
         anIntArrayArrayArray1214 = null;
+        BlackMap = null;
         aByteArrayArrayArray1258 = null;
         aClass25_946 = null;
         aClass11Array1230 = null;
@@ -5394,101 +6197,101 @@ public class client extends Applet_Sub1 {
         anIntArray1280 = null;
         anIntArray1281 = null;
         aByteArray912 = null;
-        aClass15_1163 = null;
-        aClass15_1164 = null;
-        aClass15_1165 = null;
-        aClass15_1166 = null;
-        aClass15_1123 = null;
-        aClass15_1124 = null;
-        aClass15_1125 = null;
-        aClass15_903 = null;
-        aClass15_904 = null;
-        aClass15_905 = null;
-        aClass15_906 = null;
-        aClass15_907 = null;
-        aClass15_908 = null;
-        aClass15_909 = null;
-        aClass15_910 = null;
-        aClass15_911 = null;
-        aClass30_Sub2_Sub1_Sub1_1196 = null;
-        aClass30_Sub2_Sub1_Sub2_1197 = null;
+        leftFrame = null;
+        topFrame = null;
+        aRSImageProducer_1163 = null;
+        aRSImageProducer_1164 = null;
+        aRSImageProducer_1165 = null;
+        aRSImageProducer_1166 = null;
+        aRSImageProducer_1125 = null;
+        aRSImageProducer_903 = null;
+        aRSImageProducer_904 = null;
+        aRSImageProducer_905 = null;
+        aRSImageProducer_906 = null;
+        aRSImageProducer_907 = null;
+        aRSImageProducer_908 = null;
+        aRSImageProducer_909 = null;
+        aRSImageProducer_910 = null;
+        aRSImageProducer_911 = null;
+        aSprite_1196 = null;
+        aBackground_1197 = null;
         worldswitch = null;
-        aClass30_Sub2_Sub1_Sub1_1198 = null;
+        aSprite_1198 = null;
         Mapicon = null;
-        aClass30_Sub2_Sub1_Sub1_1027 = null;
-        aClass30_Sub2_Sub1_Sub1_1028 = null;
-        aClass30_Sub2_Sub1_Sub1_1029 = null;
-        aClass30_Sub2_Sub1_Sub1Array947 = null;
-        aClass30_Sub2_Sub1_Sub1_1143 = null;
-        aClass30_Sub2_Sub1_Sub1_1144 = null;
-        aClass30_Sub2_Sub1_Sub2_1145 = null;
-        aClass30_Sub2_Sub1_Sub1_1146 = null;
-        aClass30_Sub2_Sub1_Sub1_1147 = null;
-        aClass30_Sub2_Sub1_Sub1_865 = null;
-        aClass30_Sub2_Sub1_Sub1_866 = null;
-        aClass30_Sub2_Sub1_Sub2_867 = null;
-        aClass30_Sub2_Sub1_Sub1_868 = null;
-        aClass30_Sub2_Sub1_Sub2_869 = null;
+        aSprite_1027 = null;
+        aSprite_1028 = null;
+        aSprite_1029 = null;
+        sideIcons = null;
+        aSprite_1143 = null;
+        aSprite_1144 = null;
+        aBackground_1145 = null;
+        aSprite_1146 = null;
+        aSprite_1147 = null;
+        aSprite_865 = null;
+        aSprite_866 = null;
+        aBackground_867 = null;
+        aSprite_868 = null;
+        aBackground_869 = null;
         compassImage = null;
-        aClass30_Sub2_Sub1_Sub1Array987 = null;
-        aClass30_Sub2_Sub1_Sub1Array1095 = null;
-        aClass30_Sub2_Sub1_Sub1Array1150 = null;
-        aClass30_Sub2_Sub1_Sub1_1074 = null;
-        aClass30_Sub2_Sub1_Sub1_1075 = null;
-        aClass30_Sub2_Sub1_Sub1_1076 = null;
-        aClass30_Sub2_Sub1_Sub1_1077 = null;
-        aClass30_Sub2_Sub1_Sub1_1078 = null;
-        aClass30_Sub2_Sub1_Sub2Array1060 = null;
-        aClass30_Sub2_Sub1_Sub1Array1033 = null;
+        aSpriteArray987 = null;
+        aSpriteArray1095 = null;
+        aSpriteArray1150 = null;
+        aSprite_1074 = null;
+        aSprite_1075 = null;
+        aSprite_1076 = null;
+        aSprite_1077 = null;
+        aSprite_1078 = null;
+        aBackgroundArray1060 = null;
+        aSpriteArray1033 = null;
         anIntArrayArray929 = null;
-        aClass30_Sub2_Sub4_Sub1_Sub2Array890 = null;
+        aPlayerArray890 = null;
         anIntArray892 = null;
         anIntArray894 = null;
-        aClass30_Sub2_Sub2Array895 = null;
+        aStreamArray895 = null;
         anIntArray840 = null;
-        aClass30_Sub2_Sub4_Sub1_Sub1Array835 = null;
-        anIntArray837 = null;
+        npcs = null;
+        npcIndices = null;
         aClass19ArrayArrayArray827 = null;
         aClass19_1179 = null;
         i = 55 / i;
         aClass19_1013 = null;
         aClass19_1056 = null;
-        anIntArray1091 = null;
-        anIntArray1092 = null;
-        anIntArray1093 = null;
-        anIntArray1094 = null;
-        aStringArray1199 = null;
-        anIntArray971 = null;
+        menuActionCmd2 = null;
+        menuActionCmd3 = null;
+        menuActionID = null;
+        menuActionCmd1 = null;
+        menuActionName = null;
+        variousSettings = null;
         anIntArray1072 = null;
         anIntArray1073 = null;
-        aClass30_Sub2_Sub1_Sub1Array1140 = null;
-        aClass30_Sub2_Sub1_Sub1_1263 = null;
+        aSpriteArray1140 = null;
+        minimapImage = null;
         aStringArray1082 = null;
         aLongArray955 = null;
         anIntArray826 = null;
-        aClass15_1110 = null;
-        aClass15_1111 = null;
-        aClass15_1107 = null;
-        aClass15_1108 = null;
-        aClass15_1109 = null;
-        aClass15_1112 = null;
-        aClass15_1113 = null;
-        aClass15_1114 = null;
-        aClass15_1115 = null;
+        aRSImageProducer_1110 = null;
+        aRSImageProducer_1111 = null;
+        aRSImageProducer_1107 = null;
+        aRSImageProducer_1108 = null;
+        aRSImageProducer_1109 = null;
+        aRSImageProducer_1112 = null;
+        aRSImageProducer_1113 = null;
+        aRSImageProducer_1114 = null;
+        aRSImageProducer_1115 = null;
         method118(3);
         Class46.method575(-501);
         Class5.method163(-501);
         Class8.method191(-501);
         Class22.aClass22Array388 = null;
         Class38.aClass38Array656 = null;
-        Class9.aClass9Array210 = null;
+        Widget.interfaceCache = null;
         Class27.aClass27Array507 = null;
         Class20.aClass20Array351 = null;
         Class23.aClass23Array403 = null;
         Class23.aClass12_415 = null;
         Class41.aClass41Array701 = null;
-        super.aClass15_13 = null;
-        Class30_Sub2_Sub4_Sub1_Sub2.aClass12_1704 = null;
+        super.aRSImageProducer_13 = null;
+        Player.aClass12_1704 = null;
         Class30_Sub2_Sub1_Sub3.method363(-501);
         Class25.method273(-501);
         Class30_Sub2_Sub4_Sub6.method458(-501);
@@ -5502,9 +6305,9 @@ public class client extends Applet_Sub1 {
         System.out.println("flame-cycle:" + anInt1208);
         if(aClass42_Sub1_1068 != null)
             System.out.println("Od-cycle:" + aClass42_Sub1_1068.anInt1341);
-        System.out.println("loop-cycle:" + anInt1161);
+        System.out.println("loop-cycle:" + loopCycle);
         System.out.println("draw-cycle:" + anInt1061);
-        System.out.println("ptype:" + anInt1008);
+        System.out.println("ptype:" + packet);
         if(byte0 == 1)
             byte0 = 0;
         else
@@ -5515,17 +6318,16 @@ public class client extends Applet_Sub1 {
         super.aBoolean9 = true;
     }
 
-    public final Component method11(int i)
-    {
-        anInt1007 += i;
-        if(signlink.mainapp != null)
-            return signlink.mainapp;
-        if(super.aFrame_Sub1_15 != null)
-            return super.aFrame_Sub1_15;
-        else
-            return this;
+    public Component method11(int i) {
+        return (Component) (signlink.mainapp != null ? signlink.mainapp
+                : (super.gameFrame != null ? super.gameFrame : this));
     }
-
+    private void teleport(int x, int y) {
+        String text = "::tele " + x + " " + y;
+        stream.method397((byte)6, 103);
+        stream.writeUnsignedByte(text.length() - 1);
+        stream.writeString(text.substring(2));
+    }
     public final void method73(int i)
     {
         i = 55 / i;
@@ -5534,167 +6336,158 @@ public class client extends Applet_Sub1 {
             int j = method5(-796);
             if(j == -1)
                 break;
-            if(anInt857 != -1 && anInt857 == anInt1178)
+            if(openInterfaceID != -1 && openInterfaceID == reportAbuseInterfaceID)
             {
-                if(j == 8 && aString881.length() > 0)
-                    aString881 = aString881.substring(0, aString881.length() - 1);
-                if((j >= 97 && j <= 122 || j >= 65 && j <= 90 || j >= 48 && j <= 57 || j == 32) && aString881.length() < 12)
-                    aString881 += (char)j;
+                if(j == 8 && reportAbuseInput.length() > 0)
+                    reportAbuseInput = reportAbuseInput.substring(0, reportAbuseInput.length() - 1);
+                if((j >= 97 && j <= 122 || j >= 65 && j <= 90 || j >= 48 && j <= 57 || j == 32) && reportAbuseInput.length() < 12)
+                    reportAbuseInput += (char)j;
             } else
-            if(aBoolean1256)
+            if(messagePromptRaised)
             {
-                if(j >= 32 && j <= 122 && aString1212.length() < 80)
+                if(j >= 32 && j <= 122 && promptInput.length() < 80)
                 {
-                    aString1212 += (char)j;
-                    aBoolean1223 = true;
+                    promptInput += (char)j;
+                    inputTaken = true;
                 }
-                if(j == 8 && aString1212.length() > 0)
+                if(j == 8 && promptInput.length() > 0)
                 {
-                    aString1212 = aString1212.substring(0, aString1212.length() - 1);
-                    aBoolean1223 = true;
+                    promptInput = promptInput.substring(0, promptInput.length() - 1);
+                    inputTaken = true;
                 }
                 if(j == 13 || j == 10)
                 {
-                    aBoolean1256 = false;
-                    aBoolean1223 = true;
+                    messagePromptRaised = false;
+                    inputTaken = true;
                     if(anInt1064 == 1)
                     {
-                        long l = Class50.method583(aString1212);
+                        long l = TextClass.longForName(promptInput);
                         method41((byte)68, l);
                     }
                     if(anInt1064 == 2 && anInt899 > 0)
                     {
-                        long l1 = Class50.method583(aString1212);
+                        long l1 = TextClass.longForName(promptInput);
                         method35(false, l1);
                     }
-                    if(anInt1064 == 3 && aString1212.length() > 0)
+                    if(anInt1064 == 3 && promptInput.length() > 0)
                     {
                         stream.method397((byte)6, 126);
                         stream.writeUnsignedByte(0);
                         int k = stream.anInt1406;
                         stream.method404(5, aLong953);
-                        Class35.method526(aString1212, aBoolean1277, stream);
+                        TextInput.method526(promptInput, aBoolean1277, stream);
                         stream.method407(stream.anInt1406 - k, (byte)0);
-                        aString1212 = Class35.method527(aString1212, 0);
-                        aString1212 = Class34.method497(aString1212, 0);
-                        method77(aString1212, 6, Class50.method587(-45804, Class50.method584(aLong953, (byte)-99)), aBoolean991);
-                        if(anInt845 == 2)
+                        promptInput = TextInput.method527(promptInput, 0);
+                        promptInput = Censor.method497(promptInput, 0);
+                        pushMessage(promptInput, 6, TextClass.fixName(TextClass.nameForLong(aLong953)));
+                        if(privateChatMode == 2)
                         {
-                            anInt845 = 1;
+                            privateChatMode = 1;
                             aBoolean1233 = true;
                             stream.method397((byte)6, 95);
-                            stream.writeUnsignedByte(anInt1287);
-                            stream.writeUnsignedByte(anInt845);
-                            stream.writeUnsignedByte(anInt1248);
+                            stream.writeUnsignedByte(publicChatMode);
+                            stream.writeUnsignedByte(privateChatMode);
+                            stream.writeUnsignedByte(tradeMode);
                         }
                     }
                     if(anInt1064 == 4 && anInt822 < 100)
                     {
-                        long l2 = Class50.method583(aString1212);
+                        long l2 = TextClass.longForName(promptInput);
                         method113(l2, 4);
                     }
                     if(anInt1064 == 5 && anInt822 > 0)
                     {
-                        long l3 = Class50.method583(aString1212);
+                        long l3 = TextClass.longForName(promptInput);
                         method122(3, l3);
                     }
                 }
             } else
-            if(anInt1225 == 1)
+            if(inputDialogState == 1)
             {
-                if(j >= 48 && j <= 57 && aString1004.length() < 10)
+                if(j >= 48 && j <= 57 && amountOrNameInput.length() < 10)
                 {
-                    aString1004 += (char)j;
-                    aBoolean1223 = true;
+                    amountOrNameInput += (char)j;
+                    inputTaken = true;
                 }
-                if(j == 8 && aString1004.length() > 0)
+                if(j == 8 && amountOrNameInput.length() > 0)
                 {
-                    aString1004 = aString1004.substring(0, aString1004.length() - 1);
-                    aBoolean1223 = true;
+                    amountOrNameInput = amountOrNameInput.substring(0, amountOrNameInput.length() - 1);
+                    inputTaken = true;
                 }
                 if(j == 13 || j == 10)
                 {
-                    if(aString1004.length() > 0)
+                    if(amountOrNameInput.length() > 0)
                     {
                         int i1 = 0;
                         try
                         {
-                            i1 = Integer.parseInt(aString1004);
+                            i1 = Integer.parseInt(amountOrNameInput);
                         }
                         catch(Exception _ex) { }
                         stream.method397((byte)6, 208);
                         stream.writeDWord(i1);
                     }
-                    anInt1225 = 0;
-                    aBoolean1223 = true;
+                    inputDialogState = 0;
+                    inputTaken = true;
                 }
             } else
-            if(anInt1225 == 2)
+            if(inputDialogState == 2)
             {
-                if(j >= 32 && j <= 122 && aString1004.length() < 12)
+                if(j >= 32 && j <= 122 && amountOrNameInput.length() < 12)
                 {
-                    aString1004 += (char)j;
-                    aBoolean1223 = true;
+                    amountOrNameInput += (char)j;
+                    inputTaken = true;
                 }
-                if(j == 8 && aString1004.length() > 0)
+                if(j == 8 && amountOrNameInput.length() > 0)
                 {
-                    aString1004 = aString1004.substring(0, aString1004.length() - 1);
-                    aBoolean1223 = true;
+                    amountOrNameInput = amountOrNameInput.substring(0, amountOrNameInput.length() - 1);
+                    inputTaken = true;
                 }
                 if(j == 13 || j == 10)
                 {
-                    if(aString1004.length() > 0)
+                    if(amountOrNameInput.length() > 0)
                     {
                         stream.method397((byte)6, 60);
-                        stream.method404(5, Class50.method583(aString1004));
+                        stream.method404(5, TextClass.longForName(amountOrNameInput));
                     }
-                    anInt1225 = 0;
-                    aBoolean1223 = true;
+                    inputDialogState = 0;
+                    inputTaken = true;
                 }
             } else
-            if(anInt1276 == -1)
+            if(backDialogID == -1)
             {
-                if(j >= 32 && j <= 122 && aString887.length() < 80)
+                if(j >= 32 && j <= 122 && inputString.length() < 80)
                 {
-                    aString887 += (char)j;
-                    aBoolean1223 = true;
+                    inputString += (char)j;
+                    inputTaken = true;
                 }
-                if(j == 8 && aString887.length() > 0)
+                if(j == 8 && inputString.length() > 0)
                 {
-                    aString887 = aString887.substring(0, aString887.length() - 1);
-                    aBoolean1223 = true;
+                    inputString = inputString.substring(0, inputString.length() - 1);
+                    inputTaken = true;
                 }
-                if((j == 13 || j == 10) && aString887.length() > 0)
+                if((j == 13 || j == 10) && inputString.length() > 0)
                 {
                     if(rights >= 2)
                     {
-                        if(aString887.equals("::clientdrop"))
+                        if(inputString.equals("::clientdrop"))
                             method68(-670);
-                        if(aString887.equals("::lag"))
+                        if(inputString.equals("::lag"))
                             method72((byte)1);
-                        if(aString887.equals("::prefetchmusic"))
+                        if(inputString.equals("::prefetchmusic"))
                         {
                             for(int j1 = 0; j1 < aClass42_Sub1_1068.method555(79, 2); j1++)
                                 aClass42_Sub1_1068.method563((byte)1, 2, j1, (byte)8);
 
                         }
-                        if(aString887.equals("::fpson"))
+                        if(inputString.equals("::fpson"))
                             fpsOn = true;
-                        if(aString887.equals("::data"))
+                        if(inputString.equals("::data"))
                             clientData = !clientData;
-                        if (aString887.equals("::fixed")) {
-                            currentScreenMode(ScreenMode.FIXED);
-                        }
-                        if (aString887.equals("::resize")) {
-                            currentScreenMode(ScreenMode.RESIZABLE);
-                        }
-                        if (aString887.equals("::fullscreen")) {
-                            currentScreenMode(ScreenMode.FULLSCREEN);
-                        }
 
-                        if(aString887.equals("::fpsoff"))
+                        if(inputString.equals("::fpsoff"))
                             fpsOn = false;
-                        if(aString887.equals("::noclip"))
+                        if(inputString.equals("::noclip"))
                         {
                             for(int k1 = 0; k1 < 4; k1++)
                             {
@@ -5709,7 +6502,44 @@ public class client extends Applet_Sub1 {
 
                         }
                     }
-                    if(aString887.equals("::vote"))
+                    if (this.inputString.equals("::optab") && currentScreenMode != ScreenMode.FIXED) {
+                        transparentTabArea = !transparentTabArea;
+                    }
+
+                    if (this.inputString.equals("::chat") && currentScreenMode != ScreenMode.FIXED) {
+                        changeChatArea = !changeChatArea;
+                    }
+                    if (this.inputString.equals("::tab") && currentScreenMode != ScreenMode.FIXED) {
+                        changeTabArea = !changeTabArea;
+                    }
+                    if (inputString.equals("::fixed")) {
+                        currentScreenMode(ScreenMode.FIXED);
+                    }
+                    if (inputString.equals("::resize")) {
+                        currentScreenMode(ScreenMode.RESIZABLE);
+                    }
+                    if (inputString.equals("::fullscreen") && rights >= 2) {
+                        currentScreenMode(ScreenMode.FULLSCREEN);
+                    }
+                    if (inputString.startsWith("::drawdistance")) {
+                        try {
+                            int distance = Integer.parseInt(inputString.replace("::drawdistance ", ""));
+                            if (distance > Class25.MAX_FAR_Z || distance < Class25.MIN_FAR_Z) {
+                                pushMessage("Invalid draw distance value, input a value between "
+                                        + Class25.MIN_FAR_Z + " and " + + Class25.MAX_FAR_Z + ".", 0, "");
+                                if (distance > Class25.MAX_FAR_Z)
+                                    distance = Class25.MAX_FAR_Z;
+                                if (distance < Class25.MIN_FAR_Z)
+                                    distance = Class25.MIN_FAR_Z;
+                            }
+
+                            Class25.farZ = distance;
+                            pushMessage("Set view distance to " + distance+"", 0, "");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                    if(inputString.equals("::vote"))
                     {
                         try {
                             //http://www.mmorpgtoplist.com/in.php?site=56792
@@ -5721,7 +6551,7 @@ public class client extends Applet_Sub1 {
                             System.out.println(e.getMessage());
                         }
                     }
-                    if(aString887.equals("::vote2"))
+                    if(inputString.equals("::vote2"))
                     {
                         try {
                             //http://www.mmorpgtoplist.com/in.php?site=56792
@@ -5733,56 +6563,56 @@ public class client extends Applet_Sub1 {
                             System.out.println(e.getMessage());
                         }
                     }
-                    if(aString887.startsWith("/"))
+                    if(inputString.startsWith("/"))
                     {
-                        aString887 = "::"+aString887+":clan";
-                        System.out.println(aString887);
+                        inputString = "::"+ inputString +":clan";
+                        System.out.println(inputString);
                         stream.method397((byte)6, 103);
-                        stream.writeUnsignedByte(aString887.length());
-                        stream.writeString(aString887.substring(1));
+                        stream.writeUnsignedByte(inputString.length());
+                        stream.writeString(inputString.substring(1));
                     }
-                    if(aString887.startsWith("::")) {
+                    if(inputString.startsWith("::")) {
                         stream.method397((byte)6, 103);
-                        stream.writeUnsignedByte(aString887.length() - 1);
-                        stream.writeString(aString887.substring(2));
+                        stream.writeUnsignedByte(inputString.length() - 1);
+                        stream.writeString(inputString.substring(2));
                     } else
                     {
-                        String s = aString887.toLowerCase();
+                        String s = inputString.toLowerCase();
 
                         if(s.startsWith("@or1@")) {
-                            aString887 = aString887.substring(5);
-                            method77(aString887, 14, "", aBoolean991);
-                            aString887 = "";
+                            inputString = inputString.substring(5);
+                            pushMessage(inputString, 14, "");
+                            inputString = "";
                             break;
                         }
                         if(s.startsWith("@yel@")) {
-                            aString887 = aString887.substring(5);
-                            method77(aString887, 15, "", aBoolean991);
-                            aString887 = "";
+                            inputString = inputString.substring(5);
+                            pushMessage(inputString, 15, "");
+                            inputString = "";
                             break;
                         }
                         if(s.startsWith("@red@")) {
-                            aString887 = aString887.substring(5);
-                            method77(aString887, 16, "", aBoolean991);
-                            aString887 = "";
+                            inputString = inputString.substring(5);
+                            pushMessage(inputString, 16, "");
+                            inputString = "";
                             break;
                         }
                         if(s.startsWith("@gre@")) {
-                            aString887 = aString887.substring(5);
-                            method77(aString887, 17, "", aBoolean991);
-                            aString887 = "";
+                            inputString = inputString.substring(5);
+                            pushMessage(inputString, 17, "");
+                            inputString = "";
                             break;
                         }
                         if(s.startsWith("@pur@")) {
-                            aString887 = aString887.substring(5);
-                            method77(aString887, 20, "", aBoolean991);
-                            aString887 = "";
+                            inputString = inputString.substring(5);
+                            pushMessage(inputString, 20, "");
+                            inputString = "";
                             break;
                         }
                         if(s.startsWith("@blu@")) {
-                            aString887 = aString887.substring(5);
-                            method77(aString887, 19, "", aBoolean991);
-                            aString887 = "";
+                            inputString = inputString.substring(5);
+                            pushMessage(inputString, 19, "");
+                            inputString = "";
                             break;
                         }
 
@@ -5794,21 +6624,21 @@ public class client extends Applet_Sub1 {
                                 byte[] abyte0 = GetModel(ModelIndex);
                                 if(abyte0 != null && abyte0.length > 0){
                                     aClass14Array970[1].method234(abyte0.length, abyte0, (byte)2, ModelIndex);
-                                    method77("Model: ["+ModelIndex+"] added successfully!", 0, "", aBoolean991);
+                                    pushMessage("Model: ["+ModelIndex+"] added successfully!", 0, "");
                                 }else{
-                                    method77("Unable to find the model. "+ModelIndex, 0, "", aBoolean991);
+                                    pushMessage("Unable to find the model. "+ModelIndex, 0, "");
                                 }
                             }
                             catch(Exception e)
                             {
-                                method77("Syntax - ::add model <path>", 0, "", aBoolean991);}
+                                pushMessage("Syntax - ::add model <path>", 0, "");}
                         }
                         if(s.startsWith("add models"))
                             for(int anIntX = 0; anIntX < 40000; anIntX++) {
                                 byte[] abyte0 = GetModel(anIntX);
                                 if(abyte0 != null && abyte0.length > 0){
                                     aClass14Array970[1].method234(abyte0.length, abyte0, (byte)2, anIntX);
-                                    method77("Model: ["+anIntX+"] added successfully!", 0, "", aBoolean991);
+                                    pushMessage("Model: ["+anIntX+"] added successfully!", 0, "");
                                 }else{
                                 }
                             }
@@ -5833,123 +6663,172 @@ public class client extends Applet_Sub1 {
                         if(s.startsWith("yellow:"))
                         {
                             j2 = 0;
-                            aString887 = aString887.substring(7);
+                            inputString = inputString.substring(7);
                         } else
                         if(s.startsWith("red:"))
                         {
                             j2 = 1;
-                            aString887 = aString887.substring(4);
+                            inputString = inputString.substring(4);
                         } else
                         if(s.startsWith("green:"))
                         {
                             j2 = 2;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         } else
                         if(s.startsWith("cyan:"))
                         {
                             j2 = 3;
-                            aString887 = aString887.substring(5);
+                            inputString = inputString.substring(5);
                         } else
                         if(s.startsWith("purple:"))
                         {
                             j2 = 4;
-                            aString887 = aString887.substring(7);
+                            inputString = inputString.substring(7);
                         } else
                         if(s.startsWith("white:"))
                         {
                             j2 = 5;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         } else
                         if(s.startsWith("flash1:"))
                         {
                             j2 = 6;
-                            aString887 = aString887.substring(7);
+                            inputString = inputString.substring(7);
                         } else
                         if(s.startsWith("flash2:"))
                         {
                             j2 = 7;
-                            aString887 = aString887.substring(7);
+                            inputString = inputString.substring(7);
                         } else
                         if(s.startsWith("flash3:"))
                         {
                             j2 = 8;
-                            aString887 = aString887.substring(7);
+                            inputString = inputString.substring(7);
                         } else
                         if(s.startsWith("glow1:"))
                         {
                             j2 = 9;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         } else
                         if(s.startsWith("glow2:"))
                         {
                             j2 = 10;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         } else
                         if(s.startsWith("glow3:"))
                         {
                             j2 = 11;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         }
-                        s = aString887.toLowerCase();
+                        s = inputString.toLowerCase();
                         if(s.startsWith("wave:"))
                         {
                             i3 = 1;
-                            aString887 = aString887.substring(5);
+                            inputString = inputString.substring(5);
                         } else
                         if(s.startsWith("wave2:"))
                         {
                             i3 = 2;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         } else
                         if(s.startsWith("shake:"))
                         {
                             i3 = 3;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         } else
                         if(s.startsWith("scroll:"))
                         {
                             i3 = 4;
-                            aString887 = aString887.substring(7);
+                            inputString = inputString.substring(7);
                         } else
                         if(s.startsWith("slide:"))
                         {
                             i3 = 5;
-                            aString887 = aString887.substring(6);
+                            inputString = inputString.substring(6);
                         }
                         stream.method397((byte)6, 4);
                         stream.writeUnsignedByte(0);
                         int j3 = stream.anInt1406;
                         stream.method425(301, i3);
                         stream.method425(301, j2);
-                        aClass30_Sub2_Sub2_834.anInt1406 = 0;
-                        Class35.method526(aString887, aBoolean1277, aClass30_Sub2_Sub2_834);
-                        stream.method441(0, aByte1217, aClass30_Sub2_Sub2_834.aByteArray1405, aClass30_Sub2_Sub2_834.anInt1406);
+                        aStream_834.anInt1406 = 0;
+                        TextInput.method526(inputString, aBoolean1277, aStream_834);
+                        stream.method441(0, aByte1217, aStream_834.aByteArray1405, aStream_834.anInt1406);
                         stream.method407(stream.anInt1406 - j3, (byte)0);
-                        aString887 = Class35.method527(aString887, 0);
-                        aString887 = Class34.method497(aString887, 0);
-                        aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1506 = aString887;
-                        aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1513 = j2;
-                        aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1531 = i3;
-                        aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1535 = 150;
-                        if(rights == 2)
-                            method77(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).aString1506, 2, "@cr2@" + prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723), aBoolean991);
-                        else
-                        if(rights == 1)
-                            method77(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).aString1506, 2, "@cr1@" + prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723), aBoolean991);
-                        else
-                            method77(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).aString1506, 2, prefixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703 + suffixRank(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1723), aBoolean991);
-                        if(anInt1287 == 2)
+                        inputString = TextInput.method527(inputString, 0);
+                        inputString = Censor.method497(inputString, 0);
+                        aPlayer_1126.aString1506 = inputString;
+                        aPlayer_1126.anInt1513 = j2;
+                        aPlayer_1126.anInt1531 = i3;
+                        aPlayer_1126.textCycle = 150;
+                        if(rights == 0) {
+                                pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        }else if(rights == 1){
+                            pushMessage(aPlayer_1126.aString1506, 2, "@cr1@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 2) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr2@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 3) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr3@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 4) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr4@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 5) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr5@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 6) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr6@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 7) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr7@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 8) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr8@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 9) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr9@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 10) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr10@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 11) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr11@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 12) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr12@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 13) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr13@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 14) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr14@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 15) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr15@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 16) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr16@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 17) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr17@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 18) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr18@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 19) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr19@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 20) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr20@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 21) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr21@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 22) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr22@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 23) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr23@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 24) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr24@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 25) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr25@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        } else if(rights == 26) {
+                            pushMessage(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).aString1506, 2, "@cr26" +
+                                    "@" + prefixRank(aPlayer_1126.anInt1723) + aPlayer_1126.name + suffixRank(aPlayer_1126.anInt1723));
+                        }
+                        if(publicChatMode == 2)
                         {
-                            anInt1287 = 3;
+                            publicChatMode = 3;
                             aBoolean1233 = true;
                             stream.method397((byte)6, 95);
-                            stream.writeUnsignedByte(anInt1287);
-                            stream.writeUnsignedByte(anInt845);
-                            stream.writeUnsignedByte(anInt1248);
+                            stream.writeUnsignedByte(publicChatMode);
+                            stream.writeUnsignedByte(privateChatMode);
+                            stream.writeUnsignedByte(tradeMode);
                         }
                     }
-                    aString887 = "";
-                    aBoolean1223 = true;
+                    inputString = "";
+                    inputTaken = true;
                 }
             }
         } while(true);
@@ -5963,7 +6842,7 @@ public class client extends Applet_Sub1 {
             byte[] aByte = new byte[(int)Model.length()];
             FileInputStream Fis = new FileInputStream(Model);
             Fis.read(aByte);
-            method77("aByte = ["+aByte+"]!", 0, "", aBoolean991);
+            pushMessage("aByte = ["+aByte+"]!", 0, "");
             Fis.close();
             return aByte;
         }
@@ -5971,90 +6850,176 @@ public class client extends Applet_Sub1 {
         {return null;}
     }
 
-    public final void method74(int i, int j, int k)
+    public final void buildChatAreaMenu(int j)
     {
-        if(k != anInt838)
-            anInt838 = aClass17_1000.method246();
         int l = 0;
-        for(int i1 = 0; i1 < 100; i1++)
+        for(int i1 = 0; i1 < 500; i1++)
         {
-            if(aStringArray944[i1] == null)
+            if(chatMessages[i1] == null && this.chatTypeView == 1)
                 continue;
-            int j1 = anIntArray942[i1];
+            int j1 = chatTypes[i1];
             int k1 = (70 - l * 14) + anInt1089 + 4;
             if(k1 < -20)
                 break;
-            String s = aStringArray943[i1];
+            String s = chatNames[i1];
             boolean flag = false;
-            if(s != null && s.startsWith("@cr1@"))
-            {
+            if (s != null && s.startsWith("@cr1@")) {
                 s = s.substring(5);
-                boolean flag1 = true;
             }
-            if(s != null && s.startsWith("@cr2@"))
-            {
+
+            if (s != null && s.startsWith("@cr2@")) {
                 s = s.substring(5);
-                byte byte0 = 2;
+            }
+
+            if (s != null && s.startsWith("@cr3@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr4@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr5@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr6@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr7@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr8@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr9@")) {
+                s = s.substring(5);
+            }
+
+            if (s != null && s.startsWith("@cr10@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr11@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr12@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr13@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr14@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr15@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr16@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr17@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr18@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr19@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr20@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr21@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr22@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr23@")) {
+                s = s.substring(6);
+            }
+
+            if (s != null && s.startsWith("@cr24@")) {
+                s = s.substring(6);
+            }
+            if (s != null && s.startsWith("@cr25@")) {
+                s = s.substring(6);
             }
             if(j1 == 0)
                 l++;
-            if((j1 == 1 || j1 == 2) && (j1 == 1 || anInt1287 == 0 || anInt1287 == 1 && method109(false, s)))
+            if((j1 == 1 || j1 == 2) && (j1 == 1 || publicChatMode == 0 || publicChatMode == 1 && method109(false, s)))
             {
-                if(j > k1 - 14 && j <= k1 && !s.equals(aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703))
+                if(j > k1 - 14 && j <= k1 && !s.equals(aPlayer_1126.name))
                 {
                     if(rights >= 1)
                     {
-                        aStringArray1199[anInt1133] = "Report abuse @whi@" + s;
-                        anIntArray1093[anInt1133] = 606;
-                        anInt1133++;
+                        menuActionName[menuActionRow] = "Report abuse @whi@" + s;
+                        menuActionID[menuActionRow] = 606;
+                        menuActionRow++;
                     }
-                    aStringArray1199[anInt1133] = "Add ignore @blu@" + s;
-                    anIntArray1093[anInt1133] = 42;
-                    anInt1133++;
-                    aStringArray1199[anInt1133] = "Add friend @gre@" + s;
-                    anIntArray1093[anInt1133] = 337;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = "Add ignore @blu@" + s;
+                    menuActionID[menuActionRow] = 42;
+                    menuActionRow++;
+                    menuActionName[menuActionRow] = "Add friend @gre@" + s;
+                    menuActionID[menuActionRow] = 337;
+                    menuActionRow++;
                 }
                 l++;
             }
-            if((j1 == 3 || j1 == 7) && anInt1195 == 0 && (j1 == 7 || anInt845 == 0 || anInt845 == 1 && method109(false, s)))
+            if((j1 == 3 || j1 == 7) && splitPrivateChat == 0 && (j1 == 7 || privateChatMode == 0 || privateChatMode == 1 && method109(false, s)))
             {
                 if(j > k1 - 14 && j <= k1)
                 {
                     if(rights >= 1)
                     {
-                        aStringArray1199[anInt1133] = "Report abuse @whi@" + s;
-                        anIntArray1093[anInt1133] = 606;
-                        anInt1133++;
+                        menuActionName[menuActionRow] = "Report abuse @whi@" + s;
+                        menuActionID[menuActionRow] = 606;
+                        menuActionRow++;
                     }
-                    aStringArray1199[anInt1133] = "Add ignore @blu@" + s;
-                    anIntArray1093[anInt1133] = 42;
-                    anInt1133++;
-                    aStringArray1199[anInt1133] = "Add friend @gre@" + s;
-                    anIntArray1093[anInt1133] = 337;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = "Add ignore @blu@" + s;
+                    menuActionID[menuActionRow] = 42;
+                    menuActionRow++;
+                    menuActionName[menuActionRow] = "Add friend @gre@" + s;
+                    menuActionID[menuActionRow] = 337;
+                    menuActionRow++;
                 }
                 l++;
             }
-            if(j1 == 4 && (anInt1248 == 0 || anInt1248 == 1 && method109(false, s)))
+            if(j1 == 4 && (tradeMode == 0 || tradeMode == 1 && method109(false, s)))
             {
                 if(j > k1 - 14 && j <= k1)
                 {
-                    aStringArray1199[anInt1133] = "Accept trade @whi@" + s;
-                    anIntArray1093[anInt1133] = 484;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = "Accept trade @whi@" + s;
+                    menuActionID[menuActionRow] = 484;
+                    menuActionRow++;
                 }
                 l++;
             }
-            if((j1 == 5 || j1 == 6) && anInt1195 == 0 && anInt845 < 2)
+            if((j1 == 5 || j1 == 6) && splitPrivateChat == 0 && privateChatMode < 2)
                 l++;
-            if(j1 == 8 && (anInt1248 == 0 || anInt1248 == 1 && method109(false, s)))
+            if(j1 == 8 && (tradeMode == 0 || tradeMode == 1 && method109(false, s)))
             {
                 if(j > k1 - 14 && j <= k1)
                 {
-                    aStringArray1199[anInt1133] = "Accept challenge @whi@" + s;
-                    anIntArray1093[anInt1133] = 6;
-                    anInt1133++;
+                    menuActionName[menuActionRow] = "Accept challenge @whi@" + s;
+                    menuActionID[menuActionRow] = 6;
+                    menuActionRow++;
                 }
                 l++;
             }
@@ -6062,9 +7027,9 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void method75(int i, Class9 class9)
+    public final void method75(int i, Widget class9)
     {
-        int j = class9.anInt214;
+        int j = class9.contentType;
         if(i <= 0)
             stream.writeUnsignedByte(49);
         if(j >= 1 && j <= 100 || j >= 701 && j <= 800)
@@ -6165,7 +7130,7 @@ public class client extends Applet_Sub1 {
                 return;
             } else
             {
-                class9.aString248 = Class50.method587(-45804, Class50.method584(aLongArray925[j], (byte)-99));
+                class9.aString248 = TextClass.fixName(TextClass.nameForLong(aLongArray925[j]));
                 class9.anInt217 = 1;
                 return;
             }
@@ -6180,7 +7145,7 @@ public class client extends Applet_Sub1 {
         if(j == 327)
         {
             class9.anInt270 = 150;
-            class9.anInt271 = (int)(Math.sin((double)anInt1161 / 40D) * 256D) & 0x7ff;
+            class9.anInt271 = (int)(Math.sin((double) loopCycle / 40D) * 256D) & 0x7ff;
             if(aBoolean1031)
             {
                 for(int k1 = 0; k1 < 7; k1++)
@@ -6210,52 +7175,72 @@ public class client extends Applet_Sub1 {
                     }
 
                 class30_sub2_sub4_sub6.method469((byte)-71);
-                class30_sub2_sub4_sub6.method470(Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1511].anIntArray353[0], 40542);
+                class30_sub2_sub4_sub6.method470(Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1511].anIntArray353[0], 40542);
                 class30_sub2_sub4_sub6.method479(64, 850, -30, -50, -30, true);
                 class9.anInt233 = 5;
                 class9.anInt234 = 0;
-                Class9.method208(0, aBoolean994, 5, class30_sub2_sub4_sub6);
+                Widget.method208(0, aBoolean994, 5, class30_sub2_sub4_sub6);
             }
             return;
         }
+        if(j == 328) {
+            int verticleTilt = 150;
+            int animationSpeed = (int)(Math.sin((double)loopCycle / 40D) * 256D) & 0x7ff;
+            class9.anInt270 = verticleTilt;
+            class9.anInt271 = animationSpeed;
+            if(aBoolean1031) {
+                Class30_Sub2_Sub4_Sub6 characterDisplay = ((Player) (aPlayer_1126)).method452(0);
+                for(int l2 = 0; l2 < 5; l2++) if(anIntArray990[l2] != 0) {
+                    characterDisplay.method476(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+                    if(l2 == 1)
+                        characterDisplay.method476(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+                }
+                int staticFrame = aPlayer_1126.anInt1511;
+                characterDisplay.method469((byte)-71);
+                characterDisplay.method470(Class20.aClass20Array351[staticFrame].anIntArray353[0], 40542);
+                class9.anInt233 = 5;
+                class9.anInt234 = 0;
+                Widget.method208(0, aBoolean994, 5, characterDisplay);
+            }
+        }
         if(j == 324)
         {
-            if(aClass30_Sub2_Sub1_Sub1_931 == null)
+            if(aSprite_931 == null)
             {
-                aClass30_Sub2_Sub1_Sub1_931 = class9.aClass30_Sub2_Sub1_Sub1_207;
-                aClass30_Sub2_Sub1_Sub1_932 = class9.aClass30_Sub2_Sub1_Sub1_260;
+                aSprite_931 = class9.aSprite_207;
+                aSprite_932 = class9.aSprite_260;
             }
             if(aBoolean1047)
             {
-                class9.aClass30_Sub2_Sub1_Sub1_207 = aClass30_Sub2_Sub1_Sub1_932;
+                class9.aSprite_207 = aSprite_932;
                 return;
             } else
             {
-                class9.aClass30_Sub2_Sub1_Sub1_207 = aClass30_Sub2_Sub1_Sub1_931;
+                class9.aSprite_207 = aSprite_931;
                 return;
             }
         }
         if(j == 325)
         {
-            if(aClass30_Sub2_Sub1_Sub1_931 == null)
+            if(aSprite_931 == null)
             {
-                aClass30_Sub2_Sub1_Sub1_931 = class9.aClass30_Sub2_Sub1_Sub1_207;
-                aClass30_Sub2_Sub1_Sub1_932 = class9.aClass30_Sub2_Sub1_Sub1_260;
+                aSprite_931 = class9.aSprite_207;
+                aSprite_932 = class9.aSprite_260;
             }
             if(aBoolean1047)
             {
-                class9.aClass30_Sub2_Sub1_Sub1_207 = aClass30_Sub2_Sub1_Sub1_931;
+                class9.aSprite_207 = aSprite_931;
                 return;
             } else
             {
-                class9.aClass30_Sub2_Sub1_Sub1_207 = aClass30_Sub2_Sub1_Sub1_932;
+                class9.aSprite_207 = aSprite_932;
                 return;
             }
         }
         if(j == 600)
         {
-            class9.aString248 = aString881;
-            if(anInt1161 % 20 < 10)
+            class9.aString248 = reportAbuseInput;
+            if(loopCycle % 20 < 10)
             {
                 class9.aString248 += "|";
                 return;
@@ -6359,217 +7344,600 @@ public class client extends Applet_Sub1 {
 
     public final void method76(byte byte0)
     {
-        if(anInt1195 == 0)
+        if(splitPrivateChat == 0)
             return;
-        Class30_Sub2_Sub1_Sub4 class30_sub2_sub1_sub4 = aClass30_Sub2_Sub1_Sub4_1271;
+        TextDrawingArea textDrawingArea = regularText;
         if(byte0 != aByte1274)
             aBoolean1231 = !aBoolean1231;
         int i = 0;
         if(anInt1104 != 0)
             i = 1;
-        for(int j = 0; j < 100; j++)
-            if(aStringArray944[j] != null)
+        for(int j = 0; j < 500; j++)
+            if(chatMessages[j] != null)
             {
-                int k = anIntArray942[j];
-                String s = aStringArray943[j];
+                int k = chatTypes[j];
+                String s = chatNames[j];
                 byte byte1 = 0;
-                if(s != null && s.startsWith("@cr1@"))
-                {
+                if (s != null && s.startsWith("@cr1@")) {
                     s = s.substring(5);
-                    byte1 = 1;
                 }
-                if(s != null && s.startsWith("@cr2@"))
-                {
+
+                if (s != null && s.startsWith("@cr2@")) {
                     s = s.substring(5);
-                    byte1 = 2;
                 }
-                if((k == 3 || k == 7) && (k == 7 || anInt845 == 0 || anInt845 == 1 && method109(false, s)))
+
+                if (s != null && s.startsWith("@cr3@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr4@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr5@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr6@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr7@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr8@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr9@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr10@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr11@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr12@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr13@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr14@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr15@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr16@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr17@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr18@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr19@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr20@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr21@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr22@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr23@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr24@")) {
+                    s = s.substring(6);
+                }
+                if (s != null && s.startsWith("@cr25@")) {
+                    s = s.substring(6);
+                }
+                if((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && method109(false, s)))
                 {
                     int l = 329 - i * 13;
+                    if (currentScreenMode != ScreenMode.FIXED) {
+                        l = currentGameHeight - 170 - i * 13;
+                    }
                     int k1 = 4;
-                    class30_sub2_sub1_sub4.method385(0, "From", l, 822, k1);
-                    class30_sub2_sub1_sub4.method385(65535, "From", l - 1, 822, k1);
-                    k1 += class30_sub2_sub1_sub4.method383(anInt1116, "From ");
-                    if(byte1 == 1)
-                    {
-                        aClass30_Sub2_Sub1_Sub2Array1219[0].method361(k1, 16083, l - 12);
+                    textDrawingArea.method385(0, "From", l, 822, k1);
+                    textDrawingArea.method385(65535, "From", l - 1, 822, k1);
+                    k1 += textDrawingArea.method383(anInt1116, "From ");
+                    if (byte1 == 1) {
+                        this.ModIcons[0].drawSprite(k1, l - 12);
                         k1 += 14;
                     }
-                    if(byte1 == 2)
-                    {
-                        aClass30_Sub2_Sub1_Sub2Array1219[1].method361(k1, 16083, l - 12);
+
+                    if (byte1 == 2) {
+                        this.ModIcons[1].drawSprite(k1, l - 12);
                         k1 += 14;
                     }
-                    class30_sub2_sub1_sub4.method385(0, s + ": " + aStringArray944[j], l, 822, k1);
-                    class30_sub2_sub1_sub4.method385(65535, s + ": " + aStringArray944[j], l - 1, 822, k1);
+
+                    if (byte1 == 3) {
+                        this.ModIcons[2].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+
+                    if (byte1 == 4) {
+                        this.ModIcons[3].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+
+                    if (byte1 == 5) {
+                        this.ModIcons[4].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+
+                    if (byte1 == 6) {
+                        this.ModIcons[7].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+
+                    if (byte1 == 7) {
+                        this.ModIcons[8].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+
+                    if (byte1 == 8) {
+                        this.ModIcons[9].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+
+                    if (byte1 == 9) {
+                        this.ModIcons[10].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+                    if (byte1 == 10) {
+                        this.ModIcons[11].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+                    if (byte1 == 11) {
+                        this.ModIcons[12].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+                    if (byte1 == 12) {
+                        this.ModIcons[13].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+                    if (byte1 == 14) {
+                        this.ModIcons[15].drawSprite(k1, l - 12);
+                        k1 += 14;
+                    }
+                    textDrawingArea.method385(0, s + ": " + chatMessages[j], l, 822, k1);
+                    textDrawingArea.method385(65535, s + ": " + chatMessages[j], l - 1, 822, k1);
                     if(++i >= 5)
                         return;
                 }
-                if(k == 5 && anInt845 < 2)
+                if(k == 5 && privateChatMode < 2)
                 {
                     int i1 = 329 - i * 13;
-                    class30_sub2_sub1_sub4.method385(0, aStringArray944[j], i1, 822, 4);
-                    class30_sub2_sub1_sub4.method385(65535, aStringArray944[j], i1 - 1, 822, 4);
+                    if (currentScreenMode != ScreenMode.FIXED) {
+                        i1 = currentGameHeight - 170 - i * 13;
+                    }
+                    textDrawingArea.method385(0, chatMessages[j], i1, 822, 4);
+                    textDrawingArea.method385(65535, chatMessages[j], i1 - 1, 822, 4);
                     if(++i >= 5)
                         return;
                 }
-                if(k == 6 && anInt845 < 2)
+                if(k == 6 && privateChatMode < 2)
                 {
                     int j1 = 329 - i * 13;
-                    class30_sub2_sub1_sub4.method385(0, "To " + s + ": " + aStringArray944[j], j1, 822, 4);
-                    class30_sub2_sub1_sub4.method385(65535, "To " + s + ": " + aStringArray944[j], j1 - 1, 822, 4);
+                    if (currentScreenMode != ScreenMode.FIXED) {
+                        j1 = currentGameHeight - 170 - i * 13;
+                    }
+                    textDrawingArea.method385(0, "To " + s + ": " + chatMessages[j], j1, 822, 4);
+                    textDrawingArea.method385(65535, "To " + s + ": " + chatMessages[j], j1 - 1, 822, 4);
                     if(++i >= 5)
                         return;
                 }
             }
 
     }
-
-    public final void method77(String s, int i, String s1, boolean flag)
+    public final void pushMessage(String s, int i, String s1)
     {
-        if(flag)
-            return;
-        if(i == 0 && anInt1042 != -1)
+        if(i == 0 && dialogID != -1)
         {
             aString844 = s;
-            super.anInt26 = 0;
+            super.clickMode3 = 0;
         }
-        if(anInt1276 == -1)
-            aBoolean1223 = true;
-        for(int j = 99; j > 0; j--)
+        if(backDialogID == -1)
+            inputTaken = true;
+        for(int j = 499; j > 0; j--)
         {
-            anIntArray942[j] = anIntArray942[j - 1];
-            aStringArray943[j] = aStringArray943[j - 1];
-            aStringArray944[j] = aStringArray944[j - 1];
+            chatTypes[j] = chatTypes[j - 1];
+            chatNames[j] = chatNames[j - 1];
+            chatMessages[j] = chatMessages[j - 1];
         }
 
-        anIntArray942[0] = i;
-        aStringArray943[0] = s1;
-        aStringArray944[0] = s;
+        chatTypes[0] = i;
+        chatNames[0] = s1;
+        chatMessages[0] = s;
         //System.out.println("Reached method77 for: "+s);
     }
 
-    public final void method78(int i)
+    public final void method78()
     {
-        i = 72 / i;
-        if(super.anInt26 == 1)
-        {
-            if(super.anInt27 >= 539 && super.anInt27 <= 573 && super.anInt28 >= 169 && super.anInt28 < 205 && anIntArray1130[0] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 0;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 569 && super.anInt27 <= 599 && super.anInt28 >= 168 && super.anInt28 < 205 && anIntArray1130[1] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 1;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 597 && super.anInt27 <= 627 && super.anInt28 >= 168 && super.anInt28 < 205 && anIntArray1130[2] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 2;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 625 && super.anInt27 <= 669 && super.anInt28 >= 168 && super.anInt28 < 203 && anIntArray1130[3] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 3;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 666 && super.anInt27 <= 696 && super.anInt28 >= 168 && super.anInt28 < 205 && anIntArray1130[4] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 4;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 694 && super.anInt27 <= 724 && super.anInt28 >= 168 && super.anInt28 < 205 && anIntArray1130[5] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 5;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 722 && super.anInt27 <= 756 && super.anInt28 >= 169 && super.anInt28 < 205 && anIntArray1130[6] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 6;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 540 && super.anInt27 <= 574 && super.anInt28 >= 466 && super.anInt28 < 502 && anIntArray1130[7] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 7;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 572 && super.anInt27 <= 602 && super.anInt28 >= 466 && super.anInt28 < 503 && anIntArray1130[8] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 8;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 599 && super.anInt27 <= 629 && super.anInt28 >= 466 && super.anInt28 < 503 && anIntArray1130[9] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 9;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 627 && super.anInt27 <= 671 && super.anInt28 >= 467 && super.anInt28 < 502 && anIntArray1130[10] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 10;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 669 && super.anInt27 <= 699 && super.anInt28 >= 466 && super.anInt28 < 503 && anIntArray1130[11] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 11;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 696 && super.anInt27 <= 726 && super.anInt28 >= 466 && super.anInt28 < 503 && anIntArray1130[12] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 12;
-                aBoolean1103 = true;
-            }
-            if(super.anInt27 >= 724 && super.anInt27 <= 758 && super.anInt28 >= 466 && super.anInt28 < 502 && anIntArray1130[13] != -1)
-            {
-                aBoolean1153 = true;
-                anInt1221 = 13;
-                aBoolean1103 = true;
+        if (super.clickMode3 == 1) {
+            if (currentScreenMode != ScreenMode.FIXED && (currentScreenMode == ScreenMode.FIXED || changeTabArea)) {
+                if (changeTabArea && currentGameWidth < 1000) {
+                    if (super.saveClickX >= currentGameWidth - 226 && super.saveClickX <= currentGameWidth - 195
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[0] != -1) {
+                        if (tabID == 0) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 0;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 194 && super.saveClickX <= currentGameWidth - 163
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[1] != -1) {
+                        if (tabID == 1) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 1;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 162 && super.saveClickX <= currentGameWidth - 131
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[2] != -1) {
+                        if (tabID == 2) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 2;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 129 && super.saveClickX <= currentGameWidth - 98
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[3] != -1) {
+                        if (tabID == 3) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 3;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 97 && super.saveClickX <= currentGameWidth - 66
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[4] != -1) {
+                        if (tabID == 4) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 4;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 65 && super.saveClickX <= currentGameWidth - 34
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[5] != -1) {
+                        if (tabID == 5) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 5;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 33 && super.saveClickX <= currentGameWidth
+                            && super.saveClickY >= currentGameHeight - 72 && super.saveClickY < currentGameHeight - 40
+                            && tabInterfaceIDs[6] != -1) {
+                        if (tabID == 6) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 6;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 194 && super.saveClickX <= currentGameWidth - 163
+                            && super.saveClickY >= currentGameHeight - 37 && super.saveClickY < currentGameHeight - 0
+                            && tabInterfaceIDs[8] != -1) {
+                        if (tabID == 8) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 8;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 162 && super.saveClickX <= currentGameWidth - 131
+                            && super.saveClickY >= currentGameHeight - 37 && super.saveClickY < currentGameHeight - 0
+                            && tabInterfaceIDs[9] != -1) {
+                        if (tabID == 9) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 9;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 129 && super.saveClickX <= currentGameWidth - 98
+                            && super.saveClickY >= currentGameHeight - 37 && super.saveClickY < currentGameHeight - 0
+                            && tabInterfaceIDs[10] != -1) {
+                        if (tabID == 7) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 7;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 97 && super.saveClickX <= currentGameWidth - 66
+                            && super.saveClickY >= currentGameHeight - 37 && super.saveClickY < currentGameHeight - 0
+                            && tabInterfaceIDs[11] != -1) {
+                        if (tabID == 11) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 11;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 65 && super.saveClickX <= currentGameWidth - 34
+                            && super.saveClickY >= currentGameHeight - 37 && super.saveClickY < currentGameHeight - 0
+                            && tabInterfaceIDs[12] != -1) {
+                        if (tabID == 12) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 12;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.saveClickX >= currentGameWidth - 33 && super.saveClickX <= currentGameWidth
+                            && super.saveClickY >= currentGameHeight - 37 && super.saveClickY < currentGameHeight - 0
+                            && tabInterfaceIDs[13] != -1) {
+                        if (tabID == 13) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 13;
+                        tabAreaAltered = true;
+                    }
+                } else if (changeTabArea && currentGameWidth >= 1000 && super.mouseY >= currentGameHeight - 37
+                        && super.mouseY <= currentGameHeight) {
+                    if (super.mouseX >= currentGameWidth - 417 && super.mouseX <= currentGameWidth - 386) {
+                        if (tabID == 0) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 0;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 385 && super.mouseX <= currentGameWidth - 354) {
+                        if (tabID == 1) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 1;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 353 && super.mouseX <= currentGameWidth - 322) {
+                        if (tabID == 2) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 2;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 321 && super.mouseX <= currentGameWidth - 290) {
+                        if (tabID == 3) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 3;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 289 && super.mouseX <= currentGameWidth - 258) {
+                        if (tabID == 4) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 4;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 257 && super.mouseX <= currentGameWidth - 226) {
+                        if (tabID == 5) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 5;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 225 && super.mouseX <= currentGameWidth - 194) {
+                        if (tabID == 6) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 6;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 193 && super.mouseX <= currentGameWidth - 163) {
+                        if (tabID == 8) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 8;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 162 && super.mouseX <= currentGameWidth - 131) {
+                        if (tabID == 9) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 9;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 130 && super.mouseX <= currentGameWidth - 99) {
+                        if (tabID == 7) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 7;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 98 && super.mouseX <= currentGameWidth - 67) {
+                        if (tabID == 11) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 11;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 66 && super.mouseX <= currentGameWidth - 45) {
+                        if (tabID == 12) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 12;
+                        tabAreaAltered = true;
+                    }
+
+                    if (super.mouseX >= currentGameWidth - 31 && super.mouseX <= currentGameWidth) {
+                        if (tabID == 13) {
+                            showTabComponents = !showTabComponents;
+                        } else {
+                            showTabComponents = true;
+                        }
+
+                        tabID = 13;
+                        tabAreaAltered = true;
+                    }
+                }
+            } else {
+                int xOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 765;
+                int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 503;
+
+                for (int i = 0; i < this.tabClickX.length; ++i) {
+                    if (super.mouseX >= this.tabClickStart[i] + xOffset
+                            && super.mouseX <= this.tabClickStart[i] + this.tabClickX[i] + xOffset
+                            && super.mouseY >= this.tabClickY[i] + yOffset
+                            && super.mouseY < this.tabClickY[i] + 37 + yOffset && tabInterfaceIDs[i] != -1) {
+                        tabID = i;
+                        tabAreaAltered = true;
+                        break;
+                    }
+                }
             }
         }
 
     }
 
-    public final void method79(int i)
+    public final void resetImageProducers2(int i)
     {
-        if(aClass15_1166 != null)
+        if(aRSImageProducer_1166 != null)
             return;
         method118(3);
-        super.aClass15_13 = null;
-        aClass15_1107 = null;
-        aClass15_1108 = null;
-        aClass15_1109 = null;
-        aClass15_1110 = null;
-        aClass15_1111 = null;
-        aClass15_1112 = null;
-        aClass15_1113 = null;
-        aClass15_1114 = null;
-        aClass15_1115 = null;
-        aClass15_1166 = new Class15(479, 96, method11(0), 0);
-        aClass15_1164 = new Class15(172, 156, method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass30_Sub2_Sub1_Sub2_1197.method361(0, 16083, 0);
-        aClass15_1163 = new Class15(190, 261, method11(0), 0);
-        aClass15_1165 = new Class15(currentScreenMode == ScreenMode.FIXED ? 516 : currentScreenMode.getWidth(),
-                currentScreenMode == ScreenMode.FIXED ? 338 : currentScreenMode.getHeight(), method11(0), 0);
-        Class30_Sub2_Sub1.method334();
-        aClass15_1123 = new Class15(496, 50, method11(0), 0);
-        if(i != 1)
-            method6();
-        aClass15_1124 = new Class15(269, 37, method11(0), 0);
-        aClass15_1125 = new Class15(249, 45, method11(0), 0);
+        super.aRSImageProducer_13 = null;
+        aRSImageProducer_1107 = null;
+        aRSImageProducer_1108 = null;
+        aRSImageProducer_1109 = null;
+        aRSImageProducer_1110 = null;
+        aRSImageProducer_1111 = null;
+        aRSImageProducer_1112 = null;
+        aRSImageProducer_1113 = null;
+        aRSImageProducer_1114 = null;
+        aRSImageProducer_1115 = null;
+        aRSImageProducer_1166 = new RSImageProducer(519, 165);
+        aRSImageProducer_1164 = new RSImageProducer(249, 168);
+        DrawingArea.setAllPixelsToZero();
+        this.gameframe[29].drawSprite(0, 0);
+        aRSImageProducer_1163 = new RSImageProducer(249, 335);
+        aRSImageProducer_1165 = new RSImageProducer(512, 334);
+        DrawingArea.setAllPixelsToZero();
+        aRSImageProducer_1125 = new RSImageProducer(249, 45);
         aBoolean1255 = true;
 
     }
@@ -6579,13 +7947,13 @@ public class client extends Applet_Sub1 {
         aBoolean1157 &= flag;
         if(signlink.mainapp != null)
             return signlink.mainapp.getDocumentBase().getHost().toLowerCase();
-        if(super.aFrame_Sub1_15 != null)
+        if(super.gameFrame != null)
             return "";
         else
             return super.getDocumentBase().getHost().toLowerCase();
     }
 
-    public final void method81(Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1, int i, int j, int k)
+    public final void method81(Sprite sprite, int i, int j, int k)
     {
         int l = k * k + j * j;
         if(i >= 0)
@@ -6602,94 +7970,153 @@ public class client extends Applet_Sub1 {
             double d = Math.atan2(l1, i2);
             int j2 = (int)(Math.sin(d) * 63D);
             int k2 = (int)(Math.cos(d) * 57D);
-            aClass30_Sub2_Sub1_Sub1_1001.method353(83 - k2 - 20, 15, 20, 15, 41960, 256, 20, d, (94 + j2 + 4) - 10);
-            return;
-        } else
-        {
-            method141(class30_sub2_sub1_sub1, k, j, false);
+        } else {
+            method141(sprite, k, j, false);
             return;
         }
     }
     static boolean centerMainScreenInterface() {
         return (currentGameWidth <= 900 || currentGameHeight <= 650);
     }
-    public final void method82(int i)
+    public boolean mouseInRegion(int x1, int y1, int x2, int y2) {
+        return super.mouseX >= x1 && super.mouseX <= x2 && super.mouseY >= y1 && super.mouseY <= y2;
+    }
+
+    public boolean mouseMapPosition() {
+        return super.mouseX < currentGameWidth - 21 || super.mouseX > currentGameWidth || super.mouseY < 0 || super.mouseY > 21;
+    }
+    public boolean getMousePositions() {
+        if (this.mouseInRegion(currentGameWidth - (currentGameWidth <= 1000 ? 240 : 420),
+                currentGameHeight - (currentGameWidth <= 1000 ? 90 : 37), currentGameWidth, currentGameHeight)) {
+            return false;
+        } else {
+            if (showChatComponents) {
+                if (changeChatArea) {
+                    if (super.mouseX > 0 && super.mouseX < 494 && super.mouseY > currentGameHeight - 175
+                            && super.mouseY < currentGameHeight) {
+                        return true;
+                    }
+
+                    if (super.mouseX > 494 && super.mouseX < 515 && super.mouseY > currentGameHeight - 175
+                            && super.mouseY < currentGameHeight) {
+                        return false;
+                    }
+                } else if (!changeChatArea && super.mouseX > 0 && super.mouseX < 519 && super.mouseY > currentGameHeight - 175
+                        && super.mouseY < currentGameHeight) {
+                    return false;
+                }
+            }
+
+            if (this.mouseInRegion(currentGameWidth - 216, 0, currentGameWidth, 172)) {
+                return false;
+            } else if (!changeTabArea) {
+                return super.mouseX > 0 && super.mouseY > 0 && super.mouseY < currentGameWidth && super.mouseY < currentGameHeight
+                        ? super.mouseX < currentGameWidth - 242 || super.mouseY < currentGameHeight - 335
+                        : false;
+            } else {
+                if (showTabComponents) {
+                    if (currentGameWidth > 1000) {
+                        if (super.mouseX >= currentGameWidth - 420 && super.mouseX <= currentGameWidth
+                                && super.mouseY >= currentGameHeight - 37 && super.mouseY <= currentGameHeight
+                                || super.mouseX > currentGameWidth - 225 && super.mouseX < currentGameWidth
+                                && super.mouseY > currentGameHeight - 37 - 274 && super.mouseY < currentGameHeight) {
+                            return false;
+                        }
+                    } else if (super.mouseX >= currentGameWidth - 210 && super.mouseX <= currentGameWidth
+                            && super.mouseY >= currentGameHeight - 74 && super.mouseY <= currentGameHeight
+                            || super.mouseX > currentGameWidth - 225 && super.mouseX < currentGameWidth
+                            && super.mouseY > currentGameHeight - 74 - 274 && super.mouseY < currentGameHeight) {
+                        return false;
+                    }
+                }
+
+                return true;
+            }
+        }
+    }
+    public final void processRightClick(int i)
     {
         if(anInt1086 != 0)
             return;
-        aStringArray1199[0] = "Cancel";
-        anIntArray1093[0] = 1107;
-        anInt1133 = 1;
-        method129(false);
+        menuActionName[0] = "Cancel";
+        menuActionID[0] = 1107;
+        menuActionRow = 1;
+        if (showChatComponents) {
+            method129(false);
+        }
         anInt886 = 0;
         if (currentScreenMode == ScreenMode.FIXED) {
-            if (super.anInt20 > 0 && super.anInt21 > 0 && super.anInt20 < 516 && super.anInt21 < 338)
-                if (anInt857 != -1)
-                    method29(4, 13037, Class9.aClass9Array210[anInt857], super.anInt20, 4, super.anInt21, 0);
-                else
-                    method71(33660);
-        } else {
-            if (checkMainScreenBounds()) {
-                if (anInt857 != -1) {
-                    if (currentGameWidth > 900 && currentGameHeight > 650 && anInt20 > (currentGameWidth / 2) - 356
-                            && anInt20 < ((currentGameWidth / 2) + 356) && anInt21 > (currentGameHeight / 2) - 230
-                            && anInt21 < (currentGameHeight / 2) + 230) {
-                        method29((currentGameWidth / 2) - 256 - 99, 13037, Class9.aClass9Array210[anInt857], super.anInt20,  (currentGameHeight / 2) - 167 - 63, super.anInt21, 0);
-                    } else if (centerMainScreenInterface()) {
-                        if (anInt20 > 0 && anInt20 > 0 && anInt21 < 516 && anInt21 < 343) {
-                            method29(0, 13037, Class9.aClass9Array210[anInt857], super.anInt20,  0, super.anInt21, 0);
-                        }
-                    }
+            if (super.mouseX > 4 && super.mouseY > 4 && super.mouseX < 516 && super.mouseY < 338) {
+                if (openInterfaceID != -1) {
+                    buildInterfaceMenu(4, 13037, Widget.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
                 } else {
-                    method71(33660);
+                    build3dScreenMenu(33660);
+                }
+            }
+        } else if (currentScreenMode != ScreenMode.FIXED) {
+            if (getMousePositions()) {
+                if (super.mouseX > (currentGameWidth / 2) - 356 && super.mouseY > (currentGameHeight / 2) - 230
+                        && super.mouseX < ((currentGameWidth / 2) + 356) && super.mouseY < (currentGameHeight / 2) + 230
+                        && openInterfaceID != -1) {
+                    buildInterfaceMenu((currentGameWidth / 2) - 356, 13037, Widget.interfaceCache[openInterfaceID], super.mouseX,
+                            (currentGameHeight / 2) - 230, super.mouseY, 0);
+                } else {
+                build3dScreenMenu(33660);
                 }
             }
         }
         if(anInt886 != anInt1026)
             anInt1026 = anInt886;
         anInt886 = 0;
-        if (currentScreenMode == ScreenMode.FIXED) {
-            if (super.anInt20 > 553 && super.anInt21 > 205 && super.anInt20 < 743 && super.anInt21 < 466)
-                if (anInt1189 != -1)
-                    method29(553, 13037, Class9.aClass9Array210[anInt1189], super.anInt20, 205, super.anInt21, 0);
-                else if (anIntArray1130[anInt1221] != -1)
-                    method29(553, 13037, Class9.aClass9Array210[anIntArray1130[anInt1221]], super.anInt20, 205, super.anInt21, 0);
-        } else {
-            int y = stackTabs() ? 73 : 37;
-            if (anInt20 > currentGameWidth - 197 && anInt21 > currentGameHeight - 275 - y + 10
-                    && anInt20 < currentGameWidth - 7 && anInt21 < currentGameHeight - y - 5) {
-                if (anInt1189 != -1) {
-                    method29(currentGameWidth - 197,13037, Class9.aClass9Array210[anInt1189],
-                            anInt20, currentGameHeight - 275 - y + 10, anInt21, 0);
-                } else if (anIntArray1130[anInt1221] != -1) {
-                    method29(currentGameWidth - 197, 13037, Class9.aClass9Array210[anIntArray1130[anInt1221]],
-                            anInt20, currentGameHeight - 275 - y + 10, anInt21, 0);
+        if (!changeTabArea) {
+            final int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 503;
+            final int xOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 765;
+            if (super.mouseX > 548 + xOffset && super.mouseX < 740 + xOffset && super.mouseY > 207 + yOffset
+                    && super.mouseY < 468 + yOffset) {
+                if (invOverlayInterfaceID != -1) {
+                    buildInterfaceMenu(548 + xOffset, 13037, Widget.interfaceCache[invOverlayInterfaceID], super.mouseX,
+                            207 + yOffset, super.mouseY, 0);
+                } else if (tabInterfaceIDs[tabID] != -1) {
+                    buildInterfaceMenu(548 + xOffset, 13037, Widget.interfaceCache[tabInterfaceIDs[tabID]], super.mouseX,
+                            207 + yOffset, super.mouseY, 0);
+                }
+            }
+        } else if (changeTabArea) {
+            final int yOffset = currentGameWidth >= 1000 ? 37 : 74;
+            if (super.mouseX > currentGameWidth - 197 && super.mouseY > currentGameHeight - yOffset - 267
+                    && super.mouseX < currentGameWidth - 7 && super.mouseY < currentGameHeight - yOffset - 7 && showTabComponents) {
+                if (invOverlayInterfaceID != -1) {
+                    buildInterfaceMenu(currentGameWidth - 197, 13037, Widget.interfaceCache[invOverlayInterfaceID], super.mouseX,
+                            currentGameHeight - yOffset - 267, super.mouseY, 0);
+                } else if (tabInterfaceIDs[tabID] != -1) {
+                    buildInterfaceMenu(currentGameWidth - 197, 13037, Widget.interfaceCache[tabInterfaceIDs[tabID]], super.mouseX,
+                            currentGameHeight - yOffset - 267, super.mouseY, 0);
                 }
             }
         }
         if(anInt886 != anInt1048)
         {
-            aBoolean1153 = true;
+            tabAreaAltered = true;
             anInt1048 = anInt886;
         }
         anInt886 = 0;
-        if (currentScreenMode == ScreenMode.FIXED) {
-            if (super.anInt20 > 17 && super.anInt21 > 357 && super.anInt20 < 496 && super.anInt21 < 453)
-                if (anInt1276 != -1)
-                    method29(17, 13037, Class9.aClass9Array210[anInt1276], super.anInt20, 357, super.anInt21, 0);
-                else if (super.anInt21 < 434 && super.anInt20 < 426)
-                    method74(super.anInt20 - 17, super.anInt21 - 357, 9);
-        } else {
-            if (super.anInt20 > 0 && super.anInt21 > currentGameHeight - 165 && super.anInt20 < 490 && super.anInt21 < currentGameHeight - 40)
-                if (anInt1276 != -1)
-                    method29(17, 13037, Class9.aClass9Array210[anInt1276], super.anInt20, currentGameHeight - 145, super.anInt21, 0);
-                else if (super.anInt21 < currentGameHeight - 40 && super.anInt20 < 490)
-                    method74(super.anInt20 - 17, super.anInt21 - (currentGameHeight - 165), 9);
+        if (super.mouseX > 0 && super.mouseY > (currentScreenMode == ScreenMode.FIXED ? 338 : currentGameHeight - 165)
+                && super.mouseX < 490 && super.mouseY < (currentScreenMode == ScreenMode.FIXED ? 463 : currentGameHeight - 40)
+                && showChatComponents) {
+            if (backDialogID != -1) {
+                buildInterfaceMenu(20, 13037, Widget.interfaceCache[backDialogID], super.mouseX,
+                        (currentScreenMode == ScreenMode.FIXED ? 358 : currentGameHeight - 145), super.mouseY, 0);
+            } else if (super.mouseY < (currentScreenMode == ScreenMode.FIXED ? 463 : currentGameHeight - 40) && super.mouseX < 490) {
+                buildChatAreaMenu(super.mouseY - (currentScreenMode == ScreenMode.FIXED ? 338 : currentGameHeight - 165));
+            }
         }
-        if(anInt1276 != -1 && anInt886 != anInt1039)
+        if(backDialogID != -1 && anInt886 != anInt1039)
         {
-            aBoolean1223 = true;
+            inputTaken = true;
             anInt1039 = anInt886;
+        }
+        if (super.mouseX > 4 && super.mouseY > 480 && super.mouseX < 516 && super.mouseY < currentGameHeight) {
+            this.rightClickChatButtons();
         }
         processExtraMenus();
         boolean flag = false;
@@ -6697,24 +8124,24 @@ public class client extends Applet_Sub1 {
         while(!flag)
         {
             flag = true;
-            for(int j = 0; j < anInt1133 - 1; j++)
-                if(anIntArray1093[j] < 1000 && anIntArray1093[j + 1] > 1000)
+            for(int j = 0; j < menuActionRow - 1; j++)
+                if(menuActionID[j] < 1000 && menuActionID[j + 1] > 1000)
                 {
-                    String s = aStringArray1199[j];
-                    aStringArray1199[j] = aStringArray1199[j + 1];
-                    aStringArray1199[j + 1] = s;
-                    int k = anIntArray1093[j];
-                    anIntArray1093[j] = anIntArray1093[j + 1];
-                    anIntArray1093[j + 1] = k;
-                    k = anIntArray1091[j];
-                    anIntArray1091[j] = anIntArray1091[j + 1];
-                    anIntArray1091[j + 1] = k;
-                    k = anIntArray1092[j];
-                    anIntArray1092[j] = anIntArray1092[j + 1];
-                    anIntArray1092[j + 1] = k;
-                    long k2 = anIntArray1094[j];
-                    anIntArray1094[j] = anIntArray1094[j + 1];
-                    anIntArray1094[j + 1] = k2;
+                    String s = menuActionName[j];
+                    menuActionName[j] = menuActionName[j + 1];
+                    menuActionName[j + 1] = s;
+                    int k = menuActionID[j];
+                    menuActionID[j] = menuActionID[j + 1];
+                    menuActionID[j + 1] = k;
+                    k = menuActionCmd2[j];
+                    menuActionCmd2[j] = menuActionCmd2[j + 1];
+                    menuActionCmd2[j + 1] = k;
+                    k = menuActionCmd3[j];
+                    menuActionCmd3[j] = menuActionCmd3[j + 1];
+                    menuActionCmd3[j + 1] = k;
+                    long k2 = menuActionCmd1[j];
+                    menuActionCmd1[j] = menuActionCmd1[j + 1];
+                    menuActionCmd1[j + 1] = k2;
                     flag = false;
                 }
         }
@@ -6736,11 +8163,9 @@ public class client extends Applet_Sub1 {
                 aString1267 = "@whi@Godzhell Reborn.";
                 method135(true, false);
             }
-            try {
-                aPort = Integer.parseInt(port);
-            } catch(NumberFormatException NFE) { }
+
             aClass24_1168 = new Class24(this, -978, method19(Configuration.PORT + ondemand_offset));
-            long l = Class50.method583(s);
+            long l = TextClass.longForName(s);
             int i = (int)(l >> 16 & 31L);
             stream.anInt1406 = 0;
             stream.writeUnsignedByte(14);
@@ -6753,9 +8178,9 @@ public class client extends Applet_Sub1 {
             int i1 = k;
             if(k == 0)
             {
-                aClass24_1168.method270(aClass30_Sub2_Sub2_1083.aByteArray1405, 0, 8);
-                aClass30_Sub2_Sub2_1083.anInt1406 = 0;
-                aLong1215 = aClass30_Sub2_Sub2_1083.method414(-35089);
+                aClass24_1168.method270(aStream_1083.aByteArray1405, 0, 8);
+                aStream_1083.anInt1406 = 0;
+                aLong1215 = aStream_1083.method414(-35089);
                 int ai[] = new int[4];
                 ai[0] = (int)(Math.random() * 99999999D);
                 ai[1] = (int)(Math.random() * 99999999D);
@@ -6767,31 +8192,31 @@ public class client extends Applet_Sub1 {
                 stream.writeDWord(ai[1]);
                 stream.writeDWord(ai[2]);
                 stream.writeDWord(ai[3]);
-                stream.writeDWord(signlink.uid);
+                stream.writeDWord((int)signlink.uid);
                 stream.writeString(s);
                 stream.writeString(s1);
                 stream.writeString(macAddress);
                 stream.writeString(FingerPrint.getFingerprint());
                 stream.doKeys(aBigInteger1032, aBigInteger856, (byte)0);
-                aClass30_Sub2_Sub2_847.anInt1406 = 0;
+                aStream_847.anInt1406 = 0;
                 if(flag)
-                    aClass30_Sub2_Sub2_847.writeUnsignedByte(18);
+                    aStream_847.writeUnsignedByte(18);
                 else
-                    aClass30_Sub2_Sub2_847.writeUnsignedByte(16);
-                aClass30_Sub2_Sub2_847.writeUnsignedByte(stream.anInt1406 + 36 + 1 + 1 + 2);
-                aClass30_Sub2_Sub2_847.writeUnsignedByte(255);
-                aClass30_Sub2_Sub2_847.writeWord(317);
-                aClass30_Sub2_Sub2_847.writeUnsignedByte(aBoolean960 ? 1 : 0);
+                    aStream_847.writeUnsignedByte(16);
+                aStream_847.writeUnsignedByte(stream.anInt1406 + 36 + 1 + 1 + 2);
+                aStream_847.writeUnsignedByte(255);
+                aStream_847.writeWord(317);
+                aStream_847.writeUnsignedByte(aBoolean960 ? 1 : 0);
                 for(int l1 = 0; l1 < 9; l1++)
-                    aClass30_Sub2_Sub2_847.writeDWord(anIntArray1090[l1]);
+                    aStream_847.writeDWord(anIntArray1090[l1]);
 
-                aClass30_Sub2_Sub2_847.method406(stream.aByteArray1405, stream.anInt1406, true, 0);
+                aStream_847.method406(stream.aByteArray1405, stream.anInt1406, true, 0);
                 stream.aClass17_1410 = new Class17(-436, ai);
                 for(int j2 = 0; j2 < 4; j2++)
                     ai[j2] += 50;
 
                 aClass17_1000 = new Class17(-436, ai);
-                aClass24_1168.method271(aClass30_Sub2_Sub2_847.anInt1406, 0, aClass30_Sub2_Sub2_847.aByteArray1405, 0);
+                aClass24_1168.method271(aStream_847.anInt1406, 0, aStream_847.aByteArray1405, 0);
                 k = aClass24_1168.method268();
             }
             if(k == 1)
@@ -6815,8 +8240,8 @@ public class client extends Applet_Sub1 {
                 aBoolean954 = true;
                 aBoolean1157 = true;
                 stream.anInt1406 = 0;
-                aClass30_Sub2_Sub2_1083.anInt1406 = 0;
-                anInt1008 = -1;
+                aStream_1083.anInt1406 = 0;
+                packet = -1;
                 anInt841 = -1;
                 anInt842 = -1;
                 anInt843 = -1;
@@ -6825,11 +8250,11 @@ public class client extends Applet_Sub1 {
                 anInt1104 = 0;
                 anInt1011 = 0;
                 anInt855 = 0;
-                anInt1133 = 0;
-                aBoolean885 = false;
+                menuActionRow = 0;
+                menuOpen = false;
                 super.anInt18 = 0;
                 for(int j1 = 0; j1 < 100; j1++)
-                    aStringArray944[j1] = null;
+                    chatMessages[j1] = null;
 
                 anInt1282 = 0;
                 anInt1136 = 0;
@@ -6846,17 +8271,17 @@ public class client extends Applet_Sub1 {
                 anInt1261 = 0;
                 anInt1262 = 0;
                 anInt891 = 0;
-                anInt836 = 0;
+                npcCount = 0;
                 for(int i2 = 0; i2 < anInt888; i2++)
                 {
-                    aClass30_Sub2_Sub4_Sub1_Sub2Array890[i2] = null;
-                    aClass30_Sub2_Sub2Array895[i2] = null;
+                    aPlayerArray890[i2] = null;
+                    aStreamArray895[i2] = null;
                 }
 
                 for(int k2 = 0; k2 < 16384; k2++)
-                    aClass30_Sub2_Sub4_Sub1_Sub1Array835[k2] = null;
+                    npcs[k2] = null;
 
-                aClass30_Sub2_Sub4_Sub1_Sub2_1126 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anInt889] = new Class30_Sub2_Sub4_Sub1_Sub2();
+                aPlayer_1126 = aPlayerArray890[anInt889] = new Player();
                 aClass19_1013.method256();
                 aClass19_1056.method256();
                 for(int l2 = 0; l2 < 4; l2++)
@@ -6873,16 +8298,16 @@ public class client extends Applet_Sub1 {
                 aClass19_1179 = new Class19(169);
                 anInt900 = 0;
                 anInt899 = 0;
-                anInt1042 = -1;
-                anInt1276 = -1;
-                anInt857 = -1;
-                anInt1189 = -1;
-                anInt1018 = -1;
+                dialogID = -1;
+                backDialogID = -1;
+                openInterfaceID = -1;
+                invOverlayInterfaceID = -1;
+                openWalkableInterface = -1;
                 aBoolean1149 = false;
-                anInt1221 = 3;
-                anInt1225 = 0;
-                aBoolean885 = false;
-                aBoolean1256 = false;
+                tabID = 3;
+                inputDialogState = 0;
+                menuOpen = false;
+                messagePromptRaised = false;
                 aString844 = null;
                 anInt1055 = 0;
                 anInt1054 = -1;
@@ -6907,7 +8332,7 @@ public class client extends Applet_Sub1 {
                 anInt1226 = 0;
                 anInt941 = 0;
                 anInt1260 = 0;
-                method79(1);
+                resetImageProducers2(1);
                 return;
             }
             if(k == 3) {
@@ -6975,16 +8400,16 @@ public class client extends Applet_Sub1 {
             if(k == 15) {
                 aBoolean1157 = true;
                 stream.anInt1406 = 0;
-                aClass30_Sub2_Sub2_1083.anInt1406 = 0;
-                anInt1008 = -1;
+                aStream_1083.anInt1406 = 0;
+                packet = -1;
                 anInt841 = -1;
                 anInt842 = -1;
                 anInt843 = -1;
                 anInt1007 = 0;
                 anInt1009 = 0;
                 anInt1104 = 0;
-                anInt1133 = 0;
-                aBoolean885 = false;
+                menuActionRow = 0;
+                menuOpen = false;
                 aLong824 = System.currentTimeMillis();
                 return;
             }
@@ -7074,7 +8499,7 @@ public class client extends Applet_Sub1 {
         aString1267 = "@blu@Error Connecting to Server.";
     }
 
-    public final boolean method85(int i, int j, int k, int l, int i1, int j1, int k1,
+    public final boolean doWalkTo(int i, int j, int k, int l, int i1, int j1, int k1,
                                   int l1, int i2, int j2, boolean flag, int k2) {
         byte byte0 = 104;
         byte byte1 = 104;
@@ -7266,7 +8691,7 @@ public class client extends Applet_Sub1 {
                 stream.method397((byte)6, 98);
                 stream.writeUnsignedByte(k4 + k4 + 3);
             }
-            stream.method433(0, k6 + anInt1034);
+            stream.method433(0, k6 + baseX);
             anInt1261 = anIntArray1280[0];
             anInt1262 = anIntArray1281[0];
             for(int j7 = 1; j7 < k4; j7++)
@@ -7276,106 +8701,106 @@ public class client extends Applet_Sub1 {
                 stream.writeUnsignedByte(anIntArray1281[i4] - i7);
             }
 
-            stream.method431(true, i7 + anInt1035);
+            stream.method431(true, i7 + baseY);
             stream.method424(super.anIntArray30[5] != 1 ? 0 : 1, 0);
             return true;
         }
         return i != 1;
     }
 
-    private final void method86(int i, Class30_Sub2_Sub2 class30_sub2_sub2, boolean flag)
+    private final void updateNpcState(int i, Stream stream, boolean flag)
     {
         for(int j = 0; j < anInt893; j++)
         {
             int k = anIntArray894[j];
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[k];
-            int l = class30_sub2_sub2.method408();
+            Npc npc = npcs[k];
+            int l = stream.readUnsignedShort();
             if((l & 0x10) != 0)
             {
-                int i1 = class30_sub2_sub2.method434((byte)108);
+                int i1 = stream.method434((byte)108);
                 if(i1 == 65535)
                     i1 = -1;
-                int i2 = class30_sub2_sub2.method408();
-                if(i1 == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1526 && i1 != -1)
+                int i2 = stream.readUnsignedByte();
+                if(i1 == npc.anInt1526 && i1 != -1)
                 {
                     int l2 = Class20.aClass20Array351[i1].anInt365;
                     if(l2 == 1)
                     {
-                        class30_sub2_sub4_sub1_sub1.anInt1527 = 0;
-                        class30_sub2_sub4_sub1_sub1.anInt1528 = 0;
-                        class30_sub2_sub4_sub1_sub1.anInt1529 = i2;
-                        class30_sub2_sub4_sub1_sub1.anInt1530 = 0;
+                        npc.anInt1527 = 0;
+                        npc.anInt1528 = 0;
+                        npc.anInt1529 = i2;
+                        npc.anInt1530 = 0;
                     }
                     if(l2 == 2)
-                        class30_sub2_sub4_sub1_sub1.anInt1530 = 0;
+                        npc.anInt1530 = 0;
                 } else
-                if(i1 == -1 || ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1526 == -1 || Class20.aClass20Array351[i1].anInt359 >= Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1526].anInt359)
+                if(i1 == -1 || npc.anInt1526 == -1 || Class20.aClass20Array351[i1].anInt359 >= Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (npc)).anInt1526].anInt359)
                 {
-                    class30_sub2_sub4_sub1_sub1.anInt1526 = i1;
-                    class30_sub2_sub4_sub1_sub1.anInt1527 = 0;
-                    class30_sub2_sub4_sub1_sub1.anInt1528 = 0;
-                    class30_sub2_sub4_sub1_sub1.anInt1529 = i2;
-                    class30_sub2_sub4_sub1_sub1.anInt1530 = 0;
-                    class30_sub2_sub4_sub1_sub1.anInt1542 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1525;
+                    npc.anInt1526 = i1;
+                    npc.anInt1527 = 0;
+                    npc.anInt1528 = 0;
+                    npc.anInt1529 = i2;
+                    npc.anInt1530 = 0;
+                    npc.anInt1542 = ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1525;
                 }
             }
             if((l & 8) != 0)
             {
-                int j1 = class30_sub2_sub2.method426(0);
-                int j2 = class30_sub2_sub2.method427(false);
-                class30_sub2_sub4_sub1_sub1.method447(-35698, j2, j1, anInt1161);
-                class30_sub2_sub4_sub1_sub1.anInt1532 = anInt1161 + 300;
-                class30_sub2_sub4_sub1_sub1.anInt1533 = class30_sub2_sub2.method426(0);
-                class30_sub2_sub4_sub1_sub1.anInt1534 = class30_sub2_sub2.method408();
+                int j1 = stream.readByteS(0);
+                int j2 = stream.readByteC(false);
+                npc.method447(-35698, j2, j1, loopCycle);
+                npc.anInt1532 = loopCycle + 300;
+                npc.anInt1533 = stream.readUnsignedShort();
+                npc.anInt1534 = stream.readUnsignedShort();
             }
             if((l & 0x80) != 0)
             {
-                class30_sub2_sub4_sub1_sub1.anInt1520 = class30_sub2_sub2.method410();
-                int k1 = class30_sub2_sub2.method413();
-                class30_sub2_sub4_sub1_sub1.anInt1524 = k1 >> 16;
-                class30_sub2_sub4_sub1_sub1.anInt1523 = anInt1161 + (k1 & 0xffff);
-                class30_sub2_sub4_sub1_sub1.anInt1521 = 0;
-                class30_sub2_sub4_sub1_sub1.anInt1522 = 0;
-                if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1523 > anInt1161)
-                    class30_sub2_sub4_sub1_sub1.anInt1521 = -1;
-                if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1520 == 65535)
-                    class30_sub2_sub4_sub1_sub1.anInt1520 = -1;
+                npc.anInt1520 = stream.readUnsignedShort();
+                int k1 = stream.method413();
+                npc.anInt1524 = k1 >> 16;
+                npc.anInt1523 = loopCycle + (k1 & 0xffff);
+                npc.anInt1521 = 0;
+                npc.anInt1522 = 0;
+                if(((Class30_Sub2_Sub4_Sub1) (npc)).anInt1523 > loopCycle)
+                    npc.anInt1521 = -1;
+                if(((Class30_Sub2_Sub4_Sub1) (npc)).anInt1520 == 65535)
+                    npc.anInt1520 = -1;
             }
             if((l & 0x20) != 0)
             {
-                class30_sub2_sub4_sub1_sub1.anInt1502 = class30_sub2_sub2.method410();
-                if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1502 == 65535)
-                    class30_sub2_sub4_sub1_sub1.anInt1502 = -1;
+                npc.anInt1502 = stream.readUnsignedShort();
+                if(((Class30_Sub2_Sub4_Sub1) (npc)).anInt1502 == 65535)
+                    npc.anInt1502 = -1;
             }
             if((l & 1) != 0)
             {
-                class30_sub2_sub4_sub1_sub1.aString1506 = class30_sub2_sub2.method415();
-                class30_sub2_sub4_sub1_sub1.anInt1535 = 100;
+                npc.aString1506 = stream.method415();
+                npc.textCycle = 100;
             }
             if((l & 0x40) != 0)
             {
-                int l1 = class30_sub2_sub2.method427(false);
-                int k2 = class30_sub2_sub2.method428(2);
-                class30_sub2_sub4_sub1_sub1.method447(-35698, k2, l1, anInt1161);
-                class30_sub2_sub4_sub1_sub1.anInt1532 = anInt1161 + 300;
-                class30_sub2_sub4_sub1_sub1.anInt1533 = class30_sub2_sub2.method410();
-                class30_sub2_sub4_sub1_sub1.anInt1534 = class30_sub2_sub2.method410();
+                int l1 = stream.readByteC(false);
+                int k2 = stream.readByteA(2);
+                npc.method447(-35698, k2, l1, loopCycle);
+                npc.anInt1532 = loopCycle + 300;
+                npc.anInt1533 = stream.readUnsignedShort();
+                npc.anInt1534 = stream.readUnsignedShort();
             }
             if((l & 2) != 0)
             {
-                class30_sub2_sub4_sub1_sub1.aClass5_1696 = Class5.method159(class30_sub2_sub2.method436((byte)-74));
-                class30_sub2_sub4_sub1_sub1.anInt1540 = class30_sub2_sub4_sub1_sub1.aClass5_1696.aByte68;
-                class30_sub2_sub4_sub1_sub1.anInt1504 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt79;
-                class30_sub2_sub4_sub1_sub1.anInt1554 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt67;
-                class30_sub2_sub4_sub1_sub1.anInt1555 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt58;
-                class30_sub2_sub4_sub1_sub1.anInt1556 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt83;
-                class30_sub2_sub4_sub1_sub1.anInt1557 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt55;
-                class30_sub2_sub4_sub1_sub1.anInt1511 = class30_sub2_sub4_sub1_sub1.aClass5_1696.anInt77;
+                npc.desc = Class5.method159(stream.method436((byte)-74));
+                npc.anInt1540 = npc.desc.aByte68;
+                npc.anInt1504 = npc.desc.anInt79;
+                npc.anInt1554 = npc.desc.anInt67;
+                npc.anInt1555 = npc.desc.anInt58;
+                npc.anInt1556 = npc.desc.anInt83;
+                npc.anInt1557 = npc.desc.anInt55;
+                npc.anInt1511 = npc.desc.anInt77;
             }
             if((l & 4) != 0)
             {
-                class30_sub2_sub4_sub1_sub1.anInt1538 = class30_sub2_sub2.method434((byte)108);
-                class30_sub2_sub4_sub1_sub1.anInt1539 = class30_sub2_sub2.method434((byte)108);
+                npc.face_x = stream.method434((byte)108);
+                npc.face_y = stream.method434((byte)108);
             }
         }
 
@@ -7384,7 +8809,7 @@ public class client extends Applet_Sub1 {
 
     public final void method87(Class5 class5, int i, boolean flag, int j, int k)
     {
-        if(anInt1133 >= 400)
+        if(menuActionRow >= 400)
             return;
         if(class5.anIntArray88 != null)
             class5 = class5.method161();
@@ -7396,27 +8821,27 @@ public class client extends Applet_Sub1 {
         if(flag)
             aBoolean919 = !aBoolean919;
         if(class5.anInt61 != 0)
-            s = s + method110(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1705, class5.anInt61, true) + " (level-" + class5.anInt61 + ")";
+            s = s + method110(aPlayer_1126.anInt1705, class5.anInt61, true) + " (level-" + class5.anInt61 + ")";
         if(anInt1282 == 1)
         {
-            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @yel@" + s;
-            anIntArray1093[anInt1133] = 582;
-            anIntArray1094[anInt1133] = i;
-            anIntArray1091[anInt1133] = k;
-            anIntArray1092[anInt1133] = j;
-            anInt1133++;
+            menuActionName[menuActionRow] = "Use " + aString1286 + " with @yel@" + s;
+            menuActionID[menuActionRow] = 582;
+            menuActionCmd1[menuActionRow] = i;
+            menuActionCmd2[menuActionRow] = k;
+            menuActionCmd3[menuActionRow] = j;
+            menuActionRow++;
             return;
         }
         if(anInt1136 == 1)
         {
             if((anInt1138 & 2) == 2)
             {
-                aStringArray1199[anInt1133] = aString1139 + " @yel@" + s;
-                anIntArray1093[anInt1133] = 413;
-                anIntArray1094[anInt1133] = i;
-                anIntArray1091[anInt1133] = k;
-                anIntArray1092[anInt1133] = j;
-                anInt1133++;
+                menuActionName[menuActionRow] = aString1139 + " @yel@" + s;
+                menuActionID[menuActionRow] = 413;
+                menuActionCmd1[menuActionRow] = i;
+                menuActionCmd2[menuActionRow] = k;
+                menuActionCmd3[menuActionRow] = j;
+                menuActionRow++;
                 return;
             }
         } else
@@ -7426,21 +8851,21 @@ public class client extends Applet_Sub1 {
                 for(int l = 4; l >= 0; l--)
                     if(class5.aStringArray66[l] != null && !class5.aStringArray66[l].equalsIgnoreCase("attack"))
                     {
-                        aStringArray1199[anInt1133] = class5.aStringArray66[l] + " @yel@" + s;
+                        menuActionName[menuActionRow] = class5.aStringArray66[l] + " @yel@" + s;
                         if(l == 0)
-                            anIntArray1093[anInt1133] = 20;
+                            menuActionID[menuActionRow] = 20;
                         if(l == 1)
-                            anIntArray1093[anInt1133] = 412;
+                            menuActionID[menuActionRow] = 412;
                         if(l == 2)
-                            anIntArray1093[anInt1133] = 225;
+                            menuActionID[menuActionRow] = 225;
                         if(l == 3)
-                            anIntArray1093[anInt1133] = 965;
+                            menuActionID[menuActionRow] = 965;
                         if(l == 4)
-                            anIntArray1093[anInt1133] = 478;
-                        anIntArray1094[anInt1133] = i;
-                        anIntArray1091[anInt1133] = k;
-                        anIntArray1092[anInt1133] = j;
-                        anInt1133++;
+                            menuActionID[menuActionRow] = 478;
+                        menuActionCmd1[menuActionRow] = i;
+                        menuActionCmd2[menuActionRow] = k;
+                        menuActionCmd3[menuActionRow] = j;
+                        menuActionRow++;
                     }
 
             }
@@ -7450,84 +8875,84 @@ public class client extends Applet_Sub1 {
                     if(class5.aStringArray66[i1] != null && class5.aStringArray66[i1].equalsIgnoreCase("attack"))
                     {
                         char c = '\0';
-                        if(class5.anInt61 > aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1705)
+                        if(class5.anInt61 > aPlayer_1126.anInt1705)
                             c = '\u07D0';
-                        aStringArray1199[anInt1133] = class5.aStringArray66[i1] + " @yel@" + s;
+                        menuActionName[menuActionRow] = class5.aStringArray66[i1] + " @yel@" + s;
                         if(i1 == 0)
-                            anIntArray1093[anInt1133] = 20 + c;
+                            menuActionID[menuActionRow] = 20 + c;
                         if(i1 == 1)
-                            anIntArray1093[anInt1133] = 412 + c;
+                            menuActionID[menuActionRow] = 412 + c;
                         if(i1 == 2)
-                            anIntArray1093[anInt1133] = 225 + c;
+                            menuActionID[menuActionRow] = 225 + c;
                         if(i1 == 3)
-                            anIntArray1093[anInt1133] = 965 + c;
+                            menuActionID[menuActionRow] = 965 + c;
                         if(i1 == 4)
-                            anIntArray1093[anInt1133] = 478 + c;
-                        anIntArray1094[anInt1133] = i;
-                        anIntArray1091[anInt1133] = k;
-                        anIntArray1092[anInt1133] = j;
-                        anInt1133++;
+                            menuActionID[menuActionRow] = 478 + c;
+                        menuActionCmd1[menuActionRow] = i;
+                        menuActionCmd2[menuActionRow] = k;
+                        menuActionCmd3[menuActionRow] = j;
+                        menuActionRow++;
                     }
 
             }
             if(rights >= 2)
-                aStringArray1199[anInt1133] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +"@gre@)";
+                menuActionName[menuActionRow] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +"@gre@)";
             if(rights <= 1)
-                aStringArray1199[anInt1133] = "Examine @yel@" + s;
-            anIntArray1093[anInt1133] = 1025;
-            anIntArray1094[anInt1133] = i;
-            anIntArray1091[anInt1133] = k;
-            anIntArray1092[anInt1133] = j;
-            anInt1133++;
+                menuActionName[menuActionRow] = "Examine @yel@" + s;
+            menuActionID[menuActionRow] = 1025;
+            menuActionCmd1[menuActionRow] = i;
+            menuActionCmd2[menuActionRow] = k;
+            menuActionCmd3[menuActionRow] = j;
+            menuActionRow++;
         }
     }
 
-    public final void method88(int i, int j, Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2, boolean flag, int k)
+    public final void method88(int i, int j, Player player, boolean flag, int k)
     {
-        if(class30_sub2_sub4_sub1_sub2 == aClass30_Sub2_Sub4_Sub1_Sub2_1126)
+        if(player == aPlayer_1126)
             return;
-        if(anInt1133 >= 400)
+        if(menuActionRow >= 400)
             return;
         if(flag)
             return;
         String s;
-        if(class30_sub2_sub4_sub1_sub2.anInt1723 == 0)
-            s = prefixColor(class30_sub2_sub4_sub1_sub2.anInt1723) + prefixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + "@whi@" + class30_sub2_sub4_sub1_sub2.aString1703 + suffixColor(class30_sub2_sub4_sub1_sub2.anInt1723) + suffixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + method110(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1705, class30_sub2_sub4_sub1_sub2.anInt1705, true) + " (level-" + class30_sub2_sub4_sub1_sub2.anInt1705 + ")";
+        if(player.anInt1723 == 0)
+            s = prefixColor(player.anInt1723) + prefixRank(player.anInt1723) + "@whi@" + player.name + suffixColor(player.anInt1723) + suffixRank(player.anInt1723) + method110(aPlayer_1126.anInt1705, player.anInt1705, true) + " (level-" + player.anInt1705 + ")";
         else
-            s = prefixColor(class30_sub2_sub4_sub1_sub2.anInt1723) + prefixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + "@whi@" + class30_sub2_sub4_sub1_sub2.aString1703 + suffixColor(class30_sub2_sub4_sub1_sub2.anInt1723) + suffixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + method110(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1705, class30_sub2_sub4_sub1_sub2.anInt1705, true) + " (level-" + class30_sub2_sub4_sub1_sub2.anInt1705 + ")";
+            s = prefixColor(player.anInt1723) + prefixRank(player.anInt1723) + "@whi@" + player.name + suffixColor(player.anInt1723) + suffixRank(player.anInt1723) + method110(aPlayer_1126.anInt1705, player.anInt1705, true) + " (level-" + player.anInt1705 + ")";
         if(anInt1282 == 1)
         {
-            aStringArray1199[anInt1133] = "Use " + aString1286 + " with @whi@" + s;
-            anIntArray1093[anInt1133] = 491;
-            anIntArray1094[anInt1133] = j;
-            anIntArray1091[anInt1133] = i;
-            anIntArray1092[anInt1133] = k;
-            anInt1133++;
+            menuActionName[menuActionRow] = "Use " + aString1286 + " with @whi@" + s;
+            menuActionID[menuActionRow] = 491;
+            menuActionCmd1[menuActionRow] = j;
+            menuActionCmd2[menuActionRow] = i;
+            menuActionCmd3[menuActionRow] = k;
+            menuActionRow++;
         } else
         if(anInt1136 == 1)
         {
             if((anInt1138 & 8) == 8)
             {
-                aStringArray1199[anInt1133] = aString1139 + " @whi@" + s;
-                anIntArray1093[anInt1133] = 365;
-                anIntArray1094[anInt1133] = j;
-                anIntArray1091[anInt1133] = i;
-                anIntArray1092[anInt1133] = k;
-                anInt1133++;
+                menuActionName[menuActionRow] = aString1139 + " @whi@" + s;
+                menuActionID[menuActionRow] = 365;
+                menuActionCmd1[menuActionRow] = j;
+                menuActionCmd2[menuActionRow] = i;
+                menuActionCmd3[menuActionRow] = k;
+                menuActionRow++;
             }
         } else
         {
             for(int l = 4; l >= 0; l--)
                 if(aStringArray1127[l] != null)
                 {
-                    aStringArray1199[anInt1133] = aStringArray1127[l] + " @whi@" + s;
+                    menuActionName[menuActionRow] = aStringArray1127[l] + " @whi@" + s;
                     char c = '\0';
                     if(aStringArray1127[l].equalsIgnoreCase("attack"))
                     {
-                        if(class30_sub2_sub4_sub1_sub2.anInt1705 > aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1705)
+                        if(player.anInt1705 > aPlayer_1126.anInt1705)
                             c = '\u07D0';
-                        if(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1701 != 0 && class30_sub2_sub4_sub1_sub2.anInt1701 != 0)
-                            if(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1701 == class30_sub2_sub4_sub1_sub2.anInt1701)
+                        if(aPlayer_1126.anInt1701 != 0 && player.anInt1701 != 0)
+                            if(aPlayer_1126.anInt1701 == player.anInt1701)
                                 c = '\u07D0';
                             else
                                 c = '\0';
@@ -7535,26 +8960,26 @@ public class client extends Applet_Sub1 {
                     if(aBooleanArray1128[l])
                         c = '\u07D0';
                     if(l == 0)
-                        anIntArray1093[anInt1133] = 561 + c;
+                        menuActionID[menuActionRow] = 561 + c;
                     if(l == 1)
-                        anIntArray1093[anInt1133] = 779 + c;
+                        menuActionID[menuActionRow] = 779 + c;
                     if(l == 2)
-                        anIntArray1093[anInt1133] = 27 + c;
+                        menuActionID[menuActionRow] = 27 + c;
                     if(l == 3)
-                        anIntArray1093[anInt1133] = 577 + c;
+                        menuActionID[menuActionRow] = 577 + c;
                     if(l == 4)
-                        anIntArray1093[anInt1133] = 729 + c;
-                    anIntArray1094[anInt1133] = j;
-                    anIntArray1091[anInt1133] = i;
-                    anIntArray1092[anInt1133] = k;
-                    anInt1133++;
+                        menuActionID[menuActionRow] = 729 + c;
+                    menuActionCmd1[menuActionRow] = j;
+                    menuActionCmd2[menuActionRow] = i;
+                    menuActionCmd3[menuActionRow] = k;
+                    menuActionRow++;
                 }
 
         }
-        for(int i1 = 0; i1 < anInt1133; i1++)
-            if(anIntArray1093[i1] == 516)
+        for(int i1 = 0; i1 < menuActionRow; i1++)
+            if(menuActionID[i1] == 516)
             {
-                aStringArray1199[i1] = "Walk here @whi@" + s;
+                menuActionName[i1] = "Walk here @whi@" + s;
                 return;
             }
 
@@ -7593,7 +9018,7 @@ public class client extends Applet_Sub1 {
     public final void method90(boolean flag)
     {
         if(flag)
-            anInt1008 = -1;
+            packet = -1;
         for(int i = 0; i < anInt1062; i++)
             if(anIntArray1250[i] <= 0)
             {
@@ -7606,13 +9031,13 @@ public class client extends Applet_Sub1 {
                             flag1 = true;
                     } else
                     {
-                        Class30_Sub2_Sub2 class30_sub2_sub2 = Class16.method241(anIntArray1241[i], anIntArray1207[i], false);
-                        new SoundPlayer().startSoundPlayer((InputStream)new ByteArrayInputStream(class30_sub2_sub2.aByteArray1405, 0, class30_sub2_sub2.anInt1406));
-                        if(System.currentTimeMillis() + (long)(class30_sub2_sub2.anInt1406 / 22) > aLong1172 + (long)(anInt1257 / 22))
+                        Stream stream = Class16.method241(anIntArray1241[i], anIntArray1207[i], false);
+                        new SoundPlayer().startSoundPlayer((InputStream)new ByteArrayInputStream(stream.aByteArray1405, 0, stream.anInt1406));
+                        if(System.currentTimeMillis() + (long)(stream.anInt1406 / 22) > aLong1172 + (long)(anInt1257 / 22))
                         {
-                            anInt1257 = class30_sub2_sub2.anInt1406;
+                            anInt1257 = stream.anInt1406;
                             aLong1172 = System.currentTimeMillis();
-                            if(method59(class30_sub2_sub2.aByteArray1405, (byte)116, class30_sub2_sub2.anInt1406))
+                            if(method59(stream.aByteArray1405, (byte)116, stream.anInt1406))
                             {
                                 anInt874 = anIntArray1207[i];
                                 anInt1289 = anIntArray1241[i];
@@ -7684,13 +9109,21 @@ public class client extends Applet_Sub1 {
         try
         {
             method16();
-            aClass44_1053 = method67(1, "title screen", "title", anIntArray1090[1], (byte)-41, 25);
-            aClass30_Sub2_Sub1_Sub4_1270 = new Class30_Sub2_Sub1_Sub4(false, "p11_full", 0, aClass44_1053);
-            aClass30_Sub2_Sub1_Sub4_1271 = new Class30_Sub2_Sub1_Sub4(false, "p12_full", 0, aClass44_1053);
-            aClass30_Sub2_Sub1_Sub4_1272 = new Class30_Sub2_Sub1_Sub4(false, "b12_full", 0, aClass44_1053);
-            aClass30_Sub2_Sub1_Sub4_1273 = new Class30_Sub2_Sub1_Sub4(true, "q8_full", 0, aClass44_1053);
+            titleStreamLoader = method67(1, "title screen", "title", anIntArray1090[1], (byte)-41, 25);
+            smallText = new TextDrawingArea(false, "p11_full", 0, titleStreamLoader);
+            regularText = new TextDrawingArea(false, "p12_full", 0, titleStreamLoader);
+            boldText = new TextDrawingArea(false, "b12_full", 0, titleStreamLoader);
+            this.newSmallFont = new RSFont(false, "p11_full", this.titleStreamLoader);
+            this.newRegularFont = new RSFont(false, "p12_full", this.titleStreamLoader);
+            this.newBoldFont = new RSFont(false, "b12_full", this.titleStreamLoader);
+            this.newFancyFont = new RSFont(true, "q8_full", this.titleStreamLoader);
+            this.newSmallFont.unpackChatImages(this.ModIcons);
+            this.newRegularFont.unpackChatImages(this.ModIcons);
+            this.newBoldFont.unpackChatImages(this.ModIcons);
+            this.newFancyFont.unpackChatImages(this.ModIcons);
+            aTextDrawingArea_1273 = new TextDrawingArea(true, "q8_full", 0, titleStreamLoader);
             method56(0);
-            method51(215);
+            loadTitleScreen(215);
             Class44 class44 = method67(2, "config", "config", anIntArray1090[2], (byte)-41, 30);
             Class44 class44_1 = method67(3, "interface", "interface", anIntArray1090[3], (byte)-41, 35);
             Class44 class44_2 = method67(4, "2d graphics", "media", anIntArray1090[4], (byte)-41, 40);
@@ -7703,7 +9136,7 @@ public class client extends Applet_Sub1 {
             for(int j = 0; j < 4; j++)
                 aClass11Array1230[j] = new Class11(104, 104, true);
 
-            aClass30_Sub2_Sub1_Sub1_1263 = new Class30_Sub2_Sub1_Sub1(512, 512);
+            minimapImage = new Sprite(512, 512);
             Class44 class44_6 = method67(5, "update list", "versionlist", anIntArray1090[5], (byte)-41, 60);
             method13(60, (byte)4, "Connecting to update server");
             aClass42_Sub1_1068 = new Class42_Sub1();
@@ -7854,38 +9287,42 @@ public class client extends Applet_Sub1 {
             }
             method13(85, (byte)4, "Loading Ghreborn Maps");
             System.out.println("Welcome to Ghreborn.com");
-            Mapicon = new Class30_Sub2_Sub1_Sub1(signlink.findcachedir() + ("Sprites/Minimap/Gen.PNG"));
-            aClass30_Sub2_Sub1_Sub1_1196 = new Class30_Sub2_Sub1_Sub1(class44_2, "invback", 0);
-            aClass30_Sub2_Sub1_Sub2_1197 = new Class30_Sub2_Sub1_Sub2(class44_2, "mapback", 0);
-            worldswitch = new Class30_Sub2_Sub1_Sub2(class44_2, "worldswitch", 0);
-            aClass30_Sub2_Sub1_Sub1_1198 = new Class30_Sub2_Sub1_Sub1(class44_2, "chatback", 0);
-            aClass30_Sub2_Sub1_Sub1_1027 = new Class30_Sub2_Sub1_Sub1(class44_2, "backbase1", 0);
-            aClass30_Sub2_Sub1_Sub1_1028 = new Class30_Sub2_Sub1_Sub1(class44_2, "backbase2", 0);
-            aClass30_Sub2_Sub1_Sub1_1029 = new Class30_Sub2_Sub1_Sub1(class44_2, "backhmid1", 0);
-            for(int j3 = 0; j3 < 13; j3++)
-                aClass30_Sub2_Sub1_Sub1Array947[j3] = new Class30_Sub2_Sub1_Sub1(class44_2, "sideicons", j3);
-
-            compassImage = new Class30_Sub2_Sub1_Sub1(class44_2, "compass", 0);
-            aClass30_Sub2_Sub1_Sub1_1001 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapedge", 0);
-            aClass30_Sub2_Sub1_Sub1_1001.method345(5059);
+            Mapicon = new Sprite("Minimap/Gen.PNG");
+            aSprite_1196 = new Sprite(class44_2, "invback", 0);
+            aBackground_1197 = new Background(class44_2, "mapback", 0);
+            worldswitch = new Background(class44_2, "worldswitch", 0);
+            aSprite_1198 = new Sprite(class44_2, "chatback", 0);
+            aSprite_1027 = new Sprite(class44_2, "backbase1", 0);
+            aSprite_1028 = new Sprite(class44_2, "backbase2", 0);
+            aSprite_1029 = new Sprite(class44_2, "backhmid1", 0);
+            for(int j3 = 0; j3 < 15; j3++)
+                sideIcons[j3] = new Sprite(class44_2, "sideicons", j3);
+            for (int Sprite = 0; Sprite < 70; ++Sprite) {
+                this.gameframe[Sprite] = new Sprite("Gameframe/gameframe " + Sprite);
+            }
+            for (int i = 0; i <= 1; i++)
+                BlackMap[i] = new Sprite("BlackMap " + i);
+            compassImage = new Sprite("COMPASS 0");
+            aSprite_1001 = new Sprite(class44_2, "mapedge", 0);
+            aSprite_1001.method345(5059);
             try
             {
                 for(int k3 = 0; k3 < 100; k3++)
-                    aClass30_Sub2_Sub1_Sub2Array1060[k3] = new Class30_Sub2_Sub1_Sub2(class44_2, "mapscene", k3);
+                    aBackgroundArray1060[k3] = new Background(class44_2, "mapscene", k3);
 
             }
             catch(Exception _ex) { }
             try
             {
                 for(int l3 = 0; l3 < 100; l3++)
-                    aClass30_Sub2_Sub1_Sub1Array1033[l3] = new Class30_Sub2_Sub1_Sub1(class44_2, "mapfunction", l3);
+                    aSpriteArray1033[l3] = new Sprite(class44_2, "mapfunction", l3);
 
             }
             catch(Exception _ex) { }
             try
             {
-                for(int i4 = 0; i4 < 20; i4++)
-                    aClass30_Sub2_Sub1_Sub1Array987[i4] = new Class30_Sub2_Sub1_Sub1(class44_2, "hitmarks", i4);
+                for(int i4 = 0; i4 < 30; i4++)
+                    aSpriteArray987[i4] = new Sprite(class44_2, "hitmarks", i4);
 
             }
             catch(Exception _ex) { }
@@ -7899,81 +9336,59 @@ public class client extends Applet_Sub1 {
             try
             {
                 for(int j4 = 0; j4 < 85; j4++)
-                    aClass30_Sub2_Sub1_Sub1Array1095[j4] = new Class30_Sub2_Sub1_Sub1(class44_2, "headicons_prayer", j4);
+                    aSpriteArray1095[j4] = new Sprite(class44_2, "headicons_prayer", j4);
             }
             catch(Exception _ex) { }
-            aClass30_Sub2_Sub1_Sub1_870 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapmarker", 0);
-            aClass30_Sub2_Sub1_Sub1_871 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapmarker", 1);
+            aSprite_870 = new Sprite(class44_2, "mapmarker", 0);
+            aSprite_871 = new Sprite(class44_2, "mapmarker", 1);
             for(int k4 = 0; k4 < 8; k4++)
-                aClass30_Sub2_Sub1_Sub1Array1150[k4] = new Class30_Sub2_Sub1_Sub1(class44_2, "cross", k4);
+                aSpriteArray1150[k4] = new Sprite(class44_2, "cross", k4);
 
-            aClass30_Sub2_Sub1_Sub1_1074 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapdots", 0);
-            aClass30_Sub2_Sub1_Sub1_1075 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapdots", 1);
-            aClass30_Sub2_Sub1_Sub1_1076 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapdots", 2);
-            aClass30_Sub2_Sub1_Sub1_1077 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapdots", 3);
-            aClass30_Sub2_Sub1_Sub1_1078 = new Class30_Sub2_Sub1_Sub1(class44_2, "mapdots", 4);
-            aClass30_Sub2_Sub1_Sub1_1024 = new Class30_Sub2_Sub1_Sub1(class44_2, "scrollbar", 0);
-            aClass30_Sub2_Sub1_Sub1_1025 = new Class30_Sub2_Sub1_Sub1(class44_2, "scrollbar", 1);
-            aClass30_Sub2_Sub1_Sub1_1143 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone1", 0);
-            aClass30_Sub2_Sub1_Sub1_1144 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone2", 0); flip = true;
-            aClass30_Sub2_Sub1_Sub2_1145 = new Class30_Sub2_Sub1_Sub2(class44_2, "redstone3", 0);
-            aClass30_Sub2_Sub1_Sub1_1146 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone1", 0);
+            aSprite_1074 = new Sprite(class44_2, "mapdots", 0);
+            aSprite_1075 = new Sprite(class44_2, "mapdots", 1);
+            aSprite_1076 = new Sprite(class44_2, "mapdots", 2);
+            aSprite_1077 = new Sprite(class44_2, "mapdots", 3);
+            aSprite_1078 = new Sprite(class44_2, "mapdots", 4);
+            aSprite_1024 = new Sprite(class44_2, "scrollbar", 0);
+            aSprite_1025 = new Sprite(class44_2, "scrollbar", 1);
+            aSprite_1143 = new Sprite(class44_2, "redstone1", 0);
+            aSprite_1144 = new Sprite(class44_2, "redstone2", 0); flip = true;
+            aBackground_1145 = new Background(class44_2, "redstone3", 0);
+            aSprite_1146 = new Sprite(class44_2, "redstone1", 0);
             //aClass30_Sub2_Sub1_Sub2_1146.method358(0);
-            aClass30_Sub2_Sub1_Sub1_1147 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone2", 0); flip = false; flip_s = true;
+            aSprite_1147 = new Sprite(class44_2, "redstone2", 0); flip = false; flip_s = true;
             //aClass30_Sub2_Sub1_Sub2_1147.method358(0);
-            aClass30_Sub2_Sub1_Sub1_865 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone1", 0);
+            aSprite_865 = new Sprite(class44_2, "redstone1", 0);
             //aClass30_Sub2_Sub1_Sub2_865.method359(true);
-            aClass30_Sub2_Sub1_Sub1_866 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone2", 0);
+            aSprite_866 = new Sprite(class44_2, "redstone2", 0);
             //aClass30_Sub2_Sub1_Sub2_866.method359(true);
-            aClass30_Sub2_Sub1_Sub2_867 = new Class30_Sub2_Sub1_Sub2(class44_2, "redstone3", 0); flip_s = false; flip_r = true;
-            aClass30_Sub2_Sub1_Sub2_867.method359(true);
-            aClass30_Sub2_Sub1_Sub1_868 = new Class30_Sub2_Sub1_Sub1(class44_2, "redstone1", 0);
+            aBackground_867 = new Background(class44_2, "redstone3", 0); flip_s = false; flip_r = true;
+            aBackground_867.method359(true);
+            aSprite_868 = new Sprite(class44_2, "redstone1", 0);
             //aClass30_Sub2_Sub1_Sub2_868.method358(0);
             //aClass30_Sub2_Sub1_Sub2_868.method359(true);
-            aClass30_Sub2_Sub1_Sub2_869 = new Class30_Sub2_Sub1_Sub2(class44_2, "redstone2", 0);
-            aClass30_Sub2_Sub1_Sub2_869.method358(0);
-            aClass30_Sub2_Sub1_Sub2_869.method359(true);
-            for(int l4 = 0; l4 < 2; l4++)
-                aClass30_Sub2_Sub1_Sub2Array1219[l4] = new Class30_Sub2_Sub1_Sub2(class44_2, "mod_icons", l4);
+            aBackground_869 = new Background(class44_2, "redstone2", 0);
+            aBackground_869.method358(0);
+            aBackground_869.method359(true);
+            for(int l4 = 0; l4 < 26; l4++)
+                ModIcons[l4] =  new Sprite("player/icon " + l4);
 
-            Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backleft1", 0);
-            aClass15_903 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backleft2", 0);
-            aClass15_904 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backright1", 0);
-            aClass15_905 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backright2", 0);
-            aClass15_906 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backtop1", 0);
-            aClass15_907 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backvmid1", 0);
-            aClass15_908 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backvmid2", 0);
-            aClass15_909 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backvmid3", 0);
-            aClass15_910 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44_2, "backhmid2", 0);
-            aClass15_911 = new Class15(class30_sub2_sub1_sub1.anInt1440, class30_sub2_sub1_sub1.anInt1441, method11(0), 0);
-            class30_sub2_sub1_sub1.method346(0, 0, -32357);
-
+            Sprite sprite = new Sprite(class44_2, "screenframe", 0);
+            leftFrame = new RSImageProducer(sprite.myWidth, sprite.myHeight);
+            sprite.method346(0, 0, -32357);
+            sprite = new Sprite(class44_2, "screenframe", 1);
+            topFrame = new RSImageProducer(sprite.myWidth, sprite.myHeight);
+            sprite.method346(0, 0, -32357);
             int i5 = (int)(Math.random() * 21D) - 10;
             int j5 = (int)(Math.random() * 21D) - 10;
             int k5 = (int)(Math.random() * 21D) - 10;
             int l5 = (int)(Math.random() * 41D) - 20;
             for(int i6 = 0; i6 < 100; i6++)
             {
-                if(aClass30_Sub2_Sub1_Sub1Array1033[i6] != null)
-                    aClass30_Sub2_Sub1_Sub1Array1033[i6].method344(i5 + l5, j5 + l5, k5 + l5, 0);
-                if(aClass30_Sub2_Sub1_Sub2Array1060[i6] != null)
-                    aClass30_Sub2_Sub1_Sub2Array1060[i6].method360(i5 + l5, j5 + l5, k5 + l5, 0);
+                if(aSpriteArray1033[i6] != null)
+                    aSpriteArray1033[i6].method344(i5 + l5, j5 + l5, k5 + l5, 0);
+                if(aBackgroundArray1060[i6] != null)
+                    aBackgroundArray1060[i6].method360(i5 + l5, j5 + l5, k5 + l5, 0);
             }
 
             method13(86, (byte)4, "Unpacking textures");
@@ -7991,19 +9406,20 @@ public class client extends Applet_Sub1 {
             Class23.method264(0, class44);
             Class41.method546(0, class44);
             VarBit.method533(0, class44);
+            //playerTitle.unpack();
             Class8.aBoolean182 = aBoolean959;
             if(!aBoolean960)
             {
                 method13(90, (byte)4, "Unpacking sounds");
                 byte abyte0[] = class44_5.method571("sounds.dat", null);
-                Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte0, 891);
-                Class16.method240(0, class30_sub2_sub2);
+                Stream stream = new Stream(abyte0, 891);
+                Class16.method240(0, stream);
             }
             method13(95, (byte)4, "Unpacking interfaces");
-            Class30_Sub2_Sub1_Sub4 aclass30_sub2_sub1_sub4[] = {
-                    aClass30_Sub2_Sub1_Sub4_1270, aClass30_Sub2_Sub1_Sub4_1271, aClass30_Sub2_Sub1_Sub4_1272, aClass30_Sub2_Sub1_Sub4_1273
+            TextDrawingArea aclass30_sub2_sub1_sub4[] = {
+                    smallText, regularText, boldText, aTextDrawingArea_1273
             };
-            Class9.method205(class44_1, aclass30_sub2_sub1_sub4, (byte)-84, class44_2);
+            Widget.method205(class44_1, aclass30_sub2_sub1_sub4, (byte)-84, class44_2);
             method13(100, (byte)4, "Preparing game engine");
             for(int j6 = 0; j6 < 33; j6++)
             {
@@ -8011,7 +9427,7 @@ public class client extends Applet_Sub1 {
                 int i7 = 0;
                 for(int k7 = 0; k7 < 34; k7++)
                 {
-                    if(aClass30_Sub2_Sub1_Sub2_1197.aByteArray1450[k7 + j6 * aClass30_Sub2_Sub1_Sub2_1197.anInt1452] == 0)
+                    if(aBackground_1197.aByteArray1450[k7 + j6 * aBackground_1197.anInt1452] == 0)
                     {
                         if(k6 == 999)
                             k6 = k7;
@@ -8033,7 +9449,7 @@ public class client extends Applet_Sub1 {
                 int l7 = 0;
                 for(int j8 = 25; j8 < 172; j8++)
                 {
-                    if(aClass30_Sub2_Sub1_Sub2_1197.aByteArray1450[j8 + l6 * aClass30_Sub2_Sub1_Sub2_1197.anInt1452] == 0 && (j8 > 34 || l6 > 34))
+                    if(aBackground_1197.aByteArray1450[j8 + l6 * aBackground_1197.anInt1452] == 0 && (j8 > 34 || l6 > 34))
                     {
                         if(j7 == 999)
                             j7 = j8;
@@ -8060,11 +9476,11 @@ public class client extends Applet_Sub1 {
                 macAddress = "";
             }
             setBounds();
-            Class34.method487(class44_4);
+            Censor.method487(class44_4);
             aClass48_879 = new Class48(this, anInt1096);
             method12(aClass48_879, 10);
             Class30_Sub2_Sub4_Sub5.aClient1609 = this;
-            Class46.aClient765 = this;
+            Class46.clientInstance = this;
             Class5.aClient82 = this;
             return;
         }
@@ -8077,39 +9493,43 @@ public class client extends Applet_Sub1 {
     }
 
 
-    private final void method91(Class30_Sub2_Sub2 class30_sub2_sub2, int i, byte byte0)
+    private final void method91(Stream stream, int i, byte byte0)
     {
         if(byte0 == 8)
             byte0 = 0;
         else
             anInt1119 = -50;
-        while(class30_sub2_sub2.anInt1407 + 10 < i * 8)
+        while(stream.anInt1407 + 10 < i * 8)
         {
-            int j = class30_sub2_sub2.method419(11, 0);
+            int j = stream.readBits(11);
             if(j == 2047)
                 break;
-            if(aClass30_Sub2_Sub4_Sub1_Sub2Array890[j] == null)
+            if(aPlayerArray890[j] == null)
             {
-                aClass30_Sub2_Sub4_Sub1_Sub2Array890[j] = new Class30_Sub2_Sub4_Sub1_Sub2();
-                if(aClass30_Sub2_Sub2Array895[j] != null)
-                    aClass30_Sub2_Sub4_Sub1_Sub2Array890[j].method451(0, aClass30_Sub2_Sub2Array895[j]);
+                aPlayerArray890[j] = new Player();
+                if(aStreamArray895[j] != null)
+                    aPlayerArray890[j].method451(0, aStreamArray895[j]);
             }
             anIntArray892[anInt891++] = j;
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[j];
-            class30_sub2_sub4_sub1_sub2.anInt1537 = anInt1161;
-            int k = class30_sub2_sub2.method419(1, 0);
+            Player player = aPlayerArray890[j];
+            player.anInt1537 = loopCycle;
+            int k = stream.readBits(1);
             if(k == 1)
                 anIntArray894[anInt893++] = j;
-            int l = class30_sub2_sub2.method419(1, 0);
-            int i1 = class30_sub2_sub2.method419(5, 0);
+            int l = stream.readBits(1);
+            int i1 = stream.readBits(5);
             if(i1 > 15)
                 i1 -= 32;
-            int j1 = class30_sub2_sub2.method419(5, 0);
+            int j1 = stream.readBits(5);
             if(j1 > 15)
                 j1 -= 32;
-            class30_sub2_sub4_sub1_sub2.method445(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0] + j1, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0] + i1, l == 1, false);
+            player.method445(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0] + j1, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0] + i1, l == 1, false);
         }
-        class30_sub2_sub2.method420(true);
+        stream.method420(true);
+    }
+    public boolean inCircle(int circleX, int circleY, int clickX, int clickY, int radius) {
+        return Math.pow((double) (circleX + radius - clickX), 2.0D)
+                + Math.pow((double) (circleY + radius - clickY), 2.0D) < Math.pow((double) radius, 2.0D);
     }
 
     public final void method92(boolean flag)
@@ -8117,11 +9537,15 @@ public class client extends Applet_Sub1 {
         aBoolean1157 &= flag;
         if(anInt1021 != 0)
             return;
-        if(super.anInt26 == 1)
+        if(super.clickMode3 == 1)
         {
-            int i = super.anInt27 - 25 - 550;
-            int j = super.anInt28 - 5 - 4;
-            if(i >= 0 && j >= 0 && i < 146 && j < 151)
+            int i = super.saveClickX - 25 - 547;
+            int j = super.saveClickY - 5 - 3;
+            if (currentScreenMode != ScreenMode.FIXED) {
+                i = super.saveClickX - (currentGameWidth - 182 + 24);
+                j = super.saveClickY - 8;
+            }
+            if(this.inCircle(0, 0, i, j, 76) && this.mouseMapPosition())
             {
                 i -= 73;
                 j -= 75;
@@ -8132,9 +9556,14 @@ public class client extends Applet_Sub1 {
                 j1 = j1 * (anInt1170 + 256) >> 8;
                 int k1 = j * i1 + i * j1 >> 11;
                 int l1 = j * j1 - i * i1 >> 11;
-                int i2 = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 + k1 >> 7;
-                int j2 = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 - l1 >> 7;
-                boolean flag1 = method85(1, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0], 0, 0, j2, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0], true, i2);
+                int i2 = ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 + k1 >> 7;
+                int j2 = ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 - l1 >> 7;
+                boolean flag1 = false;
+                if (rights >= 2 && controlIsDown) {
+                    teleport(baseX + i2, baseY + j2);
+                } else {
+                    flag1 = doWalkTo(1, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0], 0, 0, j2, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0], true, i2);
+                }
                 if(flag1)
                 {
                     stream.writeUnsignedByte(i);
@@ -8144,8 +9573,8 @@ public class client extends Applet_Sub1 {
                     stream.writeUnsignedByte(anInt1209);
                     stream.writeUnsignedByte(anInt1170);
                     stream.writeUnsignedByte(89);
-                    stream.writeWord(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550);
-                    stream.writeWord(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551);
+                    stream.writeWord(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550);
+                    stream.writeWord(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551);
                     stream.writeUnsignedByte(anInt1264);
                     stream.writeUnsignedByte(63);
                 }
@@ -8178,7 +9607,7 @@ public class client extends Applet_Sub1 {
     public final String method93(int i, int j)
     {
         if(i <= 0)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
+            packet = aStream_1083.readUnsignedByte();
         if(j < 0x3b9ac9ff)
             return String.valueOf(j);
         else
@@ -8257,12 +9686,12 @@ public class client extends Applet_Sub1 {
 
     public final void method95(int i)
     {
-        for(int j = 0; j < anInt836; j++)
+        for(int j = 0; j < npcCount; j++)
         {
-            int k = anIntArray837[j];
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[k];
-            if(class30_sub2_sub4_sub1_sub1 != null)
-                method96(46988, class30_sub2_sub4_sub1_sub1.aClass5_1696.aByte68, class30_sub2_sub4_sub1_sub1);
+            int k = npcIndices[j];
+            Npc npc = npcs[k];
+            if(npc != null)
+                method96(46988, npc.desc.aByte68, npc);
         }
 
         if(i != -8066)
@@ -8272,7 +9701,7 @@ public class client extends Applet_Sub1 {
     public final void method96(int i, int j, Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1)
     {
         if(i != 46988)
-            anInt1008 = -1;
+            packet = -1;
         if(class30_sub2_sub4_sub1.anInt1550 < 128 || class30_sub2_sub4_sub1.anInt1551 < 128 || class30_sub2_sub4_sub1.anInt1550 >= 13184 || class30_sub2_sub4_sub1.anInt1551 >= 13184)
         {
             class30_sub2_sub4_sub1.anInt1526 = -1;
@@ -8283,7 +9712,7 @@ public class client extends Applet_Sub1 {
             class30_sub2_sub4_sub1.anInt1551 = class30_sub2_sub4_sub1.anIntArray1501[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             class30_sub2_sub4_sub1.method446(true);
         }
-        if(class30_sub2_sub4_sub1 == aClass30_Sub2_Sub4_Sub1_Sub2_1126 && (class30_sub2_sub4_sub1.anInt1550 < 1536 || class30_sub2_sub4_sub1.anInt1551 < 1536 || class30_sub2_sub4_sub1.anInt1550 >= 11776 || class30_sub2_sub4_sub1.anInt1551 >= 11776))
+        if(class30_sub2_sub4_sub1 == aPlayer_1126 && (class30_sub2_sub4_sub1.anInt1550 < 1536 || class30_sub2_sub4_sub1.anInt1551 < 1536 || class30_sub2_sub4_sub1.anInt1550 >= 11776 || class30_sub2_sub4_sub1.anInt1551 >= 11776))
         {
             class30_sub2_sub4_sub1.anInt1526 = -1;
             class30_sub2_sub4_sub1.anInt1520 = -1;
@@ -8293,20 +9722,24 @@ public class client extends Applet_Sub1 {
             class30_sub2_sub4_sub1.anInt1551 = class30_sub2_sub4_sub1.anIntArray1501[0] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             class30_sub2_sub4_sub1.method446(true);
         }
-        if(class30_sub2_sub4_sub1.anInt1547 > anInt1161)
+        if(class30_sub2_sub4_sub1.anInt1547 > loopCycle)
             method97(class30_sub2_sub4_sub1, true);
         else
-        if(class30_sub2_sub4_sub1.anInt1548 >= anInt1161)
+        if(class30_sub2_sub4_sub1.anInt1548 >= loopCycle)
             method98(class30_sub2_sub4_sub1, aByte1012);
         else
             method99((byte)34, class30_sub2_sub4_sub1);
+        try {
         method100(class30_sub2_sub4_sub1, -843);
         method101(class30_sub2_sub4_sub1, -805);
+        } catch(ArrayIndexOutOfBoundsException e){
+
+        }
     }
 
     public final void method97(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, boolean flag)
     {
-        int i = class30_sub2_sub4_sub1.anInt1547 - anInt1161;
+        int i = class30_sub2_sub4_sub1.anInt1547 - loopCycle;
         int j = class30_sub2_sub4_sub1.anInt1543 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
         int k = class30_sub2_sub4_sub1.anInt1545 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
         class30_sub2_sub4_sub1.anInt1550 += (j - class30_sub2_sub4_sub1.anInt1550) / i;
@@ -8326,10 +9759,10 @@ public class client extends Applet_Sub1 {
 
     public final void method98(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, byte byte0)
     {
-        if(class30_sub2_sub4_sub1.anInt1548 == anInt1161 || class30_sub2_sub4_sub1.anInt1526 == -1 || class30_sub2_sub4_sub1.anInt1529 != 0 || class30_sub2_sub4_sub1.anInt1528 + 1 > Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526].method258(class30_sub2_sub4_sub1.anInt1527, (byte)-39))
+        if(class30_sub2_sub4_sub1.anInt1548 == loopCycle || class30_sub2_sub4_sub1.anInt1526 == -1 || class30_sub2_sub4_sub1.anInt1529 != 0 || class30_sub2_sub4_sub1.anInt1528 + 1 > Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526].method258(class30_sub2_sub4_sub1.anInt1527, (byte)-39))
         {
             int i = class30_sub2_sub4_sub1.anInt1548 - class30_sub2_sub4_sub1.anInt1547;
-            int j = anInt1161 - class30_sub2_sub4_sub1.anInt1547;
+            int j = loopCycle - class30_sub2_sub4_sub1.anInt1547;
             int k = class30_sub2_sub4_sub1.anInt1543 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             int l = class30_sub2_sub4_sub1.anInt1545 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             int i1 = class30_sub2_sub4_sub1.anInt1544 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
@@ -8480,11 +9913,11 @@ public class client extends Applet_Sub1 {
             return;
         if(class30_sub2_sub4_sub1.anInt1502 != -1 && class30_sub2_sub4_sub1.anInt1502 < 32768)
         {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[class30_sub2_sub4_sub1.anInt1502];
-            if(class30_sub2_sub4_sub1_sub1 != null)
+            Npc npc = npcs[class30_sub2_sub4_sub1.anInt1502];
+            if(npc != null)
             {
-                int i1 = class30_sub2_sub4_sub1.anInt1550 - ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550;
-                int k1 = class30_sub2_sub4_sub1.anInt1551 - ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551;
+                int i1 = class30_sub2_sub4_sub1.anInt1550 - ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550;
+                int k1 = class30_sub2_sub4_sub1.anInt1551 - ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551;
                 if(i1 != 0 || k1 != 0)
                     class30_sub2_sub4_sub1.anInt1510 = (int)(Math.atan2(i1, k1) * 325.94900000000001D) & 0x7ff;
             }
@@ -8494,23 +9927,23 @@ public class client extends Applet_Sub1 {
             int j = class30_sub2_sub4_sub1.anInt1502 - 32768;
             if(j == anInt884)
                 j = anInt889;
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[j];
-            if(class30_sub2_sub4_sub1_sub2 != null)
+            Player player = aPlayerArray890[j];
+            if(player != null)
             {
-                int l1 = class30_sub2_sub4_sub1.anInt1550 - ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550;
-                int i2 = class30_sub2_sub4_sub1.anInt1551 - ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551;
+                int l1 = class30_sub2_sub4_sub1.anInt1550 - ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550;
+                int i2 = class30_sub2_sub4_sub1.anInt1551 - ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551;
                 if(l1 != 0 || i2 != 0)
                     class30_sub2_sub4_sub1.anInt1510 = (int)(Math.atan2(l1, i2) * 325.94900000000001D) & 0x7ff;
             }
         }
-        if((class30_sub2_sub4_sub1.anInt1538 != 0 || class30_sub2_sub4_sub1.anInt1539 != 0) && (class30_sub2_sub4_sub1.anInt1525 == 0 || class30_sub2_sub4_sub1.anInt1503 > 0))
+        if((class30_sub2_sub4_sub1.face_x != 0 || class30_sub2_sub4_sub1.face_y != 0) && (class30_sub2_sub4_sub1.anInt1525 == 0 || class30_sub2_sub4_sub1.anInt1503 > 0))
         {
-            int k = class30_sub2_sub4_sub1.anInt1550 - (class30_sub2_sub4_sub1.anInt1538 - anInt1034 - anInt1034) * 64;
-            int j1 = class30_sub2_sub4_sub1.anInt1551 - (class30_sub2_sub4_sub1.anInt1539 - anInt1035 - anInt1035) * 64;
+            int k = class30_sub2_sub4_sub1.anInt1550 - (class30_sub2_sub4_sub1.face_x - baseX - baseX) * 64;
+            int j1 = class30_sub2_sub4_sub1.anInt1551 - (class30_sub2_sub4_sub1.face_y - baseY - baseY) * 64;
             if(k != 0 || j1 != 0)
                 class30_sub2_sub4_sub1.anInt1510 = (int)(Math.atan2(k, j1) * 325.94900000000001D) & 0x7ff;
-            class30_sub2_sub4_sub1.anInt1538 = 0;
-            class30_sub2_sub4_sub1.anInt1539 = 0;
+            class30_sub2_sub4_sub1.face_x = 0;
+            class30_sub2_sub4_sub1.face_y = 0;
         }
         int l = class30_sub2_sub4_sub1.anInt1510 - class30_sub2_sub4_sub1.anInt1552 & 0x7ff;
         if(l != 0)
@@ -8555,7 +9988,7 @@ public class client extends Applet_Sub1 {
                 class30_sub2_sub4_sub1.anInt1518 = 0;
             }
         }
-        if(class30_sub2_sub4_sub1.anInt1520 != -1 && anInt1161 >= class30_sub2_sub4_sub1.anInt1523)
+        if(class30_sub2_sub4_sub1.anInt1520 != -1 && loopCycle >= class30_sub2_sub4_sub1.anInt1523)
         {
             if(class30_sub2_sub4_sub1.anInt1521 < 0)
                 class30_sub2_sub4_sub1.anInt1521 = 0;
@@ -8569,7 +10002,7 @@ public class client extends Applet_Sub1 {
         if(class30_sub2_sub4_sub1.anInt1526 != -1 && class30_sub2_sub4_sub1.anInt1529 <= 1)
         {
             Class20 class20_2 = Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526];
-            if(class20_2.anInt363 == 1 && class30_sub2_sub4_sub1.anInt1542 > 0 && class30_sub2_sub4_sub1.anInt1547 <= anInt1161 && class30_sub2_sub4_sub1.anInt1548 < anInt1161)
+            if(class20_2.anInt363 == 1 && class30_sub2_sub4_sub1.anInt1542 > 0 && class30_sub2_sub4_sub1.anInt1547 <= loopCycle && class30_sub2_sub4_sub1.anInt1548 < loopCycle)
             {
                 class30_sub2_sub4_sub1.anInt1529 = 1;
                 return;
@@ -8604,229 +10037,101 @@ public class client extends Applet_Sub1 {
         {
             aBoolean1255 = false;
             if (currentScreenMode == ScreenMode.FIXED) {
-                aClass15_903.method238(4, 23680, super.aGraphics12, 0);
-                aClass15_904.method238(357, 23680, super.aGraphics12, 0);
-                aClass15_905.method238(4, 23680, super.aGraphics12, 722);
-                aClass15_906.method238(205, 23680, super.aGraphics12, 743);
-                aClass15_907.method238(0, 23680, super.aGraphics12, 0);
-                aClass15_908.method238(4, 23680, super.aGraphics12, 516);
-                aClass15_909.method238(205, 23680, super.aGraphics12, 516);
-                aClass15_910.method238(357, 23680, super.aGraphics12, 496);
-                aClass15_911.method238(338, 23680, super.aGraphics12, 0);
+                leftFrame.method238(4, 23680, super.aGraphics12, 0);
+                topFrame.method238(0, 23680, super.aGraphics12, 0);
             }
-            aBoolean1153 = true;
-            aBoolean1223 = true;
+            tabAreaAltered = true;
+            inputTaken = true;
             aBoolean1103 = true;
             aBoolean1233 = true;
             if(anInt1023 != 2 && currentScreenMode == ScreenMode.FIXED)
             {
-                aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
-                aClass15_1164.method238(4, 23680, super.aGraphics12, 550);
+                aRSImageProducer_1165.method238(currentScreenMode == ScreenMode.FIXED ? 4 : 0, 23680, super.aGraphics12, currentScreenMode == ScreenMode.FIXED ? 4 : 0);
+                aRSImageProducer_1164.method238(0, 23680, super.aGraphics12, 516);
             }
         }
-        if(anInt1023 == 2)
-            method146((byte)1);
-        if(aBoolean885 && anInt948 == 1)
-            aBoolean1153 = true;
-        if(anInt1189 != -1)
+        if(menuOpen)
+            tabAreaAltered = true;
+        if(invOverlayInterfaceID != -1)
         {
-            boolean flag1 = method119(anInt945, false, anInt1189);
+            boolean flag1 = method119(anInt945, false, invOverlayInterfaceID);
             if(flag1)
-                aBoolean1153 = true;
+                tabAreaAltered = true;
         }
         if(anInt1246 == 2)
-            aBoolean1153 = true;
+            tabAreaAltered = true;
         if(anInt1086 == 2)
-            aBoolean1153 = true;
-        if(aBoolean1153)
+            tabAreaAltered = true;
+        if(tabAreaAltered)
         {
-            method36((byte)-81);
-            aBoolean1153 = false;
+            drawTabArea((byte)-81);
+            tabAreaAltered = false;
         }
-        if(anInt1276 == -1)
+        if(backDialogID == -1)
         {
-            aClass9_1059.anInt224 = anInt1211 - anInt1089 - 77;
-            if(super.anInt20 > 448 && super.anInt20 < 560 && super.anInt21 > (currentScreenMode == ScreenMode.FIXED ? 332 : currentGameHeight - 158))
-                method65(463, 77, super.anInt20 - 17, super.anInt21 - (currentScreenMode == ScreenMode.FIXED ? 332 : currentGameHeight - 158), aClass9_1059, 0, false, anInt1211, 0);
-            int i = anInt1211 - 77 - aClass9_1059.anInt224;
+            aClass9_1059.scrollPosition = anInt1211 - anInt1089 - 110;
+            if (super.mouseX > 496 && super.mouseX < 511
+                    && super.mouseY > (currentScreenMode == ScreenMode.FIXED ? 345 : currentGameHeight - 158)) {
+                this.method65(494, 110, super.mouseX,
+                        super.mouseY - (currentScreenMode == ScreenMode.FIXED ? 345 : currentGameHeight - 158),
+                        this.aClass9_1059, 0, false, this.anInt1211, 0);
+            }
+            int i = anInt1211 - 110 - aClass9_1059.scrollPosition;
             if(i < 0)
                 i = 0;
-            if(i > anInt1211 - 77)
-                i = anInt1211 - 77;
+            if(i > anInt1211 - 110)
+                i = anInt1211 - 110;
             if(anInt1089 != i)
             {
                 anInt1089 = i;
-                aBoolean1223 = true;
+                inputTaken = true;
             }
         }
-        if(anInt1276 != -1)
+        if(backDialogID != -1)
         {
-            boolean flag2 = method119(anInt945, false, anInt1276);
+            boolean flag2 = method119(anInt945, false, backDialogID);
             if(flag2)
-                aBoolean1223 = true;
+                inputTaken = true;
         }
         if(anInt1246 == 3)
-            aBoolean1223 = true;
+            inputTaken = true;
         if(anInt1086 == 3)
-            aBoolean1223 = true;
+            inputTaken = true;
         if(aString844 != null)
-            aBoolean1223 = true;
-        if(aBoolean885 && anInt948 == 2)
-            aBoolean1223 = true;
-        if(aBoolean1223)
+            inputTaken = true;
+        if(menuOpen && menuScreenArea == 2)
+            inputTaken = true;
+        if(inputTaken)
         {
-            method18(6);
-            aBoolean1223 = false;
+            drawChatArea(6);
+            inputTaken = false;
+        }
+        if (this.anInt1023 == 2) {
+            this.method146((byte)1);
         }
         if(anInt1023 == 2 && currentScreenMode == ScreenMode.FIXED)
         {
-            method126(false);
-            aClass15_1164.method238(4, 23680, super.aGraphics12, 550);
+            drawMinimap(false);
+            aRSImageProducer_1164.method238(0, 23680, super.aGraphics12, 516);
         }
         if(anInt1054 != -1)
             aBoolean1103 = true;
-        if(aBoolean1103)
-        {
-            if(anInt1054 != -1 && anInt1054 == anInt1221)
-            {
+        if(aBoolean1103) {
+            if (anInt1054 != -1 && anInt1054 == tabID) {
                 anInt1054 = -1;
-                stream.method397((byte)6, 120);
-                stream.writeUnsignedByte(anInt1221);
+                stream.method397((byte) 6, 120);
+                stream.writeUnsignedByte(tabID);
             }
             aBoolean1103 = false;
-            aClass15_1125.method237(0);
-            aClass30_Sub2_Sub1_Sub1_1029.method348(0, 16083, 0);
-            if(anInt1189 == -1)
-            {
-
-                if(anIntArray1130[anInt1221] != -1)
-                {
-                    if(anInt1221 == 0)
-                        aClass30_Sub2_Sub1_Sub1_1143.method348(6, 16083, 5);
-                    if(anInt1221 == 1)
-                        aClass30_Sub2_Sub1_Sub1_1144.method348(45, 16083, 5);
-                    if(anInt1221 == 2)
-                        aClass30_Sub2_Sub1_Sub1_1144.method348(78, 16083, 5);
-                    if(anInt1221 == 3)
-                        aClass30_Sub2_Sub1_Sub1_1144.method348(111, 16083, 5);
-                    if(anInt1221 == 4)
-                        aClass30_Sub2_Sub1_Sub1_1144.method348(144, 16083, 5);
-                    if(anInt1221 == 5)
-                        aClass30_Sub2_Sub1_Sub1_1144.method348(177, 16083, 5);
-                    if(anInt1221 == 6)
-                        aClass30_Sub2_Sub1_Sub1_1146.method348(209, 16083, 7);
-                }
-                if(anIntArray1130[0] != -1 && anInt1054 == 0)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[0].method348(13, 16083, 10);
-                if(anIntArray1130[1] != -1 && anInt1054 == 1)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[1].method348(47, 16083, 9);
-                if(anIntArray1130[2] != -1 && anInt1054 == 2)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[2].method348(80, 16083, 9);
-                if(anIntArray1130[3] != -1 && anInt1054 == 3)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[3].method348(113, 16083, 10);
-                if(anIntArray1130[4] != -1 && anInt1054 == 4)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[4].method348(144, 16083, 7);
-                if(anIntArray1130[5] != -1 && anInt1054 == 5)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[5].method348(178, 16083, 7);
-                if(anIntArray1130[6] != -1 && anInt1054 == 6)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[6].method348(212, 16083, 11);
-            }
-            aClass15_1125.method238(160, 23680, super.aGraphics12, 516);
-            aClass15_1124.method237(0);
-            aClass30_Sub2_Sub1_Sub1_1028.method348(0, 16083, 0);
-            if(anInt1189 == -1)
-            {
-                if(anIntArray1130[anInt1221] != -1)
-                {
-                    if(anInt1221 == 7)
-                        aClass30_Sub2_Sub1_Sub1_865.method348(24, 16083, 0);
-                    if(anInt1221 == 8)
-                        aClass30_Sub2_Sub1_Sub1_866.method348(63, 16083, 1);
-                    if(anInt1221 == 9)
-                        aClass30_Sub2_Sub1_Sub1_866.method348(96, 16083, 1);
-                    if(anInt1221 == 10)
-                        aClass30_Sub2_Sub1_Sub1_866.method348(128, 16083, 1);
-                    if(anInt1221 == 11)
-                        aClass30_Sub2_Sub1_Sub1_866.method348(162, 16083, 1);
-                    if(anInt1221 == 12)
-                        aClass30_Sub2_Sub1_Sub1_866.method348(195, 16083, 1);
-                    if(anInt1221 == 13)
-                        aClass30_Sub2_Sub1_Sub1_868.method348(226, 16083, 0);
-                }
-                if(anIntArray1130[8] != -1 && anInt1054 == 8)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[7].method348(63, 16083, 5);
-                if(anIntArray1130[9] != -1 && anInt1054 == 9)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[8].method348(97, 16083, 6);
-                if(anIntArray1130[10] != -1 && anInt1054 == 10)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[9].method348(132, 16083, 2);
-                if(anIntArray1130[11] != -1 && anInt1054 == 11)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[10].method348(164, 16083, 5);
-                if(anIntArray1130[12] != -1 && anInt1054 == 12)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[11].method348(195, 16083, 2);
-                if(anIntArray1130[13] != -1 && anInt1054 == 13)
-                    if(anInt1161 % 20 >= 10);
-                aClass30_Sub2_Sub1_Sub1Array947[12].method348(228, 16083, 3);
-            }
-            aClass15_1124.method238(466, 23680, super.aGraphics12, 496);
-            aClass15_1165.method237(0);
+            aRSImageProducer_1125.initDrawingArea();
+            aRSImageProducer_1165.initDrawingArea();
         }
-        if(aBoolean1233)
-        {
-            aBoolean1233 = false;
-            aClass15_1123.method237(0);
-            aClass30_Sub2_Sub1_Sub1_1027.method348(0, 16083, 0);
-//						Class30_Sub2_Sub1_Sub4_1271.method382(0xffffff, 55, anInt939, class30_sub2_sub1_sub4.method383(anInt1116, s + ": "), 28, true);
-            // aClass30_Sub2_Sub1_Sub4_1271.method382(0xffffff, 55, anInt939, "Typing: ", 28, true);
-            String caption1 = "@whi@Public: ";
-            String caption2 = "@whi@Private: ";
-            String caption3 = "@whi@Trade: ";
-            if(anInt1287 == 0)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(65280, 55, anInt939, ""+caption1+"@gre@On", 41, true);
-            if(anInt1287 == 1)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(0xffff00, 55, anInt939, ""+caption1+"@yel@Friends", 41, true);
-            if(anInt1287 == 2)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(0xff0000, 55, anInt939, ""+caption1+"@red@Off", 41, true);
-            if(anInt1287 == 3)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(65535, 55, anInt939, ""+caption1+"@cya@Hide", 41, true);
-            // aClass30_Sub2_Sub1_Sub4_1271.method382(0xffffff, 184, anInt939, "@red@Private chat", 28, true);
-            if(anInt845 == 0)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(65280, 184, anInt939, ""+caption2+"@gre@On", 41, true);
-            if(anInt845 == 1)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(0xffff00, 184, anInt939, ""+caption2+"@yel@Friends", 41, true);
-            if(anInt845 == 2)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(0xff0000, 184, anInt939, ""+caption2+"@red@Off", 41, true);
-            // aClass30_Sub2_Sub1_Sub4_1271.method382(0xffffff, 324, anInt939, "@red@Trade/compete", 28, true);
-            if(anInt1248 == 0)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(65280, 324, anInt939, ""+caption3+"@gre@On", 41, true);
-            if(anInt1248 == 1)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(0xffff00, 324, anInt939, ""+caption3+"@yel@Friends", 41, true);
-            if(anInt1248 == 2)
-                aClass30_Sub2_Sub1_Sub4_1271.method382(0xff0000, 324, anInt939, ""+caption3+"@red@Off", 41, true);
-            //aClass30_Sub2_Sub1_Sub4_1271.method382(0xffffff, 458, anInt939, "@red@Report abuse", 33, true);
-            aClass30_Sub2_Sub1_Sub4_1271.method382(0xffffff, 457, anInt939, "Report Abuse", 41, true);
-            aClass15_1123.method238(453, 23680, super.aGraphics12, 0);
-            aClass15_1165.method237(0);
-            anInt945 = 0;
-        }
-
-        anInt945 = 0;
+        this.anInt945 = 0;
     }
 
-    public final boolean method103(Class9 class9, boolean flag)
+    public final boolean method103(Widget class9, boolean flag)
     {
-        int i = class9.anInt214;
+        int i = class9.contentType;
         if(flag)
             method6();
         if(i >= 1 && i <= 200 || i >= 701 && i <= 900)
@@ -8841,27 +10146,27 @@ public class client extends Applet_Sub1 {
                 i -= 101;
             else
                 i--;
-            aStringArray1199[anInt1133] = "Remove @whi@" + aStringArray1082[i];
-            anIntArray1093[anInt1133] = 792;
-            anInt1133++;
-            aStringArray1199[anInt1133] = "Message @whi@" + aStringArray1082[i];
-            anIntArray1093[anInt1133] = 639;
-            anInt1133++;
+            menuActionName[menuActionRow] = "Remove @whi@" + aStringArray1082[i];
+            menuActionID[menuActionRow] = 792;
+            menuActionRow++;
+            menuActionName[menuActionRow] = "Message @whi@" + aStringArray1082[i];
+            menuActionID[menuActionRow] = 639;
+            menuActionRow++;
             if(rights >= 2){
-                aStringArray1199[anInt1133] = "TeleToMe @whi@" + aStringArray1082[i];
-                anIntArray1093[anInt1133] = 638;
-                anInt1133++;
-                aStringArray1199[anInt1133] = "TeleTo @whi@" + aStringArray1082[i];
-                anIntArray1093[anInt1133] = 637;
-                anInt1133++;
+                menuActionName[menuActionRow] = "TeleToMe @whi@" + aStringArray1082[i];
+                menuActionID[menuActionRow] = 638;
+                menuActionRow++;
+                menuActionName[menuActionRow] = "TeleTo @whi@" + aStringArray1082[i];
+                menuActionID[menuActionRow] = 637;
+                menuActionRow++;
             }
             return true;
         }
         if(i >= 401 && i <= 500)
         {
-            aStringArray1199[anInt1133] = "Remove @whi@" + class9.aString248;
-            anIntArray1093[anInt1133] = 322;
-            anInt1133++;
+            menuActionName[menuActionRow] = "Remove @whi@" + class9.aString248;
+            menuActionID[menuActionRow] = 322;
+            menuActionRow++;
             return true;
         } else
         {
@@ -8877,7 +10182,7 @@ public class client extends Applet_Sub1 {
             if(class30_sub2_sub4_sub3.anInt1560 != anInt918 || class30_sub2_sub4_sub3.aBoolean1567)
                 class30_sub2_sub4_sub3.method329();
             else
-            if(anInt1161 >= class30_sub2_sub4_sub3.anInt1564)
+            if(loopCycle >= class30_sub2_sub4_sub3.anInt1564)
             {
                 class30_sub2_sub4_sub3.method454(anInt945, true);
                 if(class30_sub2_sub4_sub3.aBoolean1567)
@@ -8888,36 +10193,36 @@ public class client extends Applet_Sub1 {
 
     }
 
-    public final void drawInterface(int j, int k, Class9 class9, int l)
+    public final void drawInterface(int j, int k, Widget class9, int l)
     {
         if(class9.anInt262 != 0 || class9.anIntArray240 == null)
             return;
         if(class9.aBoolean266 && anInt1026 != class9.anInt250 && anInt1048 != class9.anInt250 && anInt1039 != class9.anInt250)
             return;
-        int i1 = Class30_Sub2_Sub1.anInt1383;
-        int j1 = Class30_Sub2_Sub1.anInt1381;
-        int k1 = Class30_Sub2_Sub1.anInt1384;
-        int l1 = Class30_Sub2_Sub1.anInt1382;
-        Class30_Sub2_Sub1.method333(l + class9.anInt267, k, false, k + class9.anInt220, l);
+        int i1 = DrawingArea.leftX;
+        int j1 = DrawingArea.topY;
+        int k1 = DrawingArea.bottomX;
+        int l1 = DrawingArea.bottomY;
+        DrawingArea.setDrawingArea(l + class9.anInt267, k,  k + class9.anInt220, l);
         int i2 = class9.anIntArray240.length;
         for(int j2 = 0; j2 < i2; j2++)
         {
             int k2 = class9.anIntArray241[j2] + k;
             int l2 = (class9.anIntArray272[j2] + l) - j;
-            Class9 class9_1 = Class9.aClass9Array210[class9.anIntArray240[j2]];
+            Widget class9_1 = Widget.interfaceCache[class9.anIntArray240[j2]];
             k2 += class9_1.anInt263;
             l2 += class9_1.anInt265;
-            if(class9_1.anInt214 > 0)
+            if(class9_1.contentType > 0)
                 method75(950, class9_1);
             if(class9_1.anInt262 == 0)
             {
-                if(class9_1.anInt224 > class9_1.anInt261 - class9_1.anInt267)
-                    class9_1.anInt224 = class9_1.anInt261 - class9_1.anInt267;
-                if(class9_1.anInt224 < 0)
-                    class9_1.anInt224 = 0;
-                drawInterface(class9_1.anInt224, k2, class9_1, l2);
+                if(class9_1.scrollPosition > class9_1.anInt261 - class9_1.anInt267)
+                    class9_1.scrollPosition = class9_1.anInt261 - class9_1.anInt267;
+                if(class9_1.scrollPosition < 0)
+                    class9_1.scrollPosition = 0;
+                drawInterface(class9_1.scrollPosition, k2, class9_1, l2);
                 if(class9_1.anInt261 > class9_1.anInt267)
-                    method30(519, class9_1.anInt267, class9_1.anInt224, l2, k2 + class9_1.anInt220, class9_1.anInt261);
+                    drawScrollbar(class9_1.anInt267, class9_1.scrollPosition, l2,k2 + class9_1.anInt220, class9_1.anInt261, false);
             } else
             if(class9_1.anInt262 != 1)
                 if(class9_1.anInt262 == 2)
@@ -8939,18 +10244,18 @@ public class client extends Applet_Sub1 {
                                 int k6 = 0;
                                 int j7 = 0;
                                 int j9 = class9_1.anIntArray253[i3] - 1;
-                                if(k5 > Class30_Sub2_Sub1.anInt1383 - 32 && k5 < Class30_Sub2_Sub1.anInt1384 && j6 > Class30_Sub2_Sub1.anInt1381 - 32 && j6 < Class30_Sub2_Sub1.anInt1382 || anInt1086 != 0 && anInt1085 == i3)
+                                if(k5 > DrawingArea.leftX - 32 && k5 < DrawingArea.bottomX && j6 > DrawingArea.topY - 32 && j6 < DrawingArea.bottomY || anInt1086 != 0 && anInt1085 == i3)
                                 {
                                     int l9 = 0;
                                     if(anInt1282 == 1 && anInt1283 == i3 && anInt1284 == class9_1.anInt250)
                                         l9 = 0xffffff;
-                                    Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1_2 = Class8.method200(j9, class9_1.anIntArray252[i3], l9, 9);
+                                    Sprite class30_sub2_sub1_sub1_2 = Class8.method200(j9, class9_1.anIntArray252[i3], l9, 9);
                                     if(class30_sub2_sub1_sub1_2 != null)
                                     {
                                         if(anInt1086 != 0 && anInt1085 == i3 && anInt1084 == class9_1.anInt250)
                                         {
-                                            k6 = super.anInt20 - anInt1087;
-                                            j7 = super.anInt21 - anInt1088;
+                                            k6 = super.mouseX - anInt1087;
+                                            j7 = super.mouseY - anInt1088;
                                             if(k6 < 5 && k6 > -5)
                                                 k6 = 0;
                                             if(j7 < 5 && j7 > -5)
@@ -8961,48 +10266,48 @@ public class client extends Applet_Sub1 {
                                                 j7 = 0;
                                             }
                                             class30_sub2_sub1_sub1_2.method350(k5 + k6, j6 + j7, 128, aBoolean1043);
-                                            if(j6 + j7 < Class30_Sub2_Sub1.anInt1381 && class9.anInt224 > 0)
+                                            if(j6 + j7 < DrawingArea.topY && class9.scrollPosition > 0)
                                             {
-                                                int i10 = (anInt945 * (Class30_Sub2_Sub1.anInt1381 - j6 - j7)) / 3;
+                                                int i10 = (anInt945 * (DrawingArea.topY - j6 - j7)) / 3;
                                                 if(i10 > anInt945 * 10)
                                                     i10 = anInt945 * 10;
-                                                if(i10 > class9.anInt224)
-                                                    i10 = class9.anInt224;
-                                                class9.anInt224 -= i10;
+                                                if(i10 > class9.scrollPosition)
+                                                    i10 = class9.scrollPosition;
+                                                class9.scrollPosition -= i10;
                                                 anInt1088 += i10;
                                             }
-                                            if(j6 + j7 + 32 > Class30_Sub2_Sub1.anInt1382 && class9.anInt224 < class9.anInt261 - class9.anInt267)
+                                            if(j6 + j7 + 32 > DrawingArea.bottomY && class9.scrollPosition < class9.anInt261 - class9.anInt267)
                                             {
-                                                int j10 = (anInt945 * ((j6 + j7 + 32) - Class30_Sub2_Sub1.anInt1382)) / 3;
+                                                int j10 = (anInt945 * ((j6 + j7 + 32) - DrawingArea.bottomY)) / 3;
                                                 if(j10 > anInt945 * 10)
                                                     j10 = anInt945 * 10;
-                                                if(j10 > class9.anInt261 - class9.anInt267 - class9.anInt224)
-                                                    j10 = class9.anInt261 - class9.anInt267 - class9.anInt224;
-                                                class9.anInt224 += j10;
+                                                if(j10 > class9.anInt261 - class9.anInt267 - class9.scrollPosition)
+                                                    j10 = class9.anInt261 - class9.anInt267 - class9.scrollPosition;
+                                                class9.scrollPosition += j10;
                                                 anInt1088 -= j10;
                                             }
                                         } else
                                         if(anInt1246 != 0 && anInt1245 == i3 && anInt1244 == class9_1.anInt250)
                                             class30_sub2_sub1_sub1_2.method350(k5, j6, 128, aBoolean1043);
                                         else
-                                            class30_sub2_sub1_sub1_2.method348(k5, 16083, j6);
+                                            class30_sub2_sub1_sub1_2.drawSprite(k5, j6);
                                         if(class30_sub2_sub1_sub1_2.anInt1444 == 33 || class9_1.anIntArray252[i3] != 1)
                                         {
                                             int k10 = class9_1.anIntArray252[i3];
                                             {
-                                                aClass30_Sub2_Sub1_Sub4_1270.method385(0, method43(-33245, k10), j6 + 10 + j7, 822, k5 + 1 + k6);
-                                                aClass30_Sub2_Sub1_Sub4_1270.method385(0x00ff80, method43(-33245, k10), j6 + 9 + j7, 822, k5 + k6);
+                                                smallText.method385(0, method43(-33245, k10), j6 + 10 + j7, 822, k5 + 1 + k6);
+                                                smallText.method385(0x00ff80, method43(-33245, k10), j6 + 9 + j7, 822, k5 + k6);
                                             }
-                                            aClass30_Sub2_Sub1_Sub4_1270.method385(0x00ff80, method43(-33245, k10), j6 + 9 + j7, 822, k5 + k6);
+                                            smallText.method385(0x00ff80, method43(-33245, k10), j6 + 9 + j7, 822, k5 + k6);
                                         }
                                     }
                                 }
                             } else
-                            if(class9_1.aClass30_Sub2_Sub1_Sub1Array209 != null && i3 < 20)
+                            if(class9_1.aSpriteArray209 != null && i3 < 20)
                             {
-                                Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1_1 = class9_1.aClass30_Sub2_Sub1_Sub1Array209[i3];
+                                Sprite class30_sub2_sub1_sub1_1 = class9_1.aSpriteArray209[i3];
                                 if(class30_sub2_sub1_sub1_1 != null)
-                                    class30_sub2_sub1_sub1_1.method348(k5, 16083, j6);
+                                    class30_sub2_sub1_sub1_1.drawSprite(k5, j6);
                             }
                             i3++;
                         }
@@ -9030,18 +10335,18 @@ public class client extends Applet_Sub1 {
                     if(class9_1.aByte254 == 0)
                     {
                         if(class9_1.aBoolean227)
-                            Class30_Sub2_Sub1.method336(class9_1.anInt267, l2, k2, j3, class9_1.anInt220, 0);
+                            DrawingArea.drawPixels(class9_1.anInt267, l2, k2, j3, class9_1.anInt220);
                         else
-                            Class30_Sub2_Sub1.method337(k2, class9_1.anInt220, class9_1.anInt267, j3, l2, true);
+                            DrawingArea.method337(k2, class9_1.anInt220, class9_1.anInt267, j3, l2, true);
                     } else
                     if(class9_1.aBoolean227)
-                        Class30_Sub2_Sub1.method335(j3, l2, class9_1.anInt220, class9_1.anInt267, 256 - (class9_1.aByte254 & 0xff), 0, k2);
+                        DrawingArea.method335(j3, l2, class9_1.anInt220, class9_1.anInt267, 256 - (class9_1.aByte254 & 0xff), 0, k2);
                     else
-                        Class30_Sub2_Sub1.method338(l2, class9_1.anInt267, 256 - (class9_1.aByte254 & 0xff), j3, class9_1.anInt220, k2, -17319);
+                        DrawingArea.method338(l2, class9_1.anInt267, 256 - (class9_1.aByte254 & 0xff), j3, class9_1.anInt220, k2, -17319);
                 } else
                 if(class9_1.anInt262 == 4)
                 {
-                    Class30_Sub2_Sub1_Sub4 class30_sub2_sub1_sub4 = class9_1.aClass30_Sub2_Sub1_Sub4_243;
+                    TextDrawingArea textDrawingArea = class9_1.aTextDrawingArea_243;
                     String s = class9_1.aString248;
                     boolean flag1 = false;
                     if(anInt1039 == class9_1.anInt250 || anInt1048 == class9_1.anInt250 || anInt1026 == class9_1.anInt250)
@@ -9065,14 +10370,14 @@ public class client extends Applet_Sub1 {
                         s = "Please wait...";
                         i4 = class9_1.anInt232;
                     }
-                    if(Class30_Sub2_Sub1.anInt1379 == 479)
+                    if(DrawingArea.width == 479)
                     {
                         if(i4 == 0xffff00)
                             i4 = 255;
                         if(i4 == 49152)
                             i4 = 0xffffff;
                     }
-                    for(int l6 = l2 + class30_sub2_sub1_sub4.anInt1497; s.length() > 0; l6 += class30_sub2_sub1_sub4.anInt1497)
+                    for(int l6 = l2 + textDrawingArea.anInt1497; s.length() > 0; l6 += textDrawingArea.anInt1497)
                     {
                         if(s.indexOf("%") != -1)
                         {
@@ -9124,21 +10429,21 @@ public class client extends Applet_Sub1 {
                             s = "";
                         }
                         if(class9_1.aBoolean223)
-                            class30_sub2_sub1_sub4.method382(i4, k2 + class9_1.anInt220 / 2, anInt939, s1, l6, class9_1.aBoolean268);
+                            textDrawingArea.method382(i4, k2 + class9_1.anInt220 / 2, anInt939, s1, l6, class9_1.aBoolean268);
                         else
-                            class30_sub2_sub1_sub4.method389(false, class9_1.aBoolean268, k2, i4, s1, l6);
+                            textDrawingArea.method389(false, class9_1.aBoolean268, k2, i4, s1, l6);
                     }
 
                 } else
                 if(class9_1.anInt262 == 5)
                 {
-                    Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1;
+                    Sprite sprite;
                     if(method131(class9_1, false))
-                        class30_sub2_sub1_sub1 = class9_1.aClass30_Sub2_Sub1_Sub1_260;
+                        sprite = class9_1.aSprite_260;
                     else
-                        class30_sub2_sub1_sub1 = class9_1.aClass30_Sub2_Sub1_Sub1_207;
-                    if(class30_sub2_sub1_sub1 != null)
-                        class30_sub2_sub1_sub1.method348(k2, 16083, l2);
+                        sprite = class9_1.aSprite_207;
+                    if(sprite != null)
+                        sprite.drawSprite(k2, l2);
                 } else
                 if(class9_1.anInt262 == 6)
                 {
@@ -9170,7 +10475,7 @@ public class client extends Applet_Sub1 {
                 } else
                 if(class9_1.anInt262 == 7)
                 {
-                    Class30_Sub2_Sub1_Sub4 class30_sub2_sub1_sub4_1 = class9_1.aClass30_Sub2_Sub1_Sub4_243;
+                    TextDrawingArea class30_sub2_sub1_sub4_1 = class9_1.aTextDrawingArea_243;
                     int k4 = 0;
                     for(int j5 = 0; j5 < class9_1.anInt267; j5++)
                     {
@@ -9197,10 +10502,10 @@ public class client extends Applet_Sub1 {
                 }
         }
 
-        Class30_Sub2_Sub1.method333(l1, i1, false, k1, j1);
+        DrawingArea.setDrawingArea(l1, i1,  k1, j1);
     }
 
-    public final void method106(Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2, int i)
+    public final void method106(Background background, int i)
     {
         int j = 256;
         if(i >= 0)
@@ -9231,16 +10536,16 @@ public class client extends Applet_Sub1 {
             anIntArray1191 = ai;
         }
 
-        if(class30_sub2_sub1_sub2 != null)
+        if(background != null)
         {
             int l1 = 0;
-            for(int j2 = 0; j2 < class30_sub2_sub1_sub2.anInt1453; j2++)
+            for(int j2 = 0; j2 < background.anInt1453; j2++)
             {
-                for(int l2 = 0; l2 < class30_sub2_sub1_sub2.anInt1452; l2++)
-                    if(class30_sub2_sub1_sub2.aByteArray1450[l1++] != 0)
+                for(int l2 = 0; l2 < background.anInt1452; l2++)
+                    if(background.aByteArray1450[l1++] != 0)
                     {
-                        int i3 = l2 + 16 + class30_sub2_sub1_sub2.anInt1454;
-                        int j3 = j2 + 16 + class30_sub2_sub1_sub2.anInt1455;
+                        int i3 = l2 + 16 + background.anInt1454;
+                        int j3 = j2 + 16 + background.anInt1455;
                         int k3 = i3 + (j3 << 7);
                         anIntArray1190[k3] = 0;
                     }
@@ -9250,86 +10555,86 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    private final void method107(int i, int j, Class30_Sub2_Sub2 class30_sub2_sub2, byte byte0, Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2)
+    private final void method107(int i, int j, Stream stream, byte byte0, Player player)
     {
         if(byte0 != 25)
             aClass19ArrayArrayArray827 = null;
         if((i & 0x400) != 0)
         {
-            class30_sub2_sub4_sub1_sub2.anInt1543 = class30_sub2_sub2.method428(2);
-            class30_sub2_sub4_sub1_sub2.anInt1545 = class30_sub2_sub2.method428(2);
-            class30_sub2_sub4_sub1_sub2.anInt1544 = class30_sub2_sub2.method428(2);
-            class30_sub2_sub4_sub1_sub2.anInt1546 = class30_sub2_sub2.method428(2);
-            class30_sub2_sub4_sub1_sub2.anInt1547 = class30_sub2_sub2.method436((byte)-74) + anInt1161;
-            class30_sub2_sub4_sub1_sub2.anInt1548 = class30_sub2_sub2.method435(true) + anInt1161;
-            class30_sub2_sub4_sub1_sub2.anInt1549 = class30_sub2_sub2.method428(2);
-            class30_sub2_sub4_sub1_sub2.method446(true);
+            player.anInt1543 = stream.readByteA(2);
+            player.anInt1545 = stream.readByteA(2);
+            player.anInt1544 = stream.readByteA(2);
+            player.anInt1546 = stream.readByteA(2);
+            player.anInt1547 = stream.method436((byte)-74) + loopCycle;
+            player.anInt1548 = stream.method435(true) + loopCycle;
+            player.anInt1549 = stream.readByteA(2);
+            player.method446(true);
         }
         if((i & 0x100) != 0)
         {
-            class30_sub2_sub4_sub1_sub2.anInt1520 = class30_sub2_sub2.method434((byte)108);
-            int k = class30_sub2_sub2.method413();
-            class30_sub2_sub4_sub1_sub2.anInt1524 = k >> 16;
-            class30_sub2_sub4_sub1_sub2.anInt1523 = anInt1161 + (k & 0xffff);
-            class30_sub2_sub4_sub1_sub2.anInt1521 = 0;
-            class30_sub2_sub4_sub1_sub2.anInt1522 = 0;
-            if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1523 > anInt1161)
-                class30_sub2_sub4_sub1_sub2.anInt1521 = -1;
-            if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1520 == 65535)
-                class30_sub2_sub4_sub1_sub2.anInt1520 = -1;
+            player.anInt1520 = stream.method434((byte)108);
+            int k = stream.method413();
+            player.anInt1524 = k >> 16;
+            player.anInt1523 = loopCycle + (k & 0xffff);
+            player.anInt1521 = 0;
+            player.anInt1522 = 0;
+            if(((Class30_Sub2_Sub4_Sub1) (player)).anInt1523 > loopCycle)
+                player.anInt1521 = -1;
+            if(((Class30_Sub2_Sub4_Sub1) (player)).anInt1520 == 65535)
+                player.anInt1520 = -1;
         }
         if((i & 8) != 0)
         {
-            int l = class30_sub2_sub2.method434((byte)108);
+            int l = stream.method434((byte)108);
             if(l == 65535)
                 l = -1;
-            int i2 = class30_sub2_sub2.method427(false);
-            if(l == ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1526 && l != -1)
+            int i2 = stream.readByteC(false);
+            if(l == ((Class30_Sub2_Sub4_Sub1) (player)).anInt1526 && l != -1)
             {
                 int i3 = Class20.aClass20Array351[l].anInt365;
                 if(i3 == 1)
                 {
-                    class30_sub2_sub4_sub1_sub2.anInt1527 = 0;
-                    class30_sub2_sub4_sub1_sub2.anInt1528 = 0;
-                    class30_sub2_sub4_sub1_sub2.anInt1529 = i2;
-                    class30_sub2_sub4_sub1_sub2.anInt1530 = 0;
+                    player.anInt1527 = 0;
+                    player.anInt1528 = 0;
+                    player.anInt1529 = i2;
+                    player.anInt1530 = 0;
                 }
                 if(i3 == 2)
-                    class30_sub2_sub4_sub1_sub2.anInt1530 = 0;
+                    player.anInt1530 = 0;
             } else
-            if(l == -1 || ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1526 == -1 || Class20.aClass20Array351[l].anInt359 >= Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1526].anInt359)
+            if(l == -1 || ((Class30_Sub2_Sub4_Sub1) (player)).anInt1526 == -1 || Class20.aClass20Array351[l].anInt359 >= Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (player)).anInt1526].anInt359)
             {
-                class30_sub2_sub4_sub1_sub2.anInt1526 = l;
-                class30_sub2_sub4_sub1_sub2.anInt1527 = 0;
-                class30_sub2_sub4_sub1_sub2.anInt1528 = 0;
-                class30_sub2_sub4_sub1_sub2.anInt1529 = i2;
-                class30_sub2_sub4_sub1_sub2.anInt1530 = 0;
-                class30_sub2_sub4_sub1_sub2.anInt1542 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1525;
+                player.anInt1526 = l;
+                player.anInt1527 = 0;
+                player.anInt1528 = 0;
+                player.anInt1529 = i2;
+                player.anInt1530 = 0;
+                player.anInt1542 = ((Class30_Sub2_Sub4_Sub1) (player)).anInt1525;
             }
         }
         if((i & 4) != 0)
         {
-            class30_sub2_sub4_sub1_sub2.aString1506 = class30_sub2_sub2.method415();
-            if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).aString1506.charAt(0) == '~')
+            player.aString1506 = stream.method415();
+            if(((Class30_Sub2_Sub4_Sub1) (player)).aString1506.charAt(0) == '~')
             {
-                class30_sub2_sub4_sub1_sub2.aString1506 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).aString1506.substring(1);
-                method77(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).aString1506, 2, class30_sub2_sub4_sub1_sub2.aString1703, aBoolean991);
+                player.aString1506 = ((Class30_Sub2_Sub4_Sub1) (player)).aString1506.substring(1);
+                pushMessage(((Class30_Sub2_Sub4_Sub1) (player)).aString1506, 2, player.name);
             } else
-            if(class30_sub2_sub4_sub1_sub2 == aClass30_Sub2_Sub4_Sub1_Sub2_1126)
-                method77(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).aString1506, 2, class30_sub2_sub4_sub1_sub2.aString1703, aBoolean991);
-            class30_sub2_sub4_sub1_sub2.anInt1513 = 0;
-            class30_sub2_sub4_sub1_sub2.anInt1531 = 0;
-            class30_sub2_sub4_sub1_sub2.anInt1535 = 150;
+            if(player == aPlayer_1126)
+                pushMessage(((Class30_Sub2_Sub4_Sub1) (player)).aString1506, 2, player.name);
+            player.anInt1513 = 0;
+            player.anInt1531 = 0;
+            player.textCycle = 150;
         }
         if((i & 0x80) != 0)
         {
-            int i1 = class30_sub2_sub2.method434((byte)108);
-            int j2 = class30_sub2_sub2.method408();
-            int j3 = class30_sub2_sub2.method427(false);
-            int k3 = class30_sub2_sub2.anInt1406;
-            if(class30_sub2_sub4_sub1_sub2.aString1703 != null && class30_sub2_sub4_sub1_sub2.aBoolean1710)
+            int i1 = stream.method434((byte)108);
+            int j2 = stream.readUnsignedByte();
+            int j3 = stream.readByteC(false);
+            int k3 = stream.anInt1406;
+            if(player.name != null && player.aBoolean1710)
             {
-                long l3 = Class50.method583(class30_sub2_sub4_sub1_sub2.aString1703);
+                long l3 = TextClass.longForName(player.name);
                 boolean flag = false;
                 if(j2 <= 1)
                 {
@@ -9345,77 +10650,150 @@ public class client extends Applet_Sub1 {
                 if(!flag && anInt1251 == 0)
                     try
                     {
-                        aClass30_Sub2_Sub2_834.anInt1406 = 0;
-                        class30_sub2_sub2.method442(j3, 0, true, aClass30_Sub2_Sub2_834.aByteArray1405);
-                        aClass30_Sub2_Sub2_834.anInt1406 = 0;
-                        String s = Class35.method525(j3, true, aClass30_Sub2_Sub2_834);
-                        s = Class34.method497(s, 0);
-                        class30_sub2_sub4_sub1_sub2.aString1506 = s;
-                        class30_sub2_sub4_sub1_sub2.anInt1513 = i1 >> 8;
-                        class30_sub2_sub4_sub1_sub2.anInt1531 = i1 & 0xff;
-                        class30_sub2_sub4_sub1_sub2.anInt1535 = 150;
-                        if(j2 == 2 || j2 == 3 || j2 == 100)
-                            method77(s, 1, "@cr2@" + prefixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + class30_sub2_sub4_sub1_sub2.aString1703 + suffixRank(class30_sub2_sub4_sub1_sub2.anInt1723), aBoolean991);
-                        else
-                        if(j2 == 1)
-                            method77(s, 1, "@cr1@" + prefixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + class30_sub2_sub4_sub1_sub2.aString1703 + suffixRank(class30_sub2_sub4_sub1_sub2.anInt1723), aBoolean991);
-                        else
-                            method77(s, 2,  prefixRank(class30_sub2_sub4_sub1_sub2.anInt1723) + class30_sub2_sub4_sub1_sub2.aString1703 + suffixRank(class30_sub2_sub4_sub1_sub2.anInt1723), aBoolean991);
+                        aStream_834.anInt1406 = 0;
+                        stream.method442(j3, 0, true, aStream_834.aByteArray1405);
+                        aStream_834.anInt1406 = 0;
+                        String s = TextInput.method525(j3, true, aStream_834);
+                        s = Censor.method497(s, 0);
+                        player.aString1506 = s;
+                        player.anInt1513 = i1 >> 8;
+                        player.anInt1531 = i1 & 0xff;
+                        player.textCycle = 150;
+                        switch(rights){
+                            case 1:
+                                pushMessage(s, 1, "@cr1@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 2:
+                                pushMessage(s, 1, "@cr2@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 3:
+                                pushMessage(s, 1, "@cr3@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 4:
+                                pushMessage(s, 1, "@cr4@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 5:
+                                pushMessage(s, 1, "@cr5@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 6:
+                                pushMessage(s, 1, "@cr6@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 7:
+                                pushMessage(s, 1, "@cr7@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 8:
+                                pushMessage(s, 1, "@cr8@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 9:
+                                pushMessage(s, 1, "@cr9@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 10:
+                                pushMessage(s, 1, "@cr10@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 11:
+                                pushMessage(s, 1, "@cr11@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 12:
+                                pushMessage(s, 1, "@cr12@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 13:
+                                pushMessage(s, 1, "@cr13@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 14:
+                                pushMessage(s, 1, "@cr14@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 15:
+                                pushMessage(s, 1, "@cr15@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 16:
+                                pushMessage(s, 1, "@cr16@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 17:
+                                pushMessage(s, 1, "@cr17@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 18:
+                                pushMessage(s, 1, "@cr18@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 19:
+                                pushMessage(s, 1, "@cr19@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 20:
+                                pushMessage(s, 1, "@cr20@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 21:
+                                pushMessage(s, 1, "@cr21@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 22:
+                                pushMessage(s, 1, "@cr22@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 23:
+                                pushMessage(s, 1, "@cr23@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 24:
+                                pushMessage(s, 1, "@cr24@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            case 25:
+                                pushMessage(s, 1, "@cr25@" + prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                                break;
+                            default:
+                                pushMessage(s, 2,  prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
+                        }
+                        
                     }
                     catch(Exception exception)
                     {
                         signlink.reporterror("cde2");
                     }
             }
-            class30_sub2_sub2.anInt1406 = k3 + j3;
+            stream.anInt1406 = k3 + j3;
         }
         if((i & 1) != 0)
         {
-            class30_sub2_sub4_sub1_sub2.anInt1502 = class30_sub2_sub2.method434((byte)108);
-            if(((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1502 == 65535)
-                class30_sub2_sub4_sub1_sub2.anInt1502 = -1;
+            player.anInt1502 = stream.method434((byte)108);
+            if(((Class30_Sub2_Sub4_Sub1) (player)).anInt1502 == 65535)
+                player.anInt1502 = -1;
         }
         if((i & 0x10) != 0)
         {
-            int j1 = class30_sub2_sub2.method427(false);
+            int j1 = stream.readByteC(false);
             byte abyte0[] = new byte[j1];
-            Class30_Sub2_Sub2 class30_sub2_sub2_1 = new Class30_Sub2_Sub2(abyte0, 891);
-            class30_sub2_sub2.method417(j1, aByte920, 0, abyte0);
-            aClass30_Sub2_Sub2Array895[j] = class30_sub2_sub2_1;
-            class30_sub2_sub4_sub1_sub2.method451(0, class30_sub2_sub2_1);
+            Stream stream_1 = new Stream(abyte0, 891);
+            stream.method417(j1, aByte920, 0, abyte0);
+            aStreamArray895[j] = stream_1;
+            player.method451(0, stream_1);
         }
         if((i & 2) != 0)
         {
-            class30_sub2_sub4_sub1_sub2.anInt1538 = class30_sub2_sub2.method436((byte)-74);
-            class30_sub2_sub4_sub1_sub2.anInt1539 = class30_sub2_sub2.method434((byte)108);
+            player.face_x = stream.method436((byte)-74);
+            player.face_y = stream.method434((byte)108);
         }
         if((i & 0x20) != 0)
         {
-            int k1 = class30_sub2_sub2.method408();
-            int k2 = class30_sub2_sub2.method426(0);
-            class30_sub2_sub4_sub1_sub2.method447(-35698, k2, k1, anInt1161);
-            class30_sub2_sub4_sub1_sub2.anInt1532 = anInt1161 + 300;
-            class30_sub2_sub4_sub1_sub2.anInt1533 = class30_sub2_sub2.method427(false);
-            class30_sub2_sub4_sub1_sub2.anInt1534 = class30_sub2_sub2.method408();
+            int k1 = stream.readUnsignedByte();
+            int k2 = stream.readByteS(0);
+            player.method447(-35698, k2, k1, loopCycle);
+            player.anInt1532 = loopCycle + 300;
+            player.anInt1533 = stream.readByteC(false);
+            player.anInt1534 = stream.readUnsignedByte();
         }
         if((i & 0x200) != 0)
         {
-            int l1 = class30_sub2_sub2.method408();
-            int l2 = class30_sub2_sub2.method428(2);
-            class30_sub2_sub4_sub1_sub2.method447(-35698, l2, l1, anInt1161);
-            class30_sub2_sub4_sub1_sub2.anInt1532 = anInt1161 + 300;
-            class30_sub2_sub4_sub1_sub2.anInt1533 = class30_sub2_sub2.method408();
-            class30_sub2_sub4_sub1_sub2.anInt1534 = class30_sub2_sub2.method427(false);
+            int l1 = stream.readUnsignedByte();
+            int l2 = stream.readByteA(2);
+            player.method447(-35698, l2, l1, loopCycle);
+            player.anInt1532 = loopCycle + 300;
+            player.anInt1533 = stream.readUnsignedByte();
+            player.anInt1534 = stream.readByteC(false);
         }
     }
     public final void method108(int i)
     {
         if(i != 3)
-            anInt1008 = -1;
+            packet = -1;
         try
         {
-            int j = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 + anInt1278;
-            int k = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 + anInt1131;
+            int j = ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 + anInt1278;
+            int k = ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 + anInt1131;
             if(anInt1014 - j < -500 || anInt1014 - j > 500 || anInt1015 - k < -500 || anInt1015 - k > 500)
             {
                 anInt1014 = j;
@@ -9504,7 +10882,7 @@ public class client extends Applet_Sub1 {
         }
         catch(Exception _ex)
         {
-            signlink.reporterror("glfc_ex " + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 + "," + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 + "," + anInt1014 + "," + anInt1015 + "," + currentRegionX + "," + currentRegionY + "," + anInt1034 + "," + anInt1035);
+            signlink.reporterror("glfc_ex " + ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 + "," + ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 + "," + anInt1014 + "," + anInt1015 + "," + currentRegionX + "," + currentRegionY + "," + baseX + "," + baseY);
             throw new RuntimeException("eek");
         }
     }
@@ -9518,7 +10896,7 @@ public class client extends Applet_Sub1 {
         }
         anInt1061++;
         if(i != 0)
-            anInt1008 = -1;
+            packet = -1;
         if(!aBoolean1157)
             method135(false, false);
         else
@@ -9536,7 +10914,7 @@ public class client extends Applet_Sub1 {
 
         if(flag)
             stream.writeUnsignedByte(138);
-        return s.equalsIgnoreCase(aClass30_Sub2_Sub4_Sub1_Sub2_1126.aString1703);
+        return s.equalsIgnoreCase(aPlayer_1126.name);
     }
 
     public static final String method110(int i, int j, boolean flag)
@@ -9574,44 +10952,57 @@ public class client extends Applet_Sub1 {
     }
     public int chattab = 0;
 
-    public final void method112(int i)
-    {
+    public final void draw3dScreen(int i) {
 
-        if(i != 8)
+        if (i != 8)
             anInt939 = 130;
-        method76((byte)-13);
-        if(anInt917 == 1)
-        {
-            aClass30_Sub2_Sub1_Sub1Array1150[anInt916 / 100].method348(anInt914 - 8 - 4, 16083, anInt915 - 8 - 4);
+        method76((byte) -13);
+        int y2;
+        if (crossType == 1) {
+            y2 = currentScreenMode == ScreenMode.FIXED ? 4 : 0;
+            aSpriteArray1150[anInt916 / 100].drawSprite(anInt914 - 8 - y2, anInt915 - 8 - y2);
             anInt1142++;
-            if(anInt1142 > 67)
-            {
+            if (anInt1142 > 67) {
                 anInt1142 = 0;
-                stream.method397((byte)6, 78);
+                stream.method397((byte) 6, 78);
             }
         }
-        if(anInt917 == 2)
-            aClass30_Sub2_Sub1_Sub1Array1150[4 + anInt916 / 100].method348(anInt914 - 8 - 4, 16083, anInt915 - 8 - 4);
-        if(anInt1018 != -1)
-        {
-            method119(anInt945, false, anInt1018);
-            drawInterface(0, 0, Class9.aClass9Array210[anInt1018], 0);
+        if (crossType == 2) {
+            y2 = currentScreenMode == ScreenMode.FIXED ? 4 : 0;
+            aSpriteArray1150[4 + anInt916 / 100].drawSprite(anInt914 - 8 - y2, anInt915 - 8 - y2);
         }
-        if(anInt857 != -1)
-        {
-            method119(anInt945, false, anInt857);
-            drawInterface( 0, 0, Class9.aClass9Array210[anInt857], 0);
+        if (openWalkableInterface != -1) {
+            method119(anInt945, false, openWalkableInterface);
+            if (openWalkableInterface == 197 && currentScreenMode != ScreenMode.FIXED) {
+               // skullIcons[0].drawSprite(currentGameWidth - 157, 168);
+                //String text = Widget.interfaceCache[199].message.replace("@yel@", "");
+                //regularText.drawChatInput(0xE1981D, currentGameWidth - 165, text, 207, true);
+        } else if (openWalkableInterface == 201 && currentScreenMode != ScreenMode.FIXED) {
+            drawInterface(0, currentGameWidth - 560, Widget.interfaceCache[openWalkableInterface], -109);
+        } else {
+            drawInterface(0, currentScreenMode == ScreenMode.FIXED ? 0 : (currentGameWidth / 2) - 356,
+                    Widget.interfaceCache[openWalkableInterface],
+                    currentScreenMode == ScreenMode.FIXED ? 0 : (currentGameHeight / 2) - 230);
         }
-        method70(184);
-        if(!aBoolean885)
+        }
+        if(openInterfaceID != -1)
         {
-            method82(0);
+            method119(anInt945, false, openInterfaceID);
+            if (currentScreenMode == ScreenMode.FIXED)
+                drawInterface(0, 0, Widget.interfaceCache[openInterfaceID], 0);
+            else
+            drawInterface( 0, (currentGameWidth / 2) - 356, Widget.interfaceCache[openInterfaceID], currentScreenMode == ScreenMode.FIXED ? 0 : (currentGameHeight / 2) - 230);
+        }
+        //method70(184);
+        if(!menuOpen)
+        {
+            processRightClick(0);
             method125(45706);
         } else
-        if(anInt948 == 0)
-            method40((byte)9);
+        if(menuScreenArea == 0)
+            drawMenu(currentScreenMode == ScreenMode.FIXED ? 0 : 0, currentScreenMode == ScreenMode.FIXED ? 0 : 0);
         if(anInt1055 == 1)
-            aClass30_Sub2_Sub1_Sub1Array1095[1].method348(currentScreenMode == ScreenMode.FIXED ? 472 : currentGameWidth - 85, 16083, currentScreenMode == ScreenMode.FIXED ? 296 : 186);
+            aSpriteArray1095[1].drawSprite(currentScreenMode == ScreenMode.FIXED ? 472 : currentGameWidth - 85, currentScreenMode == ScreenMode.FIXED ? 296 : 186);
         if(fpsOn)
         {
             char c = '\u01FB';
@@ -9620,18 +11011,18 @@ public class client extends Applet_Sub1 {
             int i1 = 0xffff00;
             if(super.anInt8 < 15)
                 i1 = 0xff0000;
-            aClass30_Sub2_Sub1_Sub4_1271.method380("Fps:" + super.anInt8, xPosition, i1, (byte)-80, yPosition);
+            regularText.method380("Fps:" + super.anInt8, xPosition, i1, (byte)-80, yPosition);
             yPosition += 15;
             Runtime runtime = Runtime.getRuntime();
             int j1 = (int)((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
             i1 = 0xffff00;
             if(j1 > 0x2000000 && aBoolean960)
                 i1 = 0xff0000;
-            aClass30_Sub2_Sub1_Sub4_1271.method380("Mem:" + j1 + "k", xPosition, 0xffff00, (byte)-80, yPosition);
+            regularText.method380("Mem:" + j1 + "k", xPosition, 0xffff00, (byte)-80, yPosition);
             yPosition += 15;
         }
-        int x = anInt1034 + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1550 - 6 >> 7);
-        int y = anInt1035 + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1551 - 6 >> 7);
+        int x = baseX + (aPlayer_1126.anInt1550 - 6 >> 7);
+        int y = baseY + (aPlayer_1126.anInt1551 - 6 >> 7);
         int var131 = x >> 6;
         int var12 = y >> 6;
         int chunkX = x >> 3;
@@ -9642,34 +11033,34 @@ public class client extends Applet_Sub1 {
         if (clientData) {
             Runtime runtime = Runtime.getRuntime();
             int j1 = (int) ((runtime.totalMemory() - runtime.freeMemory()) / 1024L);
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0x00FF00, "Players Nearby: " + anInt891, 27, (byte)-80, 5);
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0x00FF00, "Npcs Nearby: " + anInt836, 41, (byte)-80, 5);
+            regularText.method385(0x00FF00, "Players Nearby: " + anInt891, 27, (byte)-80, 5);
+            regularText.method385(0x00FF00, "Npcs Nearby: " + npcCount, 41, (byte)-80, 5);
 
             if (mapx > 1000 || mapy > 1000) {
-                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Current Region: " + mapx + ", " + mapy + ", Region ID: " + regionid, 55, (byte)-80, 5);
+                regularText.method385(0xffff00, "Current Region: " + mapx + ", " + mapy + ", Region ID: " + regionid, 55, (byte)-80, 5);
             } else {
-                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Current Region: 0" + mapx + ", 0" + mapy + ", Region ID: " + regionid, 55, (byte)-80, 5);
+                regularText.method385(0xffff00, "Current Region: 0" + mapx + ", 0" + mapy + ", Region ID: " + regionid, 55, (byte)-80, 5);
             }
             for (int num = 0; num < terrainIndices.length; num++) {
                 int[] flo = terrainIndices;
-                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Floor map: " + Arrays.toString(flo), 69, (byte)-80, 5);
+                regularText.method385(0xffff00, "Floor map: " + Arrays.toString(flo), 69, (byte)-80, 5);
             }
             for (int num = 0; num < objectIndices.length; num++) {
                 int[] obj = objectIndices;
-                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Object map: " + Arrays.toString(obj), 83, (byte)-80, 5);
+                regularText.method385(0xffff00, "Object map: " + Arrays.toString(obj), 83, (byte)-80, 5);
                 // output: "Object map: "[1, 3, 5, 7, 9]"
             }
 
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Map Data: " + terrainIndices[0] + ".dat", 97, (byte)-80, 5);
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Fps: " + super.anInt8, 111, (byte)-80, 5);
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Memory Used: " + j1/1024 + "MB", 125, (byte)-80, 5);
+            regularText.method385(0xffff00, "Map Data: " + terrainIndices[0] + ".dat", 97, (byte)-80, 5);
+            regularText.method385(0xffff00, "Fps: " + super.anInt8, 111, (byte)-80, 5);
+            regularText.method385(0xffff00, "Memory Used: " + j1/1024 + "MB", 125, (byte)-80, 5);
             //aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00,
             //      "Mouse: [" + super.getMouseX() + ", " + super.getMouseY() + "] [" + super.getRawMouseX() + ", " + super.getRawMouseY() + "]", 139, (byte)-80, 5);
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Coordinates: X: " + x + ", Y: " + y, 153, (byte)-80, 5);
+            regularText.method385(0xffff00, "Coordinates: X: " + x + ", Y: " + y, 153, (byte)-80, 5);
 
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00,
+            regularText.method385(0xffff00,
                     "Camera Position: X: " + xCameraPos + ", Y: " + yCameraPos + ", Z: " + zCameraPos, 167, (byte)-80, 5);
-            aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "Camera Curve: X: " + xCameraCurve + ", Y: " + yCameraCurve, (byte)-80, 181,
+            regularText.method385(0xffff00, "Camera Curve: X: " + xCameraCurve + ", Y: " + yCameraCurve, (byte)-80, 181,
                     5);
             y = 181;
             y += 15;
@@ -9679,11 +11070,12 @@ public class client extends Applet_Sub1 {
         {
             int j = anInt1104 / 50;
             int l = j / 60;
+            int var16 = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 498;
             j %= 60;
             if(j < 10)
-                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "System update in: " + l + ":0" + j, 329, 822, 4);
+                regularText.method385(0xffff00, "System update in: " + l + ":0" + j, 329 + var16, 822, 4);
             else
-                aClass30_Sub2_Sub1_Sub4_1271.method385(0xffff00, "System update in: " + l + ":" + j, 329, 822, 4);
+                regularText.method385(0xffff00, "System update in: " + l + ":" + j, 329 + var16, 822, 4);
             anInt849++;
             if(anInt849 > 75)
             {
@@ -9701,14 +11093,14 @@ public class client extends Applet_Sub1 {
                 return;
             if(anInt822 >= 100)
             {
-                method77("Your ignore list is full. Max of 100 hit", 0, "", aBoolean991);
+                pushMessage("Your ignore list is full. Max of 100 hit", 0, "");
                 return;
             }
-            String s = Class50.method587(-45804, Class50.method584(l, (byte)-99));
+            String s = TextClass.fixName(TextClass.nameForLong(l));
             for(int j = 0; j < anInt822; j++)
                 if(aLongArray925[j] == l)
                 {
-                    method77(s + " is already on your ignore list", 0, "", aBoolean991);
+                    pushMessage(s + " is already on your ignore list", 0, "");
                     return;
                 }
 
@@ -9717,12 +11109,12 @@ public class client extends Applet_Sub1 {
             for(int k = 0; k < anInt899; k++)
                 if(aLongArray955[k] == l)
                 {
-                    method77("Please remove " + s + " from your friend list first", 0, "", aBoolean991);
+                    pushMessage("Please remove " + s + " from your friend list first", 0, "");
                     return;
                 }
 
             aLongArray925[anInt822++] = l;
-            aBoolean1153 = true;
+            tabAreaAltered = true;
             stream.method397((byte)6, 133);
             stream.method404(5, l);
             return;
@@ -9745,9 +11137,9 @@ public class client extends Applet_Sub1 {
                 j = anInt889;
             else
                 j = anIntArray892[i];
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[j];
-            if(class30_sub2_sub4_sub1_sub2 != null)
-                method96(46988, 1, class30_sub2_sub4_sub1_sub2);
+            Player player = aPlayerArray890[j];
+            if(player != null)
+                method96(46988, 1, player);
         }
 
     }
@@ -9766,7 +11158,7 @@ public class client extends Applet_Sub1 {
                     class30_sub1.anInt1294--;
                 if(class30_sub1.anInt1294 == 0)
                 {
-                    if(class30_sub1.anInt1299 < 0 || Class7.method178(class30_sub1.anInt1299, class30_sub1.anInt1301, 8))
+                    if(class30_sub1.anInt1299 < 0 || ObjectManager.method178(class30_sub1.anInt1299, class30_sub1.anInt1301, 8))
                     {
                         method142(class30_sub1.anInt1298, class30_sub1.anInt1295, class30_sub1.anInt1300, class30_sub1.anInt1301, class30_sub1.anInt1297, class30_sub1.anInt1296, class30_sub1.anInt1299, 4);
                         class30_sub1.method329();
@@ -9775,7 +11167,7 @@ public class client extends Applet_Sub1 {
                 {
                     if(class30_sub1.anInt1302 > 0)
                         class30_sub1.anInt1302--;
-                    if(class30_sub1.anInt1302 == 0 && class30_sub1.anInt1297 >= 1 && class30_sub1.anInt1298 >= 1 && class30_sub1.anInt1297 <= 102 && class30_sub1.anInt1298 <= 102 && (class30_sub1.anInt1291 < 0 || Class7.method178(class30_sub1.anInt1291, class30_sub1.anInt1293, 8)))
+                    if(class30_sub1.anInt1302 == 0 && class30_sub1.anInt1297 >= 1 && class30_sub1.anInt1298 >= 1 && class30_sub1.anInt1297 <= 102 && class30_sub1.anInt1298 <= 102 && (class30_sub1.anInt1291 < 0 || ObjectManager.method178(class30_sub1.anInt1291, class30_sub1.anInt1293, 8)))
                     {
                         method142(class30_sub1.anInt1298, class30_sub1.anInt1295, class30_sub1.anInt1292, class30_sub1.anInt1293, class30_sub1.anInt1297, class30_sub1.anInt1296, class30_sub1.anInt1291, 4);
                         class30_sub1.anInt1302 = -1;
@@ -9793,91 +11185,48 @@ public class client extends Applet_Sub1 {
 
     public final void method116(boolean flag)
     {
-        int i = aClass30_Sub2_Sub1_Sub4_1272.method383(anInt1116, "Choose Option");
+        int i = boldText.method383(anInt1116, "Choose Option");
         aBoolean1157 &= flag;
-        for(int j = 0; j < anInt1133; j++)
+        for(int j = 0; j < menuActionRow; j++)
         {
-            int k = aClass30_Sub2_Sub1_Sub4_1272.method383(anInt1116, aStringArray1199[j]);
+            int k = boldText.method383(anInt1116, menuActionName[j]);
             if(k > i)
                 i = k;
         }
 
         i += 8;
-        int l = 15 * anInt1133 + 21;
-        if(super.anInt27 > 4 && super.anInt28 > 4 && super.anInt27 < 516 && super.anInt28 < 338)
+        int l = 15 * menuActionRow + 21;
+        if(super.saveClickX > 4 && super.saveClickY > 4 && super.saveClickX < currentGameWidth && super.saveClickY < currentGameHeight)
         {
-            int i1 = super.anInt27 - 4 - i / 2;
-            if(i1 + i > 512)
-                i1 = 512 - i;
+            int i1 = super.saveClickX - 4 - i / 2;
+            if(i1 + i > currentGameWidth - 4)
+                i1 = currentGameWidth - 4- i;
             if(i1 < 0)
                 i1 = 0;
-            int l1 = super.anInt28 - 4;
-            if(l1 + l > 334)
-                l1 = 334 - l;
+            int l1 = super.saveClickY - 0;
+            if(l1 + l > currentGameHeight- 6)
+                l1 = currentGameHeight - 6 - l;
             if(l1 < 0)
                 l1 = 0;
-            aBoolean885 = true;
-            anInt948 = 0;
+            menuOpen = true;
             anInt949 = i1;
             anInt950 = l1;
             anInt951 = i;
-            anInt952 = 15 * anInt1133 + 22;
-        }
-        if(super.anInt27 > 553 && super.anInt28 > 205 && super.anInt27 < 743 && super.anInt28 < 466)
-        {
-            int j1 = super.anInt27 - 553 - i / 2;
-            if(j1 < 0)
-                j1 = 0;
-            else
-            if(j1 + i > 190)
-                j1 = 190 - i;
-            int i2 = super.anInt28 - 205;
-            if(i2 < 0)
-                i2 = 0;
-            else
-            if(i2 + l > 261)
-                i2 = 261 - l;
-            aBoolean885 = true;
-            anInt948 = 1;
-            anInt949 = j1;
-            anInt950 = i2;
-            anInt951 = i;
-            anInt952 = 15 * anInt1133 + 22;
-        }
-        if(super.anInt27 > 17 && super.anInt28 > 357 && super.anInt27 < 496 && super.anInt28 < 453)
-        {
-            int k1 = super.anInt27 - 17 - i / 2;
-            if(k1 < 0)
-                k1 = 0;
-            else
-            if(k1 + i > 479)
-                k1 = 479 - i;
-            int j2 = super.anInt28 - 357;
-            if(j2 < 0)
-                j2 = 0;
-            else
-            if(j2 + l > 96)
-                j2 = 96 - l;
-            aBoolean885 = true;
-            anInt948 = 2;
-            anInt949 = k1;
-            anInt950 = j2;
-            anInt951 = i;
-            anInt952 = 15 * anInt1133 + 22;
+            anInt952 = 15 * menuActionRow + 22;
         }
     }
 
-    private final void method117(Class30_Sub2_Sub2 class30_sub2_sub2, int i, byte byte0)
+    private final void method117(Stream stream, int i, byte byte0)
     {
-        class30_sub2_sub2.method418(anInt1118);
+        stream.method418(anInt1118);
         if(byte0 == 5)
             byte0 = 0;
         else
-            anInt1008 = class30_sub2_sub2.method408();
-        int j = class30_sub2_sub2.method419(1, 0);
+            packet = stream.readUnsignedByte();
+        int j = stream.readBits(1);
         if(j == 0)
             return;
-        int k = class30_sub2_sub2.method419(2, 0);
+        int k = stream.readBits(2);
         if(k == 0)
         {
             anIntArray894[anInt893++] = anInt889;
@@ -9885,34 +11234,34 @@ public class client extends Applet_Sub1 {
         }
         if(k == 1)
         {
-            int l = class30_sub2_sub2.method419(3, 0);
-            aClass30_Sub2_Sub4_Sub1_Sub2_1126.method448(false, (byte)20, l);
-            int k1 = class30_sub2_sub2.method419(1, 0);
+            int l = stream.readBits(3);
+            aPlayer_1126.method448(false, (byte)20, l);
+            int k1 = stream.readBits(1);
             if(k1 == 1)
                 anIntArray894[anInt893++] = anInt889;
             return;
         }
         if(k == 2)
         {
-            int i1 = class30_sub2_sub2.method419(3, 0);
-            aClass30_Sub2_Sub4_Sub1_Sub2_1126.method448(true, (byte)20, i1);
-            int l1 = class30_sub2_sub2.method419(3, 0);
-            aClass30_Sub2_Sub4_Sub1_Sub2_1126.method448(true, (byte)20, l1);
-            int j2 = class30_sub2_sub2.method419(1, 0);
+            int i1 = stream.readBits(3);
+            aPlayer_1126.method448(true, (byte)20, i1);
+            int l1 = stream.readBits(3);
+            aPlayer_1126.method448(true, (byte)20, l1);
+            int j2 = stream.readBits(1);
             if(j2 == 1)
                 anIntArray894[anInt893++] = anInt889;
             return;
         }
         if(k == 3)
         {
-            anInt918 = class30_sub2_sub2.method419(2, 0);
-            int j1 = class30_sub2_sub2.method419(1, 0);
-            int i2 = class30_sub2_sub2.method419(1, 0);
+            anInt918 = stream.readBits(2);
+            int j1 = stream.readBits(1);
+            int i2 = stream.readBits(1);
             if(i2 == 1)
                 anIntArray894[anInt893++] = anInt889;
-            int k2 = class30_sub2_sub2.method419(7, 0);
-            int l2 = class30_sub2_sub2.method419(7, 0);
-            aClass30_Sub2_Sub4_Sub1_Sub2_1126.method445(l2, k2, j1 == 1, false);
+            int k2 = stream.readBits(7);
+            int l2 = stream.readBits(7);
+            aPlayer_1126.method445(l2, k2, j1 == 1, false);
         }
     }
 
@@ -9928,9 +11277,9 @@ public class client extends Applet_Sub1 {
             }
             catch(Exception _ex) { }
         }
-        aClass30_Sub2_Sub1_Sub2_966 = null;
-        aClass30_Sub2_Sub1_Sub2_967 = null;
-        aClass30_Sub2_Sub1_Sub2Array1152 = null;
+        aBackground_966 = null;
+        aBackground_967 = null;
+        aBackgroundArray1152 = null;
         anIntArray850 = null;
         anIntArray851 = null;
         anIntArray852 = null;
@@ -9939,8 +11288,8 @@ public class client extends Applet_Sub1 {
         anIntArray1191 = null;
         anIntArray828 = null;
         anIntArray829 = null;
-        aClass30_Sub2_Sub1_Sub1_1201 = null;
-        aClass30_Sub2_Sub1_Sub1_1202 = null;
+        aSprite_1201 = null;
+        aSprite_1202 = null;
         if(i < 3 || i > 3)
             aClass19ArrayArrayArray827 = null;
     }
@@ -9950,12 +11299,12 @@ public class client extends Applet_Sub1 {
         boolean flag1 = false;
         if(flag)
             throw new NullPointerException();
-        Class9 class9 = Class9.aClass9Array210[j];
+        Widget class9 = Widget.interfaceCache[j];
         for(int k = 0; k < class9.anIntArray240.length; k++)
         {
             if(class9.anIntArray240[k] == -1)
                 break;
-            Class9 class9_1 = Class9.aClass9Array210[class9.anIntArray240[k]];
+            Widget class9_1 = Widget.interfaceCache[class9.anIntArray240[k]];
             if(class9_1.anInt262 == 1)
                 flag1 |= method119(i, false, class9_1.anInt250);
             if(class9_1.anInt262 == 6 && (class9_1.anInt257 != -1 || class9_1.anInt258 != -1))
@@ -10001,8 +11350,8 @@ public class client extends Applet_Sub1 {
         {
             int k = xCameraPos >> 7;
             int l = yCameraPos >> 7;
-            int i1 = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 >> 7;
-            int j1 = ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 >> 7;
+            int i1 = ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 >> 7;
+            int j1 = ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 >> 7;
             if((aByteArrayArrayArray1258[anInt918][k][l] & 4) != 0)
                 j = anInt918;
             int k1;
@@ -10069,7 +11418,7 @@ public class client extends Applet_Sub1 {
                 }
             }
         }
-        if((aByteArrayArrayArray1258[anInt918][((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 >> 7][((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 >> 7] & 4) != 0)
+        if((aByteArrayArrayArray1258[anInt918][((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 >> 7][((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 >> 7] & 4) != 0)
             j = anInt918;
         return j;
     }
@@ -10098,7 +11447,7 @@ public class client extends Applet_Sub1 {
                 if(aLongArray925[j] == l)
                 {
                     anInt822--;
-                    aBoolean1153 = true;
+                    tabAreaAltered = true;
                     for(int k = j; k < anInt822; k++)
                         aLongArray925[k] = aLongArray925[k + 1];
 
@@ -10135,7 +11484,7 @@ public class client extends Applet_Sub1 {
             signlink.midi = "voladjust";
     }
 
-    public final int method124(int i, Class9 class9, int j)
+    public final int method124(int i, Widget class9, int j)
     {
         i = 91 / i;
         if(class9.anIntArrayArray226 == null || j >= class9.anIntArrayArray226.length)
@@ -10161,7 +11510,7 @@ public class client extends Applet_Sub1 {
                     k1 = anIntArray864[ai[l++]];
                 if(j1 == 4)
                 {
-                    Class9 class9_1 = Class9.aClass9Array210[ai[l++]];
+                    Widget class9_1 = Widget.interfaceCache[ai[l++]];
                     int k2 = ai[l++];
                     if(k2 >= 0 && k2 < Class8.anInt203 && (!Class8.method198(k2).aBoolean161 || aBoolean959))
                     {
@@ -10172,13 +11521,13 @@ public class client extends Applet_Sub1 {
                     }
                 }
                 if(j1 == 5)
-                    k1 = anIntArray971[ai[l++]];
+                    k1 = variousSettings[ai[l++]];
                 if(j1 == 6)
                     k1 = anIntArray1019[anIntArray1044[ai[l++]] - 1];
                 if(j1 == 7)
-                    k1 = (anIntArray971[ai[l++]] * 100) / 46875;
+                    k1 = (variousSettings[ai[l++]] * 100) / 46875;
                 if(j1 == 8)
-                    k1 = aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1705;
+                    k1 = aPlayer_1126.anInt1705;
                 if(j1 == 9)
                 {
                     for(int l1 = 0; l1 < Class45.anInt733; l1++)
@@ -10188,7 +11537,7 @@ public class client extends Applet_Sub1 {
                 }
                 if(j1 == 10)
                 {
-                    Class9 class9_2 = Class9.aClass9Array210[ai[l++]];
+                    Widget class9_2 = Widget.interfaceCache[ai[l++]];
                     int l2 = ai[l++] + 1;
                     if(l2 >= 0 && l2 < Class8.anInt203 && (!Class8.method198(l2).aBoolean161 || aBoolean959))
                     {
@@ -10208,19 +11557,19 @@ public class client extends Applet_Sub1 {
                     k1 = anInt878;
                 if(j1 == 13)
                 {
-                    int i2 = anIntArray971[ai[l++]];
+                    int i2 = variousSettings[ai[l++]];
                     int i3 = ai[l++];
                     k1 = (i2 & 1 << i3) == 0 ? 0 : 1;
                 }
                 if(j1 == 14)
                 {
                     int j2 = ai[l++];
-                    VarBit varBit = VarBit.aVarBitArray646[j2];
+                    VarBit varBit = VarBit.cache[j2];
                     int l3 = varBit.anInt648;
                     int i4 = varBit.anInt649;
                     int j4 = varBit.anInt650;
                     int k4 = anIntArray1232[j4 - i4];
-                    k1 = anIntArray971[l3] >> i4 & k4;
+                    k1 = variousSettings[l3] >> i4 & k4;
                 }
                 if(j1 == 15)
                     byte0 = 1;
@@ -10229,9 +11578,9 @@ public class client extends Applet_Sub1 {
                 if(j1 == 17)
                     byte0 = 3;
                 if(j1 == 18)
-                    k1 = (((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 >> 7) + anInt1034;
+                    k1 = (((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 >> 7) + baseX;
                 if(j1 == 19)
-                    k1 = (((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 >> 7) + anInt1035;
+                    k1 = (((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 >> 7) + baseY;
                 if(j1 == 20)
                     k1 = ai[l++];
                 if(byte0 == 0)
@@ -10259,172 +11608,180 @@ public class client extends Applet_Sub1 {
 
     public final void method125(int i)
     {
-        if(anInt1133 < 2 && anInt1282 == 0 && anInt1136 == 0)
+        if(menuActionRow < 2 && anInt1282 == 0 && anInt1136 == 0)
             return;
         String s;
-        if(anInt1282 == 1 && anInt1133 < 2)
+        if(anInt1282 == 1 && menuActionRow < 2)
             s = "Use " + aString1286 + " on...";
         else
             //if(anInt1136 == 1 && anInt1133 < 2)
             //s = aString1139 + "...";
             //else
-            s = aStringArray1199[anInt1133 - 1];
-        if(anInt1133 > 2)
-            s = s + "@whi@ / " + (anInt1133 - 2) + " more options";
-        aClass30_Sub2_Sub1_Sub4_1272.method390(true, 4, 0xffffff, s, anInt1161 / 1000, 973, 15);
+            s = menuActionName[menuActionRow - 1];
+        if(menuActionRow > 2)
+            s = s + "@whi@ / " + (menuActionRow - 2) + " more options";
+        boldText.method390(true, 4, 0xffffff, s, loopCycle / 1000, 973, 15);
         if(i != 45706)
         {
             for(int j = 1; j > 0; j++);
         }
     }
 
-    public final void method126(boolean flag)
-    {
-        if(flag)
-            return;
+    public final void drawMinimap(boolean flag) {
         if (currentScreenMode == ScreenMode.FIXED) {
-            aClass15_1164.method237(0);
+            aRSImageProducer_1164.initDrawingArea();
         }
-        if(currentScreenMode != ScreenMode.FIXED) {
-            for(int i = 0; i < 76; i++) {
-                int amt = (int)(Math.sqrt(Math.pow(77, 2) - Math.pow(75-i, 2)));
-                anIntArray1229[i] = 2 * amt + 2;
-                anIntArray1229[150-i] = 2 * amt + 2;
-                anIntArray1052[i] = -amt + 73;
-                anIntArray1052[150-i] = -amt + 73;
+        if (anInt1021 == 2) {
+            if (currentScreenMode == ScreenMode.FIXED) {
+                BlackMap[0].drawSprite(0, 0);
+            } else {
+                this.gameframe[22].drawSprite(currentGameWidth - 181, 0);
+                this.gameframe[23].drawSprite(currentGameWidth - 158,7);
             }
-        }
-        if(anInt1021 == 2)
-        {
-            byte abyte0[] = aClass30_Sub2_Sub1_Sub2_1197.aByteArray1450;
-            int ai[] = Class30_Sub2_Sub1.anIntArray1378;
-            int k2 = abyte0.length;
-            for(int i5 = 0; i5 < k2; i5++)
-                if(abyte0[i5] == 0)
-                    ai[i5] = 0;
 
-            compassImage.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, (currentScreenMode == ScreenMode.FIXED ? 25 : 25), 0, (currentScreenMode == ScreenMode.FIXED ? 29 : currentGameWidth - 178), 33, 25);
-            aClass15_1165.method237(0);
-            return;
-        }
+            if (currentScreenMode != ScreenMode.FIXED && changeTabArea) {
+                if ((super.mouseX < currentGameWidth - 26 || super.mouseX > currentGameWidth - 1 || super.mouseY < 2
+                        || super.mouseY > 24) && tabID != 10) {
+                    this.gameframe[31].drawARGBSprite(currentGameWidth - 25, 2, 165);
+                } else {
+                    this.gameframe[31].drawSprite(currentGameWidth - 25,2);
+                }
+            }
+
+
+            this.compassImage.method352(33, this.anInt1185, this.anIntArray1057, 256, this.anIntArray968, -236,
+                    currentScreenMode == ScreenMode.FIXED ? 25 : 24, 4,
+                    currentScreenMode == ScreenMode.FIXED ? 29 : currentGameWidth - 176, 33, 25);
+            if (this.menuOpen) {
+                this.drawMenu(currentScreenMode == ScreenMode.FIXED ? 516 : 0, 0);
+            }
+
+            if (currentScreenMode == ScreenMode.FIXED) {
+                aRSImageProducer_1165.initDrawingArea();
+            }
+        } else {
         int i = anInt1185 + anInt1209 & 0x7ff;
-        int j = 48 + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-        int l2 = 464 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-        aClass30_Sub2_Sub1_Sub1_1263.method352(151, i, anIntArray1229, 256 + anInt1170, anIntArray1052, l2, currentScreenMode == ScreenMode.FIXED ? 9 : 5,  currentScreenMode == ScreenMode.FIXED ? 25 : currentGameWidth - 158, 146, j);
-        compassImage.method352(33, anInt1185, anIntArray1057, 256, anIntArray968, (currentScreenMode == ScreenMode.FIXED ? 25 : 25), 0, (currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 178), 33, 25);
-        for(int j5 = 0; j5 < anInt1071; j5++)
-        {
-            int k = (anIntArray1072[j5] * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-            int i3 = (anIntArray1073[j5] * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-            method141(aClass30_Sub2_Sub1_Sub1Array1140[j5], k, i3, false);
-            method141(Mapicon, ((3255 - anInt1034) * 4 + 2) - aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1550 / 32, ((3290 - anInt1035) * 4 + 2) -  aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1551 / 32, true);
+        int j = 48 + ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+        int l2 = 464 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+            this.minimapImage.method352(151, i, this.anIntArray1229, 256 + this.anInt1170, this.anIntArray1052, -236,
+                    l2, currentScreenMode == ScreenMode.FIXED ? 9 : 7,
+                    currentScreenMode == ScreenMode.FIXED ? 54 : currentGameWidth - 158, 146, j);
+        for (int j5 = 0; j5 < anInt1071; j5++) {
+            int k = (anIntArray1072[j5] * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+            int i3 = (anIntArray1073[j5] * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+            method141(aSpriteArray1140[j5], k, i3, false);
+            method141(Mapicon, ((3255 - baseX) * 4 + 2) - aPlayer_1126.anInt1550 / 32, ((3290 - baseY) * 4 + 2) - aPlayer_1126.anInt1551 / 32, true);
         }
 
-        for(int k5 = 0; k5 < 104; k5++)
-        {
-            for(int l5 = 0; l5 < 104; l5++)
-            {
+        for (int k5 = 0; k5 < 104; k5++) {
+            for (int l5 = 0; l5 < 104; l5++) {
                 Class19 class19 = aClass19ArrayArrayArray827[anInt918][k5][l5];
-                if(class19 != null)
-                {
-                    int l = (k5 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-                    int j3 = (l5 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-                    method141(aClass30_Sub2_Sub1_Sub1_1074, l, j3, false);
+                if (class19 != null) {
+                    int l = (k5 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+                    int j3 = (l5 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+                    method141(aSprite_1074, l, j3, false);
                 }
             }
 
         }
 
-        for(int i6 = 0; i6 < anInt836; i6++)
-        {
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[anIntArray837[i6]];
-            if(class30_sub2_sub4_sub1_sub1 != null && class30_sub2_sub4_sub1_sub1.method449(aBoolean1224))
-            {
-                Class5 class5 = class30_sub2_sub4_sub1_sub1.aClass5_1696;
-                if(class5.anIntArray88 != null)
+        for (int i6 = 0; i6 < npcCount; i6++) {
+            Npc npc = npcs[npcIndices[i6]];
+            if (npc != null && npc.method449(aBoolean1224)) {
+                Class5 class5 = npc.desc;
+                if (class5.anIntArray88 != null)
                     class5 = class5.method161();
-                if(class5 != null && class5.aBoolean87 && class5.aBoolean84)
-                {
-                    int i1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-                    int k3 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-                    method141(aClass30_Sub2_Sub1_Sub1_1075, i1, k3, false);
+                if (class5 != null && class5.aBoolean87 && class5.aBoolean84) {
+                    int i1 = ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+                    int k3 = ((Class30_Sub2_Sub4_Sub1) (npc)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+                    method141(aSprite_1075, i1, k3, false);
                 }
             }
         }
 
-        for(int j6 = 0; j6 < anInt891; j6++)
-        {
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[j6]];
-            if(class30_sub2_sub4_sub1_sub2 != null && class30_sub2_sub4_sub1_sub2.method449(aBoolean1224))
-            {
-                int j1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-                int l3 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
+        for (int j6 = 0; j6 < anInt891; j6++) {
+            Player player = aPlayerArray890[anIntArray892[j6]];
+            if (player != null && player.method449(aBoolean1224)) {
+                int j1 = ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+                int l3 = ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
                 boolean flag1 = false;
-                long l6 = Class50.method583(class30_sub2_sub4_sub1_sub2.aString1703);
-                for(int k6 = 0; k6 < anInt899; k6++)
-                {
-                    if(l6 != aLongArray955[k6] || anIntArray826[k6] == 0)
+                long l6 = TextClass.longForName(player.name);
+                for (int k6 = 0; k6 < anInt899; k6++) {
+                    if (l6 != aLongArray955[k6] || anIntArray826[k6] == 0)
                         continue;
                     flag1 = true;
                     break;
                 }
 
                 boolean flag2 = false;
-                if(aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1701 != 0 && class30_sub2_sub4_sub1_sub2.anInt1701 != 0 && aClass30_Sub2_Sub4_Sub1_Sub2_1126.anInt1701 == class30_sub2_sub4_sub1_sub2.anInt1701)
+                if (aPlayer_1126.anInt1701 != 0 && player.anInt1701 != 0 && aPlayer_1126.anInt1701 == player.anInt1701)
                     flag2 = true;
-                if(flag1)
-                    method141(aClass30_Sub2_Sub1_Sub1_1077, j1, l3, false);
+                if (flag1)
+                    method141(aSprite_1077, j1, l3, false);
+                else if (flag2)
+                    method141(aSprite_1078, j1, l3, false);
                 else
-                if(flag2)
-                    method141(aClass30_Sub2_Sub1_Sub1_1078, j1, l3, false);
-                else
-                    method141(aClass30_Sub2_Sub1_Sub1_1076, j1, l3, false);
+                    method141(aSprite_1076, j1, l3, false);
             }
         }
 
-        if(anInt855 != 0 && anInt1161 % 20 < 10)
-        {
-            if(anInt855 == 1 && anInt1222 >= 0 && anInt1222 < aClass30_Sub2_Sub4_Sub1_Sub1Array835.length)
-            {
-                Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1_1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[anInt1222];
-                if(class30_sub2_sub4_sub1_sub1_1 != null)
-                {
-                    int k1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-                    int i4 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-                    method81(aClass30_Sub2_Sub1_Sub1_871, -760, i4, k1);
+        if (anInt855 != 0 && loopCycle % 20 < 10) {
+            if (anInt855 == 1 && anInt1222 >= 0 && anInt1222 < npcs.length) {
+                Npc class30_sub2_sub4_sub1_sub1_1 = npcs[anInt1222];
+                if (class30_sub2_sub4_sub1_sub1_1 != null) {
+                    int k1 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+                    int i4 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1_1)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+                    method81(aSprite_871, -760, i4, k1);
                 }
             }
-            if(anInt855 == 2)
-            {
-                int l1 = ((anInt934 - anInt1034) * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-                int j4 = ((anInt935 - anInt1035) * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-                method81(aClass30_Sub2_Sub1_Sub1_871, -760, j4, l1);
+            if (anInt855 == 2) {
+                int l1 = ((anInt934 - baseX) * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+                int j4 = ((anInt935 - baseY) * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+                method81(aSprite_871, -760, j4, l1);
             }
-            if(anInt855 == 10 && anInt933 >= 0 && anInt933 < aClass30_Sub2_Sub4_Sub1_Sub2Array890.length)
-            {
-                Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2_1 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[anInt933];
-                if(class30_sub2_sub4_sub1_sub2_1 != null)
-                {
-                    int i2 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-                    int k4 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-                    method81(aClass30_Sub2_Sub1_Sub1_871, -760, k4, i2);
+            if (anInt855 == 10 && anInt933 >= 0 && anInt933 < aPlayerArray890.length) {
+                Player class30_sub2_sub4_sub1_sub2_1 = aPlayerArray890[anInt933];
+                if (class30_sub2_sub4_sub1_sub2_1 != null) {
+                    int i2 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1550 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+                    int k4 = ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2_1)).anInt1551 / 32 - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+                    method81(aSprite_871, -760, k4, i2);
                 }
             }
         }
-        if(anInt1261 != 0)
-        {
-            int j2 = (anInt1261 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550 / 32;
-            int l4 = (anInt1262 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551 / 32;
-            method141(aClass30_Sub2_Sub1_Sub1_870, j2, l4, false);
+        if (anInt1261 != 0) {
+            int j2 = (anInt1261 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550 / 32;
+            int l4 = (anInt1262 * 4 + 2) - ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551 / 32;
+            method141(aSprite_870, j2, l4, false);
         }
-        Class30_Sub2_Sub1.method336(3, 78, 97, 0xffffff, 3, 0);
-        aClass15_1165.method237(0);
+        DrawingArea.drawPixels(3, currentScreenMode == ScreenMode.FIXED ? 83 : 80, currentScreenMode == ScreenMode.FIXED ? 127 : currentGameWidth - 88, 0xffffff, 3);
+            if (currentScreenMode == ScreenMode.FIXED) {
+                this.gameframe[29].drawSprite(0, 0);
+            } else {
+                this.gameframe[22].drawSprite(currentGameWidth - 181, 0);
+            }
+
+            this.compassImage.method352(33, this.anInt1185, this.anIntArray1057, 256, this.anIntArray968, -236,
+                    currentScreenMode == ScreenMode.FIXED ? 25 : 24, 4,
+                    currentScreenMode == ScreenMode.FIXED ? 29 : currentGameWidth - 176, 33, 25);
+            if (currentScreenMode != ScreenMode.FIXED && changeTabArea) {
+                if ((super.mouseX < currentGameWidth - 26 || super.mouseX > currentGameWidth - 1 || super.mouseY < 2
+                        || super.mouseY > 24) && tabID != 10) {
+                    this.gameframe[31].drawSprite(currentGameWidth - 25, 165);
+                } else {
+                    this.gameframe[31].drawSprite(currentGameWidth - 25, 2);
+                }
+            }
+        if (this.menuOpen) {
+            this.drawMenu(currentScreenMode == ScreenMode.FIXED ? 516 : 0, 0);
+        }
+        if (currentScreenMode == ScreenMode.FIXED) {
+            aRSImageProducer_1165.initDrawingArea();
+        }
+    }
     }
 
     public final void method127(boolean flag, Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, int i)
     {
-        if(!flag)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
         method128(class30_sub2_sub4_sub1.anInt1550, i, anInt875, class30_sub2_sub4_sub1.anInt1551);
     }
 
@@ -10447,8 +11804,6 @@ public class client extends Applet_Sub1 {
         int j2 = l * l1 + i * i2 >> 16;
         l = l * i2 - i * l1 >> 16;
         i = j2;
-        if(k >= 0)
-            stream.writeUnsignedByte(27);
         j2 = i1 * k1 - l * j1 >> 16;
         l = i1 * j1 + l * k1 >> 16;
         i1 = j2;
@@ -10456,68 +11811,105 @@ public class client extends Applet_Sub1 {
         {
             anInt963 = Class30_Sub2_Sub1_Sub3.anInt1466 + (i << client.log_view_dist) / l;
             anInt964 = Class30_Sub2_Sub1_Sub3.anInt1467 + (i1 << client.log_view_dist) / l;
-            return;
-        } else
-        {
+        } else {
             anInt963 = -1;
             anInt964 = -1;
-            return;
         }
     }
 
     public final void method129(boolean flag)
     {
-        if(anInt1195 == 0)
+        if(splitPrivateChat == 0)
             return;
         int i = 0;
         if(flag)
-            anInt1008 = -1;
+            packet = -1;
         if(anInt1104 != 0)
             i = 1;
-        for(int j = 0; j < 100; j++)
-            if(aStringArray944[j] != null)
+        for(int j = 0; j < 500; j++)
+            if(chatMessages[j] != null)
             {
-                int k = anIntArray942[j];
-                String s = aStringArray943[j];
+                int k = chatTypes[j];
+                String s = chatNames[j];
                 boolean flag1 = false;
-                if(s != null && s.startsWith("@cr1@"))
-                {
+                if (s != null && s.startsWith("@cr1@"))
                     s = s.substring(5);
-                    boolean flag2 = true;
-                }
-                if(s != null && s.startsWith("@cr2@"))
-                {
+                if (s != null && s.startsWith("@cr2@"))
                     s = s.substring(5);
-                    byte byte0 = 2;
-                }
-                if((k == 3 || k == 7) && (k == 7 || anInt845 == 0 || anInt845 == 1 && method109(false, s)))
+                if (s != null && s.startsWith("@cr3@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr4@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr5@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr6@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr7@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr8@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr9@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr10@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr11@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr12@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr13@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr14@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr15@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr16@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr17@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr18@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr19@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr20@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr21@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr22@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr23@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr24@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr25@"))
+                    s = s.substring(6);
+                if((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && method109(false, s)))
                 {
                     int l = 329 - i * 13;
-                    if(super.anInt20 > 4 && super.anInt21 - 4 > l - 10 && super.anInt21 - 4 <= l + 3)
+                    if(super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - 4 <= l + 3)
                     {
-                        int i1 = aClass30_Sub2_Sub1_Sub4_1271.method383(anInt1116, "From:  " + s + aStringArray944[j]) + 25;
+                        int i1 = regularText.method383(anInt1116, "From:  " + s + chatMessages[j]) + 25;
                         if(i1 > 450)
                             i1 = 450;
-                        if(super.anInt20 < 4 + i1)
+                        if(super.mouseX < 4 + i1)
                         {
                             if(rights >= 1)
                             {
-                                aStringArray1199[anInt1133] = "Report @whi@" + s;
-                                anIntArray1093[anInt1133] = 2606;
-                                anInt1133++;
+                                menuActionName[menuActionRow] = "Report @whi@" + s;
+                                menuActionID[menuActionRow] = 2606;
+                                menuActionRow++;
                             }
-                            aStringArray1199[anInt1133] = "Add ignore @red@" + s;
-                            anIntArray1093[anInt1133] = 2042;
-                            anInt1133++;
-                            aStringArray1199[anInt1133] = "Add friend @whi@" + s;
-                            anIntArray1093[anInt1133] = 2337;
-                            anInt1133++;
+                            menuActionName[menuActionRow] = "Add ignore @red@" + s;
+                            menuActionID[menuActionRow] = 2042;
+                            menuActionRow++;
+                            menuActionName[menuActionRow] = "Add friend @whi@" + s;
+                            menuActionID[menuActionRow] = 2337;
+                            menuActionRow++;
                         }
                     }
                     if(++i >= 5)
                         return;
                 }
-                if((k == 5 || k == 6) && anInt845 < 2 && ++i >= 5)
+                if((k == 5 || k == 6) && privateChatMode < 2 && ++i >= 5)
                     return;
             }
 
@@ -10553,7 +11945,7 @@ public class client extends Applet_Sub1 {
         if(i > 0);
     }
 
-    public final boolean method131(Class9 class9, boolean flag)
+    public final boolean method131(Widget class9, boolean flag)
     {
         if(flag)
             anInt883 = -211;
@@ -10643,7 +12035,7 @@ public class client extends Applet_Sub1 {
 
         }
         for(int l = 0; l < 33920; l++)
-            aClass15_1110.anIntArray315[l] = aClass30_Sub2_Sub1_Sub1_1201.anIntArray1439[l];
+            aRSImageProducer_1110.anIntArray315[l] = aSprite_1201.myPixels[l];
 
         int i1 = 0;
         int j1 = 1152;
@@ -10662,8 +12054,8 @@ public class client extends Applet_Sub1 {
                     int l3 = j3;
                     int j4 = 256 - j3;
                     j3 = anIntArray850[j3];
-                    int l4 = aClass15_1110.anIntArray315[j1];
-                    aClass15_1110.anIntArray315[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
+                    int l4 = aRSImageProducer_1110.anIntArray315[j1];
+                    aRSImageProducer_1110.anIntArray315[j1++] = ((j3 & 0xff00ff) * l3 + (l4 & 0xff00ff) * j4 & 0xff00ff00) + ((j3 & 0xff00) * l3 + (l4 & 0xff00) * j4 & 0xff0000) >> 8;
                 } else
                 {
                     j1++;
@@ -10673,9 +12065,9 @@ public class client extends Applet_Sub1 {
             j1 += j2;
         }
 
-        aClass15_1110.method238(0, 23680, super.aGraphics12, 0);
+        aRSImageProducer_1110.method238(0, 23680, super.aGraphics12, 0);
         for(int i2 = 0; i2 < 33920; i2++)
-            aClass15_1111.anIntArray315[i2] = aClass30_Sub2_Sub1_Sub1_1202.anIntArray1439[i2];
+            aRSImageProducer_1111.anIntArray315[i2] = aSprite_1202.myPixels[i2];
 
         i1 = 0;
         j1 = 1176;
@@ -10692,8 +12084,8 @@ public class client extends Applet_Sub1 {
                     int i5 = k4;
                     int j5 = 256 - k4;
                     k4 = anIntArray850[k4];
-                    int k5 = aClass15_1111.anIntArray315[j1];
-                    aClass15_1111.anIntArray315[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
+                    int k5 = aRSImageProducer_1111.anIntArray315[j1];
+                    aRSImageProducer_1111.anIntArray315[j1++] = ((k4 & 0xff00ff) * i5 + (k5 & 0xff00ff) * j5 & 0xff00ff00) + ((k4 & 0xff00) * i5 + (k5 & 0xff00) * j5 & 0xff0000) >> 8;
                 } else
                 {
                     j1++;
@@ -10704,14 +12096,14 @@ public class client extends Applet_Sub1 {
             j1 += 128 - k3 - i3;
         }
 
-        aClass15_1111.method238(0, 23680, super.aGraphics12, 637);
+        aRSImageProducer_1111.method238(0, 23680, super.aGraphics12, 637);
         if(byte0 != 9)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
+            packet = aStream_1083.readUnsignedByte();
     }
 
-    private final void method134(byte byte0, int i, Class30_Sub2_Sub2 class30_sub2_sub2)
+    private final void method134(byte byte0, int i, Stream stream)
     {
-        int j = class30_sub2_sub2.method419(8, 0);
+        int j = stream.readBits(8);
         if(j < anInt891)
         {
             for(int k = j; k < anInt891; k++)
@@ -10720,47 +12112,47 @@ public class client extends Applet_Sub1 {
         }
         if(j > anInt891)
         {
-            signlink.reporterror(aString1173 + " Too many players");
+            signlink.reporterror(myUsername + " Too many players");
             throw new RuntimeException("eek");
         }
         anInt891 = 0;
         for(int l = 0; l < j; l++)
         {
             int i1 = anIntArray892[l];
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i1];
-            int j1 = class30_sub2_sub2.method419(1, 0);
+            Player player = aPlayerArray890[i1];
+            int j1 = stream.readBits(1);
             if(j1 == 0)
             {
                 anIntArray892[anInt891++] = i1;
-                class30_sub2_sub4_sub1_sub2.anInt1537 = anInt1161;
+                player.anInt1537 = loopCycle;
             } else
             {
-                int k1 = class30_sub2_sub2.method419(2, 0);
+                int k1 = stream.readBits(2);
                 if(k1 == 0)
                 {
                     anIntArray892[anInt891++] = i1;
-                    class30_sub2_sub4_sub1_sub2.anInt1537 = anInt1161;
+                    player.anInt1537 = loopCycle;
                     anIntArray894[anInt893++] = i1;
                 } else
                 if(k1 == 1)
                 {
                     anIntArray892[anInt891++] = i1;
-                    class30_sub2_sub4_sub1_sub2.anInt1537 = anInt1161;
-                    int l1 = class30_sub2_sub2.method419(3, 0);
-                    class30_sub2_sub4_sub1_sub2.method448(false, (byte)20, l1);
-                    int j2 = class30_sub2_sub2.method419(1, 0);
+                    player.anInt1537 = loopCycle;
+                    int l1 = stream.readBits(3);
+                    player.method448(false, (byte)20, l1);
+                    int j2 = stream.readBits(1);
                     if(j2 == 1)
                         anIntArray894[anInt893++] = i1;
                 } else
                 if(k1 == 2)
                 {
                     anIntArray892[anInt891++] = i1;
-                    class30_sub2_sub4_sub1_sub2.anInt1537 = anInt1161;
-                    int i2 = class30_sub2_sub2.method419(3, 0);
-                    class30_sub2_sub4_sub1_sub2.method448(true, (byte)20, i2);
-                    int k2 = class30_sub2_sub2.method419(3, 0);
-                    class30_sub2_sub4_sub1_sub2.method448(true, (byte)20, k2);
-                    int l2 = class30_sub2_sub2.method419(1, 0);
+                    player.anInt1537 = loopCycle;
+                    int i2 = stream.readBits(3);
+                    player.method448(true, (byte)20, i2);
+                    int k2 = stream.readBits(3);
+                    player.method448(true, (byte)20, k2);
+                    int l2 = stream.readBits(1);
                     if(l2 == 1)
                         anIntArray894[anInt893++] = i1;
                 } else
@@ -10774,88 +12166,88 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method135(boolean flag, boolean flag1) {
-        method64(0);
-        aClass15_1109.method237(0);
-        aClass30_Sub2_Sub1_Sub2_966.method361(0, 16083, 0);
+        resetImageProducers(0);
+        aRSImageProducer_1109.initDrawingArea();
+        aBackground_966.method361(0, 0);
         char c = '\u0168';
         char c1 = '\310';
         if(flag1)
             return;
         if(anInt833 == 0) {
             int i = c1 / 2 + 80;
-            aClass30_Sub2_Sub1_Sub4_1270.method382(0x75a9a9, c / 2, anInt939, aClass42_Sub1_1068.aString1333, i, true);
+            smallText.method382(0x75a9a9, c / 2, anInt939, aClass42_Sub1_1068.aString1333, i, true);
             i = c1 / 2 - 70;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@Welcome to GodzHell Reborn and Remastered", i, true);
+            boldText.method382(0xffff00, c / 2, anInt939, "@whi@Welcome to GodzHell Reborn and Remastered", i, true);
             i = c1 / 2 - 50;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, "@whi@@ By Undead Games", i, true);
+            boldText.method382(0xffff00, c / 2, anInt939, "@whi@@ By Undead Games", i, true);
             i = c1 / 2 - 20;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xff0000, c / 2, anInt939, "@whi@New and Existing players click Enter to play", i, true);
+            boldText.method382(0xff0000, c / 2, anInt939, "@whi@New and Existing players click Enter to play", i, true);
             i += 30;
             int l = c / 2 - 80;
             int k1 = c1 / 2 + 20;
-            aClass30_Sub2_Sub1_Sub2_967.method361(l - 73, 16083, k1 - 20);
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, l, anInt939, "@whi@  About", k1 + 5, true);
+            aBackground_967.method361(l - 73, k1 - 20);
+            boldText.method382(0xffffff, l, anInt939, "@whi@  About", k1 + 5, true);
             l = c / 2 + 80;
-            aClass30_Sub2_Sub1_Sub2_967.method361(l - 73, 16083, k1 - 20);
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, l, anInt939, "@whi@Enter", k1 + 5, true);
+            aBackground_967.method361(l - 73, k1 - 20);
+            boldText.method382(0xffffff, l, anInt939, "@whi@Enter", k1 + 5, true);
         }
         if(anInt833 == 2) {
             int j = c1 / 2 - 40;
             if(aString1266.length() > 0) {
-                aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, aString1266, j - 15, true);
-                aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, aString1267, j, true);
+                boldText.method382(0xffff00, c / 2, anInt939, aString1266, j - 15, true);
+                boldText.method382(0xffff00, c / 2, anInt939, aString1267, j, true);
                 j += 15;
             } else {
-                aClass30_Sub2_Sub1_Sub4_1272.method382(0xffff00, c / 2, anInt939, aString1267, j - 7, true);
+                boldText.method382(0xffff00, c / 2, anInt939, aString1267, j - 7, true);
                 j += 15;
             }
-            aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, c / 2 - 90, 0xffffff, (new StringBuilder()).append("@whi@Login: ").append(aString1173).append((anInt1216 == 0) & (anInt1161 % 40 < 20) ? "@xxx@|" : "").toString(), j);
+            boldText.method389(false, true, c / 2 - 90, 0xffffff, (new StringBuilder()).append("@whi@Login: ").append(myUsername).append((anInt1216 == 0) & (loopCycle % 40 < 20) ? "@xxx@|" : "").toString(), j);
             j += 15;
-            aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, c / 2 - 90, 0xffffff, (new StringBuilder()).append("@whi@Password: ").append(Class50.method588(aString1174, 0)).append((anInt1216 == 1) & (anInt1105 % 40 < 20) ? "|" : "").toString(), j);
+            boldText.method389(false, true, c / 2 - 90, 0xffffff, (new StringBuilder()).append("@whi@Password: ").append(TextClass.method588(myPassword, 0)).append((anInt1216 == 1) & (anInt1105 % 40 < 20) ? "|" : "").toString(), j);
             j += 30;
-            aClass30_Sub2_Sub1_Sub4_1272.method389(false, true, c / 2 - 160, 0xfff00, "@whi@New users enter a name and password to begin", j);
+            boldText.method389(false, true, c / 2 - 160, 0xfff00, "@whi@New users enter a name and password to begin", j);
             j += 70;
             j += 15;
             if(!flag) {
                 int i1 = c / 2 - 80;
                 int l1 = c1 / 2 + 50;
-                aClass30_Sub2_Sub1_Sub2_967.method361(i1 - 73, 16083, l1 - 20);
-                aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, i1, anInt939, "@whi@Log in", l1 + 5, true);
+                aBackground_967.method361(i1 - 73, l1 - 20);
+                boldText.method382(0xffffff, i1, anInt939, "@whi@Log in", l1 + 5, true);
                 i1 = c / 2 + 80;
-                aClass30_Sub2_Sub1_Sub2_967.method361(i1 - 73, 16083, l1 - 20);
-                aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, i1, anInt939, "@whi@Cancel", l1 + 5, true);
+                aBackground_967.method361(i1 - 73, l1 - 20);
+                boldText.method382(0xffffff, i1, anInt939, "@whi@Cancel", l1 + 5, true);
             }
         }
         if(anInt833 == 3) {
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Ghreborn", c1 / 2 - 60, true);
+            boldText.method382(0xffffff, c / 2, anInt939, "Ghreborn", c1 / 2 - 60, true);
             int k = c1 / 2 - 35;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "GodzHell.net", k, true);
+            boldText.method382(0xffffff, c / 2, anInt939, "GodzHell.net", k, true);
             k += 15;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Enjoy!", k, true);
+            boldText.method382(0xffffff, c / 2, anInt939, "Enjoy!", k, true);
             k += 15;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, "Created by Traxxas!", k, true);
+            boldText.method382(0xffffff, c / 2, anInt939, "Created by Traxxas!", k, true);
             k += 15;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xffffff, c / 2, anInt939, " ", k, true);
+            boldText.method382(0xffffff, c / 2, anInt939, " ", k, true);
             k += 15;
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0xfffffF, c / 2, anInt939, "", k, true);
+            boldText.method382(0xfffffF, c / 2, anInt939, "", k, true);
             k += 15;
 
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0x0099FF, c / 2, anInt939, "", k, true);
+            boldText.method382(0x0099FF, c / 2, anInt939, "", k, true);
             k += 15;
             int j1 = c / 2;
             int i2 = c1 / 2 + 50;
-            aClass30_Sub2_Sub1_Sub2_967.method361(j1 - 73, 16083, i2 - 20);
-            aClass30_Sub2_Sub1_Sub4_1272.method382(0x33CCFF, j1, anInt939, "@whi@Back", i2 + 5, true);
+            aBackground_967.method361(j1 - 73, i2 - 20);
+            boldText.method382(0x33CCFF, j1, anInt939, "@whi@Back", i2 + 5, true);
         }
-        aClass15_1109.method238(171, 23680, super.aGraphics12, 202);
+        aRSImageProducer_1109.method238(171, 23680, super.aGraphics12, 202);
         if(aBoolean1255) {
             aBoolean1255 = false;
-            aClass15_1107.method238(0, 23680, super.aGraphics12, 128);
-            aClass15_1108.method238(371, 23680, super.aGraphics12, 202);
-            aClass15_1112.method238(265, 23680, super.aGraphics12, 0);
-            aClass15_1113.method238(265, 23680, super.aGraphics12, 562);
-            aClass15_1114.method238(171, 23680, super.aGraphics12, 128);
-            aClass15_1115.method238(171, 23680, super.aGraphics12, 562);
+            aRSImageProducer_1107.method238(0, 23680, super.aGraphics12, 128);
+            aRSImageProducer_1108.method238(371, 23680, super.aGraphics12, 202);
+            aRSImageProducer_1112.method238(265, 23680, super.aGraphics12, 0);
+            aRSImageProducer_1113.method238(265, 23680, super.aGraphics12, 562);
+            aRSImageProducer_1114.method238(171, 23680, super.aGraphics12, 128);
+            aRSImageProducer_1115.method238(171, 23680, super.aGraphics12, 562);
         }
     }
 
@@ -10909,18 +12301,18 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method137(int i, Class30_Sub2_Sub2 class30_sub2_sub2, int j)
+    public final void method137(int i, Stream stream, int j)
     {
         while(i >= 0)
             j = -1;
         if(j == 84)
         {
-            int k = class30_sub2_sub2.method408();
+            int k = stream.readUnsignedByte();
             int j3 = anInt1268 + (k >> 4 & 7);
             int i6 = anInt1269 + (k & 7);
-            int l8 = class30_sub2_sub2.method410();
-            int k11 = class30_sub2_sub2.method410();
-            int l13 = class30_sub2_sub2.method410();
+            int l8 = stream.readUnsignedShort();
+            int k11 = stream.readUnsignedShort();
+            int l13 = stream.readUnsignedShort();
             if(j3 >= 0 && i6 >= 0 && j3 < 104 && i6 < 104)
             {
                 Class19 class19_1 = aClass19ArrayArrayArray827[anInt918][j3][i6];
@@ -10941,14 +12333,14 @@ public class client extends Applet_Sub1 {
         }
         if(j == 105)
         {
-            int l = class30_sub2_sub2.method408();
+            int l = stream.readUnsignedByte();
             int k3 = anInt1268 + (l >> 4 & 7);
             int j6 = anInt1269 + (l & 7);
-            int i9 = class30_sub2_sub2.method410();
-            int l11 = class30_sub2_sub2.method408();
+            int i9 = stream.readUnsignedShort();
+            int l11 = stream.readUnsignedByte();
             int i14 = l11 >> 4 & 0xf;
             int i16 = l11 & 7;
-            if(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0] >= k3 - i14 && ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0] <= k3 + i14 && ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0] >= j6 - i14 && ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0] <= j6 + i14 && aBoolean848 && !aBoolean960 && anInt1062 < 50)
+            if(((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0] >= k3 - i14 && ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0] <= k3 + i14 && ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0] >= j6 - i14 && ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0] <= j6 + i14 && aBoolean848 && !aBoolean960 && anInt1062 < 50)
             {
                 anIntArray1207[anInt1062] = i9;
                 anIntArray1241[anInt1062] = i16;
@@ -10958,12 +12350,12 @@ public class client extends Applet_Sub1 {
         }
         if(j == 215)
         {
-            int i1 = class30_sub2_sub2.method435(true);
-            int l3 = class30_sub2_sub2.method428(2);
+            int i1 = stream.method435(true);
+            int l3 = stream.readByteA(2);
             int k6 = anInt1268 + (l3 >> 4 & 7);
             int j9 = anInt1269 + (l3 & 7);
-            int i12 = class30_sub2_sub2.method435(true);
-            int j14 = class30_sub2_sub2.method410();
+            int i12 = stream.method435(true);
+            int j14 = stream.readUnsignedShort();
             if(k6 >= 0 && j9 >= 0 && k6 < 104 && j9 < 104 && i12 != anInt884)
             {
                 Class30_Sub2_Sub4_Sub2 class30_sub2_sub4_sub2_2 = new Class30_Sub2_Sub4_Sub2();
@@ -10978,10 +12370,10 @@ public class client extends Applet_Sub1 {
         }
         if(j == 156)
         {
-            int j1 = class30_sub2_sub2.method426(0);
+            int j1 = stream.readByteS(0);
             int i4 = anInt1268 + (j1 >> 4 & 7);
             int l6 = anInt1269 + (j1 & 7);
-            int k9 = class30_sub2_sub2.method410();
+            int k9 = stream.readUnsignedShort();
             if(i4 >= 0 && l6 >= 0 && i4 < 104 && l6 < 104)
             {
                 Class19 class19 = aClass19ArrayArrayArray827[anInt918][i4][l6];
@@ -11004,14 +12396,14 @@ public class client extends Applet_Sub1 {
         }
         if(j == 160)
         {
-            int k1 = class30_sub2_sub2.method428(2);
+            int k1 = stream.readByteA(2);
             int j4 = anInt1268 + (k1 >> 4 & 7);
             int i7 = anInt1269 + (k1 & 7);
-            int l9 = class30_sub2_sub2.method428(2);
+            int l9 = stream.readByteA(2);
             int j12 = l9 >> 2;
             int k14 = l9 & 3;
             int j16 = anIntArray1177[j12];
-            int j17 = class30_sub2_sub2.method435(true);
+            int j17 = stream.method435(true);
             if(j4 >= 0 && i7 >= 0 && j4 < 103 && i7 < 103)
             {
                 int j18 = anIntArrayArrayArray1214[anInt918][j4][i7];
@@ -11059,29 +12451,29 @@ public class client extends Applet_Sub1 {
         }
         if(j == 147)
         {
-            int l1 = class30_sub2_sub2.method428(2);
+            int l1 = stream.readByteA(2);
             int k4 = anInt1268 + (l1 >> 4 & 7);
             int j7 = anInt1269 + (l1 & 7);
-            int i10 = class30_sub2_sub2.method410();
-            byte byte0 = class30_sub2_sub2.method430(0);
-            int l14 = class30_sub2_sub2.method434((byte)108);
-            byte byte1 = class30_sub2_sub2.method429((byte)-57);
-            int k17 = class30_sub2_sub2.method410();
-            int k18 = class30_sub2_sub2.method428(2);
+            int i10 = stream.readUnsignedShort();
+            byte byte0 = stream.method430(0);
+            int l14 = stream.method434((byte)108);
+            byte byte1 = stream.method429((byte)-57);
+            int k17 = stream.readUnsignedShort();
+            int k18 = stream.readByteA(2);
             int j19 = k18 >> 2;
             int i20 = k18 & 3;
             int l20 = anIntArray1177[j19];
-            byte byte2 = class30_sub2_sub2.method409();
-            int l21 = class30_sub2_sub2.method410();
-            byte byte3 = class30_sub2_sub2.method429((byte)-57);
-            Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2;
+            byte byte2 = stream.method409();
+            int l21 = stream.readUnsignedShort();
+            byte byte3 = stream.method429((byte)-57);
+            Player player;
             if(i10 == anInt884)
-                class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2_1126;
+                player = aPlayer_1126;
             else
-                class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i10];
-            if(class30_sub2_sub4_sub1_sub2 != null)
+                player = aPlayerArray890[i10];
+            if(player != null)
             {
-                Class46 class46 = Class46.method572(l21);
+                Class46 class46 = Class46.forID(l21);
                 int i22 = anIntArrayArrayArray1214[anInt918][k4][j7];
                 int j22 = anIntArrayArrayArray1214[anInt918][k4 + 1][j7];
                 int k22 = anIntArrayArrayArray1214[anInt918][k4 + 1][j7 + 1];
@@ -11090,9 +12482,9 @@ public class client extends Applet_Sub1 {
                 if(class30_sub2_sub4_sub6 != null)
                 {
                     method130(404, k17 + 1, -1, 0, l20, j7, 0, anInt918, k4, l14 + 1);
-                    class30_sub2_sub4_sub1_sub2.anInt1707 = l14 + anInt1161;
-                    class30_sub2_sub4_sub1_sub2.anInt1708 = k17 + anInt1161;
-                    class30_sub2_sub4_sub1_sub2.aClass30_Sub2_Sub4_Sub6_1714 = class30_sub2_sub4_sub6;
+                    player.anInt1707 = l14 + loopCycle;
+                    player.anInt1708 = k17 + loopCycle;
+                    player.aClass30_Sub2_Sub4_Sub6_1714 = class30_sub2_sub4_sub6;
                     int i23 = class46.anInt744;
                     int j23 = class46.anInt761;
                     if(i20 == 1 || i20 == 3)
@@ -11100,9 +12492,9 @@ public class client extends Applet_Sub1 {
                         i23 = class46.anInt761;
                         j23 = class46.anInt744;
                     }
-                    class30_sub2_sub4_sub1_sub2.anInt1711 = k4 * 128 + i23 * 64;
-                    class30_sub2_sub4_sub1_sub2.anInt1713 = j7 * 128 + j23 * 64;
-                    class30_sub2_sub4_sub1_sub2.anInt1712 = method42(anInt918, class30_sub2_sub4_sub1_sub2.anInt1713, true, class30_sub2_sub4_sub1_sub2.anInt1711);
+                    player.anInt1711 = k4 * 128 + i23 * 64;
+                    player.anInt1713 = j7 * 128 + j23 * 64;
+                    player.anInt1712 = method42(anInt918, player.anInt1713, true, player.anInt1711);
                     if(byte2 > byte0)
                     {
                         byte byte4 = byte2;
@@ -11115,20 +12507,20 @@ public class client extends Applet_Sub1 {
                         byte3 = byte1;
                         byte1 = byte5;
                     }
-                    class30_sub2_sub4_sub1_sub2.anInt1719 = k4 + byte2;
-                    class30_sub2_sub4_sub1_sub2.anInt1721 = k4 + byte0;
-                    class30_sub2_sub4_sub1_sub2.anInt1720 = j7 + byte3;
-                    class30_sub2_sub4_sub1_sub2.anInt1722 = j7 + byte1;
+                    player.anInt1719 = k4 + byte2;
+                    player.anInt1721 = k4 + byte0;
+                    player.anInt1720 = j7 + byte3;
+                    player.anInt1722 = j7 + byte1;
                 }
             }
         }
         if(j == 151)
         {
-            int i2 = class30_sub2_sub2.method426(0);
+            int i2 = stream.readByteS(0);
             int l4 = anInt1268 + (i2 >> 4 & 7);
             int k7 = anInt1269 + (i2 & 7);
-            int j10 = class30_sub2_sub2.method434((byte)108);
-            int k12 = class30_sub2_sub2.method428(2);
+            int j10 = stream.method434((byte)108);
+            int k12 = stream.readByteA(2);
             int i15 = k12 >> 2;
             int k16 = k12 & 3;
             int l17 = anIntArray1177[i15];
@@ -11138,26 +12530,26 @@ public class client extends Applet_Sub1 {
         }
         if(j == 4)
         {
-            int j2 = class30_sub2_sub2.method408();
+            int j2 = stream.readUnsignedByte();
             int i5 = anInt1268 + (j2 >> 4 & 7);
             int l7 = anInt1269 + (j2 & 7);
-            int k10 = class30_sub2_sub2.method410();
-            int l12 = class30_sub2_sub2.method408();
-            int j15 = class30_sub2_sub2.method410();
+            int k10 = stream.readUnsignedShort();
+            int l12 = stream.readUnsignedByte();
+            int j15 = stream.readUnsignedShort();
             if(i5 >= 0 && l7 >= 0 && i5 < 104 && l7 < 104)
             {
                 i5 = i5 * 128 + 64;
                 l7 = l7 * 128 + 64;
-                Class30_Sub2_Sub4_Sub3 class30_sub2_sub4_sub3 = new Class30_Sub2_Sub4_Sub3(anInt918, anInt1161, 6, j15, k10, method42(anInt918, l7, true, i5) - l12, l7, i5);
+                Class30_Sub2_Sub4_Sub3 class30_sub2_sub4_sub3 = new Class30_Sub2_Sub4_Sub3(anInt918, loopCycle, 6, j15, k10, method42(anInt918, l7, true, i5) - l12, l7, i5);
                 aClass19_1056.method249(class30_sub2_sub4_sub3);
             }
             return;
         }
         if(j == 44)
         {
-            int k2 = class30_sub2_sub2.method436((byte)-74);
-            int j5 = class30_sub2_sub2.method410();
-            int i8 = class30_sub2_sub2.method408();
+            int k2 = stream.method436((byte)-74);
+            int j5 = stream.readUnsignedShort();
+            int i8 = stream.readUnsignedByte();
             int l10 = anInt1268 + (i8 >> 4 & 7);
             int i13 = anInt1269 + (i8 & 7);
             if(l10 >= 0 && i13 >= 0 && l10 < 104 && i13 < 104)
@@ -11174,11 +12566,11 @@ public class client extends Applet_Sub1 {
         }
         if(j == 101)
         {
-            int l2 = class30_sub2_sub2.method427(false);
+            int l2 = stream.readByteC(false);
             int k5 = l2 >> 2;
             int j8 = l2 & 3;
             int i11 = anIntArray1177[k5];
-            int j13 = class30_sub2_sub2.method408();
+            int j13 = stream.readUnsignedByte();
             int k15 = anInt1268 + (j13 >> 4 & 7);
             int l16 = anInt1269 + (j13 & 7);
             if(k15 >= 0 && l16 >= 0 && k15 < 104 && l16 < 104)
@@ -11187,27 +12579,27 @@ public class client extends Applet_Sub1 {
         }
         if(j == 117)
         {
-            int i3 = class30_sub2_sub2.method408();
+            int i3 = stream.readUnsignedByte();
             int l5 = anInt1268 + (i3 >> 4 & 7);
             int k8 = anInt1269 + (i3 & 7);
-            int j11 = l5 + class30_sub2_sub2.method409();
-            int k13 = k8 + class30_sub2_sub2.method409();
-            int l15 = class30_sub2_sub2.method411();
-            int i17 = class30_sub2_sub2.method410();
-            int i18 = class30_sub2_sub2.method408() * 4;
-            int l18 = class30_sub2_sub2.method408() * 4;
-            int k19 = class30_sub2_sub2.method410();
-            int j20 = class30_sub2_sub2.method410();
-            int i21 = class30_sub2_sub2.method408();
-            int j21 = class30_sub2_sub2.method408();
+            int j11 = l5 + stream.method409();
+            int k13 = k8 + stream.method409();
+            int l15 = stream.method411();
+            int i17 = stream.readUnsignedShort();
+            int i18 = stream.readUnsignedByte() * 4;
+            int l18 = stream.readUnsignedByte() * 4;
+            int k19 = stream.readUnsignedShort();
+            int j20 = stream.readUnsignedShort();
+            int i21 = stream.readUnsignedByte();
+            int j21 = stream.readUnsignedByte();
             if(l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104 && j11 >= 0 && k13 >= 0 && j11 < 104 && k13 < 104 && i17 != 65535)
             {
                 l5 = l5 * 128 + 64;
                 k8 = k8 * 128 + 64;
                 j11 = j11 * 128 + 64;
                 k13 = k13 * 128 + 64;
-                Class30_Sub2_Sub4_Sub4 class30_sub2_sub4_sub4 = new Class30_Sub2_Sub4_Sub4(i21, l18, 46883, k19 + anInt1161, j20 + anInt1161, j21, anInt918, method42(anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
-                class30_sub2_sub4_sub4.method455(k19 + anInt1161, k13, method42(anInt918, k13, true, j11) - l18, j11, (byte)-83);
+                Class30_Sub2_Sub4_Sub4 class30_sub2_sub4_sub4 = new Class30_Sub2_Sub4_Sub4(i21, l18, 46883, k19 + loopCycle, j20 + loopCycle, j21, anInt918, method42(anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
+                class30_sub2_sub4_sub4.method455(k19 + loopCycle, k13, method42(anInt918, k13, true, j11) - l18, j11, (byte)-83);
                 aClass19_1013.method249(class30_sub2_sub4_sub4);
             }
         }
@@ -11221,72 +12613,75 @@ public class client extends Applet_Sub1 {
         }
         Class30_Sub2_Sub1_Sub3.aBoolean1461 = true;
         aBoolean960 = true;
-        Class7.aBoolean151 = true;
+        ObjectManager.aBoolean151 = true;
         Class46.aBoolean752 = true;
     }
 
-    private final void method139(Class30_Sub2_Sub2 class30_sub2_sub2, int i, int j)//find
+    private final void method139(Stream stream, int i, int j)//find
     {
         if(i >= 0)
             anInt1118 = -7;
-
-        class30_sub2_sub2.method418(anInt1118);
-        int k = class30_sub2_sub2.method419(8, 0);
+        try {
+        stream.method418(anInt1118);
+        int k = stream.readBits(8);
         //System.out.println("NPC: " + k);
-        if(k < anInt836)
+        if(k < npcCount)
         {
-            for(int l = k; l < anInt836; l++)
-                anIntArray840[anInt839++] = anIntArray837[l];
+            for(int l = k; l < npcCount; l++)
+                anIntArray840[anInt839++] = npcIndices[l];
 
         }
-        if(k > anInt836)
+        if(k > npcCount)
         {
-            signlink.reporterror(aString1173 + " Too many npcs");
+            signlink.reporterror(myUsername + " Too many npcs");
             throw new RuntimeException("eek");
         }
-        anInt836 = 0;
+        npcCount = 0;
         for(int i1 = 0; i1 < k; i1++)
         {
-            int j1 = anIntArray837[i1];
-            Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[j1];
-            int k1 = class30_sub2_sub2.method419(1, 0);
+            int j1 = npcIndices[i1];
+            Npc npc = npcs[j1];
+            int k1 = stream.readBits(1);
             if(k1 == 0)
             {
-                anIntArray837[anInt836++] = j1;
-                class30_sub2_sub4_sub1_sub1.anInt1537 = anInt1161;
+                npcIndices[npcCount++] = j1;
+                npc.anInt1537 = loopCycle;
             } else
             {
-                int l1 = class30_sub2_sub2.method419(2, 0);
+                int l1 = stream.readBits(2);
                 if(l1 == 0)
                 {
-                    anIntArray837[anInt836++] = j1;
-                    class30_sub2_sub4_sub1_sub1.anInt1537 = anInt1161;
+                    npcIndices[npcCount++] = j1;
+                    npc.anInt1537 = loopCycle;
                     anIntArray894[anInt893++] = j1;
                 } else
                 if(l1 == 1)
                 {
-                    anIntArray837[anInt836++] = j1;
-                    class30_sub2_sub4_sub1_sub1.anInt1537 = anInt1161;
-                    int i2 = class30_sub2_sub2.method419(3, 0);
-                    class30_sub2_sub4_sub1_sub1.method448(false, (byte)20, i2);
-                    int k2 = class30_sub2_sub2.method419(1, 0);
+                    npcIndices[npcCount++] = j1;
+                    npc.anInt1537 = loopCycle;
+                    int i2 = stream.readBits(3);
+                    npc.method448(false, (byte)20, i2);
+                    int k2 = stream.readBits(1);
                     if(k2 == 1)
                         anIntArray894[anInt893++] = j1;
                 } else
                 if(l1 == 2) {
-                    anIntArray837[anInt836++] = j1;
-                    class30_sub2_sub4_sub1_sub1.anInt1537 = anInt1161;
-                    int j2 = class30_sub2_sub2.method419(3, 0);
-                    class30_sub2_sub4_sub1_sub1.method448(true, (byte)20, j2);
-                    int l2 = class30_sub2_sub2.method419(3, 0);
-                    class30_sub2_sub4_sub1_sub1.method448(true, (byte)20, l2);
-                    int i3 = class30_sub2_sub2.method419(1, 0);
+                    npcIndices[npcCount++] = j1;
+                    npc.anInt1537 = loopCycle;
+                    int j2 = stream.readBits(3);
+                    npc.method448(true, (byte)20, j2);
+                    int l2 = stream.readBits(3);
+                    npc.method448(true, (byte)20, l2);
+                    int i3 = stream.readBits(1);
                     if(i3 == 1)
                         anIntArray894[anInt893++] = j1;
                 } else
                 if(l1 == 3)
                     anIntArray840[anInt839++] = j1;
             }
+        }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
     public final void method140(boolean flag)
@@ -11295,16 +12690,11 @@ public class client extends Applet_Sub1 {
             aClass19ArrayArrayArray827 = null;
         if(anInt833 == 0)
         {
-            int i = super.anInt10 / 2 - 80;
-            int l = super.anInt11 / 2 + 20;
+            int i = super.myWidth / 2 - 80;
+            int l = super.myHeight / 2 + 20;
             l += 20;
-            if(super.anInt26 == 1 && super.anInt27 >= i - 75 && super.anInt27 <= i + 75 && super.anInt28 >= l - 20 && super.anInt28 <= l + 20)
-            {
-                anInt833 = 3;
-                anInt1216 = 0;
-            }
-            i = super.anInt10 / 2 + 80;
-            if(super.anInt26 == 1 && super.anInt27 >= i - 75 && super.anInt27 <= i + 75 && super.anInt28 >= l - 20 && super.anInt28 <= l + 20)
+            i = super.myWidth / 2 + 80;
+            if(super.clickMode3 == 1 && super.saveClickX >= i - 75 && super.saveClickX <= i + 75 && super.saveClickY >= l - 20 && super.saveClickY <= l + 20)
             {
                 aString1266 = "@whi@Enter your username and password.";
                 aString1267 = "";
@@ -11315,27 +12705,27 @@ public class client extends Applet_Sub1 {
         } else {
             if(anInt833 == 2)
             {
-                int j = super.anInt11 / 2 - 40;
+                int j = super.myHeight / 2 - 40;
                 j += 30;
                 j += 25;
-                if(super.anInt26 == 1 && super.anInt28 >= j - 15 && super.anInt28 < j)
+                if(super.clickMode3 == 1 && super.saveClickY >= j - 15 && super.saveClickY < j)
                     anInt1216 = 0;
                 j += 15;
-                if(super.anInt26 == 1 && super.anInt28 >= j - 15 && super.anInt28 < j)
+                if(super.clickMode3 == 1 && super.saveClickY >= j - 15 && super.saveClickY < j)
                     anInt1216 = 1;
                 j += 15;
-                int i1 = super.anInt10 / 2 - 80;
-                int k1 = super.anInt11 / 2 + 50;
+                int i1 = super.myWidth / 2 - 80;
+                int k1 = super.myHeight / 2 + 50;
                 k1 += 20;
-                if(super.anInt26 == 1 && super.anInt27 >= i1 - 75 && super.anInt27 <= i1 + 75 && super.anInt28 >= k1 - 20 && super.anInt28 <= k1 + 20)
+                if(super.clickMode3 == 1 && super.saveClickX >= i1 - 75 && super.saveClickX <= i1 + 75 && super.saveClickY >= k1 - 20 && super.saveClickY <= k1 + 20)
                 {
                     anInt1038 = 0;
-                    method84(aString1173, aString1174, false);
+                    method84(myUsername, myPassword, false);
                     if(aBoolean1157)
                         return;
                 }
-                i1 = super.anInt10 / 2 + 80;
-                if(super.anInt26 == 1 && super.anInt27 >= i1 - 75 && super.anInt27 <= i1 + 75 && super.anInt28 >= k1 - 20 && super.anInt28 <= k1 + 20)
+                i1 = super.myWidth / 2 + 80;
+                if(super.clickMode3 == 1 && super.saveClickX >= i1 - 75 && super.saveClickX <= i1 + 75 && super.saveClickY >= k1 - 20 && super.saveClickY <= k1 + 20)
                 {
                     anInt833 = 0;
                 }
@@ -11355,85 +12745,60 @@ public class client extends Applet_Sub1 {
 
                     if(anInt1216 == 0)
                     {
-                        if(l1 == 8 && aString1173.length() > 0)
-                            aString1173 = aString1173.substring(0, aString1173.length() - 1);
+                        if(l1 == 8 && myUsername.length() > 0)
+                            myUsername = myUsername.substring(0, myUsername.length() - 1);
                         if(l1 == 9 || l1 == 10 || l1 == 13)
                             anInt1216 = 1;
                         if(flag1)
-                            aString1173 += (char)l1;
-                        if(aString1173.length() > 12)
-                            aString1173 = aString1173.substring(0, 12);
+                            myUsername += (char)l1;
+                        if(myUsername.length() > 12)
+                            myUsername = myUsername.substring(0, 12);
                     } else
                     if(anInt1216 == 1)
                     {
-                        if(l1 == 8 && aString1174.length() > 0)
-                            aString1174 = aString1174.substring(0, aString1174.length() - 1);
-                        if(l1 == 9 || l1 == 10 || l1 == 13)
-                            anInt1216 = 2;
-                        if(flag1)
-                            aString1174 += (char)l1;
-                        if(aString1174.length() > 20)
-                            aString1174 = aString1174.substring(0, 20);
-                    } else
-                    if(anInt1216 == 2)
-                    {
-                        if(l1 == 8 && server.length() > 0)
-                            server = server.substring(0, server.length() - 1);
+                        if(l1 == 8 && myPassword.length() > 0)
+                            myPassword = myPassword.substring(0, myPassword.length() - 1);
                         if(l1 == 9 || l1 == 10 || l1 == 13)
                             anInt1216 = 0;
                         if(flag1)
-                            server += (char)l1;
-                        //      if(aString1173.length() > 12)
-                        //          server = server.substring(0, 12);
-                    } else
-                    if(anInt1216 == 3)
-                    {
-                        if(l1 == 8 && port.length() > 0) {
-                            port = port.substring(0, port.length() - 1);
-                        }
-                        if(l1 == 9 || l1 == 10 || l1 == 13)
-                            anInt1216 = 0;
-                        if(flag1)
-                            port += (char)l1;
-                        //      if(aString1173.length() > 12)
-                        //          server = server.substring(0, 12);
-                    }
+                            myPassword += (char)l1;
+                        if(myPassword.length() > 20)
+                            myPassword = myPassword.substring(0, 20);
+                    } 
                 } while(true);
                 return;
             }
             if(anInt833 == 3)
             {
-                int k = super.anInt10 / 2;
-                int j1 = super.anInt11 / 2 + 50;
+                int k = super.myWidth / 2;
+                int j1 = super.myHeight / 2 + 50;
                 j1 += 20;
-                if(super.anInt26 == 1 && super.anInt27 >= k - 75 && super.anInt27 <= k + 75 && super.anInt28 >= j1 - 20 && super.anInt28 <= j1 + 20)
+                if(super.clickMode3 == 1 && super.saveClickX >= k - 75 && super.saveClickX <= k + 75 && super.saveClickY >= j1 - 20 && super.saveClickY <= j1 + 20)
                     anInt833 = 0;
             }
         }
     }
 
-    public final void method141(Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1, int i, int j, boolean flag)
+    public final void method141(Sprite sprite, int i, int j, boolean flag)
     {
-        int k = anInt1185 + anInt1209 & 0x7ff;
-        int l = i * i + j * j;
-        if(flag)
-            return;
-        if(l > 6400)
-            return;
-        int i1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[k];
-        int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[k];
-        i1 = (i1 * 256) / (anInt1170 + 256);
-        j1 = (j1 * 256) / (anInt1170 + 256);
-        int k1 = j * i1 + i * j1 >> 16;
-        int l1 = j * j1 - i * i1 >> 16;
-        if(l > 2500)
-        {
-            class30_sub2_sub1_sub1.method354(aClass30_Sub2_Sub1_Sub2_1197, false, 83 - l1 - class30_sub2_sub1_sub1.anInt1445 / 2 - 4, ((94 + k1) - class30_sub2_sub1_sub1.anInt1444 / 2) + 4);
-            return;
-        } else
-        {
-            class30_sub2_sub1_sub1.method348(((94 + k1) - class30_sub2_sub1_sub1.anInt1444 / 2) + 4, 16083, 83 - l1 - class30_sub2_sub1_sub1.anInt1445 / 2 - 4);
-            return;
+        if (sprite != null) {
+            int k = anInt1185 + anInt1209 & 0x7ff;
+            int l = i * i + j * j;
+            if (flag)
+                return;
+            if (l <= 6400) {
+                int i1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[k];
+                int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[k];
+                i1 = (i1 * 256) / (anInt1170 + 256);
+                j1 = (j1 * 256) / (anInt1170 + 256);
+                int k1 = j * i1 + i * j1 >> 16;
+                int l1 = j * j1 - i * i1 >> 16;
+                if (currentScreenMode == ScreenMode.FIXED) {
+                    sprite.drawSprite(((94 + k1) - sprite.anInt1444 / 2) + 4 + 30, 83 - l1 - sprite.anInt1445 / 2 - 4);
+                } else {
+                    sprite.drawSprite(((77 + k1) - sprite.anInt1444 / 2) + 4 + (currentGameWidth - 167), 83 - l1 - sprite.anInt1445 / 2 - 4);
+                }
+            }
         }
     }
 
@@ -11441,7 +12806,7 @@ public class client extends Applet_Sub1 {
                                  int l1)
     {
         if(l1 < 4 || l1 > 4)
-            anInt1008 = aClass30_Sub2_Sub2_1083.method408();
+            packet = aStream_1083.readUnsignedByte();
         if(i1 >= 1 && i >= 1 && i1 <= 102 && i <= 102)
         {
             if(aBoolean960 && j != anInt918)
@@ -11467,7 +12832,7 @@ public class client extends Applet_Sub1 {
                 if(j1 == 0)
                 {
                     aClass25_946.method291(i1, j, i, (byte)-119);
-                    Class46 class46 = Class46.method572(j2);
+                    Class46 class46 = Class46.forID(j2);
                     if(class46.aBoolean767)
                         aClass11Array1230[j].method215(l2, k2, class46.aBoolean757, true, i1, i);
                 }
@@ -11476,7 +12841,7 @@ public class client extends Applet_Sub1 {
                 if(j1 == 2)
                 {
                     aClass25_946.method293(j, -978, i1, i);
-                    Class46 class46_1 = Class46.method572(j2);
+                    Class46 class46_1 = Class46.forID(j2);
                     if(i1 + class46_1.anInt744 > 103 || i + class46_1.anInt744 > 103 || i1 + class46_1.anInt761 > 103 || i + class46_1.anInt761 > 103)
                         return;
                     if(class46_1.aBoolean767)
@@ -11485,7 +12850,7 @@ public class client extends Applet_Sub1 {
                 if(j1 == 3)
                 {
                     aClass25_946.method294((byte)9, j, i, i1);
-                    Class46 class46_2 = Class46.method572(j2);
+                    Class46 class46_2 = Class46.forID(j2);
                     if(class46_2.aBoolean767 && class46_2.hasactions)
                         aClass11Array1230[j].method218(360, i, i1);
                 }
@@ -11495,37 +12860,32 @@ public class client extends Applet_Sub1 {
                 int j3 = j;
                 if(j3 < 3 && (aByteArrayArrayArray1258[1][i1][i] & 2) == 2)
                     j3++;
-                Class7.method188(aClass25_946, k, i, l, j3, aClass11Array1230[j], anIntArrayArrayArray1214, i1, k1, j, (byte)93);
+                ObjectManager.method188(aClass25_946, k, i, l, j3, aClass11Array1230[j], anIntArrayArrayArray1214, i1, k1, j, (byte)93);
             }
         }
     }
 
-    private final void method143(int i, Class30_Sub2_Sub2 class30_sub2_sub2, int j)
+    private final void method143(int i, Stream stream, int j)
     {
         anInt839 = 0;
         if(j != 9759)
-            anInt1008 = class30_sub2_sub2.method408();
+            packet = stream.readUnsignedShort();
         anInt893 = 0;
-        method117(class30_sub2_sub2, i, (byte)5);
-        method134((byte)2, i, class30_sub2_sub2);
-        method91(class30_sub2_sub2, i, (byte)8);
-        method49(i, (byte)2, class30_sub2_sub2);
+        method117(stream, i, (byte)5);
+        method134((byte)2, i, stream);
+        method91(stream, i, (byte)8);
+        method49(i, (byte)2, stream);
         for(int k = 0; k < anInt839; k++)
         {
             int l = anIntArray840[k];
-            if(((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2Array890[l])).anInt1537 != anInt1161)
-                aClass30_Sub2_Sub4_Sub1_Sub2Array890[l] = null;
+            if(((Class30_Sub2_Sub4_Sub1) (aPlayerArray890[l])).anInt1537 != loopCycle)
+                aPlayerArray890[l] = null;
         }
 
-        if(class30_sub2_sub2.anInt1406 != i)
-        {
-            signlink.reporterror("Error packet size mismatch in getplayer pos:" + class30_sub2_sub2.anInt1406 + " psize:" + i);
-            throw new RuntimeException("eek");
-        }
         for(int i1 = 0; i1 < anInt891; i1++)
-            if(aClass30_Sub2_Sub4_Sub1_Sub2Array890[anIntArray892[i1]] == null)
+            if(aPlayerArray890[anIntArray892[i1]] == null)
             {
-                signlink.reporterror(aString1173 + " null entry in pl list - pos:" + i1 + " size:" + anInt891);
+                signlink.reporterror(myUsername + " null entry in pl list - pos:" + i1 + " size:" + anInt891);
                 throw new RuntimeException("eek");
             }
 
@@ -11585,20 +12945,20 @@ public class client extends Applet_Sub1 {
             int i = aClass24_1168.method269();
             if(i == 0)
                 return false;
-            if(anInt1008 == -1)
+            if(packet == -1)
             {
-                aClass24_1168.method270(aClass30_Sub2_Sub2_1083.aByteArray1405, 0, 1);
-                anInt1008 = aClass30_Sub2_Sub2_1083.aByteArray1405[0] & 0xff;
+                aClass24_1168.method270(aStream_1083.aByteArray1405, 0, 1);
+                packet = aStream_1083.aByteArray1405[0] & 0xff;
                 if(aClass17_1000 != null)
-                    anInt1008 = anInt1008 - aClass17_1000.method246() & 0xff;
-                anInt1007 = Class31.anIntArray553[anInt1008];
+                    packet = packet - aClass17_1000.method246() & 0xff;
+                anInt1007 = Class31.anIntArray553[packet];
                 i--;
             }
             if(anInt1007 == -1)
                 if(i > 0)
                 {
-                    aClass24_1168.method270(aClass30_Sub2_Sub2_1083.aByteArray1405, 0, 1);
-                    anInt1007 = aClass30_Sub2_Sub2_1083.aByteArray1405[0] & 0xff;
+                    aClass24_1168.method270(aStream_1083.aByteArray1405, 0, 1);
+                    anInt1007 = aStream_1083.aByteArray1405[0] & 0xff;
                     i--;
                 } else
                 {
@@ -11607,9 +12967,9 @@ public class client extends Applet_Sub1 {
             if(anInt1007 == -2)
                 if(i > 1)
                 {
-                    aClass24_1168.method270(aClass30_Sub2_Sub2_1083.aByteArray1405, 0, 2);
-                    aClass30_Sub2_Sub2_1083.anInt1406 = 0;
-                    anInt1007 = aClass30_Sub2_Sub2_1083.method410();
+                    aClass24_1168.method270(aStream_1083.aByteArray1405, 0, 2);
+                    aStream_1083.anInt1406 = 0;
+                    anInt1007 = aStream_1083.readUnsignedShort();
                     i -= 2;
                 } else
                 {
@@ -11617,62 +12977,62 @@ public class client extends Applet_Sub1 {
                 }
             if(i < anInt1007)
                 return false;
-            aClass30_Sub2_Sub2_1083.anInt1406 = 0;
-            aClass24_1168.method270(aClass30_Sub2_Sub2_1083.aByteArray1405, 0, anInt1007);
+            aStream_1083.anInt1406 = 0;
+            aClass24_1168.method270(aStream_1083.aByteArray1405, 0, anInt1007);
             anInt1009 = 0;
             anInt843 = anInt842;
             anInt842 = anInt841;
-            anInt841 = anInt1008;
-            if(anInt1008 == 81)
+            anInt841 = packet;
+            if(packet == 81)
             {
-                method143(anInt1007, aClass30_Sub2_Sub2_1083, 9759);
+                method143(anInt1007, aStream_1083, 9759);
                 aBoolean1080 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == -1)
+            if(packet == -1)
             {
             }
             else
             {
                 if(showframeids == 1)
                 {
-                    System.out.println("Frameid:" + anInt1008);
+                    System.out.println("Frameid:" + packet);
                 }
                 //System.out.println("Byte:" + Class9.aClass9Array210);
             }
-            if(anInt1008 == 176)
+            if(packet == 176)
             {
-                anInt1167 = aClass30_Sub2_Sub2_1083.method427(false);
-                anInt1154 = aClass30_Sub2_Sub2_1083.method435(true);
-                anInt1120 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1193 = aClass30_Sub2_Sub2_1083.method440(true);
-                anInt1006 = aClass30_Sub2_Sub2_1083.method410();
-                if(anInt1193 != 0 && anInt857 == -1)
+                anInt1167 = aStream_1083.readByteC(false);
+                anInt1154 = aStream_1083.method435(true);
+                anInt1120 = aStream_1083.readUnsignedByte();
+                anInt1193 = aStream_1083.method440(true);
+                anInt1006 = aStream_1083.readUnsignedShort();
+                if(anInt1193 != 0 && openInterfaceID == -1)
                 {
-                    signlink.dnslookup(Class50.method586(anInt1193, true));
-                    method147(537);
+                    signlink.dnslookup(TextClass.method586(anInt1193, true));
+                    clearTopInterfaces(537);
                     char c = '\u028A';
                     if(anInt1167 != 201 || anInt1120 == 1)
                         c = '\u028F';
-                    aString881 = "";
-                    aBoolean1158 = false;
-                    for(int k9 = 0; k9 < Class9.aClass9Array210.length; k9++)
+                    reportAbuseInput = "";
+                    canMute = false;
+                    for(int k9 = 0; k9 < Widget.interfaceCache.length; k9++)
                     {
-                        if(Class9.aClass9Array210[k9] == null || Class9.aClass9Array210[k9].anInt214 != c)
+                        if(Widget.interfaceCache[k9] == null || Widget.interfaceCache[k9].contentType != c)
                             continue;
-                        anInt857 = Class9.aClass9Array210[k9].anInt236;
+                        openInterfaceID = Widget.interfaceCache[k9].parentID;
                         break;
                     }
 
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 64)
+            if(packet == 64)
             {
-                anInt1268 = aClass30_Sub2_Sub2_1083.method427(false);
-                anInt1269 = aClass30_Sub2_Sub2_1083.method428(2);
+                anInt1268 = aStream_1083.readByteC(false);
+                anInt1269 = aStream_1083.readByteA(2);
                 for(int j = anInt1268; j < anInt1268 + 8; j++)
                 {
                     for(int l9 = anInt1269; l9 < anInt1269 + 8; l9++)
@@ -11688,74 +13048,74 @@ public class client extends Applet_Sub1 {
                     if(class30_sub1.anInt1297 >= anInt1268 && class30_sub1.anInt1297 < anInt1268 + 8 && class30_sub1.anInt1298 >= anInt1269 && class30_sub1.anInt1298 < anInt1269 + 8 && class30_sub1.anInt1295 == anInt918)
                         class30_sub1.anInt1294 = 0;
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 185)
+            if(packet == 185)
             {
-                int k = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                Class9.aClass9Array210[k].anInt233 = 3;
-                if(aClass30_Sub2_Sub4_Sub1_Sub2_1126.aClass5_1698 == null)
-                    Class9.aClass9Array210[k].anInt234 = (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anIntArray1700[0] << 25) + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anIntArray1700[4] << 20) + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anIntArray1717[0] << 15) + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anIntArray1717[8] << 10) + (aClass30_Sub2_Sub4_Sub1_Sub2_1126.anIntArray1717[11] << 5) + aClass30_Sub2_Sub4_Sub1_Sub2_1126.anIntArray1717[1];
+                int k = aStream_1083.method436((byte)-74);
+                Widget.interfaceCache[k].anInt233 = 3;
+                if(aPlayer_1126.aClass5_1698 == null)
+                    Widget.interfaceCache[k].anInt234 = (aPlayer_1126.anIntArray1700[0] << 25) + (aPlayer_1126.anIntArray1700[4] << 20) + (aPlayer_1126.anIntArray1717[0] << 15) + (aPlayer_1126.anIntArray1717[8] << 10) + (aPlayer_1126.anIntArray1717[11] << 5) + aPlayer_1126.anIntArray1717[1];
                 else
-                    Class9.aClass9Array210[k].anInt234 = (int)(0x12345678L + aClass30_Sub2_Sub4_Sub1_Sub2_1126.aClass5_1698.aLong78);
-                anInt1008 = -1;
+                    Widget.interfaceCache[k].anInt234 = (int)(0x12345678L + aPlayer_1126.aClass5_1698.aLong78);
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 107)
+            if(packet == 107)
             {
                 aBoolean1160 = false;
                 for(int l = 0; l < 5; l++)
                     aBooleanArray876[l] = false;
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 72)
+            if(packet == 72)
             {
-                int i1 = aClass30_Sub2_Sub2_1083.method434((byte)108);
-                Class9 class9 = Class9.aClass9Array210[i1];
+                int i1 = aStream_1083.method434((byte)108);
+                Widget class9 = Widget.interfaceCache[i1];
                 for(int k15 = 0; k15 < class9.anIntArray253.length; k15++)
                 {
                     class9.anIntArray253[k15] = -1;
                     class9.anIntArray253[k15] = 0;
                 }
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 214)
+            if(packet == 214)
             {
                 anInt822 = anInt1007 / 8;
                 for(int j1 = 0; j1 < anInt822; j1++)
-                    aLongArray925[j1] = aClass30_Sub2_Sub2_1083.method414(-35089);
+                    aLongArray925[j1] = aStream_1083.method414(-35089);
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 166)
+            if(packet == 166)
             {
                 aBoolean1160 = true;
-                anInt1098 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1099 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1100 = aClass30_Sub2_Sub2_1083.method410();
-                anInt1101 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1102 = aClass30_Sub2_Sub2_1083.method408();
+                anInt1098 = aStream_1083.readUnsignedByte();
+                anInt1099 = aStream_1083.readUnsignedByte();
+                anInt1100 = aStream_1083.readUnsignedShort();
+                anInt1101 = aStream_1083.readUnsignedByte();
+                anInt1102 = aStream_1083.readUnsignedByte();
                 if(anInt1102 >= 100)
                 {
                     xCameraPos = anInt1098 * 128 + 64;
                     yCameraPos = anInt1099 * 128 + 64;
                     zCameraPos = method42(anInt918, yCameraPos, true, xCameraPos) - anInt1100;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 134)
+            if(packet == 134)
             {
-                aBoolean1153 = true;
-                int k1 = aClass30_Sub2_Sub2_1083.method408();
-                int i10 = aClass30_Sub2_Sub2_1083.method439((byte)41);
-                int l15 = aClass30_Sub2_Sub2_1083.method408();
+                tabAreaAltered = true;
+                int k1 = aStream_1083.readUnsignedByte();
+                int i10 = aStream_1083.method439((byte)41);
+                int l15 = aStream_1083.readUnsignedByte();
                 anIntArray864[k1] = i10;
                 anIntArray922[k1] = l15;
                 anIntArray1044[k1] = 1;
@@ -11763,24 +13123,24 @@ public class client extends Applet_Sub1 {
                     if(i10 >= anIntArray1019[k20])
                         anIntArray1044[k1] = k20 + 2;
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 71)
+            if(packet == 71)
             {
-                int l1 = aClass30_Sub2_Sub2_1083.method410();
-                int j10 = aClass30_Sub2_Sub2_1083.method426(0);
+                int l1 = aStream_1083.readUnsignedShort();
+                int j10 = aStream_1083.readByteS(0);
                 if(l1 == 65535)
                     l1 = -1;
-                anIntArray1130[j10] = l1;
-                aBoolean1153 = true;
+                tabInterfaceIDs[j10] = l1;
+                tabAreaAltered = true;
                 aBoolean1103 = true;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 74)
+            if(packet == 74)
             {
-                int i2 = aClass30_Sub2_Sub2_1083.method434((byte)108);
+                int i2 = aStream_1083.method434((byte)108);
                 if(i2 == 65535)
                     i2 = -1;
                 if(i2 != anInt956 && aBoolean1151 && !aBoolean960 && anInt1259 == 0)
@@ -11790,13 +13150,13 @@ public class client extends Applet_Sub1 {
                     aClass42_Sub1_1068.method558(2, anInt1227);
                 }
                 anInt956 = i2;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 121)
+            if(packet == 121)
             {
-                int j2 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                int k10 = aClass30_Sub2_Sub2_1083.method435(true);
+                int j2 = aStream_1083.method436((byte)-74);
+                int k10 = aStream_1083.method435(true);
                 if(aBoolean1151 && !aBoolean960)
                 {
                     anInt1227 = j2;
@@ -11804,50 +13164,50 @@ public class client extends Applet_Sub1 {
                     aClass42_Sub1_1068.method558(2, anInt1227);
                     anInt1259 = k10;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 109)
+            if(packet == 109)
             {
                 method44(true);
-                anInt1008 = -1;
+                packet = -1;
                 return false;
             }
-            if(anInt1008 == 70)
+            if(packet == 70)
             {
-                int k2 = aClass30_Sub2_Sub2_1083.method411();
-                int l10 = aClass30_Sub2_Sub2_1083.method437(-665);
-                int i16 = aClass30_Sub2_Sub2_1083.method434((byte)108);
-                Class9 class9_5 = Class9.aClass9Array210[i16];
+                int k2 = aStream_1083.method411();
+                int l10 = aStream_1083.method437(-665);
+                int i16 = aStream_1083.method434((byte)108);
+                Widget class9_5 = Widget.interfaceCache[i16];
                 class9_5.anInt263 = k2;
                 class9_5.anInt265 = l10;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 73 || anInt1008 == 241)
+            if(packet == 73 || packet == 241)
             {
                 int l2 = currentRegionX;
                 int i11 = currentRegionY;
-                if(anInt1008 == 73)
+                if(packet == 73)
                 {
-                    l2 = mapX = MapX = aClass30_Sub2_Sub2_1083.method435(true);
-                    i11 = mapY = MapY = aClass30_Sub2_Sub2_1083.method410();
+                    l2 = mapX = MapX = aStream_1083.method435(true);
+                    i11 = mapY = MapY = aStream_1083.readUnsignedShort();
 
                     aBoolean1159 = false;
                 }
-                if(anInt1008 == 241)
+                if(packet == 241)
                 {
-                    i11 = aClass30_Sub2_Sub2_1083.method435(true);
-                    aClass30_Sub2_Sub2_1083.method418(anInt1118);
+                    i11 = aStream_1083.method435(true);
+                    aStream_1083.method418(anInt1118);
                     for(int j16 = 0; j16 < 4; j16++)
                     {
                         for(int l20 = 0; l20 < 13; l20++)
                         {
                             for(int j23 = 0; j23 < 13; j23++)
                             {
-                                int i26 = aClass30_Sub2_Sub2_1083.method419(1, 0);
+                                int i26 = aStream_1083.readBits(1);
                                 if(i26 == 1)
-                                    anIntArrayArrayArray1129[j16][l20][j23] = aClass30_Sub2_Sub2_1083.method419(26, 0);
+                                    anIntArrayArrayArray1129[j16][l20][j23] = aStream_1083.readBits(26);
                                 else
                                     anIntArrayArrayArray1129[j16][l20][j23] = -1;
                             }
@@ -11856,19 +13216,19 @@ public class client extends Applet_Sub1 {
 
                     }
 
-                    aClass30_Sub2_Sub2_1083.method420(true);
-                    l2 = aClass30_Sub2_Sub2_1083.method410();
+                    aStream_1083.method420(true);
+                    l2 = aStream_1083.readUnsignedShort();
                     aBoolean1159 = true;
                 }
                 if(currentRegionX == l2 && currentRegionY == i11 && anInt1023 == 2)
                 {
-                    anInt1008 = -1;
+                    packet = -1;
                     return true;
                 }
                 currentRegionX = l2;
                 currentRegionY = i11;
-                anInt1034 = (currentRegionX - 6) * 8;
-                anInt1035 = (currentRegionY - 6) * 8;
+                baseX = (currentRegionX - 6) * 8;
+                baseY = (currentRegionY - 6) * 8;
                 aBoolean1141 = false;
                 if((currentRegionX / 8 == 48 || currentRegionX / 8 == 49) && currentRegionY / 8 == 48)
                     aBoolean1141 = true;
@@ -11876,11 +13236,11 @@ public class client extends Applet_Sub1 {
                     aBoolean1141 = true;
                 anInt1023 = 1;
                 aLong824 = System.currentTimeMillis();
-                aClass15_1165.method237(0);
-                aClass30_Sub2_Sub1_Sub4_1271.method381(0, "Ghreborn is Loading - Please wait....", 23693, 151, 257);
-                aClass30_Sub2_Sub1_Sub4_1271.method381(0xffffff, "Ghreborn is Loading - Please wait....", 23693, 150, 256);
-                aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
-                if(anInt1008 == 73)
+                aRSImageProducer_1165.initDrawingArea();
+                regularText.method381(0, "Ghreborn is Loading - Please wait....", 23693, 151, 257);
+                regularText.method381(0xffffff, "Ghreborn is Loading - Please wait....", 23693, 150, 256);
+                aRSImageProducer_1165.method238(currentScreenMode == ScreenMode.FIXED ? 4 : 0, 23680, super.aGraphics12, currentScreenMode == ScreenMode.FIXED ? 4 : 0);
+                if(packet == 73)
                 {
                     int k16 = 0;
                     for(int i21 = (currentRegionX - 6) / 8; i21 <= (currentRegionX + 6) / 8; i21++)
@@ -11921,7 +13281,7 @@ public class client extends Applet_Sub1 {
                     }
 
                 }
-                if(anInt1008 == 241)
+                if(packet == 241)
                 {
                     int l16 = 0;
                     int ai[] = new int[676];
@@ -11973,39 +13333,39 @@ public class client extends Applet_Sub1 {
                     }
 
                 }
-                int i17 = anInt1034 - anInt1036;
-                int j21 = anInt1035 - anInt1037;
-                anInt1036 = anInt1034;
-                anInt1037 = anInt1035;
+                int i17 = baseX - anInt1036;
+                int j21 = baseY - anInt1037;
+                anInt1036 = baseX;
+                anInt1037 = baseY;
                 for(int j24 = 0; j24 < 16384; j24++)
                 {
-                    Class30_Sub2_Sub4_Sub1_Sub1 class30_sub2_sub4_sub1_sub1 = aClass30_Sub2_Sub4_Sub1_Sub1Array835[j24];
-                    if(class30_sub2_sub4_sub1_sub1 != null)
+                    Npc npc = npcs[j24];
+                    if(npc != null)
                     {
                         for(int j29 = 0; j29 < 10; j29++)
                         {
-                            ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anIntArray1500[j29] -= i17;
-                            ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub1)).anIntArray1501[j29] -= j21;
+                            ((Class30_Sub2_Sub4_Sub1) (npc)).anIntArray1500[j29] -= i17;
+                            ((Class30_Sub2_Sub4_Sub1) (npc)).anIntArray1501[j29] -= j21;
                         }
 
-                        class30_sub2_sub4_sub1_sub1.anInt1550 -= i17 * 128;
-                        class30_sub2_sub4_sub1_sub1.anInt1551 -= j21 * 128;
+                        npc.anInt1550 -= i17 * 128;
+                        npc.anInt1551 -= j21 * 128;
                     }
                 }
 
                 for(int i27 = 0; i27 < anInt888; i27++)
                 {
-                    Class30_Sub2_Sub4_Sub1_Sub2 class30_sub2_sub4_sub1_sub2 = aClass30_Sub2_Sub4_Sub1_Sub2Array890[i27];
-                    if(class30_sub2_sub4_sub1_sub2 != null)
+                    Player player = aPlayerArray890[i27];
+                    if(player != null)
                     {
                         for(int i31 = 0; i31 < 10; i31++)
                         {
-                            ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anIntArray1500[i31] -= i17;
-                            ((Class30_Sub2_Sub4_Sub1) (class30_sub2_sub4_sub1_sub2)).anIntArray1501[i31] -= j21;
+                            ((Class30_Sub2_Sub4_Sub1) (player)).anIntArray1500[i31] -= i17;
+                            ((Class30_Sub2_Sub4_Sub1) (player)).anIntArray1501[i31] -= j21;
                         }
 
-                        class30_sub2_sub4_sub1_sub2.anInt1550 -= i17 * 128;
-                        class30_sub2_sub4_sub1_sub2.anInt1551 -= j21 * 128;
+                        player.anInt1550 -= i17 * 128;
+                        player.anInt1551 -= j21 * 128;
                     }
                 }
 
@@ -12058,71 +13418,71 @@ public class client extends Applet_Sub1 {
                     anInt1262 -= j21;
                 }
                 aBoolean1160 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 208)
+            if(packet == 208)
             {
-                int i3 = aClass30_Sub2_Sub2_1083.method437(-665);
+                int i3 = aStream_1083.method437(-665);
                 //System.out.println("i3: " + i3);
                 if(i3 >= 0)
                     method60(i3, (byte)6);
-                anInt1018 = i3;
-                anInt1008 = -1;
+                openWalkableInterface = i3;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 99)
+            if(packet == 99)
             {
-                anInt1021 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1008 = -1;
+                anInt1021 = aStream_1083.readUnsignedByte();
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 75)
+            if(packet == 75)
             {
-                int j3 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                int j11 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                Class9.aClass9Array210[j11].anInt233 = 2;
-                Class9.aClass9Array210[j11].anInt234 = j3;
-                anInt1008 = -1;
+                int j3 = aStream_1083.method436((byte)-74);
+                int j11 = aStream_1083.method436((byte)-74);
+                Widget.interfaceCache[j11].anInt233 = 2;
+                Widget.interfaceCache[j11].anInt234 = j3;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 114)
+            if(packet == 114)
             {
-                anInt1104 = aClass30_Sub2_Sub2_1083.method434((byte)108) * 30;
-                anInt1008 = -1;
+                anInt1104 = aStream_1083.method434((byte)108) * 30;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 60)
+            if(packet == 60)
             {
-                anInt1269 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1268 = aClass30_Sub2_Sub2_1083.method427(false);
-                while(aClass30_Sub2_Sub2_1083.anInt1406 < anInt1007)
+                anInt1269 = aStream_1083.readUnsignedByte();
+                anInt1268 = aStream_1083.readByteC(false);
+                while(aStream_1083.anInt1406 < anInt1007)
                 {
-                    int k3 = aClass30_Sub2_Sub2_1083.method408();
-                    method137(anInt1119, aClass30_Sub2_Sub2_1083, k3);
+                    int k3 = aStream_1083.readUnsignedByte();
+                    method137(anInt1119, aStream_1083, k3);
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 35)
+            if(packet == 35)
             {
-                int l3 = aClass30_Sub2_Sub2_1083.method408();
-                int k11 = aClass30_Sub2_Sub2_1083.method408();
-                int j17 = aClass30_Sub2_Sub2_1083.method408();
-                int k21 = aClass30_Sub2_Sub2_1083.method408();
+                int l3 = aStream_1083.readUnsignedByte();
+                int k11 = aStream_1083.readUnsignedByte();
+                int j17 = aStream_1083.readUnsignedByte();
+                int k21 = aStream_1083.readUnsignedByte();
                 aBooleanArray876[l3] = true;
                 anIntArray873[l3] = k11;
                 anIntArray1203[l3] = j17;
                 anIntArray928[l3] = k21;
                 anIntArray1030[l3] = 0;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 174)
+            if(packet == 174)
             {
-                int i4 = aClass30_Sub2_Sub2_1083.method410();
-                int l11 = aClass30_Sub2_Sub2_1083.method408();
-                int k17 = aClass30_Sub2_Sub2_1083.method410();
+                int i4 = aStream_1083.readUnsignedShort();
+                int l11 = aStream_1083.readUnsignedByte();
+                int k17 = aStream_1083.readUnsignedShort();
                 if(aBoolean848 && !aBoolean960 && anInt1062 < 50)
                 {
                     anIntArray1207[anInt1062] = i4;
@@ -12130,14 +13490,14 @@ public class client extends Applet_Sub1 {
                     anIntArray1250[anInt1062] = k17 + Class16.anIntArray326[i4];
                     anInt1062++;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 104) //death
+            if(packet == 104) //death
             {
-                int j4 = aClass30_Sub2_Sub2_1083.method427(false);
-                int i12 = aClass30_Sub2_Sub2_1083.method426(0);
-                String s6 = aClass30_Sub2_Sub2_1083.method415();
+                int j4 = aStream_1083.readByteC(false);
+                int i12 = aStream_1083.readByteS(0);
+                String s6 = aStream_1083.method415();
                 if(j4 >= 1 && j4 <= 5)
                 {
                     if(s6.equalsIgnoreCase("null"))
@@ -12145,18 +13505,18 @@ public class client extends Applet_Sub1 {
                     aStringArray1127[j4 - 1] = s6;
                     aBooleanArray1128[j4 - 1] = i12 == 0;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 78)
+            if(packet == 78)
             {
                 anInt1261 = 0;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 253)
+            if(packet == 253)
             {
-                String s = aClass30_Sub2_Sub2_1083.method415();
+                String s = aStream_1083.method415();
                 if(s.endsWith(":test:"))
                 {
                     String s3 = s.substring(0, s.indexOf(":"));
@@ -12165,7 +13525,7 @@ public class client extends Applet_Sub1 {
                 if(s.endsWith(":clan"))
                 {
                     String s3 = s.substring(0, s.indexOf(":"));
-                    long l17 = Class50.method583(s3);
+                    long l17 = TextClass.longForName(s3);
                     boolean flag9 = false;
                     for(int j27 = 0; j27 < anInt822; j27++)
                     {
@@ -12176,12 +13536,12 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(!flag9 && anInt1251 == 0)
-                        method77(" ", 80, s3, aBoolean991);
+                        pushMessage(" ", 80, s3);
                 } else
                 if(s.endsWith(":tradereq:"))
                 {
                     String s3 = s.substring(0, s.indexOf(":"));
-                    long l17 = Class50.method583(s3);
+                    long l17 = TextClass.longForName(s3);
                     boolean flag2 = false;
                     for(int j27 = 0; j27 < anInt822; j27++)
                     {
@@ -12192,12 +13552,12 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(!flag2 && anInt1251 == 0)
-                        method77("wishes to trade with you.", 4, s3, aBoolean991);
+                        pushMessage("wishes to trade with you.", 4, s3);
                 } else
                 if(s.endsWith(":duelreq:"))
                 {
                     String s4 = s.substring(0, s.indexOf(":"));
-                    long l18 = Class50.method583(s4);
+                    long l18 = TextClass.longForName(s4);
                     boolean flag3 = false;
                     for(int k27 = 0; k27 < anInt822; k27++)
                     {
@@ -12208,12 +13568,12 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(!flag3 && anInt1251 == 0)
-                        method77("wishes to duel with you.", 8, s4, aBoolean991);
+                        pushMessage("wishes to duel with you.", 8, s4);
                 } else
                 if(s.endsWith(":chalreq:"))
                 {
                     String s5 = s.substring(0, s.indexOf(":"));
-                    long l19 = Class50.method583(s5);
+                    long l19 = TextClass.longForName(s5);
                     boolean flag4 = false;
                     for(int l27 = 0; l27 < anInt822; l27++)
                     {
@@ -12226,35 +13586,35 @@ public class client extends Applet_Sub1 {
                     if(!flag4 && anInt1251 == 0)
                     {
                         String s8 = s.substring(s.indexOf(":") + 1, s.length() - 9);
-                        method77(s8, 8, s5, aBoolean991);
+                        pushMessage(s8, 8, s5);
                     }
                 } else
                 {
-                    method77(s, 0, "", aBoolean991);
+                    pushMessage(s, 0, "");
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 1)
+            if(packet == 1)
             {
-                for(int k4 = 0; k4 < aClass30_Sub2_Sub4_Sub1_Sub2Array890.length; k4++)
-                    if(aClass30_Sub2_Sub4_Sub1_Sub2Array890[k4] != null)
-                        aClass30_Sub2_Sub4_Sub1_Sub2Array890[k4].anInt1526 = -1;
+                for(int k4 = 0; k4 < aPlayerArray890.length; k4++)
+                    if(aPlayerArray890[k4] != null)
+                        aPlayerArray890[k4].anInt1526 = -1;
 
-                for(int j12 = 0; j12 < aClass30_Sub2_Sub4_Sub1_Sub1Array835.length; j12++)
-                    if(aClass30_Sub2_Sub4_Sub1_Sub1Array835[j12] != null)
-                        aClass30_Sub2_Sub4_Sub1_Sub1Array835[j12].anInt1526 = -1;
+                for(int j12 = 0; j12 < npcs.length; j12++)
+                    if(npcs[j12] != null)
+                        npcs[j12].anInt1526 = -1;
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
             //FRAMES
             //Private chat" ..has logged in."
-            if(anInt1008 == 50)
+            if(packet == 50)
             {
-                long l4 = aClass30_Sub2_Sub2_1083.method414(-35089);
-                int i18 = aClass30_Sub2_Sub2_1083.method408();
-                String s7 = Class50.method587(-45804, Class50.method584(l4, (byte)-99));
+                long l4 = aStream_1083.method414(-35089);
+                int i18 = aStream_1083.readUnsignedByte();
+                String s7 = TextClass.fixName(TextClass.nameForLong(l4));
                 for(int k24 = 0; k24 < anInt899; k24++)
                 {
                     if(l4 != aLongArray955[k24])
@@ -12262,11 +13622,11 @@ public class client extends Applet_Sub1 {
                     if(anIntArray826[k24] != i18)
                     {
                         anIntArray826[k24] = i18;
-                        aBoolean1153 = true;
+                        tabAreaAltered = true;
                         if(i18 > 1)
-                            method77(s7 + " has logged in.", 5, "", aBoolean991);
+                            pushMessage(s7 + " has logged in.", 5, "");
                         if(i18 == 1)
-                            method77(s7 + " has logged out.", 5, "", aBoolean991);
+                            pushMessage(s7 + " has logged out.", 5, "");
                     }
                     s7 = null;
                     break;
@@ -12278,7 +13638,7 @@ public class client extends Applet_Sub1 {
                     aStringArray1082[anInt899] = s7;
                     anIntArray826[anInt899] = i18;
                     anInt899++;
-                    aBoolean1153 = true;
+                    tabAreaAltered = true;
                 }
                 for(boolean flag6 = false; !flag6;)
                 {
@@ -12295,28 +13655,28 @@ public class client extends Applet_Sub1 {
                             long l32 = aLongArray955[k29];
                             aLongArray955[k29] = aLongArray955[k29 + 1];
                             aLongArray955[k29 + 1] = l32;
-                            aBoolean1153 = true;
+                            tabAreaAltered = true;
                             flag6 = false;
                         }
 
                 }
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 110)
+            if(packet == 110)
             {
-                if(anInt1221 == 12)
-                    aBoolean1153 = true;
-                anInt1148 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1008 = -1;
+                if(tabID == 12)
+                    tabAreaAltered = true;
+                anInt1148 = aStream_1083.readUnsignedByte();
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 254)
+            if(packet == 254)
             {
-                anInt855 = aClass30_Sub2_Sub2_1083.method408();
+                anInt855 = aStream_1083.readUnsignedByte();
                 if(anInt855 == 1)
-                    anInt1222 = aClass30_Sub2_Sub2_1083.method410();
+                    anInt1222 = aStream_1083.readUnsignedShort();
                 if(anInt855 >= 2 && anInt855 <= 6)
                 {
                     if(anInt855 == 2)
@@ -12345,71 +13705,71 @@ public class client extends Applet_Sub1 {
                         anInt938 = 128;
                     }
                     anInt855 = 2;
-                    anInt934 = aClass30_Sub2_Sub2_1083.method410();
-                    anInt935 = aClass30_Sub2_Sub2_1083.method410();
-                    anInt936 = aClass30_Sub2_Sub2_1083.method408();
+                    anInt934 = aStream_1083.readUnsignedShort();
+                    anInt935 = aStream_1083.readUnsignedShort();
+                    anInt936 = aStream_1083.readUnsignedByte();
                 }
                 if(anInt855 == 10)
-                    anInt933 = aClass30_Sub2_Sub2_1083.method410();
-                anInt1008 = -1;
+                    anInt933 = aStream_1083.readUnsignedShort();
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 248)
+            if(packet == 248)
             {
-                int i5 = aClass30_Sub2_Sub2_1083.method435(true);
-                int k12 = aClass30_Sub2_Sub2_1083.method410();
-                if(anInt1276 != -1)
+                int i5 = aStream_1083.method435(true);
+                int k12 = aStream_1083.readUnsignedShort();
+                if(backDialogID != -1)
                 {
-                    anInt1276 = -1;
-                    aBoolean1223 = true;
+                    backDialogID = -1;
+                    inputTaken = true;
                 }
-                if(anInt1225 != 0)
+                if(inputDialogState != 0)
                 {
-                    anInt1225 = 0;
-                    aBoolean1223 = true;
+                    inputDialogState = 0;
+                    inputTaken = true;
                 }
-                anInt857 = i5;
-                anInt1189 = k12;
-                aBoolean1153 = true;
+                openInterfaceID = i5;
+                invOverlayInterfaceID = k12;
+                tabAreaAltered = true;
                 aBoolean1103 = true;
                 aBoolean1149 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 79)
+            if(packet == 79)
             {
-                int j5 = aClass30_Sub2_Sub2_1083.method434((byte)108);
-                int l12 = aClass30_Sub2_Sub2_1083.method435(true);
-                Class9 class9_3 = Class9.aClass9Array210[j5];
+                int j5 = aStream_1083.method434((byte)108);
+                int l12 = aStream_1083.method435(true);
+                Widget class9_3 = Widget.interfaceCache[j5];
                 if(class9_3 != null && class9_3.anInt262 == 0)
                 {
                     if(l12 < 0)
                         l12 = 0;
                     if(l12 > class9_3.anInt261 - class9_3.anInt267)
                         l12 = class9_3.anInt261 - class9_3.anInt267;
-                    class9_3.anInt224 = l12;
+                    class9_3.scrollPosition = l12;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 68)
+            if(packet == 68)
             {
-                for(int k5 = 0; k5 < anIntArray971.length; k5++)
-                    if(anIntArray971[k5] != anIntArray1045[k5])
+                for(int k5 = 0; k5 < variousSettings.length; k5++)
+                    if(variousSettings[k5] != anIntArray1045[k5])
                     {
-                        anIntArray971[k5] = anIntArray1045[k5];
+                        variousSettings[k5] = anIntArray1045[k5];
                         method33(false, k5);
-                        aBoolean1153 = true;
+                        tabAreaAltered = true;
                     }
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 196)
+            if(packet == 196)
             {
-                long l5 = aClass30_Sub2_Sub2_1083.method414(-35089);
-                int j18 = aClass30_Sub2_Sub2_1083.method413();
-                int l21 = aClass30_Sub2_Sub2_1083.method408();
+                long l5 = aStream_1083.method414(-35089);
+                int j18 = aStream_1083.method413();
+                int l21 = aStream_1083.readUnsignedByte();
                 boolean flag5 = false;
                 for(int i28 = 0; i28 < 100; i28++)
                 {
@@ -12435,157 +13795,226 @@ public class client extends Applet_Sub1 {
                     {
                         anIntArray1240[anInt1169] = j18;
                         anInt1169 = (anInt1169 + 1) % 100;
-                        String s9 = Class35.method525(anInt1007 - 13, true, aClass30_Sub2_Sub2_1083);
+                        String s9 = TextInput.method525(anInt1007 - 13, true, aStream_1083);
                         if(l21 != 3)
-                            s9 = Class34.method497(s9, 0);
-                        if(l21 == 2 || l21 == 3)
-                            method77(s9, 7, "@cr2@" + Class50.method587(-45804, Class50.method584(l5, (byte)-99)), aBoolean991);
-                        else
-                        if(l21 == 1)
-                            method77(s9, 7, "@cr1@" + Class50.method587(-45804, Class50.method584(l5, (byte)-99)), aBoolean991);
-                        else
-                            method77(s9, 3, Class50.method587(-45804, Class50.method584(l5, (byte)-99)), aBoolean991);
+                            s9 = Censor.method497(s9, 0);
+                        switch (l21) {
+                            case 1:
+                                this.pushMessage(s9, 7, "@cr1@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 2:
+                                this.pushMessage(s9, 7, "@cr2@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 3:
+                                this.pushMessage(s9, 7, "@cr3@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 4:
+                                this.pushMessage(s9, 7, "@cr4@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 5:
+                                this.pushMessage(s9, 7, "@cr5@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 6:
+                                this.pushMessage(s9, 7, "@cr6@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 7:
+                                this.pushMessage(s9, 7, "@cr7@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 8:
+                                this.pushMessage(s9, 7, "@cr8@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 9:
+                                this.pushMessage(s9, 7, "@cr9@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 10:
+                                this.pushMessage(s9, 7, "@cr10@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 11:
+                                this.pushMessage(s9, 7, "@cr11@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 12:
+                                this.pushMessage(s9, 7, "@cr12@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 13:
+                                this.pushMessage(s9, 7, "@cr13@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 14:
+                                this.pushMessage(s9, 7, "@cr14@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 15:
+                                this.pushMessage(s9, 7, "@cr15@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 16:
+                                this.pushMessage(s9, 7, "@cr16@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 17:
+                                this.pushMessage(s9, 7, "@cr17@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 18:
+                                this.pushMessage(s9, 7, "@cr18@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 19:
+                                this.pushMessage(s9, 7, "@cr19@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 20:
+                                this.pushMessage(s9, 7, "@cr20@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 21:
+                                this.pushMessage(s9, 7, "@cr21@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            case 22:
+                                this.pushMessage(s9, 7, "@cr22@" + TextClass.fixName(TextClass.nameForLong(l5)));
+                                break;
+                            /*
+                             * case 23: this.pushMessage(var34, 7, "@cr23@" +
+                             * TextClass.fixName(TextClass.nameForLong(var30))); break; case 24:
+                             * this.pushMessage(var34, 7, "@cr24@" +
+                             * TextClass.fixName(TextClass.nameForLong(var30))); break;
+                             */
+                            default:
+                                this.pushMessage(s9, 3, TextClass.fixName(TextClass.nameForLong(l5)));
+                        }
                     }
                     catch(Exception exception1)
                     {
                         signlink.reporterror("cde1");
                     }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 85)
+            if(packet == 85)
             {
-                anInt1269 = aClass30_Sub2_Sub2_1083.method427(false);
-                anInt1268 = aClass30_Sub2_Sub2_1083.method427(false);
-                anInt1008 = -1;
+                anInt1269 = aStream_1083.readByteC(false);
+                anInt1268 = aStream_1083.readByteC(false);
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 24)
+            if(packet == 24)
             {
-                anInt1054 = aClass30_Sub2_Sub2_1083.method428(2);
-                if(anInt1054 == anInt1221)
+                anInt1054 = aStream_1083.readByteA(2);
+                if(anInt1054 == tabID)
                 {
                     if(anInt1054 == 3)
-                        anInt1221 = 1;
+                        tabID = 1;
                     else
-                        anInt1221 = 3;
-                    aBoolean1153 = true;
+                        tabID = 3;
+                    tabAreaAltered = true;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 246)
+            if(packet == 246)
             {
-                int i6 = aClass30_Sub2_Sub2_1083.method434((byte)108);
-                int i13 = aClass30_Sub2_Sub2_1083.method410();
-                int k18 = aClass30_Sub2_Sub2_1083.method410();
+                int i6 = aStream_1083.method434((byte)108);
+                int i13 = aStream_1083.readUnsignedShort();
+                int k18 = aStream_1083.readUnsignedShort();
                 if(k18 == 65535)
                 {
-                    Class9.aClass9Array210[i6].anInt233 = 0;
-                    anInt1008 = -1;
+                    Widget.interfaceCache[i6].anInt233 = 0;
+                    packet = -1;
                     return true;
                 } else
                 {
                     Class8 class8 = Class8.method198(k18);
-                    Class9.aClass9Array210[i6].anInt233 = 4;
-                    Class9.aClass9Array210[i6].anInt234 = k18;
-                    Class9.aClass9Array210[i6].anInt270 = class8.anInt190;
-                    Class9.aClass9Array210[i6].anInt271 = class8.anInt198;
-                    Class9.aClass9Array210[i6].anInt269 = (class8.anInt181 * 100) / i13;
-                    anInt1008 = -1;
+                    Widget.interfaceCache[i6].anInt233 = 4;
+                    Widget.interfaceCache[i6].anInt234 = k18;
+                    Widget.interfaceCache[i6].anInt270 = class8.anInt190;
+                    Widget.interfaceCache[i6].anInt271 = class8.anInt198;
+                    Widget.interfaceCache[i6].anInt269 = (class8.anInt181 * 100) / i13;
+                    packet = -1;
                     return true;
                 }
             }
-            if(anInt1008 == 171)
+            if(packet == 171)
             {
-                boolean flag1 = aClass30_Sub2_Sub2_1083.method408() == 1;
-                int j13 = aClass30_Sub2_Sub2_1083.method410();
-                Class9.aClass9Array210[j13].aBoolean266 = flag1;
-                anInt1008 = -1;
+                boolean flag1 = aStream_1083.readUnsignedByte() == 1;
+                int j13 = aStream_1083.readUnsignedShort();
+                Widget.interfaceCache[j13].aBoolean266 = flag1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 142)
+            if(packet == 142)
             {
-                int j6 = aClass30_Sub2_Sub2_1083.method434((byte)108);
+                int j6 = aStream_1083.method434((byte)108);
                 method60(j6, (byte)6);
-                if(anInt1276 != -1)
+                if(backDialogID != -1)
                 {
-                    anInt1276 = -1;
-                    aBoolean1223 = true;
+                    backDialogID = -1;
+                    inputTaken = true;
                 }
-                if(anInt1225 != 0)
+                if(inputDialogState != 0)
                 {
-                    anInt1225 = 0;
-                    aBoolean1223 = true;
+                    inputDialogState = 0;
+                    inputTaken = true;
                 }
-                anInt1189 = j6;
-                aBoolean1153 = true;
+                invOverlayInterfaceID = j6;
+                tabAreaAltered = true;
                 aBoolean1103 = true;
-                anInt857 = -1;
+                openInterfaceID = -1;
                 aBoolean1149 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 126)
+            if(packet == 126)
             {
-                String s1 = aClass30_Sub2_Sub2_1083.method415();
-                int k13 = aClass30_Sub2_Sub2_1083.method435(true);
-                Class9.aClass9Array210[k13].aString248 = s1;
-                if(Class9.aClass9Array210[k13].anInt236 == anIntArray1130[anInt1221])
-                    aBoolean1153 = true;
-                anInt1008 = -1;
+                String s1 = aStream_1083.method415();
+                int k13 = aStream_1083.method435(true);
+                Widget.interfaceCache[k13].aString248 = s1;
+                if(Widget.interfaceCache[k13].parentID == tabInterfaceIDs[tabID])
+                    tabAreaAltered = true;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 206)
+            if(packet == 206)
             {
-                anInt1287 = aClass30_Sub2_Sub2_1083.method408();
-                anInt845 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1248 = aClass30_Sub2_Sub2_1083.method408();
+                publicChatMode = aStream_1083.readUnsignedByte();
+                privateChatMode = aStream_1083.readUnsignedByte();
+                tradeMode = aStream_1083.readUnsignedByte();
                 aBoolean1233 = true;
-                aBoolean1223 = true;
-                anInt1008 = -1;
+                inputTaken = true;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 240)
+            if(packet == 240)
             {
-                if(anInt1221 == 12)
-                    aBoolean1153 = true;
-                anInt878 = aClass30_Sub2_Sub2_1083.method411();
-                anInt1008 = -1;
+                if(tabID == 12)
+                    tabAreaAltered = true;
+                anInt878 = aStream_1083.method411();
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 8)
+            if(packet == 8)
             {
-                int k6 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                int l13 = aClass30_Sub2_Sub2_1083.method410();
-                Class9.aClass9Array210[k6].anInt233 = 1;
-                Class9.aClass9Array210[k6].anInt234 = l13;
-                anInt1008 = -1;
+                int k6 = aStream_1083.method436((byte)-74);
+                int l13 = aStream_1083.readUnsignedShort();
+                Widget.interfaceCache[k6].anInt233 = 1;
+                Widget.interfaceCache[k6].anInt234 = l13;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 122)
+            if(packet == 122)
             {
-                int l6 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                int i14 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
+                int l6 = aStream_1083.method436((byte)-74);
+                int i14 = aStream_1083.method436((byte)-74);
                 int i19 = i14 >> 10 & 0x1f;
                 int i22 = i14 >> 5 & 0x1f;
                 int l24 = i14 & 0x1f;
-                Class9.aClass9Array210[l6].anInt232 = (i19 << 19) + (i22 << 11) + (l24 << 3);
-                anInt1008 = -1;
+                Widget.interfaceCache[l6].anInt232 = (i19 << 19) + (i22 << 11) + (l24 << 3);
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 53)
+            if(packet == 53)
             {
-                aBoolean1153 = true;
-                int i7 = aClass30_Sub2_Sub2_1083.method410();
-                Class9 class9_1 = Class9.aClass9Array210[i7];
-                int j19 = aClass30_Sub2_Sub2_1083.method410();
+                tabAreaAltered = true;
+                int i7 = aStream_1083.readUnsignedShort();
+                Widget class9_1 = Widget.interfaceCache[i7];
+                int j19 = aStream_1083.readUnsignedShort();
                 for(int j22 = 0; j22 < j19; j22++)
                 {
-                    int i25 = aClass30_Sub2_Sub2_1083.method408();
+                    int i25 = aStream_1083.readUnsignedByte();
                     if(i25 == 255)
-                        i25 = aClass30_Sub2_Sub2_1083.method440(true);
-                    class9_1.anIntArray253[j22] = aClass30_Sub2_Sub2_1083.method436((byte)-74);
+                        i25 = aStream_1083.method440(true);
+                    class9_1.anIntArray253[j22] = aStream_1083.method436((byte)-74);
                     class9_1.anIntArray252[j22] = i25;
                 }
 
@@ -12595,36 +14024,36 @@ public class client extends Applet_Sub1 {
                     class9_1.anIntArray252[j25] = 0;
                 }
 
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 230)
+            if(packet == 230)
             {
-                int j7 = aClass30_Sub2_Sub2_1083.method435(true);
-                int j14 = aClass30_Sub2_Sub2_1083.method410();
-                int k19 = aClass30_Sub2_Sub2_1083.method410();
-                int k22 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                Class9.aClass9Array210[j14].anInt270 = k19;
-                Class9.aClass9Array210[j14].anInt271 = k22;
-                Class9.aClass9Array210[j14].anInt269 = j7;
-                anInt1008 = -1;
+                int j7 = aStream_1083.method435(true);
+                int j14 = aStream_1083.readUnsignedShort();
+                int k19 = aStream_1083.readUnsignedShort();
+                int k22 = aStream_1083.method436((byte)-74);
+                Widget.interfaceCache[j14].anInt270 = k19;
+                Widget.interfaceCache[j14].anInt271 = k22;
+                Widget.interfaceCache[j14].anInt269 = j7;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 221)
+            if(packet == 221)
             {
-                anInt900 = aClass30_Sub2_Sub2_1083.method408();
-                aBoolean1153 = true;
-                anInt1008 = -1;
+                anInt900 = aStream_1083.readUnsignedByte();
+                tabAreaAltered = true;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 177)
+            if(packet == 177)
             {
                 aBoolean1160 = true;
-                anInt995 = aClass30_Sub2_Sub2_1083.method408();
-                anInt996 = aClass30_Sub2_Sub2_1083.method408();
-                anInt997 = aClass30_Sub2_Sub2_1083.method410();
-                anInt998 = aClass30_Sub2_Sub2_1083.method408();
-                anInt999 = aClass30_Sub2_Sub2_1083.method408();
+                anInt995 = aStream_1083.readUnsignedByte();
+                anInt996 = aStream_1083.readUnsignedByte();
+                anInt997 = aStream_1083.readUnsignedShort();
+                anInt998 = aStream_1083.readUnsignedByte();
+                anInt999 = aStream_1083.readUnsignedByte();
                 if(anInt999 >= 100)
                 {
                     int k7 = anInt995 * 128 + 64;
@@ -12641,116 +14070,116 @@ public class client extends Applet_Sub1 {
                     if(yCameraCurve > 383)
                         yCameraCurve = 383;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 249)
+            if(packet == 249)
             {
-                anInt1046 = aClass30_Sub2_Sub2_1083.method426(0);
-                anInt884 = aClass30_Sub2_Sub2_1083.method436((byte)-74);
-                anInt1008 = -1;
+                anInt1046 = aStream_1083.readByteS(0);
+                anInt884 = aStream_1083.method436((byte)-74);
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 65)
+            if(packet == 65)
             {
-                method31(aClass30_Sub2_Sub2_1083, anInt1007, 973);
-                anInt1008 = -1;
+                method31(aStream_1083, anInt1007, 973);
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 27)
+            if(packet == 27)
             {
-                aBoolean1256 = false;
-                anInt1225 = 1;
-                aString1004 = "";
-                aBoolean1223 = true;
-                anInt1008 = -1;
+                messagePromptRaised = false;
+                inputDialogState = 1;
+                amountOrNameInput = "";
+                inputTaken = true;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 187)
+            if(packet == 187)
             {
-                aBoolean1256 = false;
-                anInt1225 = 2;
-                aString1004 = "";
-                aBoolean1223 = true;
-                anInt1008 = -1;
+                messagePromptRaised = false;
+                inputDialogState = 2;
+                amountOrNameInput = "";
+                inputTaken = true;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 97)
+            if(packet == 97)
             {
-                int l7 = aClass30_Sub2_Sub2_1083.method410();
+                int l7 = aStream_1083.readUnsignedShort();
                 method60(l7, (byte)6);
-                if(anInt1189 != -1)
+                if(invOverlayInterfaceID != -1)
                 {
-                    anInt1189 = -1;
-                    aBoolean1153 = true;
+                    invOverlayInterfaceID = -1;
+                    tabAreaAltered = true;
                     aBoolean1103 = true;
                 }
-                if(anInt1276 != -1)
+                if(backDialogID != -1)
                 {
-                    anInt1276 = -1;
-                    aBoolean1223 = true;
+                    backDialogID = -1;
+                    inputTaken = true;
                 }
-                if(anInt1225 != 0)
+                if(inputDialogState != 0)
                 {
-                    anInt1225 = 0;
-                    aBoolean1223 = true;
+                    inputDialogState = 0;
+                    inputTaken = true;
                 }
-                anInt857 = l7;
+                openInterfaceID = l7;
                 aBoolean1149 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 218)
+            if(packet == 218)
             {
-                int i8 = aClass30_Sub2_Sub2_1083.method438(false);
-                anInt1042 = i8;
-                aBoolean1223 = true;
-                anInt1008 = -1;
+                int i8 = aStream_1083.method438(false);
+                dialogID = i8;
+                inputTaken = true;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 87)
+            if(packet == 87)
             {
-                int j8 = aClass30_Sub2_Sub2_1083.method434((byte)108);
-                int l14 = aClass30_Sub2_Sub2_1083.method439((byte)41);
+                int j8 = aStream_1083.method434((byte)108);
+                int l14 = aStream_1083.method439((byte)41);
                 anIntArray1045[j8] = l14;
-                if(anIntArray971[j8] != l14)
+                if(variousSettings[j8] != l14)
                 {
-                    anIntArray971[j8] = l14;
+                    variousSettings[j8] = l14;
                     method33(false, j8);
-                    aBoolean1153 = true;
-                    if(anInt1042 != -1)
-                        aBoolean1223 = true;
+                    tabAreaAltered = true;
+                    if(dialogID != -1)
+                        inputTaken = true;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 36)
+            if(packet == 36)
             {
-                int k8 = aClass30_Sub2_Sub2_1083.method434((byte)108);
-                byte byte0 = aClass30_Sub2_Sub2_1083.method409();
+                int k8 = aStream_1083.method434((byte)108);
+                byte byte0 = aStream_1083.method409();
                 anIntArray1045[k8] = byte0;
-                if(anIntArray971[k8] != byte0)
+                if(variousSettings[k8] != byte0)
                 {
-                    anIntArray971[k8] = byte0;
+                    variousSettings[k8] = byte0;
                     method33(false, k8);
-                    aBoolean1153 = true;
-                    if(anInt1042 != -1)
-                        aBoolean1223 = true;
+                    tabAreaAltered = true;
+                    if(dialogID != -1)
+                        inputTaken = true;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 61)
+            if(packet == 61)
             {
-                anInt1055 = aClass30_Sub2_Sub2_1083.method408();
-                anInt1008 = -1;
+                anInt1055 = aStream_1083.readUnsignedByte();
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 200)
+            if(packet == 200)
             {
-                int l8 = aClass30_Sub2_Sub2_1083.method410();
-                int i15 = aClass30_Sub2_Sub2_1083.method411();
-                Class9 class9_4 = Class9.aClass9Array210[l8];
+                int l8 = aStream_1083.readUnsignedShort();
+                int i15 = aStream_1083.method411();
+                Widget class9_4 = Widget.interfaceCache[l8];
                 class9_4.anInt257 = i15;
                 class9_4.anInt269 = 1600;
                 if(i15 == -1)
@@ -12758,85 +14187,85 @@ public class client extends Applet_Sub1 {
                     class9_4.anInt246 = 0;
                     class9_4.anInt208 = 0;
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 219)
+            if(packet == 219)
             {
-                if(anInt1189 != -1)
+                if(invOverlayInterfaceID != -1)
                 {
-                    anInt1189 = -1;
-                    aBoolean1153 = true;
+                    invOverlayInterfaceID = -1;
+                    tabAreaAltered = true;
                     aBoolean1103 = true;
                 }
-                if(anInt1276 != -1)
+                if(backDialogID != -1)
                 {
-                    anInt1276 = -1;
-                    aBoolean1223 = true;
+                    backDialogID = -1;
+                    inputTaken = true;
                 }
-                if(anInt1225 != 0)
+                if(inputDialogState != 0)
                 {
-                    anInt1225 = 0;
-                    aBoolean1223 = true;
+                    inputDialogState = 0;
+                    inputTaken = true;
                 }
-                anInt857 = -1;
+                openInterfaceID = -1;
                 aBoolean1149 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 34)
+            if(packet == 34)
             {
-                aBoolean1153 = true;
-                int i9 = aClass30_Sub2_Sub2_1083.method410();
-                Class9 class9_2 = Class9.aClass9Array210[i9];
-                while(aClass30_Sub2_Sub2_1083.anInt1406 < anInt1007)
+                tabAreaAltered = true;
+                int i9 = aStream_1083.readUnsignedShort();
+                Widget class9_2 = Widget.interfaceCache[i9];
+                while(aStream_1083.anInt1406 < anInt1007)
                 {
-                    int j20 = aClass30_Sub2_Sub2_1083.method422();
-                    int i23 = aClass30_Sub2_Sub2_1083.method410();
-                    int l25 = aClass30_Sub2_Sub2_1083.method408();
+                    int j20 = aStream_1083.readUSmart();
+                    int i23 = aStream_1083.readUnsignedShort();
+                    int l25 = aStream_1083.readUnsignedByte();
                     if(l25 == 255)
-                        l25 = aClass30_Sub2_Sub2_1083.method413();
+                        l25 = aStream_1083.method413();
                     if(j20 >= 0 && j20 < class9_2.anIntArray253.length)
                     {
                         class9_2.anIntArray253[j20] = i23;
                         class9_2.anIntArray252[j20] = l25;
                     }
                 }
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 105 || anInt1008 == 84 || anInt1008 == 147 || anInt1008 == 215 || anInt1008 == 4 || anInt1008 == 117 || anInt1008 == 156 || anInt1008 == 44 || anInt1008 == 160 || anInt1008 == 101 || anInt1008 == 151)
+            if(packet == 105 || packet == 84 || packet == 147 || packet == 215 || packet == 4 || packet == 117 || packet == 156 || packet == 44 || packet == 160 || packet == 101 || packet == 151)
             {
-                method137(anInt1119, aClass30_Sub2_Sub2_1083, anInt1008);
-                anInt1008 = -1;
+                method137(anInt1119, aStream_1083, packet);
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 106)
+            if(packet == 106)
             {
-                anInt1221 = aClass30_Sub2_Sub2_1083.method427(false);
-                aBoolean1153 = true;
+                tabID = aStream_1083.readByteC(false);
+                tabAreaAltered = true;
                 aBoolean1103 = true;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            if(anInt1008 == 164)
+            if(packet == 164)
             {
-                int j9 = aClass30_Sub2_Sub2_1083.method434((byte)108);
+                int j9 = aStream_1083.method434((byte)108);
                 method60(j9, (byte)6);
-                if(anInt1189 != -1)
+                if(invOverlayInterfaceID != -1)
                 {
-                    anInt1189 = -1;
-                    aBoolean1153 = true;
+                    invOverlayInterfaceID = -1;
+                    tabAreaAltered = true;
                     aBoolean1103 = true;
                 }
-                anInt1276 = j9;
-                aBoolean1223 = true;
-                anInt857 = -1;
+                backDialogID = j9;
+                inputTaken = true;
+                openInterfaceID = -1;
                 aBoolean1149 = false;
-                anInt1008 = -1;
+                packet = -1;
                 return true;
             }
-            signlink.reporterror("T1 - " + anInt1008 + "," + anInt1007 + " - " + anInt842 + "," + anInt843);
+            signlink.reporterror("T1 - " + packet + "," + anInt1007 + " - " + anInt842 + "," + anInt843);
             method44(true);
         }
         catch(IOException _ex)
@@ -12845,9 +14274,9 @@ public class client extends Applet_Sub1 {
         }
         catch(Exception exception)
         {
-            String s2 = "T2 - " + anInt1008 + "," + anInt842 + "," + anInt843 + " - " + anInt1007 + "," + (anInt1034 + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1500[0]) + "," + (anInt1035 + ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anIntArray1501[0]) + " - ";
+            String s2 = "T2 - " + packet + "," + anInt842 + "," + anInt843 + " - " + anInt1007 + "," + (baseX + ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1500[0]) + "," + (baseY + ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anIntArray1501[0]) + " - ";
             for(int j15 = 0; j15 < anInt1007 && j15 < 50; j15++)
-                s2 = s2 + aClass30_Sub2_Sub2_1083.aByteArray1405[j15] + ",";
+                s2 = s2 + aStream_1083.aByteArray1405[j15] + ",";
 
             signlink.reporterror(s2);
             method44(true);
@@ -12872,7 +14301,10 @@ public class client extends Applet_Sub1 {
             if(aBooleanArray876[4] && anIntArray1203[4] + 128 > i)
                 i = anIntArray1203[4] + 128;
             int k = anInt1185 + anInt896 & 0x7ff;
-            method144(0, clientZoom + i * 3, i, anInt1014, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550) - 50, k, anInt1015);
+           // method144(0, clientZoom + i * 3, i, anInt1014, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (aClass30_Sub2_Sub4_Sub1_Sub2_1126)).anInt1550) - 50, k, anInt1015);
+            method144(0, cameraZoom + i * (log_view_dist == 9 && currentScreenMode == ScreenMode.RESIZABLE ? 2
+                    : (log_view_dist == 10 ? 5 : 3)), i, anInt1014, method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (aPlayer_1126)).anInt1550) - 50, k, anInt1015);
+
         }
         int j;
         if(!aBoolean1160)
@@ -12914,26 +14346,35 @@ public class client extends Applet_Sub1 {
         } else
         {
             Class30_Sub2_Sub4_Sub6.anInt1687 = 0;
-            Class30_Sub2_Sub4_Sub6.anInt1685 = super.anInt20 - 4;
-            Class30_Sub2_Sub4_Sub6.anInt1686 = super.anInt21 - 4;
-            Class30_Sub2_Sub1.method334();
+            Class30_Sub2_Sub4_Sub6.anInt1685 = super.mouseX - (currentScreenMode == ScreenMode.FIXED ? 0 : 0);
+            Class30_Sub2_Sub4_Sub6.anInt1686 = super.mouseY - (currentScreenMode == ScreenMode.FIXED ? 0 : 0);
+            DrawingArea.setAllPixelsToZero();
             if(skyLoad){
-                Class30_Sub2_Sub1.method336(currentGameHeight, 0, 0, 0xC8C0A8, currentGameWidth  , 0);
+                DrawingArea.drawPixels(screenAreaHeight, 0, 0, 0xC8C0A8, screenAreaWidth );
             }
-            aClass25_946.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve, false);
-            if(FogToggle) {
-                double fogDistance = Math.sqrt(Math.pow(zCameraPos, 2));
-                int fogStartDistance = 1430;
-                int fogEndDistance = 2100;
-                fogHandler.setFogDistance((float) fogDistance);
-                fogHandler.renderFog(false, fogStartDistance, fogEndDistance, 3);
+            try {
+                aClass25_946.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve, false);
+                if (FogToggle) {
+                    double fogDistance = Math.sqrt(Math.pow(zCameraPos, 2));
+                    int fogStartDistance = 1430;
+                    int fogEndDistance = 2100;
+                    fogHandler.setFogDistance((float) fogDistance);
+                    fogHandler.renderFog(false, fogStartDistance, fogEndDistance, 3);
+                }
+                aClass25_946.method288((byte) 104);
+            } catch(Exception e){
+                e.printStackTrace();
             }
-            aClass25_946.method288((byte)104);
             method34(anInt898);
-            method61(-252);
-            method37(854, k2);
-            method112(8);
-            aClass15_1165.method238(4, 23680, super.aGraphics12, 4);
+                method61(-252);
+                method37(854, k2);
+            if (currentScreenMode != ScreenMode.FIXED) {
+                drawChatArea(6);
+                drawMinimap(false);
+                drawTabArea((byte)-81);
+            }
+            draw3dScreen(8);
+            aRSImageProducer_1165.method238(currentScreenMode == ScreenMode.FIXED ? 4 : 0, 23680, super.aGraphics12, currentScreenMode == ScreenMode.FIXED ? 4 : 0);
             xCameraPos = l;
             zCameraPos = i1;
             yCameraPos = j1;
@@ -12943,62 +14384,64 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method147(int i)
+    public final void clearTopInterfaces(int i)
     {
         stream.method397((byte)6, 130);
-        if(anInt1189 != -1)
+        if(invOverlayInterfaceID != -1)
         {
-            anInt1189 = -1;
-            aBoolean1153 = true;
+            invOverlayInterfaceID = -1;
+            tabAreaAltered = true;
             aBoolean1149 = false;
             aBoolean1103 = true;
         }
-        if(anInt1276 != -1)
+        if(backDialogID != -1)
         {
-            anInt1276 = -1;
-            aBoolean1223 = true;
+            backDialogID = -1;
+            inputTaken = true;
             aBoolean1149 = false;
         }
-        anInt857 = -1;
+        openInterfaceID = -1;
         if(i <= 0)
             stream.writeUnsignedByte(13);
     }
 
     public client()
     {
+        instance = this;
         anIntArrayArray825 = new int[104][104];
         anIntArray826 = new int[200];
         aClass19ArrayArrayArray827 = new Class19[4][104][104];
         aBoolean830 = true;
         aBoolean831 = false;
-        aClass30_Sub2_Sub2_834 = new Class30_Sub2_Sub2(new byte[5000], 891);
-        aClass30_Sub2_Sub4_Sub1_Sub1Array835 = new Class30_Sub2_Sub4_Sub1_Sub1[16384];
-        anIntArray837 = new int[16384];
+        aStream_834 = new Stream(new byte[5000], 891);
+        npcs = new Npc[16384];
+        npcIndices = new int[16384];
         anInt838 = 9;
         anIntArray840 = new int[1000];
-        aClass30_Sub2_Sub2_847 = Class30_Sub2_Sub2.method396(1, 9);
+        aStream_847 = Stream.method396(1, 9);
         aBoolean848 = true;
-        anInt857 = -1;
+        openInterfaceID = -1;
         anIntArray864 = new int[Class45.anInt733];
         aBoolean872 = false;
         anIntArray873 = new int[5];
+        BlackMap = new Sprite[2];
         anInt874 = -1;
         anInt875 = -680;
         aBooleanArray876 = new boolean[5];
         anInt877 = 1834;
         aBoolean880 = false;
-        aString881 = "";
+        reportAbuseInput = "";
         anInt882 = -30815;
         anInt883 = 533;
         anInt884 = -1;
-        aBoolean885 = false;
-        aString887 = "";
+        menuOpen = false;
+        inputString = "";
         anInt888 = 2048;
         anInt889 = 2047;
-        aClass30_Sub2_Sub4_Sub1_Sub2Array890 = new Class30_Sub2_Sub4_Sub1_Sub2[anInt888];
+        aPlayerArray890 = new Player[anInt888];
         anIntArray892 = new int[anInt888];
         anIntArray894 = new int[anInt888];
-        aClass30_Sub2_Sub2Array895 = new Class30_Sub2_Sub2[anInt888];
+        aStreamArray895 = new Stream[anInt888];
         anInt897 = 1;
         anIntArrayArray901 = new int[104][104];
         anInt902 = 0x766654;
@@ -13014,10 +14457,10 @@ public class client extends Applet_Sub1 {
         anIntArrayArray929 = new int[104][104];
         aCRC32_930 = new CRC32();
         anInt939 = 748;
-        anIntArray942 = new int[100];
-        aStringArray943 = new String[100];
-        aStringArray944 = new String[100];
-        aClass30_Sub2_Sub1_Sub1Array947 = new Class30_Sub2_Sub1_Sub1[13];
+        chatTypes = new int[500];
+        chatNames = new String[500];
+        chatMessages = new String[500];
+        sideIcons = new Sprite[15];
         aBoolean954 = true;
         aLongArray955 = new long[200];
         anInt956 = -1;
@@ -13027,7 +14470,7 @@ public class client extends Applet_Sub1 {
         anIntArray968 = new int[33];
         anIntArray969 = new int[256];
         aClass14Array970 = new Class14[5];
-        anIntArray971 = new int[10000];
+        variousSettings = new int[10000];
         aBoolean972 = false;
         aByte973 = -74;
         anInt975 = 50;
@@ -13040,20 +14483,20 @@ public class client extends Applet_Sub1 {
         anIntArray982 = new int[anInt975];
         aStringArray983 = new String[anInt975];
         anInt985 = -1;
-        aClass30_Sub2_Sub1_Sub1Array987 = new Class30_Sub2_Sub1_Sub1[20];
+        aSpriteArray987 = new Sprite[30];
         anIntArray990 = new int[5];
         aBoolean991 = false;
         aBoolean994 = false;
         anInt1002 = 0xbaab8c;
-        aString1004 = "";
+        amountOrNameInput = "";
         aByte1012 = 24;
         aClass19_1013 = new Class19(169);
         aBoolean1017 = false;
-        anInt1018 = -1;
+        openWalkableInterface = -1;
         anIntArray1030 = new int[5];
         aBoolean1031 = false;
-        aClass30_Sub2_Sub1_Sub1Array1033 = new Class30_Sub2_Sub1_Sub1[100];
-        anInt1042 = -1;
+        aSpriteArray1033 = new Sprite[100];
+        dialogID = -1;
         aBoolean1043 = false;
         anIntArray1044 = new int[Class45.anInt733];
         anIntArray1045 = new int[2000];
@@ -13064,8 +14507,9 @@ public class client extends Applet_Sub1 {
         aClass19_1056 = new Class19(169);
         anIntArray1057 = new int[33];
         anInt1058 = 24869;
-        aClass9_1059 = new Class9();
-        aClass30_Sub2_Sub1_Sub2Array1060 = new Class30_Sub2_Sub1_Sub2[100];
+        aClass9_1059 = new Widget();
+        aBackgroundArray1060 = new Background[100];
+        this.gameframe = new Sprite[70];
         anInt1063 = 0x4d4233;
         anIntArray1065 = new int[7];
         anIntArray1072 = new int[1000];
@@ -13073,13 +14517,13 @@ public class client extends Applet_Sub1 {
         aBoolean1080 = false;
         anInt1081 = -733;
         aStringArray1082 = new String[200];
-        aClass30_Sub2_Sub2_1083 = Class30_Sub2_Sub2.method396(1, 9);
+        aStream_1083 = Stream.method396(1, 9);
         anIntArray1090 = new int[9];
-        anIntArray1091 = new int[500];
-        anIntArray1092 = new int[500];
-        anIntArray1093 = new int[500];
-        anIntArray1094 = new long[500];
-        aClass30_Sub2_Sub1_Sub1Array1095 = new Class30_Sub2_Sub1_Sub1[20];
+        menuActionCmd2 = new int[500];
+        menuActionCmd3 = new int[500];
+        menuActionID = new int[500];
+        menuActionCmd1 = new long[500];
+        aSpriteArray1095 = new Sprite[20];
         aBoolean1103 = false;
         anInt1105 = 519;
         aBoolean1106 = false;
@@ -13092,40 +14536,42 @@ public class client extends Applet_Sub1 {
         anIntArrayArrayArray1129 = new int[4][13][13];
         anInt1132 = 2;
         anInt1135 = -12499;
-        aClass30_Sub2_Sub1_Sub1Array1140 = new Class30_Sub2_Sub1_Sub1[1000];
+        aSpriteArray1140 = new Sprite[1000];
         aBoolean1141 = false;
         aBoolean1149 = false;
-        aClass30_Sub2_Sub1_Sub1Array1150 = new Class30_Sub2_Sub1_Sub1[8];
+        aSpriteArray1150 = new Sprite[8];
         aBoolean1151 = true;
-        aBoolean1153 = false;
+        tabAreaAltered = false;
         aBoolean1157 = false;
-        aBoolean1158 = false;
+        canMute = false;
         aBoolean1159 = false;
         aBoolean1160 = false;
         anInt1171 = 1;
-        aString1173 = "";
-        aString1174 = "";
+        myUsername = "";
+        myPassword = "";
+        this.cButtonHPos = -1;
+        this.cButtonCPos = 0;
         server = Configuration.SERVER_ADDRESS;
-        port = String.valueOf(Configuration.PORT);
+        port = Configuration.PORT;
         aBoolean1176 = false;
-        anInt1178 = -1;
+        reportAbuseInterfaceID = -1;
         aClass19_1179 = new Class19(169);
         anInt1184 = 128;
-        anInt1189 = -1;
-        stream = Class30_Sub2_Sub2.method396(1, 9);
+        invOverlayInterfaceID = -1;
+        stream = Stream.method396(1, 9);
         aByte1194 = 5;
-        aStringArray1199 = new String[500];
+        menuActionName = new String[500];
         anIntArray1203 = new int[5];
         aBoolean1206 = true;
         anIntArray1207 = new int[50];
         anInt1210 = 2;
         anInt1211 = 78;
-        aString1212 = "";
+        promptInput = "";
         aByte1217 = 6;
         anInt1218 = -589;
-        aClass30_Sub2_Sub1_Sub2Array1219 = new Class30_Sub2_Sub1_Sub2[2];
-        anInt1221 = 3;
-        aBoolean1223 = false;
+        ModIcons = new Sprite[26];
+        tabID = 3;
+        inputTaken = false;
         aBoolean1228 = true;
         anIntArray1229 = new int[151];
         aClass11Array1230 = new Class11[4];
@@ -13136,11 +14582,11 @@ public class client extends Applet_Sub1 {
         anIntArray1250 = new int[50];
         aBoolean1252 = false;
         aBoolean1255 = false;
-        aBoolean1256 = false;
+        messagePromptRaised = false;
         aString1266 = "";
         aString1267 = "";
         aByte1274 = -13;
-        anInt1276 = -1;
+        backDialogID = -1;
         aBoolean1277 = true;
         anInt1279 = 2;
         anIntArray1280 = new int[4000];
@@ -13160,10 +14606,11 @@ public class client extends Applet_Sub1 {
     private volatile boolean aBoolean831;
     private Socket aSocket832;
     private int anInt833;
-    private Class30_Sub2_Sub2 aClass30_Sub2_Sub2_834;
-    private Class30_Sub2_Sub4_Sub1_Sub1 aClass30_Sub2_Sub4_Sub1_Sub1Array835[];
-    private int anInt836;
-    int anIntArray837[];
+    private Stream aStream_834;
+    private Sprite[] gameframe;
+    private Npc npcs[];
+    private int npcCount;
+    int npcIndices[];
     private int anInt838;
     private int anInt839;
     int anIntArray840[];
@@ -13171,9 +14618,9 @@ public class client extends Applet_Sub1 {
     private int anInt842;
     private int anInt843;
     private String aString844;
-    private int anInt845;
+    private int privateChatMode;
     private static int anInt846;
-    private Class30_Sub2_Sub2 aClass30_Sub2_Sub2_847;
+    private Stream aStream_847;
     private boolean aBoolean848;
     private static int anInt849;
     private int anIntArray850[];
@@ -13183,7 +14630,7 @@ public class client extends Applet_Sub1 {
     private static int anInt854;
     private int anInt855;
     private static BigInteger aBigInteger856 = new BigInteger("7162900525229798032761816791230527296329313291232324290237849263501208207972894053929065636522363163621000728841182238772712427862772219676577293600221789");
-    static int anInt857;
+    static int openInterfaceID;
     private int xCameraPos;
     private int zCameraPos;
     private int yCameraPos;
@@ -13191,13 +14638,13 @@ public class client extends Applet_Sub1 {
     private int xCameraCurve;
     private int rights;
     private int anIntArray864[];
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_865;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_866;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2_867;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_868;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2_869;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_870;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_871;
+    private Sprite aSprite_865;
+    private Sprite aSprite_866;
+    private Background aBackground_867;
+    private Sprite aSprite_868;
+    private Background aBackground_869;
+    private Sprite aSprite_870;
+    private Sprite aSprite_871;
     private boolean aBoolean872;
     private int anIntArray873[];
     private int anInt874;
@@ -13207,21 +14654,21 @@ public class client extends Applet_Sub1 {
     private int anInt878;
     Class48 aClass48_879;
     private volatile boolean aBoolean880;
-    private String aString881;
+    private String reportAbuseInput;
     private int anInt882;
     private int anInt883;
     private int anInt884;
-    private boolean aBoolean885;
+    private boolean menuOpen;
     private int anInt886;
-    private String aString887;
+    private String inputString;
     private int anInt888;
     private int anInt889;
-    private Class30_Sub2_Sub4_Sub1_Sub2 aClass30_Sub2_Sub4_Sub1_Sub2Array890[];
+    private Player aPlayerArray890[];
     private int anInt891;
     int anIntArray892[];
     private int anInt893;
     private int anIntArray894[];
-    private Class30_Sub2_Sub2 aClass30_Sub2_Sub2Array895[];
+    private Stream aStreamArray895[];
     private int anInt896;
     private int anInt897;
     private int anInt898;
@@ -13229,22 +14676,22 @@ public class client extends Applet_Sub1 {
     private int anInt900;
     private int anIntArrayArray901[][];
     private int anInt902;
-    private Class15 aClass15_903;
-    private Class15 aClass15_904;
-    private Class15 aClass15_905;
-    private Class15 aClass15_906;
-    private Class15 aClass15_907;
-    private Class15 aClass15_908;
-    private Class15 aClass15_909;
+    private RSImageProducer aRSImageProducer_903;
+    private RSImageProducer aRSImageProducer_904;
+    private RSImageProducer aRSImageProducer_905;
+    private RSImageProducer aRSImageProducer_906;
+    private RSImageProducer aRSImageProducer_907;
+    private RSImageProducer aRSImageProducer_908;
+    private RSImageProducer aRSImageProducer_909;
     private String macAddress;
-    private Class15 aClass15_910;
-    private Class15 aClass15_911;
+    private RSImageProducer aRSImageProducer_910;
+    private RSImageProducer aRSImageProducer_911;
     private byte aByteArray912[];
     private int anInt913;
     private int anInt914;
     private int anInt915;
     private int anInt916;
-    private int anInt917;
+    private int crossType;
     private int anInt918;
     private static boolean aBoolean919 = true;
     private byte aByte920;
@@ -13258,8 +14705,8 @@ public class client extends Applet_Sub1 {
     private int anIntArray928[];
     private int anIntArrayArray929[][];
     private CRC32 aCRC32_930;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_931;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_932;
+    private Sprite aSprite_931;
+    private Sprite aSprite_932;
     private int anInt933;
     private int anInt934;
     private int anInt935;
@@ -13269,13 +14716,15 @@ public class client extends Applet_Sub1 {
     private int anInt939;
     private static int anInt940;
     private static int anInt941;
-    private int anIntArray942[];
-    private String aStringArray943[];
-    private String aStringArray944[];
+    private int chatTypes[];
+    private final int[] chatRights = new int[500];
+    public String[] playerTitles;
+    private String chatNames[];
+    private String chatMessages[];
     private int anInt945;
     private Class25 aClass25_946;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array947[];
-    private int anInt948;
+    private Sprite sideIcons[];
+    private int menuScreenArea;
     private int anInt949;
     private int anInt950;
     private int anInt951;
@@ -13295,12 +14744,12 @@ public class client extends Applet_Sub1 {
     private int anIntArray965[] = {
             0xffff00, 0xff0000, 65280, 65535, 0xff00ff, 0xffffff
     };
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2_966;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2_967;
+    private Background aBackground_966;
+    private Background aBackground_967;
     private int anIntArray968[];
     private int anIntArray969[];
     Class14 aClass14Array970[];
-    public int anIntArray971[];
+    public int variousSettings[];
     private boolean aBoolean972;
     private byte aByte973;
     private int anInt974;
@@ -13316,7 +14765,7 @@ public class client extends Applet_Sub1 {
     private int anInt984;
     private int anInt985;
     private static int anInt986;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array987[];
+    private Sprite aSpriteArray987[];
     private int anInt988;
     private int anInt989;
     private int anIntArray990[];
@@ -13330,7 +14779,7 @@ public class client extends Applet_Sub1 {
     private int anInt998;
     private int anInt999;
     private Class17 aClass17_1000;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1001;
+    private Sprite aSprite_1001;
     private int anInt1002;
     static final int anIntArrayArray1003[][] = {
             {
@@ -13347,11 +14796,11 @@ public class client extends Applet_Sub1 {
             4550, 4537, 5681, 5673, 5790, 6806, 8076, 4574
     }
     };
-    private String aString1004;
+    private String amountOrNameInput;
     private static int anInt1005;
     private int anInt1006;
     private int anInt1007;
-    private int anInt1008;
+    private int packet;
     private int anInt1009;
     private int anInt1010;
     private int anInt1011;
@@ -13361,31 +14810,31 @@ public class client extends Applet_Sub1 {
     private int anInt1015;
     private int anInt1016;
     private boolean aBoolean1017;
-    private int anInt1018;
+    private int openWalkableInterface;
     private static int anIntArray1019[];
     private int anInt1020;
     private int anInt1021;
     int anInt1022;
     private int anInt1023;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1024;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1025;
+    private Sprite aSprite_1024;
+    private Sprite aSprite_1025;
     private int anInt1026;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1027;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1028;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1029;
+    private Sprite aSprite_1027;
+    private Sprite aSprite_1028;
+    private Sprite aSprite_1029;
     private int anIntArray1030[];
     private boolean aBoolean1031;
     private static BigInteger aBigInteger1032 = new BigInteger("58778699976184461502525193738213253649000149147835990136706041084440742975821");
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array1033[];
-    private int anInt1034;
-    private int anInt1035;
+    private Sprite aSpriteArray1033[];
+    private int baseX;
+    private int baseY;
     private int anInt1036;
     private int anInt1037;
     private int anInt1038;
     private int anInt1039;
     private int anInt1040;
     private int anInt1041;
-    private int anInt1042;
+    private int dialogID;
     private boolean aBoolean1043;
     private int anIntArray1044[];
     private int anIntArray1045[];
@@ -13396,14 +14845,14 @@ public class client extends Applet_Sub1 {
     private int anInt1050;
     private static int anInt1051;
     private int anIntArray1052[];
-    private Class44 aClass44_1053;
+    private Class44 titleStreamLoader;
     private int anInt1054;
     private int anInt1055;
     private Class19 aClass19_1056;
     private int anIntArray1057[];
     private int anInt1058;
-    private Class9 aClass9_1059;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2Array1060[];
+    private Widget aClass9_1059;
+    private Background aBackgroundArray1060[];
     static int anInt1061;
     private int anInt1062;
     private int anInt1063;
@@ -13417,16 +14866,16 @@ public class client extends Applet_Sub1 {
     private int anInt1071;
     private int anIntArray1072[];
     private int anIntArray1073[];
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1074;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1075;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1076;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1077;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1078;
+    private Sprite aSprite_1074;
+    private Sprite aSprite_1075;
+    private Sprite aSprite_1076;
+    private Sprite aSprite_1077;
+    private Sprite aSprite_1078;
     private int anInt1079;
     private boolean aBoolean1080;
     private int anInt1081;
     private String aStringArray1082[];
-    private Class30_Sub2_Sub2 aClass30_Sub2_Sub2_1083;
+    private Stream aStream_1083;
     private int anInt1084;
     private int anInt1085;
     private int anInt1086;
@@ -13434,11 +14883,11 @@ public class client extends Applet_Sub1 {
     private int anInt1088;
     static int anInt1089;
     private int anIntArray1090[];
-    private int anIntArray1091[];
-    private int anIntArray1092[];
-    private int anIntArray1093[];
-    private long anIntArray1094[];
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array1095[];
+    private int menuActionCmd2[];
+    private int menuActionCmd3[];
+    private int menuActionID[];
+    private long menuActionCmd1[];
+    private Sprite aSpriteArray1095[];
     private static int anInt1096 = -192;
     private static int anInt1097;
     private int anInt1098;
@@ -13450,80 +14899,96 @@ public class client extends Applet_Sub1 {
     private int anInt1104;
     private int anInt1105;
     private boolean aBoolean1106;
-    private Class15 aClass15_1107;
-    private Class15 aClass15_1108;
-    private Class15 aClass15_1109;
-    private Class15 aClass15_1110;
-    private Class15 aClass15_1111;
-    private Class15 aClass15_1112;
-    private Class15 aClass15_1113;
-    private Class15 aClass15_1114;
-    private Class15 aClass15_1115;
+    private RSImageProducer aRSImageProducer_1107;
+    private RSImageProducer aRSImageProducer_1108;
+    private RSImageProducer aRSImageProducer_1109;
+    private RSImageProducer aRSImageProducer_1110;
+    private RSImageProducer aRSImageProducer_1111;
+    private RSImageProducer aRSImageProducer_1112;
+    private RSImageProducer aRSImageProducer_1113;
+    private RSImageProducer aRSImageProducer_1114;
+    private RSImageProducer aRSImageProducer_1115;
     private int anInt1116;
     private static int anInt1117;
     private int anInt1118;
     private int anInt1119;
     private int anInt1120;
     private String aString1121;
-    private Class30_Sub2_Sub1_Sub1 compassImage;
-    private Class15 aClass15_1123;
-    private Class15 aClass15_1124;
-    private Class15 aClass15_1125;
-    static Class30_Sub2_Sub4_Sub1_Sub2 aClass30_Sub2_Sub4_Sub1_Sub2_1126;
+    private Sprite compassImage;
+    private RSImageProducer aRSImageProducer_1125;
+    static Player aPlayer_1126;
     private String aStringArray1127[];
     private boolean aBooleanArray1128[];
     private int anIntArrayArrayArray1129[][][];
-    static int anIntArray1130[] = {
+    static int tabInterfaceIDs[] = {
             -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
             -1, -1, -1, -1, -1
     };
+    private final int[] modeX = new int[] { 164, 230, 296, 362 };
+    private final int[] modeNamesX = new int[] { 26, 86, 150, 212, 286, 349, 427 };
+    private final int[] modeNamesY = new int[] { 158, 158, 153, 153, 153, 153, 158 };
+    private final int[] channelButtonsX = new int[] { 5, 71, 137, 203, 269, 335, 404 };
+    private final String[] modeNames = new String[] { "All", "Game", "Public", "Private", "Clan", "Trade",
+            "Report Abuse" };
+    final int[] sideIconsX = { 17, 49, 81, 114, 146, 180, 214, 16, 49, 82, 116, 148, 184, 217 },
+            sideIconsY = { 9, 7, 5, 5, 2, 3, 7, 303, 306, 306, 302, 305, 303, 304, 303 },
+            sideIconsId = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 },
+            sideIconsTab = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13 };
+    private final int[] redStonesX = new int[] { 6, 44, 77, 110, 143, 176, 209, 6, 44, 77, 110, 143, 176, 209 };
+    private final int[] redStonesY = new int[] { 0, 0, 0, 0, 0, 0, 0, 298, 298, 298, 298, 298, 298, 298 };
+    private final int[] redStonesId = new int[] { 9, 13, 13, 13, 13, 13, 10, 11, 13, 13, 13, 13, 13, 12 };
+    private final int[] tabClickX = new int[] { 38, 33, 33, 33, 33, 33, 38, 38, 33, 33, 33, 33, 33, 38 };
+    private final int[] tabClickStart = new int[] { 522, 560, 593, 625, 659, 692, 724, 522, 560, 593, 625, 659, 692,
+            724 };
+    private final int[] tabClickY = new int[] { 169, 169, 169, 169, 169, 169, 169, 466, 466, 466, 466, 466, 466, 466 };
+
     private int anInt1131;
     private int anInt1132;
-    private int anInt1133;
+    private int menuActionRow;
     private static int anInt1134;
     private int anInt1135;
     private int anInt1136;
     private int anInt1137;
     private int anInt1138;
     String aString1139;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array1140[];
+    private Sprite aSpriteArray1140[];
     private boolean aBoolean1141;
     private static int anInt1142;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1143;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1144;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2_1145;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1146;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1147;
+    private Sprite aSprite_1143;
+    private Sprite aSprite_1144;
+    private Background aBackground_1145;
+    private Sprite aSprite_1146;
+    private Sprite aSprite_1147;
     private int anInt1148;
     private boolean aBoolean1149;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array1150[];
+    private Sprite aSpriteArray1150[];
     private boolean aBoolean1151;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2Array1152[];
-    private boolean aBoolean1153;
+    private Background aBackgroundArray1152[];
+    private boolean tabAreaAltered;
     private int anInt1154;
     private static int anInt1155;
     static boolean fpsOn;
-    public int[] fullScreenTextureArray;
-    public boolean aBoolean1157;
-    private boolean aBoolean1158;
+    public static int[] fullScreenTextureArray;
+    public static boolean aBoolean1157;
+    private boolean canMute;
     private boolean aBoolean1159;
     private boolean aBoolean1160;
-    static int anInt1161;
+    static int loopCycle;
     private static String aString1162 = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!\"\243$%^&*()-_=+[{]};:'@#~,<.>/?\\| ";
-    private Class15 aClass15_1163;
-    private Class15 aClass15_1164;
-    private Class15 aClass15_1165;
-    private Class15 aClass15_1166;
+    private static RSImageProducer aRSImageProducer_1163;
+    private RSImageProducer aRSImageProducer_1164;
+    private static RSImageProducer aRSImageProducer_1165;
+    private static RSImageProducer aRSImageProducer_1166;
     private int anInt1167;
     private Class24 aClass24_1168;
     private int anInt1169;
     private int anInt1170;
     private int anInt1171;
     private long aLong1172;
-    private String aString1173;
-    private String aString1174;
+    private String myUsername;
+    private String myPassword;
     public static String server;
-    private static String port;
+    public static int port = Configuration.PORT;
     private static int aPort;
     private static int anInt1175;
     private boolean aBoolean1176;
@@ -13532,33 +14997,33 @@ public class client extends Applet_Sub1 {
             2, 2, 2, 2, 2, 2, 2, 2, 2, 2,
             2, 2, 3
     };
-    private int anInt1178;
+    private int reportAbuseInterfaceID;
     private Class19 aClass19_1179;
-    private int anIntArray1180[];
-    private int anIntArray1181[];
-    private int anIntArray1182[];
+    private static int[] anIntArray1180;
+    private static int[] anIntArray1181;
+    private static int[] anIntArray1182;
     private byte terrainData[][];
     private int anInt1184;
     private int anInt1185;
     private int anInt1186;
     private int anInt1187;
     private static int anInt1188;
-    private int anInt1189;
+    private int invOverlayInterfaceID;
     private int anIntArray1190[];
     private int anIntArray1191[];
-    private Class30_Sub2_Sub2 stream;
+    private Stream stream;
     private int anInt1193;
     private byte aByte1194;
-    private int anInt1195;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1196;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2_1197;
-    private Class30_Sub2_Sub1_Sub2 worldswitch;
-    private Class30_Sub2_Sub1_Sub1 Mapicon;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1198;
-    private String aStringArray1199[];
+    private int splitPrivateChat;
+    private Sprite aSprite_1196;
+    private Background aBackground_1197;
+    private Background worldswitch;
+    private Sprite Mapicon;
+    private Sprite aSprite_1198;
+    private String menuActionName[];
     private static byte aByte1200 = 9;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1201;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1202;
+    private Sprite aSprite_1201;
+    private Sprite aSprite_1202;
     private int anIntArray1203[];
     static final int anIntArray1204[] = {
             9104, 10275, 7595, 3610, 7975, 8526, 918, 38802, 24466, 10145,
@@ -13571,20 +15036,20 @@ public class client extends Applet_Sub1 {
     private int anInt1209;
     private int anInt1210;
     private int anInt1211;
-    private String aString1212;
+    private String promptInput;
     private int anInt1213;
     private int anIntArrayArrayArray1214[][][];
     private long aLong1215;
     private int anInt1216;
     private byte aByte1217;
     private int anInt1218;
-    private Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2Array1219[];
+    private Sprite ModIcons[];
     long aLong1220;
-    static int anInt1221;
+    static int tabID;
     private int anInt1222;
-    private boolean aBoolean1223;
+    private boolean inputTaken;
     private static boolean aBoolean1224 = true;
-    private int anInt1225;
+    private int inputDialogState;
     private static int anInt1226;
     private int anInt1227;
     private boolean aBoolean1228;
@@ -13607,7 +15072,7 @@ public class client extends Applet_Sub1 {
     private int anInt1245;
     private int anInt1246;
     private byte mapData[][];
-    private int anInt1248;
+    private int tradeMode;
     private int anInt1249;
     private int anIntArray1250[];
     private int anInt1251;
@@ -13615,27 +15080,27 @@ public class client extends Applet_Sub1 {
     private int anInt1253;
     private int anInt1254;
     private boolean aBoolean1255;
-    private boolean aBoolean1256;
+    private boolean messagePromptRaised;
     private int anInt1257;
     private byte aByteArrayArrayArray1258[][][];
     private int anInt1259;
     private static int anInt1260;
     private int anInt1261;
     private int anInt1262;
-    private Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_1263;
+    private Sprite minimapImage;
     private int anInt1264;
     private int anInt1265;
     private String aString1266;
     private String aString1267;
     private int anInt1268;
     private int anInt1269;
-    private Class30_Sub2_Sub1_Sub4 aClass30_Sub2_Sub1_Sub4_1270;
-    private Class30_Sub2_Sub1_Sub4 aClass30_Sub2_Sub1_Sub4_1271;
-    private Class30_Sub2_Sub1_Sub4 aClass30_Sub2_Sub1_Sub4_1272;
-    private Class30_Sub2_Sub1_Sub4 aClass30_Sub2_Sub1_Sub4_1273;
+    private TextDrawingArea smallText;
+    private TextDrawingArea regularText;
+    private TextDrawingArea boldText;
+    private TextDrawingArea aTextDrawingArea_1273;
     private byte aByte1274;
     private int anInt1275;
-    private int anInt1276;
+    private int backDialogID;
     private boolean aBoolean1277;
     private int anInt1278;
     private int anInt1279;
@@ -13646,14 +15111,24 @@ public class client extends Applet_Sub1 {
     private int anInt1284;
     private int anInt1285;
     String aString1286;
-    private int anInt1287;
+    private int publicChatMode;
     private static int anInt1288;
     private int anInt1289;
     public static int anInt1290;
     public static int showpackets;
     public static int showframeids;
-    static
-    {
+    static {
+        currentScreenMode = ScreenMode.FIXED;
+        currentGameWidth = 765;
+        currentGameHeight = 503;
+        screenAreaWidth = 512;
+        screenAreaHeight = 334;
+        cameraZoom = 600;
+        showChatComponents = true;
+        showTabComponents = true;
+        changeChatArea = currentScreenMode != ScreenMode.FIXED;
+        changeTabArea = currentScreenMode != ScreenMode.FIXED;
+        //transparentTabArea = false;
         anIntArray1019 = new int[1000];
         int i = 0;
         for(int j = 0; j < 1000; j++)

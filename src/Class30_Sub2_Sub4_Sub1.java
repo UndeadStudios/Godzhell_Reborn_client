@@ -1,5 +1,3 @@
-import sign.signlink;
-
 class Class30_Sub2_Sub4_Sub1 extends Class30_Sub2_Sub4
 {
 
@@ -54,10 +52,7 @@ class Class30_Sub2_Sub4_Sub1 extends Class30_Sub2_Sub4
         for(int i1 = 0; i1 < 4; i1++)
             if(anIntArray1516[i1] <= l)
             {
-                anIntArray1514[i1] = k * ((client.newDamage == true && k > 0) ? 10 : 1);
-                if (client.newDamage && k > 0) {
-                        anIntArray1514[i1] += new java.util.Random().nextInt(9);
-                }
+                anIntArray1514[i1] = k;
                 anIntArray1515[i1] = j;
                 anIntArray1516[i1] = l + 70;
                 return;
@@ -150,7 +145,7 @@ class Class30_Sub2_Sub4_Sub1 extends Class30_Sub2_Sub4
         anInt1520 = -1;
         anInt1526 = -1;
         anInt1532 = -1000;
-        anInt1535 = 100;
+        textCycle = 100;
         anInt1536 = -895;
         anInt1540 = 1;
         aBoolean1541 = false;
@@ -196,11 +191,11 @@ class Class30_Sub2_Sub4_Sub1 extends Class30_Sub2_Sub4
     int anInt1532;
     int anInt1533;
     int anInt1534;
-    int anInt1535;
+    int textCycle;
     private int anInt1536;
     int anInt1537;
-    int anInt1538;
-    int anInt1539;
+    int face_x;
+    int face_y;
     int anInt1540;
     boolean aBoolean1541;
     int anInt1542;

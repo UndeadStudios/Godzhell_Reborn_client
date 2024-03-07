@@ -1,5 +1,3 @@
-import sign.signlink;
-
 public class Class48
     implements Runnable
 {
@@ -12,8 +10,8 @@ public class Class48
             {
                 if(anInt810 < 500)
                 {
-                    anIntArray809[anInt810] = ((Applet_Sub1) (aClient805)).anInt20;
-                    anIntArray807[anInt810] = ((Applet_Sub1) (aClient805)).anInt21;
+                    anIntArray809[anInt810] = ((Applet_Sub1) (aClient805)).mouseX;
+                    anIntArray807[anInt810] = ((Applet_Sub1) (aClient805)).mouseY;
                     anInt810++;
                 }
             }

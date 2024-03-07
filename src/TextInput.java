@@ -4,16 +4,16 @@
 
 */
 
-public final class Class35
+public final class TextInput
 {
 
-    public static String method525(int i, boolean flag, Class30_Sub2_Sub2 class30_sub2_sub2)
+    public static String method525(int i, boolean flag, Stream stream)
     {
         int j = 0;
         int k = -1;
         for(int l = 0; l < i; l++)
         {
-            int i1 = class30_sub2_sub2.method408();
+            int i1 = stream.readUnsignedByte();
             int j1 = i1 >> 4 & 0xf;
             if(k == -1)
             {
@@ -58,7 +58,7 @@ public final class Class35
         return new String(aCharArray631, 0, j);
     }
 
-    public static void method526(String s, boolean flag, Class30_Sub2_Sub2 class30_sub2_sub2)
+    public static void method526(String s, boolean flag, Stream stream)
     {
         if(s.length() > 80)
             s = s.substring(0, 80);
@@ -83,15 +83,15 @@ public final class Class35
                 if(k < 13)
                     i = k;
                 else
-                    class30_sub2_sub2.writeUnsignedByte(k);
+                    stream.writeUnsignedByte(k);
             } else
             if(k < 13)
             {
-                class30_sub2_sub2.writeUnsignedByte((i << 4) + k);
+                stream.writeUnsignedByte((i << 4) + k);
                 i = -1;
             } else
             {
-                class30_sub2_sub2.writeUnsignedByte((i << 4) + (k >> 4));
+                stream.writeUnsignedByte((i << 4) + (k >> 4));
                 i = k & 0xf;
             }
         }
@@ -99,18 +99,18 @@ public final class Class35
         if(!flag)
             anInt628 = -452;
         if(i != -1)
-            class30_sub2_sub2.writeUnsignedByte(i << 4);
+            stream.writeUnsignedByte(i << 4);
     }
     public static String anArea435 = "y";
     public static String method527(String s, int i)
     {
-        aClass30_Sub2_Sub2_632.anInt1406 = 0;
-        method526(s, aBoolean630, aClass30_Sub2_Sub2_632);
-        int j = aClass30_Sub2_Sub2_632.anInt1406;
-        aClass30_Sub2_Sub2_632.anInt1406 = 0;
+        aStream_632.anInt1406 = 0;
+        method526(s, aBoolean630, aStream_632);
+        int j = aStream_632.anInt1406;
+        aStream_632.anInt1406 = 0;
         if(i != 0)
             aBoolean629 = !aBoolean629;
-        String s1 = method525(j, true, aClass30_Sub2_Sub2_632);
+        String s1 = method525(j, true, aStream_632);
         return s1;
     }
 
@@ -118,7 +118,7 @@ public final class Class35
     private static boolean aBoolean629;
     private static boolean aBoolean630 = true;
     public static char aCharArray631[] = new char[100];
-    private static Class30_Sub2_Sub2 aClass30_Sub2_Sub2_632 = new Class30_Sub2_Sub2(new byte[100], 891);
+    private static Stream aStream_632 = new Stream(new byte[100], 891);
     private static char aCharArray633[] = {
         ' ', 'e', 't', 'a', 'o', 'i', 'h', 'n', 's', 'r',
         'd', 'l', 'u', 'm', 'w', 'c', 'y', 'f', 'g', 'p',

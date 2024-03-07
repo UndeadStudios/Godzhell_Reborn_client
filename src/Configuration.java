@@ -1,7 +1,20 @@
+import java.time.LocalDateTime;
+
 public class Configuration {
     public static boolean LIVE = true;// Change to false for live client.
     public static final String SERVER_ADDRESS = LIVE ? "ghreborn.ddns.net" : "127.0.0.1";
     public static final int PORT = 29432;
     public static final int TEST_PORT = 43595;
     public static boolean developerMode = false;
+
+    public static final LocalDateTime LAUNCH_TIME = LocalDateTime.now();
+    public static final String ERROR_LOG_DIRECTORY = "error_logs/";
+    public static String ERROR_LOG_FILE = ("error_log_"
+            + LAUNCH_TIME.getYear() + "_"
+            + LAUNCH_TIME.getMonth() + "_"
+            + LAUNCH_TIME.getDayOfMonth()
+            + ".txt").toLowerCase();
+
+    public static boolean dumpDataLists = false;
+    public static boolean dumpAnimationData = false;
 }

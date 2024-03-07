@@ -1,41 +1,39 @@
-import sign.signlink;
-
-public final class Class30_Sub2_Sub1_Sub2 extends Class30_Sub2_Sub1
+public final class Background extends DrawingArea
 {
 
-    public Class30_Sub2_Sub1_Sub2(Class44 class44, String s, int i)
+    public Background(Class44 class44, String s, int i)
     {
         aBoolean1447 = false;
         anInt1448 = 360;
         aByte1449 = 3;
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571(s + ".dat", null), 891);
-        Class30_Sub2_Sub2 class30_sub2_sub2_1 = new Class30_Sub2_Sub2(class44.method571("index.dat", null), 891);
-        class30_sub2_sub2_1.anInt1406 = class30_sub2_sub2.method410();
-        anInt1456 = class30_sub2_sub2_1.method410();
-        anInt1457 = class30_sub2_sub2_1.method410();
-        int j = class30_sub2_sub2_1.method408();
+        Stream stream = new Stream(class44.method571(s + ".dat", null), 891);
+        Stream stream_1 = new Stream(class44.method571("index.dat", null), 891);
+        stream_1.anInt1406 = stream.readUnsignedShort();
+        anInt1456 = stream_1.readUnsignedShort();
+        anInt1457 = stream_1.readUnsignedShort();
+        int j = stream_1.readUnsignedByte();
         anIntArray1451 = new int[j];
         for(int k = 0; k < j - 1; k++)
-            anIntArray1451[k + 1] = class30_sub2_sub2_1.method412();
+            anIntArray1451[k + 1] = stream_1.method412();
 
         for(int l = 0; l < i; l++)
         {
-            class30_sub2_sub2_1.anInt1406 += 2;
-            class30_sub2_sub2.anInt1406 += class30_sub2_sub2_1.method410() * class30_sub2_sub2_1.method410();
-            class30_sub2_sub2_1.anInt1406++;
+            stream_1.anInt1406 += 2;
+            stream.anInt1406 += stream_1.readUnsignedShort() * stream_1.readUnsignedShort();
+            stream_1.anInt1406++;
         }
 
-        anInt1454 = class30_sub2_sub2_1.method408();
-        anInt1455 = class30_sub2_sub2_1.method408();
-        anInt1452 = class30_sub2_sub2_1.method410();
-        anInt1453 = class30_sub2_sub2_1.method410();
-        int i1 = class30_sub2_sub2_1.method408();
+        anInt1454 = stream_1.readUnsignedByte();
+        anInt1455 = stream_1.readUnsignedByte();
+        anInt1452 = stream_1.readUnsignedShort();
+        anInt1453 = stream_1.readUnsignedShort();
+        int i1 = stream_1.readUnsignedByte();
         int j1 = anInt1452 * anInt1453;
         aByteArray1450 = new byte[j1];
         if(i1 == 0)
         {
             for(int k1 = 0; k1 < j1; k1++)
-                aByteArray1450[k1] = class30_sub2_sub2.method409();
+                aByteArray1450[k1] = stream.method409();
 
             return;
         }
@@ -44,7 +42,7 @@ public final class Class30_Sub2_Sub1_Sub2 extends Class30_Sub2_Sub1
             for(int l1 = 0; l1 < anInt1452; l1++)
             {
                 for(int i2 = 0; i2 < anInt1453; i2++)
-                    aByteArray1450[l1 + i2 * anInt1452] = class30_sub2_sub2.method409();
+                    aByteArray1450[l1 + i2 * anInt1452] = stream.method409();
 
             }
 
@@ -166,41 +164,39 @@ public final class Class30_Sub2_Sub1_Sub2 extends Class30_Sub2_Sub1
             anInt1446 = 69;
     }
 
-    public void method361(int i, int j, int k)
+    public void method361(int i, int k)
     {
         i += anInt1454;
         k += anInt1455;
-        int l = i + k * Class30_Sub2_Sub1.anInt1379;
+        int l = i + k * DrawingArea.width;
         int i1 = 0;
-        if(j != 16083)
-            return;
         int j1 = anInt1453;
         int k1 = anInt1452;
-        int l1 = Class30_Sub2_Sub1.anInt1379 - k1;
+        int l1 = DrawingArea.width - k1;
         int i2 = 0;
-        if(k < Class30_Sub2_Sub1.anInt1381)
+        if(k < DrawingArea.topY)
         {
-            int j2 = Class30_Sub2_Sub1.anInt1381 - k;
+            int j2 = DrawingArea.topY - k;
             j1 -= j2;
-            k = Class30_Sub2_Sub1.anInt1381;
+            k = DrawingArea.topY;
             i1 += j2 * k1;
-            l += j2 * Class30_Sub2_Sub1.anInt1379;
+            l += j2 * DrawingArea.width;
         }
-        if(k + j1 > Class30_Sub2_Sub1.anInt1382)
-            j1 -= (k + j1) - Class30_Sub2_Sub1.anInt1382;
-        if(i < Class30_Sub2_Sub1.anInt1383)
+        if(k + j1 > DrawingArea.bottomY)
+            j1 -= (k + j1) - DrawingArea.bottomY;
+        if(i < DrawingArea.leftX)
         {
-            int k2 = Class30_Sub2_Sub1.anInt1383 - i;
+            int k2 = DrawingArea.leftX - i;
             k1 -= k2;
-            i = Class30_Sub2_Sub1.anInt1383;
+            i = DrawingArea.leftX;
             i1 += k2;
             l += k2;
             i2 += k2;
             l1 += k2;
         }
-        if(i + k1 > Class30_Sub2_Sub1.anInt1384)
+        if(i + k1 > DrawingArea.bottomX)
         {
-            int l2 = (i + k1) - Class30_Sub2_Sub1.anInt1384;
+            int l2 = (i + k1) - DrawingArea.bottomX;
             k1 -= l2;
             i2 += l2;
             l1 += l2;
@@ -210,7 +206,7 @@ public final class Class30_Sub2_Sub1_Sub2 extends Class30_Sub2_Sub1
             return;
         } else
         {
-            method362(j1, (byte)9, Class30_Sub2_Sub1.anIntArray1378, aByteArray1450, l1, l, k1, i1, anIntArray1451, i2);
+            method362(j1, (byte)9, DrawingArea.pixels, aByteArray1450, l1, l, k1, i1, anIntArray1451, i2);
             return;
         }
     }

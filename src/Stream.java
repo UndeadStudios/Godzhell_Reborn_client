@@ -1,9 +1,9 @@
 import java.math.BigInteger;
 import sign.signlink;
 
-public final class Class30_Sub2_Sub2 extends Class30_Sub2
+public final class Stream extends Class30_Sub2
 {
-    public Class30_Sub2_Sub2(byte abyte0[])
+    public Stream(byte abyte0[])
   {
             aByteArray1405 = abyte0;
             anInt1406 = 0;
@@ -13,48 +13,22 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
                 anInt1406 += 3;
                 return (0xff & aByteArray1405[anInt1406 - 3] << 16) + (0xff & aByteArray1405[anInt1406 - 2] << 8) + (0xff & aByteArray1405[anInt1406 - 1]);
             }
-    public static Class30_Sub2_Sub2 method396(int i, int j)
+    public static Stream method396(int i, int j)
     {
-        synchronized(aClass19_1415)
-        {
-            Class30_Sub2_Sub2 class30_sub2_sub2_2 = null;
-            if(i == 0 && anInt1411 > 0)
-            {
-                anInt1411--;
-                class30_sub2_sub2_2 = (Class30_Sub2_Sub2)aClass19_1414.method251();
-            } else
-            if(i == 1 && anInt1412 > 0)
-            {
-                anInt1412--;
-                class30_sub2_sub2_2 = (Class30_Sub2_Sub2)aClass19_1415.method251();
-            } else
-            if(i == 2 && anInt1413 > 0)
-            {
-                anInt1413--;
-                class30_sub2_sub2_2 = (Class30_Sub2_Sub2)aClass19_1416.method251();
-            }
-            if(class30_sub2_sub2_2 != null)
-            {
-                class30_sub2_sub2_2.anInt1406 = 0;
-                Class30_Sub2_Sub2 class30_sub2_sub2 = class30_sub2_sub2_2;
-                return class30_sub2_sub2;
-            }
-        }
-        if(j < 9 || j > 9)
-            throw new NullPointerException();
-        Class30_Sub2_Sub2 class30_sub2_sub2_1 = new Class30_Sub2_Sub2(false);
-        class30_sub2_sub2_1.anInt1406 = 0;
+
+        Stream stream_1 = new Stream(false);
+        stream_1.anInt1406 = 0;
         if(i == 0)
-            class30_sub2_sub2_1.aByteArray1405 = new byte[100];
+            stream_1.aByteArray1405 = new byte[100];
         else
         if(i == 1)
-            class30_sub2_sub2_1.aByteArray1405 = new byte[40000];
+            stream_1.aByteArray1405 = new byte[40000];
         else
-            class30_sub2_sub2_1.aByteArray1405 = new byte[30000];
-        return class30_sub2_sub2_1;
+            stream_1.aByteArray1405 = new byte[30000];
+        return stream_1;
     }
 
-    private Class30_Sub2_Sub2(boolean flag)
+    private Stream(boolean flag)
     {
         anInt1389 = 891;
         anInt1390 = 9;
@@ -78,7 +52,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             return;
     }
 
-    public Class30_Sub2_Sub2(byte abyte0[], int i)
+    public Stream(byte abyte0[], int i)
     {
         anInt1389 = 891;
         anInt1390 = 9;
@@ -164,13 +138,12 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             return;
         }
     }
-    public int readShort2()
-    {
+    public int readShort2() {
         anInt1406 += 2;
         int i = ((aByteArray1405[anInt1406 - 2] & 0xff) << 8) + (aByteArray1405[anInt1406 - 1] & 0xff);
-		if(i  > 60000)
-		i = -65535+i;
-		return i;
+        if(i > 32767)
+            i -= 65537;
+        return i;
     }
     public void method404(int i, long l)
     {
@@ -217,7 +190,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             byte0 = 0;
     }
 
-    public int method408()
+    public int readUnsignedByte()
     {
         return aByteArray1405[anInt1406++] & 0xff;
     }
@@ -227,7 +200,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         return aByteArray1405[anInt1406++];
     }
 
-    public int method410()
+    public int readUnsignedShort()
     {
 
 
@@ -247,8 +220,8 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         anInt1406++;
         int i_6_ = aByteArray1405[anInt1406] & i;
         if (i_6_ < 128)
-            return method408();
-        return -32768 + method410();
+            return readUnsignedByte();
+        return -32768 + readUnsignedShort();
     }
     public int method1606() {
         int var2 = 0;
@@ -264,7 +237,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
 
     public int readUShortSmart() {
         int var2 = this.aByteArray1405[this.anInt1406] & 255;
-        return var2 < 128 ? this.method408() : this.method410() - 32768;
+        return var2 < 128 ? this.readUnsignedByte() : this.readUnsignedShort() - 32768;
     }
     public int method937(boolean bool) {
         anInt1406++;
@@ -276,6 +249,30 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             i += 32767;
         i += i_25_;
         return i;
+    }
+    public int method1758(int arg0) {
+            anInt1406++;
+            int i = 0;
+            int i_33_ = readSmart(arg0 ^ ~0x62392290);
+        if (arg0 != 32767)
+            method1717(-82, 97);
+            while ((~i_33_) == -32768) {
+                i_33_ = readSmart(-1647926640);
+                i += 32767;
+            }
+            i += i_33_;
+            return i;
+    }
+    public long method1717(int arg0, int arg1) {
+            anInt1406++;
+            arg0--;
+            if (arg1 > arg0 || arg0 > 7)
+                throw new IllegalArgumentException();
+            int i = 8 * arg0;
+            long l = 0L;
+            for (/**/; i >= 0; i -= 8)
+                l |= ((long) aByteArray1405[anInt1406++] & 0xffL) << i;
+            return l;
     }
     public int method412()
     {
@@ -344,13 +341,11 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         }
     }
 
-    public int method419(int i, int j)
+    public int readBits(int i)
     {
         int k = anInt1407 >> 3;
         int l = 8 - (anInt1407 & 7);
         int i1 = 0;
-        if(j != 0)
-            aBoolean1403 = !aBoolean1403;
         anInt1407 += i;
         for(; i > l; l = 8)
         {
@@ -378,34 +373,43 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
     {
         int i = aByteArray1405[anInt1406] & 0xff;
         if(i < 128)
-            return method408() - 64;
+            return readUnsignedByte() - 64;
         else
-            return method410() - 49152;
+            return readUnsignedShort() - 49152;
     }
 
-    public int method422()
+    public int readUSmart()
     {
         int i = aByteArray1405[anInt1406] & 0xff;
         if(i < 128)
-            return method408();
+            return readUnsignedByte();
         else
-            return method410() - 32768;
-    }
-    public int readSmart() {
-        int value = aByteArray1405[anInt1406] & 0xFF;
-        if (value < 128) {
-            return method408() - 64;
-        } else {
-            return method410() - 49152;
-        }
+            return readUnsignedShort() - 32768;
     }
     public int readUSmart2() {
         int baseVal = 0;
         int lastVal = 0;
-        while ((lastVal = readSmart()) == 32767) {
+        while ((lastVal = readUSmart()) == 32767) {
             baseVal += 32767;
         }
         return baseVal + lastVal;
+    }
+    public int readSmart() {
+        int value = aByteArray1405[anInt1406] & 0xFF;
+        if (value < 128) {
+            return readUnsignedByte() - 64;
+        } else {
+            return readUnsignedShort() - 49152;
+        }
+    }
+    public int readSmart(int arg0) {
+            anInt1406++;
+            if (arg0 != -1647926640)
+                return 81;
+            int i = 0xff & aByteArray1405[anInt1406];
+            if (i >= 128)
+                return -32768 + readUnsignedShort();
+            return readUnsignedByte();
     }
     private static final BigInteger RSA_MODULUS = new BigInteger("16928028640386444233753461627784780622271056343201923868292339613459023644602450644595713209139392506121702290400308489452089579755756150418531726243143329");
 
@@ -443,7 +447,7 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
         i = 90 / i;
     }
 
-    public int method426(int i)
+    public int readByteS(int i)
     {
         if(i != 0)
             return anInt1395;
@@ -451,14 +455,14 @@ public final class Class30_Sub2_Sub2 extends Class30_Sub2
             return aByteArray1405[anInt1406++] - 128 & 0xff;
     }
 
-    public int method427(boolean flag)
+    public int readByteC(boolean flag)
     {
         if(flag)
             anInt1389 = 310;
         return -aByteArray1405[anInt1406++] & 0xff;
     }
 
-    public int method428(int i)
+    public int readByteA(int i)
     {
         if(i != 2)
             aBoolean1404 = !aBoolean1404;

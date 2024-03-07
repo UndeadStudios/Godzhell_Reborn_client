@@ -11,38 +11,74 @@ public class VarBit
     {
         if(i != 0)
             anInt644 = 91;
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("varbit.dat", null), 891);
-        anInt645 = class30_sub2_sub2.method410();
-        if(aVarBitArray646 == null)
-            aVarBitArray646 = new VarBit[anInt645];
+        Stream stream = new Stream(class44.method571("varbit.dat", null), 891);
+        anInt645 = stream.readUnsignedShort();
+        if(cache == null)
+            cache = new VarBit[anInt645];
         for(int j = 0; j < anInt645; j++)
         {
-            if(aVarBitArray646[j] == null)
-                aVarBitArray646[j] = new VarBit();
-            aVarBitArray646[j].readValues(class30_sub2_sub2);
-            System.out.println(""+aVarBitArray646[j].anInt648+" "+aVarBitArray646[j].anInt649);
-            if(aVarBitArray646[j].aBoolean651)
-                Class41.aClass41Array701[aVarBitArray646[j].anInt648].aBoolean713 = true;
+            if(cache[j] == null)
+                cache[j] = new VarBit();
+            cache[j].readValues(stream);
+            System.out.println(""+ cache[j].anInt648+" "+ cache[j].anInt649);
+            if(cache[j].aBoolean651)
+                Class41.aClass41Array701[cache[j].anInt648].aBoolean713 = true;
         }
 
-        if(class30_sub2_sub2.anInt1406 != class30_sub2_sub2.aByteArray1405.length)
+        if(stream.anInt1406 != stream.aByteArray1405.length)
             System.out.println("varbit load mismatch");
+        //dumpNpc();
     }
-    public void method534(Class30_Sub2_Sub2 class30_sub2_sub2, int i)
+    public static void dumpNpc() {
+        for(int i = 0; i < anInt645; ++i) {
+            VarBit EntityDef = cache[i];
+            BufferedWriter bw = null;
+
+            try {
+                bw = new BufferedWriter(new FileWriter(signlink.findcachedir() + "/dumps/varbit.txt", true));
+
+                    bw.newLine();
+                    bw.write("if(i == " + i + ") {//varbit ID");
+                    bw.newLine();
+                    bw.write("cache[j].anInt648 = " + EntityDef.anInt648 + ";//Config Name");
+                    bw.newLine();
+                    bw.write("cache[j].anInt649 = " + EntityDef.anInt649 + ";//low");
+                    bw.newLine();
+                    bw.write("cache[j].anInt650 = " + EntityDef.anInt650 + ";//high");
+                    bw.newLine();
+                    bw.write("}");
+                    bw.newLine();
+                    bw.flush();
+                    bw.close();
+            } catch (IOException var4) {
+                ;
+            }
+        }
+
+    }
+    public void method534(Stream stream)
     {
-            anInt648 = class30_sub2_sub2.method410();
-            anInt649 = class30_sub2_sub2.method408();
-            anInt650 = class30_sub2_sub2.method408();
+        int opcode = stream.readUnsignedByte();
+
+        if (opcode == 0) {
+            return;
+        } else if (opcode == 1) {
+            anInt648 = stream.readUnsignedShort();
+            anInt649 = stream.readUnsignedByte();
+            anInt650 = stream.readUnsignedByte();
+        } else {
+            System.out.println(opcode);
+        }
     }
-    private void readValues(Class30_Sub2_Sub2 stream) {
+    private void readValues(Stream stream) {
         do {
-            int j = stream.method408();
+            int j = stream.readUnsignedByte();
             if (j == 0)
                 return;
             if (j == 1) {
-                anInt648 = stream.method410();
-                anInt649 = stream.method408();
-                anInt650 = stream.method408();
+                anInt648 = stream.readUnsignedShort();
+                anInt649 = stream.readUnsignedByte();
+                anInt650 = stream.readUnsignedByte();
             } else if (j == 10)
                 stream.readString();
             else if (j == 2)
@@ -63,7 +99,7 @@ public class VarBit
 
     private static int anInt644;
     public static int anInt645;
-    public static VarBit aVarBitArray646[];
+    public static VarBit cache[];
     public String aString647;
     public int anInt648;
     public int anInt649;

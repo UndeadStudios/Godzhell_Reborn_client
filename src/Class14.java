@@ -110,7 +110,7 @@ public final class Class14
                 if(nextSector < 0 || (long)nextSector > dataFile.length() / DATA_SIZE)
                     return null;
                 for(int k3 = 0; k3 < remaining; k3++)
-                    fileData[readerIndex++] = buffer[k3 + 8];
+                    fileData[readerIndex++] = buffer[k3 + headerLength];
 
                 sectorId = nextSector;
             }
@@ -243,11 +243,11 @@ public final class Class14
                     buffer[8] = (byte) nextSector;
                     buffer[9] = (byte) fileType;//Byte
                 }
-                seekTo(dataFile, -660, firstSectorId * 520);
-                dataFile.write(buffer, 0, 8);
+                seekTo(dataFile, -660, firstSectorId * DATA_SIZE);
+                dataFile.write(buffer, 0, headerLength);
                 int k2 = fileSize - j1;
-                if(k2 > 512)
-                    k2 = 512;
+                if(k2 > chunkLength)
+                    k2 = chunkLength;
                 dataFile.write(data, j1, k2);
                 j1 += k2;
                 firstSectorId = nextSector;

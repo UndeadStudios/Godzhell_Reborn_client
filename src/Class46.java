@@ -1,28 +1,32 @@
 import java.io.*;
+import java.util.stream.IntStream;
 
 public final class Class46 {
 
-	public static Class46 method572(int i) {
+	private short[] default_texture_id, new_texture_id;
+	private byte[] aByteArray1422;
+
+	public static Class46 forID(int i) {
 		if (i > anIntArray755.length)
 			i = anIntArray755.length - 1;
 		for (int j = 0; j < 20; j++)
-			if (aClass46Array782[j].anInt754 == i)
+			if (aClass46Array782[j].type == i)
 				return aClass46Array782[j];
 		anInt771 = (anInt771 + 1) % 20;
 		Class46 class46 = aClass46Array782[anInt771];
 		try {
-			aClass30_Sub2_Sub2_753.anInt1406 = anIntArray755[i];
+			aStream_753.anInt1406 = anIntArray755[i];
 		} catch(Exception e) {}
-		class46.anInt754 = i;
+		class46.type = i;
 		class46.method573();
-		class46.method582(false, aClass30_Sub2_Sub2_753);
+		class46.method582(false, aStream_753);
 
         return class46;
     }
 
 			public static void dumpObjectcfg() {
 	for(int i = 0; i < 45000; i++) {
-	Class46 class46 = method572(i);
+	Class46 class46 = forID(i);
 	BufferedWriter bw = null;
 	try {
 	bw = new BufferedWriter(new FileWriter("object.cfg", true));
@@ -56,6 +60,8 @@ public final class Class46 {
 		anInt775 = 16;
 		aByte737 = 0;
 		aByte742 = 0;
+		default_texture_id = null;
+		new_texture_id = null;
 		aStringArray786 = null;
 		anInt746 = -1;
 		anInt758 = -1;
@@ -73,7 +79,7 @@ public final class Class46 {
 		anInt760 = -1;
 		anInt774 = -1;
 		anInt749 = -1;
-		anIntArray759 = null;
+		childrenIDs = null;
 	}
 
 	public void method574(Class42_Sub1 class42_sub1, int luls) {
@@ -88,23 +94,35 @@ public final class Class46 {
 		aClass12_780 = null;
 		anIntArray755 = null;
 		aClass46Array782 = null;
-		aClass30_Sub2_Sub2_753 = null;
+		aStream_753 = null;
 	}
 
 	public static void method576(Class44 class30_sub2_sub2Loader) {
-        aClass30_Sub2_Sub2_753 = new Class30_Sub2_Sub2(class30_sub2_sub2Loader.method571("loc.dat", null), 891);
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class30_sub2_sub2Loader.method571("loc.idx", null), 891);
-		int anInt756 = class30_sub2_sub2.method410();
+        aStream_753 = new Stream(class30_sub2_sub2Loader.method571("loc.dat", null), 891);
+        Stream stream = new Stream(class30_sub2_sub2Loader.method571("loc.idx", null), 891);
+		int anInt756 = stream.readUnsignedShort();
 		System.out.println("508 Object Amount: " + anInt756);
 		anIntArray755 = new int[anInt756+100000];
 		int i = 2;
 		for (int j = 0; j < anInt756; j++) {
 			anIntArray755[j] = i;
-			i += class30_sub2_sub2.method410();
+			i += stream.readUnsignedShort();
 		}
 		aClass46Array782 = new Class46[20];
 		for (int k = 0; k < 20; k++)
-			aClass46Array782[k] = new Class46();	
+			aClass46Array782[k] = new Class46();
+		if (Configuration.dumpDataLists) {
+
+			TempWriter writer2 = new TempWriter("Object_fields");
+			FieldGenerator generator = new FieldGenerator(writer2::writeLine);
+			IntStream.range(0, 100_000).forEach(id -> {
+				try {
+					Class46 definition = Class46.forID(id);
+					generator.add(definition.aString739, id);
+				} catch (Exception e) {}
+			});
+			writer2.close();
+		}
 	}
 
 	public boolean method577(int i, boolean gfgfg) {
@@ -158,23 +176,26 @@ public final class Class46 {
 
 	public Class46 method580(boolean lolz) {
 		int i = -1;
-		if (anInt774 != -1) {
-			VarBit varBit = VarBit.aVarBitArray646[anInt774];
+		if(anInt774 != -1)
+		{
+			VarBit varBit = VarBit.cache[anInt774];
 			int j = varBit.anInt648;
 			int k = varBit.anInt649;
 			int l = varBit.anInt650;
 			int i1 = client.anIntArray1232[l - k];
-			i = aClient765.anIntArray971[j] >> k & i1;
-		} else if (anInt749 != -1)
-			i = aClient765.anIntArray971[anInt749];
+			i = clientInstance.variousSettings[j] >> k & i1;
+		} else
+		if(anInt749 != -1)
+			i = clientInstance.variousSettings[anInt749];
+
 		int var;
 
-		if (i >= 0 && i < anIntArray759.length) {
-			var = anIntArray759[i];
+		if (i >= 0 && i < childrenIDs.length) {
+			var = childrenIDs[i];
 		} else
-			var = anIntArray759[anIntArray759.length - 1];
+			var = childrenIDs[childrenIDs.length - 1];
 
-		return var != -1 ? method572(var) : null;
+		return var != -1 ? forID(var) : null;
 	}
 
 	public Class30_Sub2_Sub4_Sub6 method581(int i, int j, int k, int l) {
@@ -183,7 +204,7 @@ public final class Class46 {
 		if (anIntArray776 == null) {
 			if (j != 10)
 				return null;
-			l1 = (long) ((anInt754 << 6) + l) + ((long) (k + 1) << 32);
+			l1 = (long)((type << 6) + l) + ((long)(k + 1) << 32);
 			Class30_Sub2_Sub4_Sub6 model_1 = (Class30_Sub2_Sub4_Sub6) aClass12_780.method222(l1);
 			if (model_1 != null)
 				return model_1;
@@ -221,7 +242,7 @@ public final class Class46 {
 
 			if (i1 == -1)
 				return null;
-			l1 = (long) ((anInt754 << 8) + (i1 << 3) + l) + ((long) (k + 1) << 32);
+			l1 = (long)((type << 8) + (i1 << 3) + l) + ((long)(k + 1) << 32);
 			Class30_Sub2_Sub4_Sub6 model_2 = (Class30_Sub2_Sub4_Sub6) aClass12_780.method222(l1);
 			if (model_2 != null)
 				return model_2;
@@ -271,52 +292,53 @@ public final class Class46 {
 		return model_3;
 	}
 
-	private void method582(boolean hurr, Class30_Sub2_Sub2 class30_sub2_sub2) {
+	private void method582(boolean hurr, Stream stream) {
 		int i = -1;
-		label0: do {
+		label0:
+		do {
 			int j;
-			do {
-				j = class30_sub2_sub2.method408();
+			while (true) {
+				j = stream.readUnsignedByte();
 				if (j == 0)
 					break label0;
 				if (j == 1) {
-					int k = class30_sub2_sub2.method408();
+					int k = stream.readUnsignedByte();
 					if (k > 0)
 						if (anIntArray773 == null || aBoolean752) {
 							anIntArray776 = new int[k];
 							anIntArray773 = new int[k];
 							for (int k1 = 0; k1 < k; k1++) {
-								anIntArray773[k1] = class30_sub2_sub2.method410();
-								anIntArray776[k1] = class30_sub2_sub2.method408();
+								anIntArray773[k1] = stream.readUnsignedShort();
+								anIntArray776[k1] = stream.readUnsignedByte();
 							}
 						} else {
-							class30_sub2_sub2.anInt1406 += k * 3;
+							stream.anInt1406 += k * 3;
 						}
 				} else if (j == 2)
-					aString739 = class30_sub2_sub2.method415();
+					aString739 = stream.method415();
 				else if (j == 3)
-					aByteArray777 = class30_sub2_sub2.method416((byte)30);
+					aByteArray777 = stream.method416((byte) 30);
 				else if (j == 5) {
-					int l = class30_sub2_sub2.method408();
+					int l = stream.readUnsignedByte();
 					if (l > 0)
 						if (anIntArray773 == null || aBoolean752) {
 							anIntArray776 = null;
 							anIntArray773 = new int[l];
 							for (int l1 = 0; l1 < l; l1++)
-								anIntArray773[l1] = class30_sub2_sub2.method410();
+								anIntArray773[l1] = stream.readUnsignedShort();
 						} else {
-							class30_sub2_sub2.anInt1406 += l * 2;
+							stream.anInt1406 += l * 2;
 						}
 				} else if (j == 14)
-					anInt744 = class30_sub2_sub2.method408();
+					anInt744 = stream.readUnsignedByte();
 				else if (j == 15)
-					anInt761 = class30_sub2_sub2.method408();
+					anInt761 = stream.readUnsignedByte();
 				else if (j == 17)
 					aBoolean767 = false;
 				else if (j == 18)
 					aBoolean757 = false;
 				else if (j == 19) {
-					i = class30_sub2_sub2.method408();
+					i = stream.readUnsignedByte();
 					if (i == 1)
 						hasactions = true;
 				} else if (j == 21)
@@ -326,74 +348,102 @@ public final class Class46 {
 				else if (j == 23)
 					aBoolean764 = true;
 				else if (j == 24) {
-					anInt781 = class30_sub2_sub2.method410();
+					anInt781 = stream.readUnsignedShort();
 					if (anInt781 == 65535)
 						anInt781 = -1;
 				} else if (j == 28)
-					anInt775 = class30_sub2_sub2.method408();
+					anInt775 = stream.readUnsignedByte();
 				else if (j == 29)
-					aByte737 = class30_sub2_sub2.method409();
+					aByte737 = stream.method409();
 				else if (j == 39)
-					aByte742 = class30_sub2_sub2.method409();
-				else if (j >= 30 && j < 39) {
+					aByte742 = stream.method409();
+				else if (j >= 30 && j < 35) {
 					if (aStringArray786 == null)
 						aStringArray786 = new String[10];
-					aStringArray786[j - 30] = class30_sub2_sub2.method415();
+					aStringArray786[j - 30] = stream.method415();
 					if (aStringArray786[j - 30].equalsIgnoreCase("hidden"))
 						aStringArray786[j - 30] = null;
 				} else if (j == 40) {
-					int i1 = class30_sub2_sub2.method408();
+					int i1 = stream.readUnsignedByte();
 					anIntArray784 = new int[i1];
 					anIntArray747 = new int[i1];
 					for (int i2 = 0; i2 < i1; i2++) {
-						anIntArray784[i2] = class30_sub2_sub2.method410();
-						anIntArray747[i2] = class30_sub2_sub2.method410();
+						anIntArray784[i2] = stream.readUnsignedShort();
+						anIntArray747[i2] = stream.readUnsignedShort();
+					}
+				} else if (j == 41) {
+					int length = stream.readUnsignedByte();
+					default_texture_id = new short[length];
+					new_texture_id = new short[length];
+					for (int index = 0; index < length; index++) {
+						default_texture_id[index] = (short) stream.readUnsignedShort();
+						new_texture_id[index] = (short) stream.readUnsignedShort();
 					}
 				} else if (j == 60)
-					anInt746 = class30_sub2_sub2.method410();
+					anInt746 = stream.readUnsignedShort();
 				else if (j == 62)
 					aBoolean751 = true;
 				else if (j == 64)
 					aBoolean779 = false;
 				else if (j == 65)
-					anInt748 = class30_sub2_sub2.method410();
+					anInt748 = stream.readUnsignedShort();
 				else if (j == 66)
-					anInt772 = class30_sub2_sub2.method410();
+					anInt772 = stream.readUnsignedShort();
 				else if (j == 67)
-					anInt740 = class30_sub2_sub2.method410();
+					anInt740 = stream.readUnsignedShort();
 				else if (j == 68)
-					anInt758 = class30_sub2_sub2.method410();
+					anInt758 = stream.readUnsignedShort();
 				else if (j == 69)
-					anInt768 = class30_sub2_sub2.method408();
+					anInt768 = stream.readUnsignedByte();
 				else if (j == 70)
-					anInt738 = class30_sub2_sub2.method411();
+					anInt738 = stream.method411();
 				else if (j == 71)
-					anInt745 = class30_sub2_sub2.method411();
+					anInt745 = stream.method411();
 				else if (j == 72)
-					anInt783 = class30_sub2_sub2.method411();
+					anInt783 = stream.method411();
 				else if (j == 73)
 					aBoolean736 = true;
 				else if (j == 74) {
 					aBoolean766 = true;
-				} else {
-					if (j != 75)
-						continue;
-					anInt760 = class30_sub2_sub2.method408();
+				} else if (j == 75) {
+					anInt760 = stream.readUnsignedByte();
+				} else if (j == 78) {
+					stream.readUnsignedShort(); // ambient sound id
+					stream.readUnsignedByte();
+				} else if (j == 79) {
+					stream.readUnsignedShort();
+					stream.readUnsignedShort();
+					stream.readUnsignedByte();
+					int len = stream.readUnsignedByte();
+
+					for (int i1 = 0; i1 < len; i1++) {
+						stream.readUnsignedShort();
+					}
+				} else if (j == 77 || j == 92) {
+					anInt774 = stream.readUnsignedShort();
+					if (anInt774 == 65535)
+						anInt774 = -1;
+					anInt749 = stream.readUnsignedShort();
+					if (anInt749 == 65535)
+						anInt749 = -1;
+
+					int var3 = -1;
+					if (j == 92) {
+						var3 = stream.readUnsignedShort();
+
+						if (var3 == 65535)
+							var3 = -1;
+					}
+
+					int j1 = stream.readUnsignedByte();
+					childrenIDs = new int[j1 + 2];
+					for (int j2 = 0; j2 <= j1; j2++) {
+						childrenIDs[j2] = stream.readUnsignedShort();
+						if (childrenIDs[j2] == 65535)
+							childrenIDs[j2] = -1;
+					}
+					childrenIDs[j1 + 1] = var3;
 				}
-				continue label0;
-			} while (j != 77);
-			anInt774 = class30_sub2_sub2.method410();
-			if (anInt774 == 65535)
-				anInt774 = -1;
-			anInt749 = class30_sub2_sub2.method410();
-			if (anInt749 == 65535)
-				anInt749 = -1;
-			int j1 = class30_sub2_sub2.method408();
-			anIntArray759 = new int[j1 + 1];
-			for (int j2 = 0; j2 <= j1; j2++) {
-				anIntArray759[j2] = class30_sub2_sub2.method410();
-				if (anIntArray759[j2] == 65535)
-					anIntArray759[j2] = -1;
 			}
 
 		} while (true);
@@ -411,7 +461,7 @@ public final class Class46 {
 	}
 
 	public Class46() {
-		anInt754 = -1;
+		type = -1;
 	}
 
 	public boolean aBoolean736;
@@ -429,17 +479,17 @@ public final class Class46 {
 	public int anInt749;
 	public boolean aBoolean751;
 	public static boolean aBoolean752;
-	public static Class30_Sub2_Sub2 aClass30_Sub2_Sub2_753;
-	public int anInt754;
+	public static Stream aStream_753;
+	public int type;
 	public static int[] anIntArray755;
 	public boolean aBoolean757;
 	public int anInt758;
-	public int anIntArray759[];
+	public int childrenIDs[];
 	public int anInt760;
 	public int anInt761;
 	public boolean aBoolean762;
 	public boolean aBoolean764;
-	public static client aClient765;
+	public static client clientInstance;
 	public boolean aBoolean766;
 	public boolean aBoolean767;
 	public int anInt768;

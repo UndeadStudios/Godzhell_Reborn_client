@@ -1,14 +1,11 @@
-import java.io.PrintStream;
-import sign.signlink;
-
 public class Class41
 {
 
     public static void method546(int i, Class44 class44)
     {
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("varp.dat", null), 891);
+        Stream stream = new Stream(class44.method571("varp.dat", null), 891);
         anInt702 = 0;
-        anInt700 = class30_sub2_sub2.method410();
+        anInt700 = stream.readUnsignedShort();
         if(aClass41Array701 == null)
             aClass41Array701 = new Class41[anInt700];
         if(anIntArray703 == null)
@@ -17,29 +14,29 @@ public class Class41
         {
             if(aClass41Array701[j] == null)
                 aClass41Array701[j] = new Class41();
-            aClass41Array701[j].method547(class30_sub2_sub2, false, j);
+            aClass41Array701[j].method547(stream, false, j);
         }
 
         if(i != 0)
             aBoolean698 = !aBoolean698;
-        if(class30_sub2_sub2.anInt1406 != class30_sub2_sub2.aByteArray1405.length)
+        if(stream.anInt1406 != stream.aByteArray1405.length)
             System.out.println("varptype load mismatch");
     }
 
-    public void method547(Class30_Sub2_Sub2 class30_sub2_sub2, boolean flag, int i)
+    public void method547(Stream stream, boolean flag, int i)
     {
         if(flag)
             anInt699 = -91;
         do
         {
-            int j = class30_sub2_sub2.method408();
+            int j = stream.readUnsignedByte();
             if(j == 0)
                 return;
             if(j == 1)
-                anInt705 = class30_sub2_sub2.method408();
+                anInt705 = stream.readUnsignedByte();
             else
             if(j == 2)
-                anInt706 = class30_sub2_sub2.method408();
+                anInt706 = stream.readUnsignedByte();
             else
             if(j == 3)
             {
@@ -50,13 +47,13 @@ public class Class41
                 aBoolean708 = false;
             else
             if(j == 5)
-                anInt709 = class30_sub2_sub2.method410();
+                anInt709 = stream.readUnsignedShort();
             else
             if(j == 6)
                 aBoolean710 = true;
             else
             if(j == 7)
-                anInt711 = class30_sub2_sub2.method413();
+                anInt711 = stream.method413();
             else
             if(j == 8)
             {
@@ -64,13 +61,13 @@ public class Class41
                 aBoolean713 = true;
             } else
             if(j == 10)
-                aString704 = class30_sub2_sub2.method415();
+                aString704 = stream.method415();
             else
             if(j == 11)
                 aBoolean713 = true;
             else
             if(j == 12)
-                anInt714 = class30_sub2_sub2.method413();
+                anInt714 = stream.method413();
             else
             if(j == 13)
                 anInt712 = 2;

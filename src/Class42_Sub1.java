@@ -143,11 +143,11 @@ public class Class42_Sub1 extends Class42
         {
             byte abyte0[] = class44.method571(as[i], (byte[])null);
             int j = abyte0.length / 2;
-            Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(abyte0, 891);
+            Stream stream = new Stream(abyte0, 891);
             anIntArrayArray1364[i] = new int[j];
             aByteArrayArray1342[i] = new byte[j];
             for(int l = 0; l < j; l++)
-                anIntArrayArray1364[i][l] = class30_sub2_sub2.method410();
+                anIntArrayArray1364[i][l] = stream.readUnsignedShort();
 
         }
 
@@ -158,10 +158,10 @@ public class Class42_Sub1 extends Class42
         {
             byte abyte1[] = class44.method571(as1[k], (byte[])null);
             int i1 = abyte1.length / 4;
-            Class30_Sub2_Sub2 class30_sub2_sub2_1 = new Class30_Sub2_Sub2(abyte1, 891);
+            Stream stream_1 = new Stream(abyte1, 891);
             anIntArrayArray1365[k] = new int[i1];
             for(int l1 = 0; l1 < i1; l1++)
-                anIntArrayArray1365[k][l1] = class30_sub2_sub2_1.method413();
+                anIntArrayArray1365[k][l1] = stream_1.method413();
 
         }
 
@@ -175,31 +175,31 @@ public class Class42_Sub1 extends Class42
                 aByteArray1372[k1] = 0;
 
         abyte2 = class44.method571("525map_index", (byte[])null);
-        Class30_Sub2_Sub2 class30_sub2_sub2_2 = new Class30_Sub2_Sub2(abyte2, 891);
-        j1 = class30_sub2_sub2_2.method410();
-        anIntArray1371 = new int[j1];
-        anIntArray1350 = new int[j1];
-        anIntArray1337 = new int[j1];
+        Stream class30_sub2_sub2_2 = new Stream(abyte2, 891);
+        j1 = class30_sub2_sub2_2.readUnsignedShort();
+        mapIndices1 = new int[j1];
+        mapIndices2 = new int[j1];
+        mapIndices3 = new int[j1];
         for(int i2 = 0; i2 < j1; i2++)
         {
-            anIntArray1371[i2] = class30_sub2_sub2_2.method410();
-            anIntArray1350[i2] = class30_sub2_sub2_2.method410();
-            anIntArray1337[i2] = class30_sub2_sub2_2.method410();
+            mapIndices1[i2] = class30_sub2_sub2_2.readUnsignedShort();
+            mapIndices2[i2] = class30_sub2_sub2_2.readUnsignedShort();
+            mapIndices3[i2] = class30_sub2_sub2_2.readUnsignedShort();
         }
 
         abyte2 = class44.method571("anim_index", (byte[])null);
-        class30_sub2_sub2_2 = new Class30_Sub2_Sub2(abyte2, 891);
+        class30_sub2_sub2_2 = new Stream(abyte2, 891);
         j1 = abyte2.length / 2;
         anIntArray1360 = new int[j1];
         for(int j2 = 0; j2 < j1; j2++)
-            anIntArray1360[j2] = class30_sub2_sub2_2.method410();
+            anIntArray1360[j2] = class30_sub2_sub2_2.readUnsignedShort();
 
         abyte2 = class44.method571("midi_index", (byte[])null);
-        class30_sub2_sub2_2 = new Class30_Sub2_Sub2(abyte2, 891);
+        class30_sub2_sub2_2 = new Stream(abyte2, 891);
         j1 = abyte2.length;
         anIntArray1348 = new int[j1];
         for(int k2 = 0; k2 < j1; k2++)
-            anIntArray1348[k2] = class30_sub2_sub2_2.method408();
+            anIntArray1348[k2] = class30_sub2_sub2_2.readUnsignedByte();
 
         aClient1343 = client1;
         aBoolean1353 = true;
@@ -222,14 +222,14 @@ public class Class42_Sub1 extends Class42
 
     public final void method554(boolean flag, int i)
     {
-        int j = anIntArray1371.length;
+        int j = mapIndices1.length;
         if(i != 0)
             anInt1345 = 20;
         for(int k = 0; k < j; k++)
             if(flag || anIntArray1356[k] != 0)
             {
-                method563((byte)2, 3, anIntArray1337[k], (byte)8);
-                method563((byte)2, 3, anIntArray1350[k], (byte)8);
+                method563((byte)2, 3, mapIndices3[k], (byte)8);
+                method563((byte)2, 3, mapIndices2[k], (byte)8);
             }
 
     }
@@ -301,8 +301,8 @@ public class Class42_Sub1 extends Class42
     {
         //if(i < 0 || i > anIntArrayArray1364.length || j < 0 || j > anIntArrayArray1364[i].length)
         //return;
-        //if(anIntArrayArray1364[i][j] == 0)
-        //return;
+       // if(anIntArrayArray1364[i][j] == 0)
+       // return;
         synchronized(aClass2_1361)
         {
             for(Class30_Sub2_Sub3 class30_sub2_sub3 = (Class30_Sub2_Sub3)aClass2_1361.method152(); class30_sub2_sub3 != null; class30_sub2_sub3 = (Class30_Sub2_Sub3)aClass2_1361.method153(false))
@@ -431,6 +431,7 @@ public class Class42_Sub1 extends Class42
         catch(Exception exception)
         {
             signlink.reporterror("od_ex " + exception.getMessage());
+            exception.printStackTrace();
         }
     }
 
@@ -497,19 +498,26 @@ public class Class42_Sub1 extends Class42
 
         return class30_sub2_sub3;
     }
-
-    public final int method562(int i, int j, int k, int l)
+    public int method562(int i, int j, int k, int l)
     {
         if(j != 0)
             return anInt1345;
         int i1 = (l << 8) + k;
-        for(int j1 = 0; j1 < anIntArray1371.length; j1++)
-            if(anIntArray1371[j1] == i1)
-                if(i == 0)
-                    return anIntArray1350[j1];
-                else
-                    return anIntArray1337[j1];
-
+        int mapNigga2;
+        int mapNigga3;
+        for(int j1 = 0; j1 < mapIndices1.length; j1++)
+        {
+            if(mapIndices1[j1] == i1)
+            {
+                if(i == 0) {
+                    mapNigga2 = mapIndices2[j1] > 9999 ? -1 : mapIndices2[j1];
+                    return mapNigga2;
+                } else {
+                    mapNigga3 = mapIndices3[j1] > 9999 ? -1 : mapIndices3[j1];
+                    return mapNigga3;
+                }
+            }
+        }
         return -1;
     }
 
@@ -542,8 +550,8 @@ public class Class42_Sub1 extends Class42
     {
         while(j >= 0) 
             throw new NullPointerException();
-        for(int k = 0; k < anIntArray1371.length; k++)
-            if(anIntArray1337[k] == i)
+        for(int k = 0; k < mapIndices1.length; k++)
+            if(mapIndices3[k] == i)
                 return true;
 
         return false;
@@ -604,8 +612,8 @@ public class Class42_Sub1 extends Class42
             byte abyte0[] = null;
             if(aClient1343.aClass14Array970[0] != null)
                 abyte0 = aClient1343.aClass14Array970[class30_sub2_sub3.anInt1419 + 1].method233(class30_sub2_sub3.anInt1421);
-            if(!crcMatches(anIntArrayArray1364[class30_sub2_sub3.anInt1419][class30_sub2_sub3.anInt1421], anIntArrayArray1365[class30_sub2_sub3.anInt1419][class30_sub2_sub3.anInt1421], abyte0))
-                abyte0 = null;
+           // if(!crcMatches(anIntArrayArray1364[class30_sub2_sub3.anInt1419][class30_sub2_sub3.anInt1421], anIntArrayArray1365[class30_sub2_sub3.anInt1419][class30_sub2_sub3.anInt1421], abyte0))
+               // abyte0 = null;
             synchronized(aClass19_1370)
             {
                 if(abyte0 == null)
@@ -724,7 +732,7 @@ public class Class42_Sub1 extends Class42
     private int anInt1334;
     private long aLong1335;
     private boolean aBoolean1336;
-    private int anIntArray1337[];
+    private int mapIndices3[];
     private CRC32 aCRC32_1338;
     private byte aByteArray1339[];
     private int anInt1340;
@@ -737,7 +745,7 @@ public class Class42_Sub1 extends Class42
     private int anInt1347;
     private int anIntArray1348[];
     public int anInt1349;
-    private int anIntArray1350[];
+    private int mapIndices2[];
     private int anInt1351;
     private int anInt1352;
     private boolean aBoolean1353;
@@ -758,7 +766,7 @@ public class Class42_Sub1 extends Class42
     private Class19 aClass19_1368;
     private Class30_Sub2_Sub3 aClass30_Sub2_Sub3_1369;
     private Class19 aClass19_1370;
-    private int anIntArray1371[];
+    private int mapIndices1[];
     private byte aByteArray1372[];
     private int anInt1373;
 }

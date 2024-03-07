@@ -2,9 +2,7 @@
 // Jad home page: http://www.kpdus.com/jad.html
 // Decompiler options: packimports(3) 
 
-import sign.signlink;
-
-final class Class30_Sub2_Sub4_Sub1_Sub1 extends Class30_Sub2_Sub4_Sub1
+final class Npc extends Class30_Sub2_Sub4_Sub1
 {
 
     final Class30_Sub2_Sub4_Sub6 method450(int i)
@@ -19,17 +17,17 @@ final class Class30_Sub2_Sub4_Sub1_Sub1 extends Class30_Sub2_Sub4_Sub1
             int i1 = -1;
             if(super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511)
                 i1 = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
-            return aClass5_1696.method164(0, i1, k, Class20.aClass20Array351[super.anInt1526].anIntArray357);
+            return desc.method164(0, i1, k, Class20.aClass20Array351[super.anInt1526].anIntArray357);
         }
         int l = -1;
         if(super.anInt1517 >= 0)
             l = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
-        return aClass5_1696.method164(0, -1, l, null);
+        return desc.method164(0, -1, l, null);
     }
 
     public final Class30_Sub2_Sub4_Sub6 method444(int i)
     {
-        if(aClass5_1696 == null)
+        if(desc == null)
             return null;
         Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6 = method450(0);
         if(class30_sub2_sub4_sub6 == null)
@@ -59,7 +57,7 @@ final class Class30_Sub2_Sub4_Sub1_Sub1 extends Class30_Sub2_Sub4_Sub1
                 class30_sub2_sub4_sub6 = new Class30_Sub2_Sub4_Sub6(2, -819, true, aclass30_sub2_sub4_sub6);
             }
         }
-        if(aClass5_1696.aByte68 == 1)
+        if(desc.aByte68 == 1)
             class30_sub2_sub4_sub6.aBoolean1659 = true;
         return class30_sub2_sub4_sub6;
     }
@@ -68,10 +66,10 @@ final class Class30_Sub2_Sub4_Sub1_Sub1 extends Class30_Sub2_Sub4_Sub1
     {
         if(!flag)
             aBoolean1694 = !aBoolean1694;
-        return aClass5_1696 != null;
+        return desc != null;
     }
 
-    Class30_Sub2_Sub4_Sub1_Sub1()
+    Npc()
     {
         aBoolean1694 = false;
         anInt1695 = 9;
@@ -80,5 +78,5 @@ final class Class30_Sub2_Sub4_Sub1_Sub1 extends Class30_Sub2_Sub4_Sub1
     private int anInt1693;
     private boolean aBoolean1694;
     private int anInt1695;
-    Class5 aClass5_1696;
+    Class5 desc;
 }

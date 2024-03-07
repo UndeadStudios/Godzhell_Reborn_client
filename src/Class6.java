@@ -1,5 +1,3 @@
-import sign.signlink;
-
 public class Class6
 {
 
@@ -218,58 +216,58 @@ public class Class6
             return 0;
     }
 
-    public final void method169(boolean flag, Class30_Sub2_Sub2 class30_sub2_sub2)
+    public final void method169(boolean flag, Stream stream)
     {
         aClass29_98 = new Class29();
-        aClass29_98.method325(true, class30_sub2_sub2);
+        aClass29_98.method325(true, stream);
         aClass29_99 = new Class29();
         if(!flag)
             throw new NullPointerException();
-        aClass29_99.method325(true, class30_sub2_sub2);
-        int i = class30_sub2_sub2.method408();
+        aClass29_99.method325(true, stream);
+        int i = stream.readUnsignedByte();
         if(i != 0)
         {
-            class30_sub2_sub2.anInt1406--;
+            stream.anInt1406--;
             aClass29_100 = new Class29();
-            aClass29_100.method325(true, class30_sub2_sub2);
+            aClass29_100.method325(true, stream);
             aClass29_101 = new Class29();
-            aClass29_101.method325(true, class30_sub2_sub2);
+            aClass29_101.method325(true, stream);
         }
-        i = class30_sub2_sub2.method408();
+        i = stream.readUnsignedByte();
         if(i != 0)
         {
-            class30_sub2_sub2.anInt1406--;
+            stream.anInt1406--;
             aClass29_102 = new Class29();
-            aClass29_102.method325(true, class30_sub2_sub2);
+            aClass29_102.method325(true, stream);
             aClass29_103 = new Class29();
-            aClass29_103.method325(true, class30_sub2_sub2);
+            aClass29_103.method325(true, stream);
         }
-        i = class30_sub2_sub2.method408();
+        i = stream.readUnsignedByte();
         if(i != 0)
         {
-            class30_sub2_sub2.anInt1406--;
+            stream.anInt1406--;
             aClass29_104 = new Class29();
-            aClass29_104.method325(true, class30_sub2_sub2);
+            aClass29_104.method325(true, stream);
             aClass29_105 = new Class29();
-            aClass29_105.method325(true, class30_sub2_sub2);
+            aClass29_105.method325(true, stream);
         }
         for(int j = 0; j < 10; j++)
         {
-            int k = class30_sub2_sub2.method422();
+            int k = stream.readUSmart();
             if(k == 0)
                 break;
             anIntArray106[j] = k;
-            anIntArray107[j] = class30_sub2_sub2.method421();
-            anIntArray108[j] = class30_sub2_sub2.method422();
+            anIntArray107[j] = stream.method421();
+            anIntArray108[j] = stream.readUSmart();
         }
 
-        anInt109 = class30_sub2_sub2.method422();
-        anInt110 = class30_sub2_sub2.method422();
-        anInt113 = class30_sub2_sub2.method410();
-        anInt114 = class30_sub2_sub2.method410();
+        anInt109 = stream.readUSmart();
+        anInt110 = stream.readUSmart();
+        anInt113 = stream.readUnsignedShort();
+        anInt114 = stream.readUnsignedShort();
         aClass39_111 = new Class39();
         aClass29_112 = new Class29();
-        aClass39_111.method545(class30_sub2_sub2, false, aClass29_112);
+        aClass39_111.method545(stream, false, aClass29_112);
     }
 
     public Class6()

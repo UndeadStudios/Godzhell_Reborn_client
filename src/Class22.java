@@ -1,7 +1,3 @@
-
-import java.io.PrintStream;
-import sign.signlink;
-
 public class Class22
 {
 
@@ -9,33 +5,33 @@ public class Class22
     {
         if(i != 0)
             anInt386 = 115;
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("flo.dat", null));
-        anInt387 = class30_sub2_sub2.method410();
+        Stream stream = new Stream(class44.method571("flo.dat", null));
+        anInt387 = stream.readUnsignedShort();
         if(aClass22Array388 == null)
             aClass22Array388 = new Class22[anInt387];
         for(int j = 0; j < anInt387; j++)
         {
             if(aClass22Array388[j] == null)
                 aClass22Array388[j] = new Class22();
-            aClass22Array388[j].method261(true, class30_sub2_sub2);
+            aClass22Array388[j].method261(true, stream);
         }
 	//System.out.println("530 Overlay Loaded: " + anInt387);
     }
 
-    public void method261(boolean flag, Class30_Sub2_Sub2 class30_sub2_sub2) 
+    public void method261(boolean flag, Stream stream)
 	{
 		do
 		{
-            int i = class30_sub2_sub2.method408();
+            int i = stream.readUnsignedByte();
             if(i == 0)
                 return;
             if(i == 1)
             {
-                anInt390 = class30_sub2_sub2.method412();
+                anInt390 = stream.method412();
                 method262(anInt390, 9);
             } else
             if(i == 2)
-                anInt391 = class30_sub2_sub2.method408();
+                anInt391 = stream.readUnsignedByte();
             else
             if(i == 3)
                 aBoolean392 = true;
@@ -44,7 +40,7 @@ public class Class22
                 aBoolean393 = false;
             else
             if(i == 6)
-                aString389 = class30_sub2_sub2.method415();
+                aString389 = stream.method415();
             else
             if(i == 7)
             {
@@ -52,7 +48,7 @@ public class Class22
                 int k = anInt395;
                 int l = anInt396;
                 int i1 = anInt397;
-                int j1 = class30_sub2_sub2.method412();
+                int j1 = stream.method412();
                 method262(j1, 9);
 				if(anInt390==0x35720A ||
 				anInt390==0x50680B ||

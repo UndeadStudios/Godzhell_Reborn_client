@@ -1,35 +1,32 @@
-
-import sign.signlink;
-
 public class Class29
 {
 
-    public final void method325(boolean flag, Class30_Sub2_Sub2 class30_sub2_sub2)
+    public final void method325(boolean flag, Stream stream)
     {
-        anInt540 = class30_sub2_sub2.method408();
+        anInt540 = stream.readUnsignedByte();
         if(!flag)
         {
             throw new NullPointerException();
         } else
         {
-            anInt538 = class30_sub2_sub2.method413();
-            anInt539 = class30_sub2_sub2.method413();
-            method326((byte)-112, class30_sub2_sub2);
+            anInt538 = stream.method413();
+            anInt539 = stream.method413();
+            method326((byte)-112, stream);
             return;
         }
     }
 
-    public final void method326(byte byte0, Class30_Sub2_Sub2 class30_sub2_sub2)
+    public final void method326(byte byte0, Stream stream)
     {
         if(byte0 != aByte532)
             aBoolean533 = !aBoolean533;
-        anInt535 = class30_sub2_sub2.method408();
+        anInt535 = stream.readUnsignedByte();
         anIntArray536 = new int[anInt535];
         anIntArray537 = new int[anInt535];
         for(int i = 0; i < anInt535; i++)
         {
-            anIntArray536[i] = class30_sub2_sub2.method410();
-            anIntArray537[i] = class30_sub2_sub2.method410();
+            anIntArray536[i] = stream.readUnsignedShort();
+            anIntArray537[i] = stream.readUnsignedShort();
         }
 
     }

@@ -1,38 +1,22 @@
 import java.awt.*;
 import java.awt.image.*;
-import java.io.PrintStream;
-import sign.signlink;
 
-public final class Class15
+public final class RSImageProducer
     implements ImageProducer, ImageObserver
 {
 
-    public Class15(int i, int j, Component component, int k)
-    {
-        aBoolean314 = true;
-        anInt316 = i;
-        anInt317 = j;
-        anIntArray315 = new int[i * j];
-        aColorModel318 = new DirectColorModel(32, 0xff0000, 65280, 255);
-        anImage320 = component.createImage(this);
-        method239();
-        component.prepareImage(anImage320, this);
-        if(k != 0)
-            aBoolean314 = !aBoolean314;
-        method239();
-        component.prepareImage(anImage320, this);
-        method239();
-        component.prepareImage(anImage320, this);
-        method237(0);
+    public RSImageProducer(int i, int j) {
+        this.anInt316 = i;
+        this.anInt317 = j;
+        this.anIntArray315 = new int[i * j];
+        this.aColorModel318 = new DirectColorModel(32, 0xff0000, 0xff00, 0xff);
+        this.bufferedImage = new BufferedImage(i, j, 1);
+        this.anIntArray315 = ((DataBufferInt)this.bufferedImage.getRaster().getDataBuffer()).getData();
+        this.initDrawingArea();
     }
-
-    public void method237(int i)
+    public void initDrawingArea()
     {
-        Class30_Sub2_Sub1.method331(anInt317, anInt316, anIntArray315, null);
-        if(i != 0)
-        {
-            for(int j = 1; j > 0; j++);
-        }
+        DrawingArea.method331(anInt317, anInt316, anIntArray315, null);
     }
 
     public void method238(int i, int j, Graphics g, int k)
@@ -40,7 +24,7 @@ public final class Class15
         method239();
         if(j != 23680)
             anInt313 = -169;
-        g.drawImage(anImage320, k, i, this);
+        g.drawImage(bufferedImage, k, i, this);
     }
 
     public synchronized void addConsumer(ImageConsumer imageconsumer)
@@ -98,5 +82,6 @@ public final class Class15
     public int anInt317;
     ColorModel aColorModel318;
     ImageConsumer anImageConsumer319;
+    private final BufferedImage bufferedImage;
     public Image anImage320;
 }

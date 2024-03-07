@@ -17,25 +17,25 @@ public class FogHandler {
      */
     public void renderFog(boolean belowGround, int fogStartDistance, int fogEndDistance, int fogIntensity) {
         getColor(setColor);
-        int pos = Class30_Sub2_Sub1_Sub3.anIntArray1472[0];
+        int pos = Class30_Sub2_Sub1_Sub3.lineOffsets[0];
         int src, dst, alpha;
         int fogBegin = (int) (fogStartDistance + fogDistance);
         int fogEnd = (int) (fogEndDistance + fogDistance);
-        for (int y = 0; y < Class30_Sub2_Sub1.anInt1382; y++) {
-            for (int x = 0; x < Class30_Sub2_Sub1.anInt1385; x++) {
+        for (int y = 0; y < DrawingArea.bottomY; y++) {
+            for (int x = 0; x < DrawingArea.centerX; x++) {
                 //if (Class30_Sub2_Sub1.depthBuffer[pos] >= fogEnd) {
                    // Class30_Sub2_Sub1.anIntArray1378[pos] = setColor;
                 //} else if (Class30_Sub2_Sub1.depthBuffer[pos] >= fogBegin) {
-                    alpha = (int)(Class30_Sub2_Sub1.depthBuffer[pos] - fogBegin) / fogIntensity;
+                    alpha = (int)(DrawingArea.depthBuffer[pos] - fogBegin) / fogIntensity;
                     src = ((setColor & 0xff00ff) * alpha >> 8 & 0xff00ff) + ((setColor & 0xff00) * alpha >> 8 & 0xff00);
                     alpha = 256 - alpha;
-                    dst = Class30_Sub2_Sub1.anIntArray1378[pos];
+                    dst = DrawingArea.pixels[pos];
                     dst = ((dst & 0xff00ff) * alpha >> 8 & 0xff00ff) + ((dst & 0xff00) * alpha >> 8 & 0xff00);
-                    Class30_Sub2_Sub1.anIntArray1378[pos] = src + dst;
+                    DrawingArea.pixels[pos] = src + dst;
                 }
                 pos++;
             }
-            pos += Class30_Sub2_Sub1.anInt1379 - Class30_Sub2_Sub1.anInt1385;
+            pos += DrawingArea.width - DrawingArea.centerX;
         }
    // }
     

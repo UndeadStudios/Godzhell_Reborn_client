@@ -6,10 +6,10 @@
 
 import sign.signlink;
 
-public final class Class50
+public final class TextClass
 {
 
-    public static long method583(String s)
+    public static long longForName(String s)
     {
         long l = 0L;
         for(int i = 0; i < s.length() && i < 12; i++)
@@ -30,12 +30,10 @@ public final class Class50
         return l;
     }
 
-    public static String method584(long l, byte byte0)
+    public static String nameForLong(long l)
     {
         try
         {
-            if(byte0 != aByte818)
-                throw new NullPointerException();
             if(l <= 0L || l >= 0x5b5b57f8a98a5dd1L)
                 return "invalid_name";
             if(l % 37L == 0L)
@@ -52,7 +50,7 @@ public final class Class50
         }
         catch(RuntimeException runtimeexception)
         {
-            signlink.reporterror("81570, " + l + ", " + byte0 + ", " + runtimeexception.toString());
+            signlink.reporterror("81570, " + l + ", " + runtimeexception.toString());
         }
         throw new RuntimeException();
     }
@@ -80,10 +78,8 @@ public final class Class50
             return (i >> 24 & 0xff) + "." + (i >> 16 & 0xff) + "." + (i >> 8 & 0xff) + "." + (i & 0xff);
     }
 
-    public static String method587(int i, String s)
+    public static String fixName(String s)
     {
-        if(i != -45804)
-            anInt817 = -410;
         if(s.length() > 0)
         {
             char ac[] = s.toCharArray();

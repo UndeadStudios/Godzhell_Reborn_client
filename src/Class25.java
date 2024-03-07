@@ -1,6 +1,9 @@
 public class Class25
 {
-
+    public static final int MAX_FAR_Z = 150;
+    public static final int MIN_FAR_Z = 30;
+    public static int farZ = MIN_FAR_Z;
+    public static int renderDistanceClamp = 500;
     public Class25(int i, byte byte0, int j, int ai[][][], int k)
     {
         aBoolean429 = true;
@@ -47,21 +50,21 @@ public class Class25
 	    int fogIntensity = 1;
 	    int fogBegin = 2600;
 	    int fogEnd = 2800;
-	    for (int y = 0; y < Class30_Sub2_Sub1.anInt1382; y++) {
-	        for (int x = 0; x < Class30_Sub2_Sub1.anInt1385; x++) {
-	            if (Class30_Sub2_Sub1.anIntArray1378[pos] >= fogEnd) {
-	                Class30_Sub2_Sub1.anIntArray1378[pos] = fog;
-	            } else if (Class30_Sub2_Sub1.anIntArray1378[pos] >= fogBegin) {
-	                a = (int)(Class30_Sub2_Sub1.anIntArray1378[pos] - fogBegin) / fogIntensity;
+	    for (int y = 0; y < DrawingArea.bottomY; y++) {
+	        for (int x = 0; x < DrawingArea.centerX; x++) {
+	            if (DrawingArea.pixels[pos] >= fogEnd) {
+	                DrawingArea.pixels[pos] = fog;
+	            } else if (DrawingArea.pixels[pos] >= fogBegin) {
+	                a = (int)(DrawingArea.pixels[pos] - fogBegin) / fogIntensity;
 	                src = ((fog & 0xff00ff) * a >> 8 & 0xff00ff) + ((fog & 0xff00) * a >> 8 & 0xff00);
 	                a = 256 - a;
-	                dst = Class30_Sub2_Sub1.anIntArray1378[pos];
+	                dst = DrawingArea.pixels[pos];
 	                dst = ((dst & 0xff00ff) * a >> 8 & 0xff00ff) + ((dst & 0xff00) * a >> 8 & 0xff00);
-	                Class30_Sub2_Sub1.anIntArray1378[pos] = src + dst;
+	                DrawingArea.pixels[pos] = src + dst;
 	            }
 	            pos++;
 	        }
-	        pos += Class30_Sub2_Sub1.anInt1379 - Class30_Sub2_Sub1.anInt1385;
+	        pos += DrawingArea.width - DrawingArea.centerX;
 	    }
 	}
     public void method274(int i)
@@ -944,7 +947,7 @@ public class Class25
         anInt498 = l;
         anInt493 = k / 2;
         anInt494 = l / 2;
-        boolean aflag[][][][] = new boolean[9][32][53][53];
+        boolean aflag[][][][] = new boolean[9][32][(MAX_FAR_Z * 2) + 3][(MAX_FAR_Z * 2) + 3];
         if(flag)
             anInt433 = 168;
         for(int i1 = 128; i1 <= 384; i1 += 32)
@@ -972,7 +975,7 @@ public class Class25
                             break;
                         }
 
-                        aflag[l1][j2][l2 + 25 + 1][j3 + 25 + 1] = flag2;
+                        aflag[l1][j2][l2 + MAX_FAR_Z + 1][j3 + MAX_FAR_Z + 1] = flag2;
                     }
 
                 }
@@ -985,9 +988,9 @@ public class Class25
         {
             for(int i2 = 0; i2 < 32; i2++)
             {
-                for(int k2 = -25; k2 < 25; k2++)
+                for(int k2 = -farZ; k2 < farZ; k2++)
                 {
-                    for(int i3 = -25; i3 < 25; i3++)
+                    for(int i3 = -farZ; i3 < farZ; i3++)
                     {
                         boolean flag1 = false;
 label0:
@@ -995,18 +998,18 @@ label0:
                         {
                             for(int j4 = -1; j4 <= 1; j4++)
                             {
-                                if(aflag[k1][i2][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+                                if(aflag[k1][i2][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
                                     flag1 = true;
                                 else
-                                if(aflag[k1][(i2 + 1) % 31][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+                                if(aflag[k1][(i2 + 1) % 31][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
                                     flag1 = true;
                                 else
-                                if(aflag[k1 + 1][i2][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+                                if(aflag[k1 + 1][i2][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
                                 {
                                     flag1 = true;
                                 } else
                                 {
-                                    if(!aflag[k1 + 1][(i2 + 1) % 31][k2 + l3 + 25 + 1][i3 + j4 + 25 + 1])
+                                    if(!aflag[k1 + 1][(i2 + 1) % 31][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
                                         continue;
                                     flag1 = true;
                                 }
@@ -1015,7 +1018,7 @@ label0:
 
                         }
 
-                        aBooleanArrayArrayArrayArray491[k1][i2][k2 + 25][i3 + 25] = flag1;
+                        aBooleanArrayArrayArrayArray491[k1][i2][k2 + farZ][i3 + farZ] = flag1;
                     }
 
                 }
@@ -1034,10 +1037,10 @@ label0:
             anInt431 = -346;
         int j1 = i * anInt458 + i1 * anInt459 >> 16;
         int k1 = i * anInt459 - i1 * anInt458 >> 16;
-        if(j1 < 50 || j1 > 3500)
+        if (j1 < 50 || j1 > Class25.renderDistanceClamp) // Changed 3500 to 6000
             return false;
-        int l1 = anInt493 + (l << 9) / j1;
-        int i2 = anInt494 + (k1 << 9) / j1;
+        int l1 = anInt493 + (l << client.log_view_dist) / j1;
+        int i2 = anInt494 + (k1 << client.log_view_dist) / j1;
         return l1 >= anInt495 && l1 <= anInt497 && i2 >= anInt496 && i2 <= anInt498;
     }
 
@@ -1080,16 +1083,16 @@ label0:
         anInt453 = i / 128;
         anInt454 = j / 128;
         anInt447 = i1;
-        anInt449 = anInt453 - 25;
+        anInt449 = anInt453 - farZ;
         if(anInt449 < 0)
             anInt449 = 0;
-        anInt451 = anInt454 - 25;
+        anInt451 = anInt454 - farZ;
         if(anInt451 < 0)
             anInt451 = 0;
-        anInt450 = anInt453 + 25;
+        anInt450 = anInt453 + farZ;
         if(anInt450 > anInt438)
             anInt450 = anInt438;
-        anInt452 = anInt454 + 25;
+        anInt452 = anInt454 + farZ;
         if(anInt452 > anInt439)
             anInt452 = anInt439;
         method319(0);
@@ -1103,7 +1106,7 @@ label0:
                 {
                     Class30_Sub3 class30_sub3 = aclass30_sub3[i2][k2];
                     if(class30_sub3 != null)
-                        if(class30_sub3.anInt1321 > i1 || !aBooleanArrayArray492[(i2 - anInt453) + 25][(k2 - anInt454) + 25] && anIntArrayArrayArray440[k1][i2][k2] - l < 2000)
+                        if(class30_sub3.anInt1321 > i1 || !aBooleanArrayArray492[(i2 - anInt453) + farZ][(k2 - anInt454) + farZ] && anIntArrayArrayArray440[k1][i2][k2] - l < 1)
                         {
                             class30_sub3.aBoolean1322 = false;
                             class30_sub3.aBoolean1323 = false;
@@ -1127,13 +1130,13 @@ label0:
         for(int l1 = anInt442; l1 < anInt437; l1++)
         {
             Class30_Sub3 aclass30_sub3_1[][] = aClass30_Sub3ArrayArrayArray441[l1];
-            for(int l2 = -25; l2 <= 0; l2++)
+            for(int l2 = -farZ; l2 <= 0; l2++)
             {
                 int i3 = anInt453 + l2;
                 int k3 = anInt453 - l2;
                 if(i3 >= anInt449 || k3 < anInt450)
                 {
-                    for(int i4 = -25; i4 <= 0; i4++)
+                    for(int i4 = -farZ; i4 <= 0; i4++)
                     {
                         int k4 = anInt454 + i4;
                         int i5 = anInt454 - i4;
@@ -1182,13 +1185,13 @@ label0:
         for(int j2 = anInt442; j2 < anInt437; j2++)
         {
             Class30_Sub3 aclass30_sub3_2[][] = aClass30_Sub3ArrayArrayArray441[j2];
-            for(int j3 = -25; j3 <= 0; j3++)
+            for(int j3 = -farZ; j3 <= 0; j3++)
             {
                 int l3 = anInt453 + j3;
                 int j4 = anInt453 - j3;
                 if(l3 >= anInt449 || j4 < anInt450)
                 {
-                    for(int l4 = -25; l4 <= 0; l4++)
+                    for(int l4 = -farZ; l4 <= 0; l4++)
                     {
                         int j5 = anInt454 + l4;
                         int k5 = anInt454 - l4;
@@ -1762,7 +1765,7 @@ label0:
         if((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0)
         {
             Class30_Sub2_Sub1_Sub3.aBoolean1462 = false;
-            if(i6 < 0 || k6 < 0 || k5 < 0 || i6 > Class30_Sub2_Sub1.anInt1385 || k6 > Class30_Sub2_Sub1.anInt1385 || k5 > Class30_Sub2_Sub1.anInt1385)
+            if(i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX)
                 Class30_Sub2_Sub1_Sub3.aBoolean1462 = true;
             if(aBoolean467 && method318(anInt468, anInt469, j6, l6, l5, i6, k6, k5))
             {
@@ -1789,7 +1792,7 @@ label0:
         if((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0)
         {
             Class30_Sub2_Sub1_Sub3.aBoolean1462 = false;
-            if(i5 < 0 || k5 < 0 || k6 < 0 || i5 > Class30_Sub2_Sub1.anInt1385 || k5 > Class30_Sub2_Sub1.anInt1385 || k6 > Class30_Sub2_Sub1.anInt1385)
+            if(i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX)
                 Class30_Sub2_Sub1_Sub3.aBoolean1462 = true;
             if(aBoolean467 && method318(anInt468, anInt469, j5, l5, l6, i5, k5, k6))
             {
@@ -1861,7 +1864,7 @@ label0:
             if((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0)
             {
                 Class30_Sub2_Sub1_Sub3.aBoolean1462 = false;
-                if(i4 < 0 || j4 < 0 || k4 < 0 || i4 > Class30_Sub2_Sub1.anInt1385 || j4 > Class30_Sub2_Sub1.anInt1385 || k4 > Class30_Sub2_Sub1.anInt1385)
+                if(i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX)
                     Class30_Sub2_Sub1_Sub3.aBoolean1462 = true;
                 if(aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4))
                 {
@@ -1932,13 +1935,13 @@ label0:
             Class47 class47 = aclass47[k];
             if(class47.anInt791 == 1)
             {
-                int l = (class47.anInt787 - anInt453) + 25;
+                int l = (class47.anInt787 - anInt453) + farZ;
                 if(l < 0 || l > 50)
                     continue;
-                int k1 = (class47.anInt789 - anInt454) + 25;
+                int k1 = (class47.anInt789 - anInt454) + farZ;
                 if(k1 < 0)
                     k1 = 0;
-                int j2 = (class47.anInt790 - anInt454) + 25;
+                int j2 = (class47.anInt790 - anInt454) + farZ;
                 if(j2 > 50)
                     j2 = 50;
                 boolean flag = false;
@@ -1970,13 +1973,13 @@ label0:
             }
             if(class47.anInt791 == 2)
             {
-                int i1 = (class47.anInt789 - anInt454) + 25;
+                int i1 = (class47.anInt789 - anInt454) + farZ;
                 if(i1 < 0 || i1 > 50)
                     continue;
-                int l1 = (class47.anInt787 - anInt453) + 25;
+                int l1 = (class47.anInt787 - anInt453) + farZ;
                 if(l1 < 0)
                     l1 = 0;
-                int k2 = (class47.anInt788 - anInt453) + 25;
+                int k2 = (class47.anInt788 - anInt453) + farZ;
                 if(k2 > 50)
                     k2 = 50;
                 boolean flag1 = false;
@@ -2010,18 +2013,18 @@ label0:
                 int j1 = class47.anInt796 - anInt456;
                 if(j1 > 128)
                 {
-                    int i2 = (class47.anInt789 - anInt454) + 25;
+                    int i2 = (class47.anInt789 - anInt454) + farZ;
                     if(i2 < 0)
                         i2 = 0;
-                    int l2 = (class47.anInt790 - anInt454) + 25;
+                    int l2 = (class47.anInt790 - anInt454) + farZ;
                     if(l2 > 50)
                         l2 = 50;
                     if(i2 <= l2)
                     {
-                        int i3 = (class47.anInt787 - anInt453) + 25;
+                        int i3 = (class47.anInt787 - anInt453) + farZ;
                         if(i3 < 0)
                             i3 = 0;
-                        int l3 = (class47.anInt788 - anInt453) + 25;
+                        int l3 = (class47.anInt788 - anInt453) + farZ;
                         if(l3 > 50)
                             l3 = 50;
                         boolean flag2 = false;
@@ -2444,7 +2447,7 @@ label0:
             9, 13, 0, 4, 8, 12
         }
     };
-    static boolean aBooleanArrayArrayArrayArray491[][][][] = new boolean[8][32][51][51];
+    static boolean aBooleanArrayArrayArrayArray491[][][][] = new boolean[8][32][(MAX_FAR_Z * 2) + 1][(MAX_FAR_Z * 2) + 1];
     static boolean aBooleanArrayArray492[][];
     static int anInt493;
     static int anInt494;

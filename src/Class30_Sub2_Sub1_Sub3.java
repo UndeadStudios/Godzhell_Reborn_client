@@ -1,8 +1,4 @@
-import sign.signlink;
-import java.util.Random;
-
-
-public class Class30_Sub2_Sub1_Sub3 extends Class30_Sub2_Sub1
+public class Class30_Sub2_Sub1_Sub3 extends DrawingArea
 {
 
     public static final void method363(int i)
@@ -11,8 +7,8 @@ public class Class30_Sub2_Sub1_Sub3 extends Class30_Sub2_Sub1
         anIntArray1468 = null;
         anIntArray1470 = null;
         anIntArray1471 = null;
-        anIntArray1472 = null;
-        aClass30_Sub2_Sub1_Sub2Array1474 = null;
+        lineOffsets = null;
+        aBackgroundArray1474 = null;
         aBooleanArray1475 = null;
         anIntArray1476 = null;
         anIntArrayArray1478 = null;
@@ -28,7 +24,7 @@ public class Class30_Sub2_Sub1_Sub3 extends Class30_Sub2_Sub1
 
     public static final void method364(byte byte0)
     {
-        anIntArray1472 = new int[Class30_Sub2_Sub1.anInt1380];
+        lineOffsets = new int[DrawingArea.height];
         if(byte0 == 6)
         {
             byte0 = 0;
@@ -36,20 +32,20 @@ public class Class30_Sub2_Sub1_Sub3 extends Class30_Sub2_Sub1
         {
             for(int i = 1; i > 0; i++);
         }
-        for(int j = 0; j < Class30_Sub2_Sub1.anInt1380; j++)
-            anIntArray1472[j] = Class30_Sub2_Sub1.anInt1379 * j;
+        for(int j = 0; j < DrawingArea.height; j++)
+            lineOffsets[j] = DrawingArea.width * j;
 
-        anInt1466 = Class30_Sub2_Sub1.anInt1379 / 2;
-        anInt1467 = Class30_Sub2_Sub1.anInt1380 / 2;
+        anInt1466 = DrawingArea.width / 2;
+        anInt1467 = DrawingArea.height / 2;
     }
 
     public static final void method365(int i, int j, int k)
     {
-        for(anIntArray1472 = new int[k]; i >= 0;)
+        for(lineOffsets = new int[k]; i >= 0;)
             return;
 
         for(int l = 0; l < k; l++)
-            anIntArray1472[l] = j * l;
+            lineOffsets[l] = j * l;
 
         anInt1466 = j / 2;
         anInt1467 = k / 2;
@@ -92,11 +88,11 @@ public class Class30_Sub2_Sub1_Sub3 extends Class30_Sub2_Sub1
         for(int j = 0; j < 100; j++)
             try
             {
-                aClass30_Sub2_Sub1_Sub2Array1474[j] = new Class30_Sub2_Sub1_Sub2(class44, String.valueOf(j), 0);
-                if(aBoolean1461 && aClass30_Sub2_Sub1_Sub2Array1474[j].anInt1456 == 128)
-                    aClass30_Sub2_Sub1_Sub2Array1474[j].method356(false);
+                aBackgroundArray1474[j] = new Background(class44, String.valueOf(j), 0);
+                if(aBoolean1461 && aBackgroundArray1474[j].anInt1456 == 128)
+                    aBackgroundArray1474[j].method356(false);
                 else
-                    aClass30_Sub2_Sub1_Sub2Array1474[j].method357(false);
+                    aBackgroundArray1474[j].method357(false);
                 anInt1473++;
             }
             catch(Exception _ex) { }
@@ -241,14 +237,14 @@ if (i == 40) { i = 40; }
             anIntArrayArray1479[k] = null;
         }
         anIntArrayArray1479[i] = ai;
-        Class30_Sub2_Sub1_Sub2 class30_sub2_sub1_sub2 = aClass30_Sub2_Sub1_Sub2Array1474[i];
+        Background background = aBackgroundArray1474[i];
         int ai1[] = anIntArrayArray1483[i];
         if(aBoolean1461)
         {
             aBooleanArray1475[i] = false;
             for(int i1 = 0; i1 < 4096; i1++)
             {
-                int i2 = ai[i1] = ai1[class30_sub2_sub1_sub2.aByteArray1450[i1]] & 0xf8f8ff;
+                int i2 = ai[i1] = ai1[background.aByteArray1450[i1]] & 0xf8f8ff;
                 if(i2 == 0)
                     aBooleanArray1475[i] = true;
                 ai[4096 + i1] = i2 - (i2 >>> 3) & 0xf8f8ff;
@@ -258,19 +254,19 @@ if (i == 40) { i = 40; }
 
         } else
         {
-            if(class30_sub2_sub1_sub2.anInt1452 == 64)
+            if(background.anInt1452 == 64)
             {
                 for(int j1 = 0; j1 < 128; j1++)
                 {
                     for(int j2 = 0; j2 < 128; j2++)
-                        ai[j2 + (j1 << 7)] = ai1[class30_sub2_sub1_sub2.aByteArray1450[(j2 >> 1) + ((j1 >> 1) << 6)]];
+                        ai[j2 + (j1 << 7)] = ai1[background.aByteArray1450[(j2 >> 1) + ((j1 >> 1) << 6)]];
 
                 }
 
             } else
             {
                 for(int k1 = 0; k1 < 16384; k1++)
-                    ai[k1] = ai1[class30_sub2_sub1_sub2.aByteArray1450[k1]];
+                    ai[k1] = ai1[background.aByteArray1450[k1]];
 
             }
             aBooleanArray1475[i] = false;
@@ -366,9 +362,9 @@ if (i == 40) { i = 40; }
         }
 
         for(int l = 0; l < 100; l++)
-            if(aClass30_Sub2_Sub1_Sub2Array1474[l] != null)
+            if(aBackgroundArray1474[l] != null)
             {
-                int ai[] = aClass30_Sub2_Sub1_Sub2Array1474[l].anIntArray1451;
+                int ai[] = aBackgroundArray1474[l].anIntArray1451;
                 anIntArrayArray1483[l] = new int[ai.length];
                 for(int j1 = 0; j1 < ai.length; j1++)
                 {
@@ -424,12 +420,12 @@ if (i == 40) { i = 40; }
         }
         if(i <= j && i <= k)
         {
-            if(i >= Class30_Sub2_Sub1.anInt1382)
+            if(i >= DrawingArea.bottomY)
                 return;
-            if(j > Class30_Sub2_Sub1.anInt1382)
-                j = Class30_Sub2_Sub1.anInt1382;
-            if(k > Class30_Sub2_Sub1.anInt1382)
-                k = Class30_Sub2_Sub1.anInt1382;
+            if(j > DrawingArea.bottomY)
+                j = DrawingArea.bottomY;
+            if(k > DrawingArea.bottomY)
+                k = DrawingArea.bottomY;
             if(j < k)
             {
                 j1 = l <<= 16;
@@ -454,9 +450,9 @@ if (i == 40) { i = 40; }
                 {
                     k -= j;
                     j -= i;
-                    for(i = anIntArray1472[i]; --j >= 0; i += Class30_Sub2_Sub1.anInt1379)
+                    for(i = lineOffsets[i]; --j >= 0; i += DrawingArea.width)
                     {
-                        method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
+                        method375(DrawingArea.pixels, i, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
                         j1 += j3;
                         l += j2;
                         i2 += k3;
@@ -465,20 +461,20 @@ if (i == 40) { i = 40; }
 
                     while(--k >= 0) 
                     {
-                        method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
+                        method375(DrawingArea.pixels, i, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
                         j1 += j3;
                         i1 += l2;
                         i2 += k3;
                         l1 += i3;
-                        i += Class30_Sub2_Sub1.anInt1379;
+                        i += DrawingArea.width;
                     }
                     return;
                 }
                 k -= j;
                 j -= i;
-                for(i = anIntArray1472[i]; --j >= 0; i += Class30_Sub2_Sub1.anInt1379)
+                for(i = lineOffsets[i]; --j >= 0; i += DrawingArea.width)
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
+                    method375(DrawingArea.pixels, i, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
                     j1 += j3;
                     l += j2;
                     i2 += k3;
@@ -487,12 +483,12 @@ if (i == 40) { i = 40; }
 
                 while(--k >= 0) 
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
+                    method375(DrawingArea.pixels, i, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
                     j1 += j3;
                     i1 += l2;
                     i2 += k3;
                     l1 += i3;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                 }
                 return;
             }
@@ -518,9 +514,9 @@ if (i == 40) { i = 40; }
             {
                 j -= k;
                 k -= i;
-                for(i = anIntArray1472[i]; --k >= 0; i += Class30_Sub2_Sub1.anInt1379)
+                for(i = lineOffsets[i]; --k >= 0; i += DrawingArea.width)
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
+                    method375(DrawingArea.pixels, i, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
                     i1 += j3;
                     l += j2;
                     l1 += k3;
@@ -529,20 +525,20 @@ if (i == 40) { i = 40; }
 
                 while(--j >= 0) 
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
+                    method375(DrawingArea.pixels, i, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
                     j1 += l2;
                     l += j2;
                     i2 += i3;
                     k1 += k2;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                 }
                 return;
             }
             j -= k;
             k -= i;
-            for(i = anIntArray1472[i]; --k >= 0; i += Class30_Sub2_Sub1.anInt1379)
+            for(i = lineOffsets[i]; --k >= 0; i += DrawingArea.width)
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
+                method375(DrawingArea.pixels, i, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
                 i1 += j3;
                 l += j2;
                 l1 += k3;
@@ -551,23 +547,23 @@ if (i == 40) { i = 40; }
 
             while(--j >= 0) 
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, i, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
+                method375(DrawingArea.pixels, i, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
                 j1 += l2;
                 l += j2;
                 i2 += i3;
                 k1 += k2;
-                i += Class30_Sub2_Sub1.anInt1379;
+                i += DrawingArea.width;
             }
             return;
         }
         if(j <= k)
         {
-            if(j >= Class30_Sub2_Sub1.anInt1382)
+            if(j >= DrawingArea.bottomY)
                 return;
-            if(k > Class30_Sub2_Sub1.anInt1382)
-                k = Class30_Sub2_Sub1.anInt1382;
-            if(i > Class30_Sub2_Sub1.anInt1382)
-                i = Class30_Sub2_Sub1.anInt1382;
+            if(k > DrawingArea.bottomY)
+                k = DrawingArea.bottomY;
+            if(i > DrawingArea.bottomY)
+                i = DrawingArea.bottomY;
             if(k < i)
             {
                 l = i1 <<= 16;
@@ -592,9 +588,9 @@ if (i == 40) { i = 40; }
                 {
                     i -= k;
                     k -= j;
-                    for(j = anIntArray1472[j]; --k >= 0; j += Class30_Sub2_Sub1.anInt1379)
+                    for(j = lineOffsets[j]; --k >= 0; j += DrawingArea.width)
                     {
-                        method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
+                        method375(DrawingArea.pixels, j, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
                         l += j2;
                         i1 += l2;
                         k1 += k2;
@@ -603,20 +599,20 @@ if (i == 40) { i = 40; }
 
                     while(--i >= 0) 
                     {
-                        method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
+                        method375(DrawingArea.pixels, j, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
                         l += j2;
                         j1 += j3;
                         k1 += k2;
                         i2 += k3;
-                        j += Class30_Sub2_Sub1.anInt1379;
+                        j += DrawingArea.width;
                     }
                     return;
                 }
                 i -= k;
                 k -= j;
-                for(j = anIntArray1472[j]; --k >= 0; j += Class30_Sub2_Sub1.anInt1379)
+                for(j = lineOffsets[j]; --k >= 0; j += DrawingArea.width)
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
+                    method375(DrawingArea.pixels, j, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
                     l += j2;
                     i1 += l2;
                     k1 += k2;
@@ -625,12 +621,12 @@ if (i == 40) { i = 40; }
 
                 while(--i >= 0) 
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
+                    method375(DrawingArea.pixels, j, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
                     l += j2;
                     j1 += j3;
                     k1 += k2;
                     i2 += k3;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                 }
                 return;
             }
@@ -656,9 +652,9 @@ if (i == 40) { i = 40; }
             {
                 k -= i;
                 i -= j;
-                for(j = anIntArray1472[j]; --i >= 0; j += Class30_Sub2_Sub1.anInt1379)
+                for(j = lineOffsets[j]; --i >= 0; j += DrawingArea.width)
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
+                    method375(DrawingArea.pixels, j, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
                     j1 += j2;
                     i1 += l2;
                     i2 += k2;
@@ -667,20 +663,20 @@ if (i == 40) { i = 40; }
 
                 while(--k >= 0) 
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
+                    method375(DrawingArea.pixels, j, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
                     l += j3;
                     i1 += l2;
                     k1 += k3;
                     l1 += i3;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                 }
                 return;
             }
             k -= i;
             i -= j;
-            for(j = anIntArray1472[j]; --i >= 0; j += Class30_Sub2_Sub1.anInt1379)
+            for(j = lineOffsets[j]; --i >= 0; j += DrawingArea.width)
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
+                method375(DrawingArea.pixels, j, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
                 j1 += j2;
                 i1 += l2;
                 i2 += k2;
@@ -689,21 +685,21 @@ if (i == 40) { i = 40; }
 
             while(--k >= 0) 
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, j, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
+                method375(DrawingArea.pixels, j, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
                 l += j3;
                 i1 += l2;
                 k1 += k3;
                 l1 += i3;
-                j += Class30_Sub2_Sub1.anInt1379;
+                j += DrawingArea.width;
             }
             return;
         }
-        if(k >= Class30_Sub2_Sub1.anInt1382)
+        if(k >= DrawingArea.bottomY)
             return;
-        if(i > Class30_Sub2_Sub1.anInt1382)
-            i = Class30_Sub2_Sub1.anInt1382;
-        if(j > Class30_Sub2_Sub1.anInt1382)
-            j = Class30_Sub2_Sub1.anInt1382;
+        if(i > DrawingArea.bottomY)
+            i = DrawingArea.bottomY;
+        if(j > DrawingArea.bottomY)
+            j = DrawingArea.bottomY;
         if(i < j)
         {
             i1 = j1 <<= 16;
@@ -728,9 +724,9 @@ if (i == 40) { i = 40; }
             {
                 j -= i;
                 i -= k;
-                for(k = anIntArray1472[k]; --i >= 0; k += Class30_Sub2_Sub1.anInt1379)
+                for(k = lineOffsets[k]; --i >= 0; k += DrawingArea.width)
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
+                    method375(DrawingArea.pixels, k, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
                     i1 += l2;
                     j1 += j3;
                     l1 += i3;
@@ -739,20 +735,20 @@ if (i == 40) { i = 40; }
 
                 while(--j >= 0) 
                 {
-                    method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
+                    method375(DrawingArea.pixels, k, 0, 0, i1 >> 16, l >> 16, l1 >> 7, k1 >> 7);
                     i1 += l2;
                     l += j2;
                     l1 += i3;
                     k1 += k2;
-                    k += Class30_Sub2_Sub1.anInt1379;
+                    k += DrawingArea.width;
                 }
                 return;
             }
             j -= i;
             i -= k;
-            for(k = anIntArray1472[k]; --i >= 0; k += Class30_Sub2_Sub1.anInt1379)
+            for(k = lineOffsets[k]; --i >= 0; k += DrawingArea.width)
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
+                method375(DrawingArea.pixels, k, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
                 i1 += l2;
                 j1 += j3;
                 l1 += i3;
@@ -761,12 +757,12 @@ if (i == 40) { i = 40; }
 
             while(--j >= 0) 
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
+                method375(DrawingArea.pixels, k, 0, 0, l >> 16, i1 >> 16, k1 >> 7, l1 >> 7);
                 i1 += l2;
                 l += j2;
                 l1 += i3;
                 k1 += k2;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
             }
             return;
         }
@@ -792,9 +788,9 @@ if (i == 40) { i = 40; }
         {
             i -= j;
             j -= k;
-            for(k = anIntArray1472[k]; --j >= 0; k += Class30_Sub2_Sub1.anInt1379)
+            for(k = lineOffsets[k]; --j >= 0; k += DrawingArea.width)
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
+                method375(DrawingArea.pixels, k, 0, 0, l >> 16, j1 >> 16, k1 >> 7, i2 >> 7);
                 l += l2;
                 j1 += j3;
                 k1 += i3;
@@ -803,20 +799,20 @@ if (i == 40) { i = 40; }
 
             while(--i >= 0) 
             {
-                method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
+                method375(DrawingArea.pixels, k, 0, 0, i1 >> 16, j1 >> 16, l1 >> 7, i2 >> 7);
                 i1 += j2;
                 j1 += j3;
                 l1 += k2;
                 i2 += k3;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
             }
             return;
         }
         i -= j;
         j -= k;
-        for(k = anIntArray1472[k]; --j >= 0; k += Class30_Sub2_Sub1.anInt1379)
+        for(k = lineOffsets[k]; --j >= 0; k += DrawingArea.width)
         {
-            method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
+            method375(DrawingArea.pixels, k, 0, 0, j1 >> 16, l >> 16, i2 >> 7, k1 >> 7);
             l += l2;
             j1 += j3;
             k1 += i3;
@@ -825,12 +821,12 @@ if (i == 40) { i = 40; }
 
         while(--i >= 0) 
         {
-            method375(Class30_Sub2_Sub1.anIntArray1378, k, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
+            method375(DrawingArea.pixels, k, 0, 0, j1 >> 16, i1 >> 16, i2 >> 7, l1 >> 7);
             i1 += j2;
             j1 += j3;
             l1 += k2;
             i2 += k3;
-            k += Class30_Sub2_Sub1.anInt1379;
+            k += DrawingArea.width;
         }
     }
 
@@ -845,8 +841,8 @@ if (i == 40) { i = 40; }
                     l1 = (k1 - j1) / (i1 - l);
                 else
                     l1 = 0;
-                if(i1 > Class30_Sub2_Sub1.anInt1385)
-                    i1 = Class30_Sub2_Sub1.anInt1385;
+                if(i1 > DrawingArea.centerX)
+                    i1 = DrawingArea.centerX;
                 if(l < 0)
                 {
                     j1 -= l * l1;
@@ -919,8 +915,8 @@ if (i == 40) { i = 40; }
         int i2 = (k1 - j1) / (i1 - l);
         if(aBoolean1462)
         {
-            if(i1 > Class30_Sub2_Sub1.anInt1385)
-                i1 = Class30_Sub2_Sub1.anInt1385;
+            if(i1 > DrawingArea.centerX)
+                i1 = DrawingArea.centerX;
             if(l < 0)
             {
                 j1 -= l * i2;
@@ -964,12 +960,12 @@ if (i == 40) { i = 40; }
             j2 = (l - j1 << 16) / (i - k);
         if(i <= j && i <= k)
         {
-            if(i >= Class30_Sub2_Sub1.anInt1382)
+            if(i >= DrawingArea.bottomY)
                 return;
-            if(j > Class30_Sub2_Sub1.anInt1382)
-                j = Class30_Sub2_Sub1.anInt1382;
-            if(k > Class30_Sub2_Sub1.anInt1382)
-                k = Class30_Sub2_Sub1.anInt1382;
+            if(j > DrawingArea.bottomY)
+                j = DrawingArea.bottomY;
+            if(k > DrawingArea.bottomY)
+                k = DrawingArea.bottomY;
             if(j < k)
             {
                 j1 = l <<= 16;
@@ -989,37 +985,37 @@ if (i == 40) { i = 40; }
                 {
                     k -= j;
                     j -= i;
-                    for(i = anIntArray1472[i]; --j >= 0; i += Class30_Sub2_Sub1.anInt1379)
+                    for(i = lineOffsets[i]; --j >= 0; i += DrawingArea.width)
                     {
-                        method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, j1 >> 16, l >> 16);
+                        method377(DrawingArea.pixels, i, k1, 0, j1 >> 16, l >> 16);
                         j1 += j2;
                         l += l1;
                     }
 
                     while(--k >= 0) 
                     {
-                        method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, j1 >> 16, i1 >> 16);
+                        method377(DrawingArea.pixels, i, k1, 0, j1 >> 16, i1 >> 16);
                         j1 += j2;
                         i1 += i2;
-                        i += Class30_Sub2_Sub1.anInt1379;
+                        i += DrawingArea.width;
                     }
                     return;
                 }
                 k -= j;
                 j -= i;
-                for(i = anIntArray1472[i]; --j >= 0; i += Class30_Sub2_Sub1.anInt1379)
+                for(i = lineOffsets[i]; --j >= 0; i += DrawingArea.width)
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, l >> 16, j1 >> 16);
+                    method377(DrawingArea.pixels, i, k1, 0, l >> 16, j1 >> 16);
                     j1 += j2;
                     l += l1;
                 }
 
                 while(--k >= 0) 
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, i1 >> 16, j1 >> 16);
+                    method377(DrawingArea.pixels, i, k1, 0, i1 >> 16, j1 >> 16);
                     j1 += j2;
                     i1 += i2;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                 }
                 return;
             }
@@ -1040,48 +1036,48 @@ if (i == 40) { i = 40; }
             {
                 j -= k;
                 k -= i;
-                for(i = anIntArray1472[i]; --k >= 0; i += Class30_Sub2_Sub1.anInt1379)
+                for(i = lineOffsets[i]; --k >= 0; i += DrawingArea.width)
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, i1 >> 16, l >> 16);
+                    method377(DrawingArea.pixels, i, k1, 0, i1 >> 16, l >> 16);
                     i1 += j2;
                     l += l1;
                 }
 
                 while(--j >= 0) 
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, j1 >> 16, l >> 16);
+                    method377(DrawingArea.pixels, i, k1, 0, j1 >> 16, l >> 16);
                     j1 += i2;
                     l += l1;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                 }
                 return;
             }
             j -= k;
             k -= i;
-            for(i = anIntArray1472[i]; --k >= 0; i += Class30_Sub2_Sub1.anInt1379)
+            for(i = lineOffsets[i]; --k >= 0; i += DrawingArea.width)
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, l >> 16, i1 >> 16);
+                method377(DrawingArea.pixels, i, k1, 0, l >> 16, i1 >> 16);
                 i1 += j2;
                 l += l1;
             }
 
             while(--j >= 0) 
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, i, k1, 0, l >> 16, j1 >> 16);
+                method377(DrawingArea.pixels, i, k1, 0, l >> 16, j1 >> 16);
                 j1 += i2;
                 l += l1;
-                i += Class30_Sub2_Sub1.anInt1379;
+                i += DrawingArea.width;
             }
             return;
         }
         if(j <= k)
         {
-            if(j >= Class30_Sub2_Sub1.anInt1382)
+            if(j >= DrawingArea.bottomY)
                 return;
-            if(k > Class30_Sub2_Sub1.anInt1382)
-                k = Class30_Sub2_Sub1.anInt1382;
-            if(i > Class30_Sub2_Sub1.anInt1382)
-                i = Class30_Sub2_Sub1.anInt1382;
+            if(k > DrawingArea.bottomY)
+                k = DrawingArea.bottomY;
+            if(i > DrawingArea.bottomY)
+                i = DrawingArea.bottomY;
             if(k < i)
             {
                 l = i1 <<= 16;
@@ -1101,37 +1097,37 @@ if (i == 40) { i = 40; }
                 {
                     i -= k;
                     k -= j;
-                    for(j = anIntArray1472[j]; --k >= 0; j += Class30_Sub2_Sub1.anInt1379)
+                    for(j = lineOffsets[j]; --k >= 0; j += DrawingArea.width)
                     {
-                        method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, l >> 16, i1 >> 16);
+                        method377(DrawingArea.pixels, j, k1, 0, l >> 16, i1 >> 16);
                         l += l1;
                         i1 += i2;
                     }
 
                     while(--i >= 0) 
                     {
-                        method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, l >> 16, j1 >> 16);
+                        method377(DrawingArea.pixels, j, k1, 0, l >> 16, j1 >> 16);
                         l += l1;
                         j1 += j2;
-                        j += Class30_Sub2_Sub1.anInt1379;
+                        j += DrawingArea.width;
                     }
                     return;
                 }
                 i -= k;
                 k -= j;
-                for(j = anIntArray1472[j]; --k >= 0; j += Class30_Sub2_Sub1.anInt1379)
+                for(j = lineOffsets[j]; --k >= 0; j += DrawingArea.width)
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, i1 >> 16, l >> 16);
+                    method377(DrawingArea.pixels, j, k1, 0, i1 >> 16, l >> 16);
                     l += l1;
                     i1 += i2;
                 }
 
                 while(--i >= 0) 
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, j1 >> 16, l >> 16);
+                    method377(DrawingArea.pixels, j, k1, 0, j1 >> 16, l >> 16);
                     l += l1;
                     j1 += j2;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                 }
                 return;
             }
@@ -1152,46 +1148,46 @@ if (i == 40) { i = 40; }
             {
                 k -= i;
                 i -= j;
-                for(j = anIntArray1472[j]; --i >= 0; j += Class30_Sub2_Sub1.anInt1379)
+                for(j = lineOffsets[j]; --i >= 0; j += DrawingArea.width)
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, j1 >> 16, i1 >> 16);
+                    method377(DrawingArea.pixels, j, k1, 0, j1 >> 16, i1 >> 16);
                     j1 += l1;
                     i1 += i2;
                 }
 
                 while(--k >= 0) 
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, l >> 16, i1 >> 16);
+                    method377(DrawingArea.pixels, j, k1, 0, l >> 16, i1 >> 16);
                     l += j2;
                     i1 += i2;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                 }
                 return;
             }
             k -= i;
             i -= j;
-            for(j = anIntArray1472[j]; --i >= 0; j += Class30_Sub2_Sub1.anInt1379)
+            for(j = lineOffsets[j]; --i >= 0; j += DrawingArea.width)
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, i1 >> 16, j1 >> 16);
+                method377(DrawingArea.pixels, j, k1, 0, i1 >> 16, j1 >> 16);
                 j1 += l1;
                 i1 += i2;
             }
 
             while(--k >= 0) 
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, j, k1, 0, i1 >> 16, l >> 16);
+                method377(DrawingArea.pixels, j, k1, 0, i1 >> 16, l >> 16);
                 l += j2;
                 i1 += i2;
-                j += Class30_Sub2_Sub1.anInt1379;
+                j += DrawingArea.width;
             }
             return;
         }
-        if(k >= Class30_Sub2_Sub1.anInt1382)
+        if(k >= DrawingArea.bottomY)
             return;
-        if(i > Class30_Sub2_Sub1.anInt1382)
-            i = Class30_Sub2_Sub1.anInt1382;
-        if(j > Class30_Sub2_Sub1.anInt1382)
-            j = Class30_Sub2_Sub1.anInt1382;
+        if(i > DrawingArea.bottomY)
+            i = DrawingArea.bottomY;
+        if(j > DrawingArea.bottomY)
+            j = DrawingArea.bottomY;
         if(i < j)
         {
             i1 = j1 <<= 16;
@@ -1211,37 +1207,37 @@ if (i == 40) { i = 40; }
             {
                 j -= i;
                 i -= k;
-                for(k = anIntArray1472[k]; --i >= 0; k += Class30_Sub2_Sub1.anInt1379)
+                for(k = lineOffsets[k]; --i >= 0; k += DrawingArea.width)
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, i1 >> 16, j1 >> 16);
+                    method377(DrawingArea.pixels, k, k1, 0, i1 >> 16, j1 >> 16);
                     i1 += i2;
                     j1 += j2;
                 }
 
                 while(--j >= 0) 
                 {
-                    method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, i1 >> 16, l >> 16);
+                    method377(DrawingArea.pixels, k, k1, 0, i1 >> 16, l >> 16);
                     i1 += i2;
                     l += l1;
-                    k += Class30_Sub2_Sub1.anInt1379;
+                    k += DrawingArea.width;
                 }
                 return;
             }
             j -= i;
             i -= k;
-            for(k = anIntArray1472[k]; --i >= 0; k += Class30_Sub2_Sub1.anInt1379)
+            for(k = lineOffsets[k]; --i >= 0; k += DrawingArea.width)
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, j1 >> 16, i1 >> 16);
+                method377(DrawingArea.pixels, k, k1, 0, j1 >> 16, i1 >> 16);
                 i1 += i2;
                 j1 += j2;
             }
 
             while(--j >= 0) 
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, l >> 16, i1 >> 16);
+                method377(DrawingArea.pixels, k, k1, 0, l >> 16, i1 >> 16);
                 i1 += i2;
                 l += l1;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
             }
             return;
         }
@@ -1262,37 +1258,37 @@ if (i == 40) { i = 40; }
         {
             i -= j;
             j -= k;
-            for(k = anIntArray1472[k]; --j >= 0; k += Class30_Sub2_Sub1.anInt1379)
+            for(k = lineOffsets[k]; --j >= 0; k += DrawingArea.width)
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, l >> 16, j1 >> 16);
+                method377(DrawingArea.pixels, k, k1, 0, l >> 16, j1 >> 16);
                 l += i2;
                 j1 += j2;
             }
 
             while(--i >= 0) 
             {
-                method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, i1 >> 16, j1 >> 16);
+                method377(DrawingArea.pixels, k, k1, 0, i1 >> 16, j1 >> 16);
                 i1 += l1;
                 j1 += j2;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
             }
             return;
         }
         i -= j;
         j -= k;
-        for(k = anIntArray1472[k]; --j >= 0; k += Class30_Sub2_Sub1.anInt1379)
+        for(k = lineOffsets[k]; --j >= 0; k += DrawingArea.width)
         {
-            method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, j1 >> 16, l >> 16);
+            method377(DrawingArea.pixels, k, k1, 0, j1 >> 16, l >> 16);
             l += i2;
             j1 += j2;
         }
 
         while(--i >= 0) 
         {
-            method377(Class30_Sub2_Sub1.anIntArray1378, k, k1, 0, j1 >> 16, i1 >> 16);
+            method377(DrawingArea.pixels, k, k1, 0, j1 >> 16, i1 >> 16);
             i1 += l1;
             j1 += j2;
-            k += Class30_Sub2_Sub1.anInt1379;
+            k += DrawingArea.width;
         }
     }
 
@@ -1300,8 +1296,8 @@ if (i == 40) { i = 40; }
     {
         if(aBoolean1462)
         {
-            if(i1 > Class30_Sub2_Sub1.anInt1385)
-                i1 = Class30_Sub2_Sub1.anInt1385;
+            if(i1 > DrawingArea.centerX)
+                i1 = DrawingArea.centerX;
             if(l < 0)
                 l = 0;
         }
@@ -1387,12 +1383,12 @@ i++;
         }
         if(i <= j && i <= k)
         {
-            if(i >= Class30_Sub2_Sub1.anInt1382)
+            if(i >= DrawingArea.bottomY)
                 return;
-            if(j > Class30_Sub2_Sub1.anInt1382)
-                j = Class30_Sub2_Sub1.anInt1382;
-            if(k > Class30_Sub2_Sub1.anInt1382)
-                k = Class30_Sub2_Sub1.anInt1382;
+            if(j > DrawingArea.bottomY)
+                j = DrawingArea.bottomY;
+            if(k > DrawingArea.bottomY)
+                k = DrawingArea.bottomY;
             if(j < k)
             {
                 j1 = l <<= 16;
@@ -1421,27 +1417,27 @@ i++;
                 {
                     k -= j;
                     j -= i;
-                    i = anIntArray1472[i];
+                    i = lineOffsets[i];
                     while(--j >= 0) 
                     {
-                        method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                        method379(DrawingArea.pixels, ai, 0, 0, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                         j1 += i8;
                         l += i7;
                         i2 += j8;
                         k1 += j7;
-                        i += Class30_Sub2_Sub1.anInt1379;
+                        i += DrawingArea.width;
                         l4 += j5;
                         k5 += i6;
                         j6 += l6;
                     }
                     while(--k >= 0) 
                     {
-                        method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                        method379(DrawingArea.pixels, ai, 0, 0, i, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                         j1 += i8;
                         i1 += k7;
                         i2 += j8;
                         l1 += l7;
-                        i += Class30_Sub2_Sub1.anInt1379;
+                        i += DrawingArea.width;
                         l4 += j5;
                         k5 += i6;
                         j6 += l6;
@@ -1450,27 +1446,27 @@ i++;
                 }
                 k -= j;
                 j -= i;
-                i = anIntArray1472[i];
+                i = lineOffsets[i];
                 while(--j >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                     j1 += i8;
                     l += i7;
                     i2 += j8;
                     k1 += j7;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
                 }
                 while(--k >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, i, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                     j1 += i8;
                     i1 += k7;
                     i2 += j8;
                     l1 += l7;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
@@ -1503,27 +1499,27 @@ i++;
             {
                 j -= k;
                 k -= i;
-                i = anIntArray1472[i];
+                i = lineOffsets[i];
                 while(--k >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, i, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                     i1 += i8;
                     l += i7;
                     l1 += j8;
                     k1 += j7;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
                 }
                 while(--j >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, i, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                     j1 += k7;
                     l += i7;
                     i2 += l7;
                     k1 += j7;
-                    i += Class30_Sub2_Sub1.anInt1379;
+                    i += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
@@ -1532,27 +1528,27 @@ i++;
             }
             j -= k;
             k -= i;
-            i = anIntArray1472[i];
+            i = lineOffsets[i];
             while(--k >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, i, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                 i1 += i8;
                 l += i7;
                 l1 += j8;
                 k1 += j7;
-                i += Class30_Sub2_Sub1.anInt1379;
+                i += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
             }
             while(--j >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, i, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                 j1 += k7;
                 l += i7;
                 i2 += l7;
                 k1 += j7;
-                i += Class30_Sub2_Sub1.anInt1379;
+                i += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
@@ -1561,12 +1557,12 @@ i++;
         }
         if(j <= k)
         {
-            if(j >= Class30_Sub2_Sub1.anInt1382)
+            if(j >= DrawingArea.bottomY)
                 return;
-            if(k > Class30_Sub2_Sub1.anInt1382)
-                k = Class30_Sub2_Sub1.anInt1382;
-            if(i > Class30_Sub2_Sub1.anInt1382)
-                i = Class30_Sub2_Sub1.anInt1382;
+            if(k > DrawingArea.bottomY)
+                k = DrawingArea.bottomY;
+            if(i > DrawingArea.bottomY)
+                i = DrawingArea.bottomY;
             if(k < i)
             {
                 l = i1 <<= 16;
@@ -1595,27 +1591,27 @@ i++;
                 {
                     i -= k;
                     k -= j;
-                    j = anIntArray1472[j];
+                    j = lineOffsets[j];
                     while(--k >= 0) 
                     {
-                        method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                        method379(DrawingArea.pixels, ai, 0, 0, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                         l += i7;
                         i1 += k7;
                         k1 += j7;
                         l1 += l7;
-                        j += Class30_Sub2_Sub1.anInt1379;
+                        j += DrawingArea.width;
                         l4 += j5;
                         k5 += i6;
                         j6 += l6;
                     }
                     while(--i >= 0) 
                     {
-                        method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                        method379(DrawingArea.pixels, ai, 0, 0, j, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                         l += i7;
                         j1 += i8;
                         k1 += j7;
                         i2 += j8;
-                        j += Class30_Sub2_Sub1.anInt1379;
+                        j += DrawingArea.width;
                         l4 += j5;
                         k5 += i6;
                         j6 += l6;
@@ -1624,27 +1620,27 @@ i++;
                 }
                 i -= k;
                 k -= j;
-                j = anIntArray1472[j];
+                j = lineOffsets[j];
                 while(--k >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                     l += i7;
                     i1 += k7;
                     k1 += j7;
                     l1 += l7;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
                 }
                 while(--i >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, j, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                     l += i7;
                     j1 += i8;
                     k1 += j7;
                     i2 += j8;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
@@ -1677,27 +1673,27 @@ i++;
             {
                 k -= i;
                 i -= j;
-                j = anIntArray1472[j];
+                j = lineOffsets[j];
                 while(--i >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, j, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                     j1 += i7;
                     i1 += k7;
                     i2 += j7;
                     l1 += l7;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
                 }
                 while(--k >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, j, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                     l += i8;
                     i1 += k7;
                     k1 += j8;
                     l1 += l7;
-                    j += Class30_Sub2_Sub1.anInt1379;
+                    j += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
@@ -1706,39 +1702,39 @@ i++;
             }
             k -= i;
             i -= j;
-            j = anIntArray1472[j];
+            j = lineOffsets[j];
             while(--i >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, j, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                 j1 += i7;
                 i1 += k7;
                 i2 += j7;
                 l1 += l7;
-                j += Class30_Sub2_Sub1.anInt1379;
+                j += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
             }
             while(--k >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, j, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                 l += i8;
                 i1 += k7;
                 k1 += j8;
                 l1 += l7;
-                j += Class30_Sub2_Sub1.anInt1379;
+                j += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
             }
             return;
         }
-        if(k >= Class30_Sub2_Sub1.anInt1382)
+        if(k >= DrawingArea.bottomY)
             return;
-        if(i > Class30_Sub2_Sub1.anInt1382)
-            i = Class30_Sub2_Sub1.anInt1382;
-        if(j > Class30_Sub2_Sub1.anInt1382)
-            j = Class30_Sub2_Sub1.anInt1382;
+        if(i > DrawingArea.bottomY)
+            i = DrawingArea.bottomY;
+        if(j > DrawingArea.bottomY)
+            j = DrawingArea.bottomY;
         if(i < j)
         {
             i1 = j1 <<= 16;
@@ -1767,27 +1763,27 @@ i++;
             {
                 j -= i;
                 i -= k;
-                k = anIntArray1472[k];
+                k = lineOffsets[k];
                 while(--i >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                     i1 += k7;
                     j1 += i8;
                     l1 += l7;
                     i2 += j8;
-                    k += Class30_Sub2_Sub1.anInt1379;
+                    k += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
                 }
                 while(--j >= 0) 
                 {
-                    method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+                    method379(DrawingArea.pixels, ai, 0, 0, k, i1 >> 16, l >> 16, l1 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
                     i1 += k7;
                     l += i7;
                     l1 += l7;
                     k1 += j7;
-                    k += Class30_Sub2_Sub1.anInt1379;
+                    k += DrawingArea.width;
                     l4 += j5;
                     k5 += i6;
                     j6 += l6;
@@ -1796,27 +1792,27 @@ i++;
             }
             j -= i;
             i -= k;
-            k = anIntArray1472[k];
+            k = lineOffsets[k];
             while(--i >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                 i1 += k7;
                 j1 += i8;
                 l1 += l7;
                 i2 += j8;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
             }
             while(--j >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, k, l >> 16, i1 >> 16, k1 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
                 i1 += k7;
                 l += i7;
                 l1 += l7;
                 k1 += j7;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
@@ -1849,27 +1845,27 @@ i++;
         {
             i -= j;
             j -= k;
-            k = anIntArray1472[k];
+            k = lineOffsets[k];
             while(--j >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, k, l >> 16, j1 >> 16, k1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                 l += k7;
                 j1 += i8;
                 k1 += l7;
                 i2 += j8;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
             }
             while(--i >= 0) 
             {
-                method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
+                method379(DrawingArea.pixels, ai, 0, 0, k, i1 >> 16, j1 >> 16, l1 >> 8, i2 >> 8, l4, k5, j6, i5, l5, k6);
                 i1 += i7;
                 j1 += i8;
                 l1 += j7;
                 i2 += j8;
-                k += Class30_Sub2_Sub1.anInt1379;
+                k += DrawingArea.width;
                 l4 += j5;
                 k5 += i6;
                 j6 += l6;
@@ -1878,27 +1874,27 @@ i++;
         }
         i -= j;
         j -= k;
-        k = anIntArray1472[k];
+        k = lineOffsets[k];
         while(--j >= 0) 
         {
-            method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
+            method379(DrawingArea.pixels, ai, 0, 0, k, j1 >> 16, l >> 16, i2 >> 8, k1 >> 8, l4, k5, j6, i5, l5, k6);
             l += k7;
             j1 += i8;
             k1 += l7;
             i2 += j8;
-            k += Class30_Sub2_Sub1.anInt1379;
+            k += DrawingArea.width;
             l4 += j5;
             k5 += i6;
             j6 += l6;
         }
         while(--i >= 0) 
         {
-            method379(Class30_Sub2_Sub1.anIntArray1378, ai, 0, 0, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
+            method379(DrawingArea.pixels, ai, 0, 0, k, j1 >> 16, i1 >> 16, i2 >> 8, l1 >> 8, l4, k5, j6, i5, l5, k6);
             i1 += i7;
             j1 += i8;
             l1 += j7;
             i2 += j8;
-            k += Class30_Sub2_Sub1.anInt1379;
+            k += DrawingArea.width;
             l4 += j5;
             k5 += i6;
             j6 += l6;
@@ -1915,8 +1911,8 @@ i++;
         if(aBoolean1462)
         {
             j3 = (k1 - j1) / (i1 - l);
-            if(i1 > Class30_Sub2_Sub1.anInt1385)
-                i1 = Class30_Sub2_Sub1.anInt1385;
+            if(i1 > DrawingArea.centerX)
+                i1 = DrawingArea.centerX;
             if(l < 0)
             {
                 j1 -= l * j3;
@@ -2291,9 +2287,9 @@ i++;
     public static int anIntArray1469[];
     public static int anIntArray1470[];
     public static int anIntArray1471[];
-    public static int anIntArray1472[];
+    public static int lineOffsets[];
     static int anInt1473;
-    public static Class30_Sub2_Sub1_Sub2 aClass30_Sub2_Sub1_Sub2Array1474[] = new Class30_Sub2_Sub1_Sub2[100];
+    public static Background aBackgroundArray1474[] = new Background[100];
     static boolean aBooleanArray1475[] = new boolean[100];
     static int anIntArray1476[] = new int[100];
     static int anInt1477;

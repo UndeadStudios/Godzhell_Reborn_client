@@ -1,79 +1,77 @@
-import sign.signlink;
-
-public final class Class34
+public final class Censor
 {
 
     public static final void method487(Class44 class44)
     {
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("fragmentsenc.txt", null), 891);
-        Class30_Sub2_Sub2 class30_sub2_sub2_1 = new Class30_Sub2_Sub2(class44.method571("badenc.txt", null), 891);
-        Class30_Sub2_Sub2 class30_sub2_sub2_2 = new Class30_Sub2_Sub2(class44.method571("domainenc.txt", null), 891);
-        Class30_Sub2_Sub2 class30_sub2_sub2_3 = new Class30_Sub2_Sub2(class44.method571("tldlist.txt", null), 891);
-        method488(class30_sub2_sub2, class30_sub2_sub2_1, class30_sub2_sub2_2, class30_sub2_sub2_3);
+        Stream stream = new Stream(class44.method571("fragmentsenc.txt", null), 891);
+        Stream stream_1 = new Stream(class44.method571("badenc.txt", null), 891);
+        Stream class30_sub2_sub2_2 = new Stream(class44.method571("domainenc.txt", null), 891);
+        Stream stream_3 = new Stream(class44.method571("tldlist.txt", null), 891);
+        method488(stream, stream_1, class30_sub2_sub2_2, stream_3);
     }
 
-    private static final void method488(Class30_Sub2_Sub2 class30_sub2_sub2, Class30_Sub2_Sub2 class30_sub2_sub2_1, Class30_Sub2_Sub2 class30_sub2_sub2_2, Class30_Sub2_Sub2 class30_sub2_sub2_3)
+    private static final void method488(Stream stream, Stream stream_1, Stream class30_sub2_sub2_2, Stream stream_3)
     {
-        method490(9121, class30_sub2_sub2_1);
+        method490(9121, stream_1);
         method491(class30_sub2_sub2_2, (byte)-28);
-        method492(class30_sub2_sub2, true);
-        method489((byte)2, class30_sub2_sub2_3);
+        method492(stream, true);
+        method489((byte)2, stream_3);
     }
 
-    private static final void method489(byte byte0, Class30_Sub2_Sub2 class30_sub2_sub2)
+    private static final void method489(byte byte0, Stream stream)
     {
-        int i = class30_sub2_sub2.method413();
+        int i = stream.method413();
         aCharArrayArray624 = new char[i][];
         anIntArray625 = new int[i];
         if(byte0 != 2)
             return;
         for(int j = 0; j < i; j++)
         {
-            anIntArray625[j] = class30_sub2_sub2.method408();
-            char ac[] = new char[class30_sub2_sub2.method408()];
+            anIntArray625[j] = stream.readUnsignedByte();
+            char ac[] = new char[stream.readUnsignedByte()];
             for(int k = 0; k < ac.length; k++)
-                ac[k] = (char)class30_sub2_sub2.method408();
+                ac[k] = (char) stream.readUnsignedByte();
 
             aCharArrayArray624[j] = ac;
         }
 
     }
 
-    private static final void method490(int i, Class30_Sub2_Sub2 class30_sub2_sub2)
+    private static final void method490(int i, Stream stream)
     {
         if(i != 9121)
             aBoolean619 = !aBoolean619;
-        int j = class30_sub2_sub2.method413();
+        int j = stream.method413();
         aCharArrayArray621 = new char[j][];
         aByteArrayArrayArray622 = new byte[j][][];
-        method493(class30_sub2_sub2, aCharArrayArray621, true, aByteArrayArrayArray622);
+        method493(stream, aCharArrayArray621, true, aByteArrayArrayArray622);
     }
 
-    private static final void method491(Class30_Sub2_Sub2 class30_sub2_sub2, byte byte0)
+    private static final void method491(Stream stream, byte byte0)
     {
-        int i = class30_sub2_sub2.method413();
+        int i = stream.method413();
         aCharArrayArray623 = new char[i][];
         if(byte0 != -28)
         {
             return;
         } else
         {
-            method494(aCharArrayArray623, class30_sub2_sub2, -490);
+            method494(aCharArrayArray623, stream, -490);
             return;
         }
     }
 
-    private static final void method492(Class30_Sub2_Sub2 class30_sub2_sub2, boolean flag)
+    private static final void method492(Stream stream, boolean flag)
     {
-        anIntArray620 = new int[class30_sub2_sub2.method413()];
+        anIntArray620 = new int[stream.method413()];
         for(int i = 0; i < anIntArray620.length; i++)
-            anIntArray620[i] = class30_sub2_sub2.method410();
+            anIntArray620[i] = stream.readUnsignedShort();
 
         if(!flag)
             anInt609 = 167;
     }
 
-    private static final void method493(Class30_Sub2_Sub2 class30_sub2_sub2, char ac[][], boolean flag, byte abyte0[][][])
+    private static final void method493(Stream stream, char ac[][], boolean flag, byte abyte0[][][])
     {
         if(!flag)
         {
@@ -81,16 +79,16 @@ public final class Class34
         }
         for(int j = 0; j < ac.length; j++)
         {
-            char ac1[] = new char[class30_sub2_sub2.method408()];
+            char ac1[] = new char[stream.readUnsignedByte()];
             for(int k = 0; k < ac1.length; k++)
-                ac1[k] = (char)class30_sub2_sub2.method408();
+                ac1[k] = (char) stream.readUnsignedByte();
 
             ac[j] = ac1;
-            byte abyte1[][] = new byte[class30_sub2_sub2.method408()][2];
+            byte abyte1[][] = new byte[stream.readUnsignedByte()][2];
             for(int l = 0; l < abyte1.length; l++)
             {
-                abyte1[l][0] = (byte)class30_sub2_sub2.method408();
-                abyte1[l][1] = (byte)class30_sub2_sub2.method408();
+                abyte1[l][0] = (byte) stream.readUnsignedByte();
+                abyte1[l][1] = (byte) stream.readUnsignedByte();
             }
 
             if(abyte1.length > 0)
@@ -99,15 +97,15 @@ public final class Class34
 
     }
 
-    private static final void method494(char ac[][], Class30_Sub2_Sub2 class30_sub2_sub2, int i)
+    private static final void method494(char ac[][], Stream stream, int i)
     {
         if(i >= 0)
             return;
         for(int j = 0; j < ac.length; j++)
         {
-            char ac1[] = new char[class30_sub2_sub2.method408()];
+            char ac1[] = new char[stream.readUnsignedByte()];
             for(int k = 0; k < ac1.length; k++)
-                ac1[k] = (char)class30_sub2_sub2.method408();
+                ac1[k] = (char) stream.readUnsignedByte();
 
             ac[j] = ac1;
         }

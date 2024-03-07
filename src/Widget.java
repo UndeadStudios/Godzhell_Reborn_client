@@ -1,14 +1,14 @@
-public class Class9
+public class Widget
 {
 
-    public Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_207;
+    public Sprite aSprite_207;
     public int anInt208;
-    public Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1Array209[];
-    public static Class9 aClass9Array210[];
+    public Sprite aSpriteArray209[];
+    public static Widget interfaceCache[];
     public int anInt211;
     public int anIntArray212[];
     private int anInt213;
-    public int anInt214;
+    public int contentType;
     public int anIntArray215[];
     public int anInt216;
     public int anInt217;
@@ -18,7 +18,7 @@ public class Class9
     public String aString221;
     public String aString222;
     public boolean aBoolean223;
-    public int anInt224;
+    public int scrollPosition;
     public String aStringArray225[];
     public int anIntArrayArray226[][];
     public boolean aBoolean227;
@@ -30,7 +30,7 @@ public class Class9
     public int anInt233;
     public int anInt234;
     public boolean aBoolean235;
-    public int anInt236;
+    public int parentID;
     public int anInt237;
     private static Class12 aClass12_238;
     static Class44 aClass44;
@@ -38,7 +38,7 @@ public class Class9
     public int anIntArray240[];
     public int anIntArray241[];
     public boolean aBoolean242;
-    public Class30_Sub2_Sub1_Sub4 aClass30_Sub2_Sub1_Sub4_243;
+    public TextDrawingArea aTextDrawingArea_243;
     public int anInt244;
     public int anIntArray245[];
     public int anInt246;
@@ -55,7 +55,7 @@ public class Class9
     public int anInt257;
     public int anInt258;
     public boolean aBoolean259;
-    public Class30_Sub2_Sub1_Sub1 aClass30_Sub2_Sub1_Sub1_260;
+    public Sprite aSprite_260;
     public int anInt261;
     public int anInt262;
     public int anInt263;
@@ -86,65 +86,65 @@ public class Class9
         anIntArray252[j] = k;
     }
 
-    public static void method205(Class44 class44, Class30_Sub2_Sub1_Sub4 aclass30_sub2_sub1_sub4[], byte byte0, Class44 class44_1)
+    public static void method205(Class44 class44, TextDrawingArea aclass30_sub2_sub1_sub4[], byte byte0, Class44 class44_1)
     {
         aClass12_238 = new Class12(false, 50000);
-        Class30_Sub2_Sub2 class30_sub2_sub2 = new Class30_Sub2_Sub2(class44.method571("data", null), 891);
+        Stream stream = new Stream(class44.method571("data", null), 891);
         int i = -1;
-        int j = class30_sub2_sub2.method410();
-        aClass9Array210 = new Class9[50000];
+        int j = stream.readUnsignedShort();
+        interfaceCache = new Widget[50000];
         do
         {
-            if(class30_sub2_sub2.anInt1406 >= class30_sub2_sub2.aByteArray1405.length)
+            if(stream.anInt1406 >= stream.aByteArray1405.length)
             {
                 break;
             }
-            int k = class30_sub2_sub2.method410();
+            int k = stream.readUnsignedShort();
             if(k == 65535)
             {
-                i = class30_sub2_sub2.method410();
-                k = class30_sub2_sub2.method410();
+                i = stream.readUnsignedShort();
+                k = stream.readUnsignedShort();
             }
-            Class9 class9 = aClass9Array210[k] = new Class9();
+            Widget class9 = interfaceCache[k] = new Widget();
             class9.anInt250 = k;
-            class9.anInt236 = i;
-            class9.anInt262 = class30_sub2_sub2.method408();
-            class9.anInt217 = class30_sub2_sub2.method408();
-            class9.anInt214 = class30_sub2_sub2.method410();
-            class9.anInt220 = class30_sub2_sub2.method410();
-            class9.anInt267 = class30_sub2_sub2.method410();
-            class9.aByte254 = (byte)class30_sub2_sub2.method408();
-            class9.anInt230 = class30_sub2_sub2.method408();
+            class9.parentID = i;
+            class9.anInt262 = stream.readUnsignedByte();
+            class9.anInt217 = stream.readUnsignedByte();
+            class9.contentType = stream.readUnsignedShort();
+            class9.anInt220 = stream.readUnsignedShort();
+            class9.anInt267 = stream.readUnsignedShort();
+            class9.aByte254 = (byte) stream.readUnsignedByte();
+            class9.anInt230 = stream.readUnsignedByte();
             if(class9.anInt230 != 0)
             {
-                class9.anInt230 = (class9.anInt230 - 1 << 8) + class30_sub2_sub2.method408();
+                class9.anInt230 = (class9.anInt230 - 1 << 8) + stream.readUnsignedByte();
             } else
             {
                 class9.anInt230 = -1;
             }
-            int l = class30_sub2_sub2.method408();
+            int l = stream.readUnsignedByte();
             if(l > 0)
             {
                 class9.anIntArray245 = new int[l];
                 class9.anIntArray212 = new int[l];
                 for(int i1 = 0; i1 < l; i1++)
                 {
-                    class9.anIntArray245[i1] = class30_sub2_sub2.method408();
-                    class9.anIntArray212[i1] = class30_sub2_sub2.method410();
+                    class9.anIntArray245[i1] = stream.readUnsignedByte();
+                    class9.anIntArray212[i1] = stream.readUnsignedShort();
                 }
 
             }
-            int j1 = class30_sub2_sub2.method408();
+            int j1 = stream.readUnsignedByte();
             if(j1 > 0)
             {
                 class9.anIntArrayArray226 = new int[j1][];
                 for(int k1 = 0; k1 < j1; k1++)
                 {
-                    int j3 = class30_sub2_sub2.method410();
+                    int j3 = stream.readUnsignedShort();
                     class9.anIntArrayArray226[k1] = new int[j3];
                     for(int l4 = 0; l4 < j3; l4++)
                     {
-                        class9.anIntArrayArray226[k1][l4] = class30_sub2_sub2.method410();
+                        class9.anIntArrayArray226[k1][l4] = stream.readUnsignedShort();
                     }
 
                 }
@@ -152,60 +152,60 @@ public class Class9
             }
             if(class9.anInt262 == 0)
             {
-                class9.anInt261 = class30_sub2_sub2.method410();
-                class9.aBoolean266 = class30_sub2_sub2.method408() == 1;
-                int l1 = class30_sub2_sub2.method410();
+                class9.anInt261 = stream.readUnsignedShort();
+                class9.aBoolean266 = stream.readUnsignedByte() == 1;
+                int l1 = stream.readUnsignedShort();
                 class9.anIntArray240 = new int[l1];
                 class9.anIntArray241 = new int[l1];
                 class9.anIntArray272 = new int[l1];
                 for(int k3 = 0; k3 < l1; k3++)
                 {
-                    class9.anIntArray240[k3] = class30_sub2_sub2.method410();
-                    class9.anIntArray241[k3] = class30_sub2_sub2.method411();
-                    class9.anIntArray272[k3] = class30_sub2_sub2.method411();
+                    class9.anIntArray240[k3] = stream.readUnsignedShort();
+                    class9.anIntArray241[k3] = stream.method411();
+                    class9.anIntArray272[k3] = stream.method411();
                 }
 
             }
             if(class9.anInt262 == 1)
             {
-                class9.anInt211 = class30_sub2_sub2.method410();
-                class9.aBoolean251 = class30_sub2_sub2.method408() == 1;
+                class9.anInt211 = stream.readUnsignedShort();
+                class9.aBoolean251 = stream.readUnsignedByte() == 1;
             }
             if(class9.anInt262 == 2)
             {
                 class9.anIntArray253 = new int[class9.anInt220 * class9.anInt267];
                 class9.anIntArray252 = new int[class9.anInt220 * class9.anInt267];
-                class9.aBoolean259 = class30_sub2_sub2.method408() == 1;
-                class9.aBoolean249 = class30_sub2_sub2.method408() == 1;
-                class9.aBoolean242 = class30_sub2_sub2.method408() == 1;
-                class9.aBoolean235 = class30_sub2_sub2.method408() == 1;
-                class9.anInt231 = class30_sub2_sub2.method408();
-                class9.anInt244 = class30_sub2_sub2.method408();
+                class9.aBoolean259 = stream.readUnsignedByte() == 1;
+                class9.aBoolean249 = stream.readUnsignedByte() == 1;
+                class9.aBoolean242 = stream.readUnsignedByte() == 1;
+                class9.aBoolean235 = stream.readUnsignedByte() == 1;
+                class9.anInt231 = stream.readUnsignedByte();
+                class9.anInt244 = stream.readUnsignedByte();
                 class9.anIntArray215 = new int[20];
                 class9.anIntArray247 = new int[20];
-                class9.aClass30_Sub2_Sub1_Sub1Array209 = new Class30_Sub2_Sub1_Sub1[20];
+                class9.aSpriteArray209 = new Sprite[20];
                 for(int i2 = 0; i2 < 20; i2++)
                 {
-                    int l3 = class30_sub2_sub2.method408();
+                    int l3 = stream.readUnsignedByte();
                     if(l3 != 1)
                     {
                         continue;
                     }
-                    class9.anIntArray215[i2] = class30_sub2_sub2.method411();
-                    class9.anIntArray247[i2] = class30_sub2_sub2.method411();
-                    String s1 = class30_sub2_sub2.method415();
+                    class9.anIntArray215[i2] = stream.method411();
+                    class9.anIntArray247[i2] = stream.method411();
+                    String s1 = stream.method415();
                     if(class44_1 != null && s1.length() > 0)
                     {
                         int i5 = s1.lastIndexOf(",");
-                        class9.aClass30_Sub2_Sub1_Sub1Array209[i2] = method207(Integer.parseInt(s1.substring(i5 + 1)), false, class44_1, s1.substring(0, i5));
+                        class9.aSpriteArray209[i2] = method207(Integer.parseInt(s1.substring(i5 + 1)), false, class44_1, s1.substring(0, i5));
                     }
                 }
 
                 class9.aStringArray225 = new String[5];
                 for(int j2 = 0; j2 < 5; j2++)
                 {
-                    class9.aStringArray225[j2] = class30_sub2_sub2.method415();
-                    if(class9.anInt236 == 3824)
+                    class9.aStringArray225[j2] = stream.method415();
+                    if(class9.parentID == 3824)
                         class9.aStringArray225[4] = "Buy X";
                     if(class9.aStringArray225[j2].length() == 0)
                     {
@@ -216,101 +216,101 @@ public class Class9
             }
             if(class9.anInt262 == 3)
             {
-                class9.aBoolean227 = class30_sub2_sub2.method408() == 1;
+                class9.aBoolean227 = stream.readUnsignedByte() == 1;
             }
             if(class9.anInt262 == 4 || class9.anInt262 == 1)
             {
-                class9.aBoolean223 = class30_sub2_sub2.method408() == 1;
-                int k2 = class30_sub2_sub2.method408();
+                class9.aBoolean223 = stream.readUnsignedByte() == 1;
+                int k2 = stream.readUnsignedByte();
                 if(aclass30_sub2_sub1_sub4 != null)
                 {
-                    class9.aClass30_Sub2_Sub1_Sub4_243 = aclass30_sub2_sub1_sub4[k2];
+                    class9.aTextDrawingArea_243 = aclass30_sub2_sub1_sub4[k2];
                 }
-                class9.aBoolean268 = class30_sub2_sub2.method408() == 1;
+                class9.aBoolean268 = stream.readUnsignedByte() == 1;
             }
             if(class9.anInt262 == 4)
             {
-                class9.aString248 = class30_sub2_sub2.method415();
-                class9.aString228 = class30_sub2_sub2.method415();
+                class9.aString248 = stream.method415();
+                class9.aString228 = stream.method415();
             }
             if(class9.anInt262 == 1 || class9.anInt262 == 3 || class9.anInt262 == 4)
             {
-                class9.anInt232 = class30_sub2_sub2.method413();
+                class9.anInt232 = stream.method413();
             }
             if(class9.anInt262 == 3 || class9.anInt262 == 4)
             {
-                class9.anInt219 = class30_sub2_sub2.method413();
-                class9.anInt216 = class30_sub2_sub2.method413();
-                class9.anInt239 = class30_sub2_sub2.method413();
+                class9.anInt219 = stream.method413();
+                class9.anInt216 = stream.method413();
+                class9.anInt239 = stream.method413();
             }
             if(class9.anInt262 == 5)
             {
-                String s = class30_sub2_sub2.method415();
+                String s = stream.method415();
                 if(class44_1 != null && s.length() > 0)
                 {
                     int i4 = s.lastIndexOf(",");
-                    class9.aClass30_Sub2_Sub1_Sub1_207 = method207(Integer.parseInt(s.substring(i4 + 1)), false, class44_1, s.substring(0, i4));
+                    class9.aSprite_207 = method207(Integer.parseInt(s.substring(i4 + 1)), false, class44_1, s.substring(0, i4));
                 }
-                s = class30_sub2_sub2.method415();
+                s = stream.method415();
                 if(class44_1 != null && s.length() > 0)
                 {
                     int j4 = s.lastIndexOf(",");
-                    class9.aClass30_Sub2_Sub1_Sub1_260 = method207(Integer.parseInt(s.substring(j4 + 1)), false, class44_1, s.substring(0, j4));
+                    class9.aSprite_260 = method207(Integer.parseInt(s.substring(j4 + 1)), false, class44_1, s.substring(0, j4));
                 }
             }
             if(class9.anInt262 == 6)
             {
-                int l2 = class30_sub2_sub2.method408();
+                int l2 = stream.readUnsignedByte();
                 if(l2 != 0)
                 {
                     class9.anInt233 = 1;
-                    class9.anInt234 = (l2 - 1 << 8) + class30_sub2_sub2.method408();
+                    class9.anInt234 = (l2 - 1 << 8) + stream.readUnsignedByte();
                 }
-                l2 = class30_sub2_sub2.method408();
+                l2 = stream.readUnsignedByte();
                 if(l2 != 0)
                 {
                     class9.anInt255 = 1;
-                    class9.anInt256 = (l2 - 1 << 8) + class30_sub2_sub2.method408();
+                    class9.anInt256 = (l2 - 1 << 8) + stream.readUnsignedByte();
                 }
-                l2 = class30_sub2_sub2.method408();
+                l2 = stream.readUnsignedByte();
                 if(l2 != 0)
                 {
-                    class9.anInt257 = (l2 - 1 << 8) + class30_sub2_sub2.method408();
+                    class9.anInt257 = (l2 - 1 << 8) + stream.readUnsignedByte();
                 } else
                 {
                     class9.anInt257 = -1;
                 }
-                l2 = class30_sub2_sub2.method408();
+                l2 = stream.readUnsignedByte();
                 if(l2 != 0)
                 {
-                    class9.anInt258 = (l2 - 1 << 8) + class30_sub2_sub2.method408();
+                    class9.anInt258 = (l2 - 1 << 8) + stream.readUnsignedByte();
                 } else
                 {
                     class9.anInt258 = -1;
                 }
-                class9.anInt269 = class30_sub2_sub2.method410();
-                class9.anInt270 = class30_sub2_sub2.method410();
-                class9.anInt271 = class30_sub2_sub2.method410();
+                class9.anInt269 = stream.readUnsignedShort();
+                class9.anInt270 = stream.readUnsignedShort();
+                class9.anInt271 = stream.readUnsignedShort();
             }
             if(class9.anInt262 == 7)
             {
                 class9.anIntArray253 = new int[class9.anInt220 * class9.anInt267];
                 class9.anIntArray252 = new int[class9.anInt220 * class9.anInt267];
-                class9.aBoolean223 = class30_sub2_sub2.method408() == 1;
-                int i3 = class30_sub2_sub2.method408();
+                class9.aBoolean223 = stream.readUnsignedByte() == 1;
+                int i3 = stream.readUnsignedByte();
                 if(aclass30_sub2_sub1_sub4 != null)
                 {
-                    class9.aClass30_Sub2_Sub1_Sub4_243 = aclass30_sub2_sub1_sub4[i3];
+                    class9.aTextDrawingArea_243 = aclass30_sub2_sub1_sub4[i3];
                 }
-                class9.aBoolean268 = class30_sub2_sub2.method408() == 1;
-                class9.anInt232 = class30_sub2_sub2.method413();
-                class9.anInt231 = class30_sub2_sub2.method411();
-                class9.anInt244 = class30_sub2_sub2.method411();
-                class9.aBoolean249 = class30_sub2_sub2.method408() == 1;
+                class9.aBoolean268 = stream.readUnsignedByte() == 1;
+                class9.anInt232 = stream.method413();
+                class9.anInt231 = stream.method411();
+                class9.anInt244 = stream.method411();
+                class9.aBoolean249 = stream.readUnsignedByte() == 1;
                 class9.aStringArray225 = new String[5];
                 for(int k4 = 0; k4 < 5; k4++)
                 {
-                    class9.aStringArray225[k4] = class30_sub2_sub2.method415();
+                    class9.aStringArray225[k4] = stream.method415();
                     if(class9.aStringArray225[k4].length() == 0)
                     {
                         class9.aStringArray225[k4] = null;
@@ -320,17 +320,17 @@ public class Class9
             }
             if(class9.anInt217 == 2 || class9.anInt262 == 2)
             {
-                class9.aString222 = class30_sub2_sub2.method415();
-                class9.aString218 = class30_sub2_sub2.method415();
-                class9.anInt237 = class30_sub2_sub2.method410();
+                class9.aString222 = stream.method415();
+                class9.aString218 = stream.method415();
+                class9.anInt237 = stream.readUnsignedShort();
             }
 			if(class9.anInt262 == 8) {	//	Loads new .dat files
-			class9.aString248 = class30_sub2_sub2.method415();
+			class9.aString248 = stream.method415();
 			}
 
             if(class9.anInt217 == 1 || class9.anInt217 == 4 || class9.anInt217 == 5 || class9.anInt217 == 6)
             {
-                class9.aString221 = class30_sub2_sub2.method415();
+                class9.aString221 = stream.method415();
                 if(class9.aString221.length() == 0)
                 {
                     if(class9.anInt217 == 1)
@@ -375,7 +375,7 @@ public class Class9
         }
         if(i == 3)
         {
-            class30_sub2_sub4_sub6 = client.aClass30_Sub2_Sub4_Sub1_Sub2_1126.method453((byte)-41);
+            class30_sub2_sub4_sub6 = client.aPlayer_1126.method453((byte)-41);
         }
         if(i == 4)
         {
@@ -392,28 +392,28 @@ public class Class9
         return class30_sub2_sub4_sub6;
     }
 
-    private static Class30_Sub2_Sub1_Sub1 method207(int i, boolean flag, Class44 class44, String s)
+    private static Sprite method207(int i, boolean flag, Class44 class44, String s)
     {
-        long l = (Class50.method585((byte)1, s) << 8) + (long)i;
+        long l = (TextClass.method585((byte)1, s) << 8) + (long)i;
         if(flag)
         {
             throw new NullPointerException();
         }
-        Class30_Sub2_Sub1_Sub1 class30_sub2_sub1_sub1 = (Class30_Sub2_Sub1_Sub1)aClass12_238.method222(l);
-        if(class30_sub2_sub1_sub1 != null)
+        Sprite sprite = (Sprite)aClass12_238.method222(l);
+        if(sprite != null)
         {
-            return class30_sub2_sub1_sub1;
+            return sprite;
         }
         try
         {
-            class30_sub2_sub1_sub1 = new Class30_Sub2_Sub1_Sub1(class44, s, i);
-            aClass12_238.method223(class30_sub2_sub1_sub1, l, (byte)2);
+            sprite = new Sprite(class44, s, i);
+            aClass12_238.method223(sprite, l, (byte)2);
         }
         catch(Exception exception)
         {
             return null;
         }
-        return class30_sub2_sub1_sub1;
+        return sprite;
     }
 
     public static void method208(int i, boolean flag, int j, Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6)
@@ -470,7 +470,7 @@ public class Class9
         }
     }
 
-    public Class9()
+    public Widget()
     {
         anInt213 = 9;
         anInt229 = 891;

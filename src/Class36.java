@@ -21,10 +21,10 @@ public class Class36
     {
     try {
 	
-        Class30_Sub2_Sub2 class30_sub2_sub2_1 = new Class30_Sub2_Sub2(getData(0, file));
-        Class30_Sub2_Sub2 class30_sub2_sub2_18 = new Class30_Sub2_Sub2(getData(1, file));
-		Class18 class18 = new Class18(class30_sub2_sub2_18,0);
-        int k1 = class30_sub2_sub2_1.method410();
+        Stream stream_1 = new Stream(getData(0, file));
+        Stream stream_18 = new Stream(getData(1, file));
+		Class18 class18 = new Class18(stream_18,0);
+        int k1 = stream_1.readUnsignedShort();
 		animationlist[file] = new Class36[k1];
         int ai[] = new int[500];
         int ai1[] = new int[500];
@@ -32,15 +32,15 @@ public class Class36
         int ai3[] = new int[500];
         for(int l1 = 0; l1 < k1; l1++)
         {
-            int i2 = class30_sub2_sub2_1.method410();
+            int i2 = stream_1.readUnsignedShort();
             Class36 class36 = animationlist[file][i2] = new Class36();
             class36.aClass18_637 = class18;
-            int j2 = class30_sub2_sub2_1.method408();
+            int j2 = stream_1.readUnsignedByte();
             int l2 = 0;
 			int k2 = -1;
             for(int i3 = 0; i3 < j2; i3++)
             {
-                int j3 = class30_sub2_sub2_1.method408();
+                int j3 = stream_1.readUnsignedByte();
 	
                 if(j3 > 0)
                 {
@@ -65,15 +65,15 @@ public class Class36
                         c = (short)128;
 
                     if((j3 & 1) != 0)
-                        ai1[l2] = (short)class30_sub2_sub2_1.readShort2();
+                        ai1[l2] = (short) stream_1.readShort2();
                     else
                         ai1[l2] = c;
                     if((j3 & 2) != 0)
-                        ai2[l2] = class30_sub2_sub2_1.readShort2();
+                        ai2[l2] = stream_1.readShort2();
                     else
                         ai2[l2] = c;
                     if((j3 & 4) != 0)
-                        ai3[l2] = class30_sub2_sub2_1.readShort2();
+                        ai3[l2] = stream_1.readShort2();
                     else
                         ai3[l2] = c;
                     k2 = i3;

@@ -1,10 +1,3 @@
-import java.io.*;
-import java.net.*;
-import sign.signlink;
-import java.util.zip.*;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-
 public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 
 	public static void method458(int i) {
@@ -31,35 +24,35 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 
 
 	public void read525Model(byte abyte0[], int modelID) {
-		Class30_Sub2_Sub2 nc1 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc2 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc3 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc4 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc5 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc6 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc7 = new Class30_Sub2_Sub2(abyte0);
+		Stream nc1 = new Stream(abyte0);
+		Stream nc2 = new Stream(abyte0);
+		Stream nc3 = new Stream(abyte0);
+		Stream nc4 = new Stream(abyte0);
+		Stream nc5 = new Stream(abyte0);
+		Stream nc6 = new Stream(abyte0);
+		Stream nc7 = new Stream(abyte0);
 		nc1.anInt1406 = abyte0.length - 23;
-		int numVertices = nc1.method410();
-		int numTriangles = nc1.method410();
-		int numTexTriangles = nc1.method408();
+		int numVertices = nc1.readUnsignedShort();
+		int numTriangles = nc1.readUnsignedShort();
+		int numTexTriangles = nc1.readUnsignedByte();
 		Class21 ModelDef_1 = aClass21Array1661[modelID] = new Class21();
 		ModelDef_1.aByteArray368 = abyte0;
 		ModelDef_1.anInt369 = numVertices;
 		ModelDef_1.anInt370 = numTriangles;
 		ModelDef_1.anInt371 = numTexTriangles;
-		int l1 = nc1.method408();
+		int l1 = nc1.readUnsignedByte();
 		boolean bool = (0x1 & l1) == 1;
 		boolean bool_78_ = (l1 & 0x2) == 2;
-		int i2 = nc1.method408();
-		int j2 = nc1.method408();
-		int k2 = nc1.method408();
-		int l2 = nc1.method408();
-		int i3 = nc1.method408();
-		int j3 = nc1.method410();
-		int k3 = nc1.method410();
-		int l3 = nc1.method410();
-		int i4 = nc1.method410();
-		int j4 = nc1.method410();
+		int i2 = nc1.readUnsignedByte();
+		int j2 = nc1.readUnsignedByte();
+		int k2 = nc1.readUnsignedByte();
+		int l2 = nc1.readUnsignedByte();
+		int i3 = nc1.readUnsignedByte();
+		int j3 = nc1.readUnsignedShort();
+		int k3 = nc1.readUnsignedShort();
+		int l3 = nc1.readUnsignedShort();
+		int i4 = nc1.readUnsignedShort();
+		int j4 = nc1.readUnsignedShort();
 		int k4 = 0;
 		int l4 = 0;
 		int i5 = 0;
@@ -201,7 +194,7 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		int i11 = 0;
 		int j11 = 0;
 		for (int k11 = 0; k11 < numVertices; k11++) {
-			int l11 = nc1.method408();
+			int l11 = nc1.readUnsignedByte();
 			int j12 = 0;
 			if ((l11 & 1) != 0)
 				j12 = nc2.method421();
@@ -218,7 +211,7 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 			i11 = vertexY[k11];
 			j11 = vertexZ[k11];
 			if (anIntArray1655 != null)
-				anIntArray1655[k11] = nc5.method408();
+				anIntArray1655[k11] = nc5.readUnsignedByte();
 		}
 		nc1.anInt1406 = j8;
 		nc2.anInt1406 = i6;
@@ -228,7 +221,7 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		nc6.anInt1406 = l7;
 		nc7.anInt1406 = i8;
 		for (int i12 = 0; i12 < numTriangles; i12++) {
-			triangleColours2[i12] = nc1.method410();
+			triangleColours2[i12] = nc1.readUnsignedShort();
 			if (l1 == 1) {
 				anIntArray1637[i12] = nc2.method409();
 				if (anIntArray1637[i12] == 2)
@@ -244,12 +237,12 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 					anIntArray1639[i12] = (256 + anIntArray1639[i12]);
 			}
 			if (k2 == 1)
-				anIntArray1656[i12] = nc5.method408();
+				anIntArray1656[i12] = nc5.readUnsignedByte();
 			if (l2 == 1)
-				D[i12] = (short) (nc6.method410() - 1);
+				D[i12] = (short) (nc6.readUnsignedShort() - 1);
 			if (x != null)
 				if (D[i12] != -1)
-					x[i12] = (byte) (nc7.method408() - 1);
+					x[i12] = (byte) (nc7.readUnsignedByte() - 1);
 				else
 					x[i12] = -1;
 		}
@@ -260,7 +253,7 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		int k13 = 0;
 		int l13 = 0;
 		for (int i14 = 0; i14 < numTriangles; i14++) {
-			int j14 = nc2.method408();
+			int j14 = nc2.readUnsignedByte();
 			if (j14 == 1) {
 				k12 = nc1.method421() + l13;
 				l13 = k12;
@@ -308,28 +301,28 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		for (int k14 = 0; k14 < numTexTriangles; k14++) {
 			int i15 = O[k14] & 0xff;
 			if (i15 == 0) {
-				texTrianglesPoint1[k14] = nc1.method410();
-				texTrianglesPoint2[k14] = nc1.method410();
-				texTrianglesPoint3[k14] = nc1.method410();
+				texTrianglesPoint1[k14] = nc1.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc1.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc1.readUnsignedShort();
 			}
 			if (i15 == 1) {
-				texTrianglesPoint1[k14] = nc2.method410();
-				texTrianglesPoint2[k14] = nc2.method410();
-				texTrianglesPoint3[k14] = nc2.method410();
-				kb[k14] = nc3.method410();
-				N[k14] = nc3.method410();
-				y[k14] = nc3.method410();
+				texTrianglesPoint1[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc2.readUnsignedShort();
+				kb[k14] = nc3.readUnsignedShort();
+				N[k14] = nc3.readUnsignedShort();
+				y[k14] = nc3.readUnsignedShort();
 				gb[k14] = nc4.method409();
 				lb[k14] = nc5.method409();
 				F[k14] = nc6.method409();
 			}
 			if (i15 == 2) {
-				texTrianglesPoint1[k14] = nc2.method410();
-				texTrianglesPoint2[k14] = nc2.method410();
-				texTrianglesPoint3[k14] = nc2.method410();
-				kb[k14] = nc3.method410();
-				N[k14] = nc3.method410();
-				y[k14] = nc3.method410();
+				texTrianglesPoint1[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc2.readUnsignedShort();
+				kb[k14] = nc3.readUnsignedShort();
+				N[k14] = nc3.readUnsignedShort();
+				y[k14] = nc3.readUnsignedShort();
 				gb[k14] = nc4.method409();
 				lb[k14] = nc5.method409();
 				F[k14] = nc6.method409();
@@ -337,12 +330,12 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 				J[k14] = nc6.method409();
 			}
 			if (i15 == 3) {
-				texTrianglesPoint1[k14] = nc2.method410();
-				texTrianglesPoint2[k14] = nc2.method410();
-				texTrianglesPoint3[k14] = nc2.method410();
-				kb[k14] = nc3.method410();
-				N[k14] = nc3.method410();
-				y[k14] = nc3.method410();
+				texTrianglesPoint1[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc2.readUnsignedShort();
+				kb[k14] = nc3.readUnsignedShort();
+				N[k14] = nc3.readUnsignedShort();
+				y[k14] = nc3.readUnsignedShort();
 				gb[k14] = nc4.method409();
 				lb[k14] = nc5.method409();
 				F[k14] = nc6.method409();
@@ -361,6 +354,7 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		anIntArray1631 = facePoint1;
 		anIntArray1632 = facePoint2;
 		anIntArray1633 = facePoint3;
+		convertTexturesTo317(D, texTrianglesPoint1, texTrianglesPoint2, texTrianglesPoint3, false, x);
 	}
 
 	public Class30_Sub2_Sub4_Sub6(int modelId, int j) {
@@ -387,23 +381,23 @@ if(anIntArray1638 != null) {
 	}
 
 	public void read622Model(byte abyte0[], int modelID) {
-		Class30_Sub2_Sub2 nc1 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc2 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc3 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc4 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc5 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc6 = new Class30_Sub2_Sub2(abyte0);
-		Class30_Sub2_Sub2 nc7 = new Class30_Sub2_Sub2(abyte0);
+		Stream nc1 = new Stream(abyte0);
+		Stream nc2 = new Stream(abyte0);
+		Stream nc3 = new Stream(abyte0);
+		Stream nc4 = new Stream(abyte0);
+		Stream nc5 = new Stream(abyte0);
+		Stream nc6 = new Stream(abyte0);
+		Stream nc7 = new Stream(abyte0);
 		nc1.anInt1406 = abyte0.length - 23;
-		int numVertices = nc1.method410();
-		int numTriangles = nc1.method410();
-		int numTexTriangles = nc1.method408();
+		int numVertices = nc1.readUnsignedShort();
+		int numTriangles = nc1.readUnsignedShort();
+		int numTexTriangles = nc1.readUnsignedByte();
 		Class21 ModelDef_1 = aClass21Array1661[modelID] = new Class21();
 		ModelDef_1.aByteArray368 = abyte0;
 		ModelDef_1.anInt369 = numVertices;
 		ModelDef_1.anInt370 = numTriangles;
 		ModelDef_1.anInt371 = numTexTriangles;
-		int l1 = nc1.method408();
+		int l1 = nc1.readUnsignedByte();
 		boolean bool = (0x1 & l1) == 1;
 		boolean bool_78_ = (l1 & 0x2) == 2;
 		boolean bool_25_ = (0x4 & l1) == 4;
@@ -415,21 +409,21 @@ if(anIntArray1638 != null) {
 		int newformat = 0;
 		if (bool_26_) {
 			nc1.anInt1406 -= 7;
-			newformat = nc1.method408();
+			newformat = nc1.readUnsignedByte();
 			nc1.anInt1406 += 6;
 		}
 		if (newformat == 15)
 			newmodel[modelID] = true;
-		int i2 = nc1.method408();
-		int j2 = nc1.method408();
-		int k2 = nc1.method408();
-		int l2 = nc1.method408();
-		int i3 = nc1.method408();
-		int j3 = nc1.method410();
-		int k3 = nc1.method410();
-		int l3 = nc1.method410();
-		int i4 = nc1.method410();
-		int j4 = nc1.method410();
+		int i2 = nc1.readUnsignedByte();
+		int j2 = nc1.readUnsignedByte();
+		int k2 = nc1.readUnsignedByte();
+		int l2 = nc1.readUnsignedByte();
+		int i3 = nc1.readUnsignedByte();
+		int j3 = nc1.readUnsignedShort();
+		int k3 = nc1.readUnsignedShort();
+		int l3 = nc1.readUnsignedShort();
+		int i4 = nc1.readUnsignedShort();
+		int j4 = nc1.readUnsignedShort();
 		int k4 = 0;
 		int l4 = 0;
 		int i5 = 0;
@@ -579,7 +573,7 @@ if(anIntArray1638 != null) {
 		int i11 = 0;
 		int j11 = 0;
 		for (int k11 = 0; k11 < numVertices; k11++) {
-			int l11 = nc1.method408();
+			int l11 = nc1.readUnsignedByte();
 			int j12 = 0;
 			if ((l11 & 1) != 0)
 				j12 = nc2.method421();
@@ -596,7 +590,7 @@ if(anIntArray1638 != null) {
 			i11 = vertexY[k11];
 			j11 = vertexZ[k11];
 			if (anIntArray1655 != null)
-				anIntArray1655[k11] = nc5.method408();
+				anIntArray1655[k11] = nc5.readUnsignedByte();
 		}
 		nc1.anInt1406 = j8;
 		nc2.anInt1406 = i6;
@@ -606,7 +600,7 @@ if(anIntArray1638 != null) {
 		nc6.anInt1406 = l7;
 		nc7.anInt1406 = i8;
 		for (int i12 = 0; i12 < numTriangles; i12++) {
-			triangleColours2[i12] = nc1.method410();
+			triangleColours2[i12] = nc1.readUnsignedShort();
 			if (l1 == 1) {
 				anIntArray1637[i12] = nc2.method409();
 				if (anIntArray1637[i12] == 2)
@@ -622,12 +616,12 @@ if(anIntArray1638 != null) {
 					anIntArray1639[i12] = (256 + anIntArray1639[i12]);
 			}
 			if (k2 == 1)
-				anIntArray1656[i12] = nc5.method408();
+				anIntArray1656[i12] = nc5.readUnsignedByte();
 			if (l2 == 1)
-				D[i12] = (short) (nc6.method410() - 1);
+				D[i12] = (short) (nc6.readUnsignedShort() - 1);
 			if (x != null)
 				if (D[i12] != -1)
-					x[i12] = (byte) (nc7.method408() - 1);
+					x[i12] = (byte) (nc7.readUnsignedByte() - 1);
 				else
 					x[i12] = -1;
 		}
@@ -638,7 +632,7 @@ if(anIntArray1638 != null) {
 		int k13 = 0;
 		int l13 = 0;
 		for (int i14 = 0; i14 < numTriangles; i14++) {
-			int j14 = nc2.method408();
+			int j14 = nc2.readUnsignedByte();
 			if (j14 == 1) {
 				k12 = nc1.method421() + l13;
 				l13 = k12;
@@ -686,21 +680,21 @@ if(anIntArray1638 != null) {
 		for (int k14 = 0; k14 < numTexTriangles; k14++) {
 			int i15 = O[k14] & 0xff;
 			if (i15 == 0) {
-				texTrianglesPoint1[k14] = nc1.method410();
-				texTrianglesPoint2[k14] = nc1.method410();
-				texTrianglesPoint3[k14] = nc1.method410();
+				texTrianglesPoint1[k14] = nc1.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc1.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc1.readUnsignedShort();
 			}
 			if (i15 == 1) {
-				texTrianglesPoint1[k14] = nc2.method410();
-				texTrianglesPoint2[k14] = nc2.method410();
-				texTrianglesPoint3[k14] = nc2.method410();
+				texTrianglesPoint1[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc2.readUnsignedShort();
 				if (newformat < 15) {
-					kb[k14] = nc3.method410();
+					kb[k14] = nc3.readUnsignedShort();
 					if (newformat >= 14)
 						N[k14] = nc3.v(-1);
 					else
-						N[k14] = nc3.method410();
-					y[k14] = nc3.method410();
+						N[k14] = nc3.readUnsignedShort();
+					y[k14] = nc3.readUnsignedShort();
 				} else {
 					kb[k14] = nc3.v(-1);
 					N[k14] = nc3.v(-1);
@@ -711,20 +705,20 @@ if(anIntArray1638 != null) {
 				F[k14] = nc6.method409();
 			}
 			if (i15 == 2) {
-				texTrianglesPoint1[k14] = nc2.method410();
-				texTrianglesPoint2[k14] = nc2.method410();
-				texTrianglesPoint3[k14] = nc2.method410();
+				texTrianglesPoint1[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc2.readUnsignedShort();
 				if (newformat >= 15) {
 					kb[k14] = nc3.v(-1);
 					N[k14] = nc3.v(-1);
 					y[k14] = nc3.v(-1);
 				} else {
-					kb[k14] = nc3.method410();
+					kb[k14] = nc3.readUnsignedShort();
 					if (newformat < 14)
-						N[k14] = nc3.method410();
+						N[k14] = nc3.readUnsignedShort();
 					else
 						N[k14] = nc3.v(-1);
-					y[k14] = nc3.method410();
+					y[k14] = nc3.readUnsignedShort();
 				}
 				gb[k14] = nc4.method409();
 				lb[k14] = nc5.method409();
@@ -733,16 +727,16 @@ if(anIntArray1638 != null) {
 				J[k14] = nc6.method409();
 			}
 			if (i15 == 3) {
-				texTrianglesPoint1[k14] = nc2.method410();
-				texTrianglesPoint2[k14] = nc2.method410();
-				texTrianglesPoint3[k14] = nc2.method410();
+				texTrianglesPoint1[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint2[k14] = nc2.readUnsignedShort();
+				texTrianglesPoint3[k14] = nc2.readUnsignedShort();
 				if (newformat < 15) {
-					kb[k14] = nc3.method410();
+					kb[k14] = nc3.readUnsignedShort();
 					if (newformat < 14)
-						N[k14] = nc3.method410();
+						N[k14] = nc3.readUnsignedShort();
 					else
 						N[k14] = nc3.v(-1);
-					y[k14] = nc3.method410();
+					y[k14] = nc3.readUnsignedShort();
 				} else {
 					kb[k14] = nc3.v(-1);
 					N[k14] = nc3.v(-1);
@@ -805,21 +799,21 @@ if(anIntArray1638 != null) {
 		if (class21.anInt383 >= 0)
 			anIntArray1656 = new int[anInt1630];
 		anIntArray1640 = new int[anInt1630];
-		Class30_Sub2_Sub2 stream = new Class30_Sub2_Sub2(class21.aByteArray368);
+		Stream stream = new Stream(class21.aByteArray368);
 		stream.anInt1406 = class21.anInt372;
-		Class30_Sub2_Sub2 stream_1 = new Class30_Sub2_Sub2(class21.aByteArray368);
+		Stream stream_1 = new Stream(class21.aByteArray368);
 		stream_1.anInt1406 = class21.anInt373;
-		Class30_Sub2_Sub2 stream_2 = new Class30_Sub2_Sub2(class21.aByteArray368);
+		Stream stream_2 = new Stream(class21.aByteArray368);
 		stream_2.anInt1406 = class21.anInt374;
-		Class30_Sub2_Sub2 stream_3 = new Class30_Sub2_Sub2(class21.aByteArray368);
+		Stream stream_3 = new Stream(class21.aByteArray368);
 		stream_3.anInt1406 = class21.anInt375;
-		Class30_Sub2_Sub2 stream_4 = new Class30_Sub2_Sub2(class21.aByteArray368);
+		Stream stream_4 = new Stream(class21.aByteArray368);
 		stream_4.anInt1406 = class21.anInt376;
 		int k = 0;
 		int l = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < anInt1626; j1++) {
-			int k1 = stream.method408();
+			int k1 = stream.readUnsignedByte();
 			int i2 = 0;
 			if ((k1 & 1) != 0)
 				i2 = stream_1.method421();
@@ -836,7 +830,7 @@ if(anIntArray1638 != null) {
 			l = anIntArray1628[j1];
 			i1 = anIntArray1629[j1];
 			if (anIntArray1655 != null)
-				anIntArray1655[j1] = stream_4.method408();
+				anIntArray1655[j1] = stream_4.readUnsignedByte();
 		}
 		stream.anInt1406 = class21.anInt379;
 		stream_1.anInt1406 = class21.anInt380;
@@ -844,16 +838,16 @@ if(anIntArray1638 != null) {
 		stream_3.anInt1406 = class21.anInt382;
 		stream_4.anInt1406 = class21.anInt383;
 		for (int l1 = 0; l1 < anInt1630; l1++) {
-			anIntArray1640[l1] = stream.method410();
+			anIntArray1640[l1] = stream.readUnsignedShort();
 			if (anIntArray1637 != null)
-				anIntArray1637[l1] = stream_1.method408();
+				anIntArray1637[l1] = stream_1.readUnsignedByte();
 			if (anIntArray1638 != null)
-				anIntArray1638[l1] = stream_2.method408();
+				anIntArray1638[l1] = stream_2.readUnsignedByte();
 			if (anIntArray1639 != null) {
-				anIntArray1639[l1] = stream_3.method408();
+				anIntArray1639[l1] = stream_3.readUnsignedByte();
 			}
 			if (anIntArray1656 != null)
-				anIntArray1656[l1] = stream_4.method408();
+				anIntArray1656[l1] = stream_4.readUnsignedByte();
 		}
 		stream.anInt1406 = class21.anInt377;
 		stream_1.anInt1406 = class21.anInt378;
@@ -862,7 +856,7 @@ if(anIntArray1638 != null) {
 		int j3 = 0;
 		int k3 = 0;
 		for (int l3 = 0; l3 < anInt1630; l3++) {
-			int i4 = stream_1.method408();
+			int i4 = stream_1.readUnsignedByte();
 			if (i4 == 1) {
 				j2 = stream.method421() + k3;
 				k3 = j2;
@@ -905,9 +899,9 @@ if(anIntArray1638 != null) {
 		}
 		stream.anInt1406 = class21.anInt384;
 		for (int j4 = 0; j4 < anInt1642; j4++) {
-			anIntArray1643[j4] = stream.method410();
-			anIntArray1644[j4] = stream.method410();
-			anIntArray1645[j4] = stream.method410();
+			anIntArray1643[j4] = stream.readUnsignedShort();
+			anIntArray1644[j4] = stream.readUnsignedShort();
+			anIntArray1645[j4] = stream.readUnsignedShort();
 		}
 	}
 
@@ -919,22 +913,22 @@ if(anIntArray1638 != null) {
 			class21.anInt371 = 0;
 			return;
 		}
-		Class30_Sub2_Sub2 stream = new Class30_Sub2_Sub2(abyte0);
+		Stream stream = new Stream(abyte0);
 		stream.anInt1406 = abyte0.length - 18;
 		Class21 class21_1 = aClass21Array1661[j] = new Class21();
 		class21_1.aByteArray368 = abyte0;
-		class21_1.anInt369 = stream.method410();
-		class21_1.anInt370 = stream.method410();
-		class21_1.anInt371 = stream.method408();
-		int k = stream.method408();
-		int l = stream.method408();
-		int i1 = stream.method408();
-		int j1 = stream.method408();
-		int k1 = stream.method408();
-		int l1 = stream.method410();
-		int i2 = stream.method410();
-		int j2 = stream.method410();
-		int k2 = stream.method410();
+		class21_1.anInt369 = stream.readUnsignedShort();
+		class21_1.anInt370 = stream.readUnsignedShort();
+		class21_1.anInt371 = stream.readUnsignedByte();
+		int k = stream.readUnsignedByte();
+		int l = stream.readUnsignedByte();
+		int i1 = stream.readUnsignedByte();
+		int j1 = stream.readUnsignedByte();
+		int k1 = stream.readUnsignedByte();
+		int l1 = stream.readUnsignedShort();
+		int i2 = stream.readUnsignedShort();
+		int j2 = stream.readUnsignedShort();
+		int k2 = stream.readUnsignedShort();
 		int l2 = 0;
 		class21_1.anInt372 = l2;
 		l2 += class21_1.anInt369;
@@ -2099,30 +2093,77 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				return;
 			}
 	}
+	public void convertTexturesTo317(short[] textureIds, int[] texa, int[] texb, int[] texc, boolean osrs, byte[] texture_coordinates) {
+		int set = 0;
+		int set2 = 0;
+		int max = 50;
+		if(textureIds != null) {
+			anIntArray1643 = new int[anInt1630];
+			anIntArray1644 = new int[anInt1630];
+			anIntArray1645 = new int[anInt1630];
 
+
+			for(int i = 0; i < anInt1630; i++) {
+				if(textureIds[i] == -1 && anIntArray1637[i] == 2) {
+					anIntArray1640[i] = 65535;
+					anIntArray1637[i] = 0;
+				}
+				if(textureIds[i] >= max || textureIds[i] < 0 || textureIds[i] == 39) {
+					anIntArray1637[i] = 0;
+					continue;
+				}
+				anIntArray1637[i] = 2+set2;
+				set2 += 4;
+				int a = anIntArray1631[i];
+				int b = anIntArray1632[i];
+				int c = anIntArray1633[i];
+				anIntArray1640[i] = textureIds[i];
+
+
+				int texture_type = -1;
+				if(texture_coordinates != null) {
+					texture_type = texture_coordinates[i] & 0xff;
+					if(texture_type != 0xff)
+						if(texa[texture_type] >= anIntArray1669.length || texb[texture_type] >= anIntArray1668.length
+								|| texc[texture_type] >= anIntArray1670.length)
+							texture_type = -1;
+				}
+				if(texture_type == 0xff)
+					texture_type = -1;
+
+
+				anIntArray1643[set] = texture_type == -1 ? a : texa[texture_type];
+				anIntArray1644[set] = texture_type == -1 ? b : texb[texture_type];
+				anIntArray1645[set++] = texture_type == -1 ? c : texc[texture_type];
+
+
+			}
+			anInt1642 = set;
+		}
+	}
 	public final void method443(int i, int j, int k, int l, int i1, int j1,
 			int k1, int l1, long i2) {
 		int j2 = l1 * i1 - j1 * l >> 16;
 			int k2 = k1 * j + j2 * k >> 16;
 			int l2 = anInt1650 * k >> 16;
 							int i3 = k2 + l2;
-							if (i3 <= 50 || k2 >= 3500)
+							if (i3 <= 50 || k2 >= 30000)
 								return;
 							int j3 = l1 * l + j1 * i1 >> 16;
 				int k3 = j3 - anInt1650 << client.log_view_dist;
-				if (k3 / i3 >= Class30_Sub2_Sub1.anInt1386)
+				if (k3 / i3 >= DrawingArea.centerY)
 					return;
 				int l3 = j3 + anInt1650 << client.log_view_dist;
-				if (l3 / i3 <= -Class30_Sub2_Sub1.anInt1386)
+				if (l3 / i3 <= -DrawingArea.centerY)
 					return;
 				int i4 = k1 * k - j2 * j >> 16;
 				int j4 = anInt1650 * j >> 16;
 				int k4 = i4 + j4 << client.log_view_dist;
-				if (k4 / i3 <= -Class30_Sub2_Sub1.anInt1387)
+				if (k4 / i3 <= -DrawingArea.anInt1387)
 					return;
 				int l4 = j4 + (super.anInt1426 * k >> 16);
 				int i5 = i4 - l4 << client.log_view_dist;
-				if (i5 / i3 >= Class30_Sub2_Sub1.anInt1387)
+				if (i5 / i3 >= DrawingArea.anInt1387)
 					return;
 				int j5 = l2 + (super.anInt1426 * j >> 16);
 				boolean flag = false;
@@ -2234,9 +2275,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 							* (k4 - l3) > 0) {
 						aBooleanArray1664[k] = false;
 						if (i3 < 0 || l3 < 0 || k4 < 0
-								|| i3 > Class30_Sub2_Sub1.anInt1385
-								|| l3 > Class30_Sub2_Sub1.anInt1385
-								|| k4 > Class30_Sub2_Sub1.anInt1385)
+								|| i3 > DrawingArea.centerX
+								|| l3 > DrawingArea.centerX
+								|| k4 > DrawingArea.centerX)
 							aBooleanArray1663[k] = true;
 						else
 							aBooleanArray1663[k] = false;
@@ -2458,14 +2499,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			int k4 = anIntArray1634[i];
 			if (j2 >= 50) {
 				int k5 = (50 - l1) * anIntArray1692[j2 - l1];
-				anIntArray1678[l] = j
-				+ (k2 + ((anIntArray1668[k1] - k2) * k5 >> 16) << client.log_view_dist)
-				/ 50;
-				anIntArray1679[l] = k
-				+ (k3 + ((anIntArray1669[k1] - k3) * k5 >> 16) << client.log_view_dist)
-				/ 50;
-				anIntArray1680[l++] = k4
-				+ ((anIntArray1636[i] - k4) * k5 >> 16);
+				anIntArray1678[l] = j + (k2 + ((anIntArray1668[k1] - k2) * k5 >> 16) << client.log_view_dist) / 50;
+				anIntArray1679[l] = k + (k3 + ((anIntArray1669[k1] - k3) * k5 >> 16) << client.log_view_dist) / 50;
+				anIntArray1680[l++] = k4 + ((anIntArray1636[i] - k4) * k5 >> 16);
 			}
 			if (i2 >= 50) {
 				int l5 = (50 - l1) * anIntArray1692[i2 - l1];
@@ -2490,10 +2526,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			if (l1 >= 50) {
 				int i6 = (50 - i2) * anIntArray1692[l1 - i2];
 				anIntArray1678[l] = j
-				+ (l2 + ((anIntArray1668[i1] - l2) * i6 >> 16) << 9)
+				+ (l2 + ((anIntArray1668[i1] - l2) * i6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1679[l] = k
-				+ (l3 + ((anIntArray1669[i1] - l3) * i6 >> 16) << 9)
+				+ (l3 + ((anIntArray1669[i1] - l3) * i6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = l4
 				+ ((anIntArray1634[i] - l4) * i6 >> 16);
@@ -2501,10 +2537,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			if (j2 >= 50) {
 				int j6 = (50 - i2) * anIntArray1692[j2 - i2];
 				anIntArray1678[l] = j
-				+ (l2 + ((anIntArray1668[k1] - l2) * j6 >> 16) << 9)
+				+ (l2 + ((anIntArray1668[k1] - l2) * j6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1679[l] = k
-				+ (l3 + ((anIntArray1669[k1] - l3) * j6 >> 16) << 9)
+				+ (l3 + ((anIntArray1669[k1] - l3) * j6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = l4
 				+ ((anIntArray1636[i] - l4) * j6 >> 16);
@@ -2521,10 +2557,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			if (i2 >= 50) {
 				int k6 = (50 - j2) * anIntArray1692[i2 - j2];
 				anIntArray1678[l] = j
-				+ (i3 + ((anIntArray1668[j1] - i3) * k6 >> 16) << 9)
+				+ (i3 + ((anIntArray1668[j1] - i3) * k6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1679[l] = k
-				+ (i4 + ((anIntArray1669[j1] - i4) * k6 >> 16) << 9)
+				+ (i4 + ((anIntArray1669[j1] - i4) * k6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = i5
 				+ ((anIntArray1635[i] - i5) * k6 >> 16);
@@ -2532,10 +2568,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			if (l1 >= 50) {
 				int l6 = (50 - j2) * anIntArray1692[l1 - j2];
 				anIntArray1678[l] = j
-				+ (i3 + ((anIntArray1668[i1] - i3) * l6 >> 16) << 9)
+				+ (i3 + ((anIntArray1668[i1] - i3) * l6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1679[l] = k
-				+ (i4 + ((anIntArray1669[i1] - i4) * l6 >> 16) << 9)
+				+ (i4 + ((anIntArray1669[i1] - i4) * l6 >> 16) <<  client.log_view_dist)
 				/ 50;
 				anIntArray1680[l++] = i5
 				+ ((anIntArray1634[i] - i5) * l6 >> 16);
@@ -2550,8 +2586,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		if ((j3 - j4) * (k7 - j7) - (i7 - j7) * (j5 - j4) > 0) {
 			Class30_Sub2_Sub1_Sub3.aBoolean1462 = false;
 			if (l == 3) {
-				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > Class30_Sub2_Sub1.anInt1385
-						|| j4 > Class30_Sub2_Sub1.anInt1385 || j5 > Class30_Sub2_Sub1.anInt1385)
+				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX
+						|| j4 > DrawingArea.centerX || j5 > DrawingArea.centerX)
 					Class30_Sub2_Sub1_Sub3.aBoolean1462 = true;
 				int l7;
 				if (anIntArray1637 == null)
@@ -2594,10 +2630,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				}
 			}
 			if (l == 4) {
-				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > Class30_Sub2_Sub1.anInt1385
-						|| j4 > Class30_Sub2_Sub1.anInt1385 || j5 > Class30_Sub2_Sub1.anInt1385
+				if (j3 < 0 || j4 < 0 || j5 < 0 || j3 > DrawingArea.centerX
+						|| j4 > DrawingArea.centerX || j5 > DrawingArea.centerX
 						|| anIntArray1678[3] < 0
-						|| anIntArray1678[3] > Class30_Sub2_Sub1.anInt1385)
+						|| anIntArray1678[3] > DrawingArea.centerX)
 					Class30_Sub2_Sub1_Sub3.aBoolean1462 = true;
 				int i8;
 				if (anIntArray1637 == null)
