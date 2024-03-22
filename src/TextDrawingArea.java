@@ -25,10 +25,10 @@ public final class TextDrawingArea extends DrawingArea
         byte byte0 = -1;
         if(i != 0)
             aBoolean1490 = !aBoolean1490;
-        stream_1.anInt1406 = stream.readUnsignedShort() + 4;
+        stream_1.currentPosition = stream.readUnsignedShort() + 4;
         int k = stream_1.readUnsignedByte();
         if(k > 0)
-            stream_1.anInt1406 += 3 * (k - 1);
+            stream_1.currentPosition += 3 * (k - 1);
         for(int l = 0; l < 256; l++)
         {
             int j = l;
@@ -42,7 +42,7 @@ public final class TextDrawingArea extends DrawingArea
             if(k1 == 0)
             {
                 for(int i2 = 0; i2 < l1; i2++)
-                    aByteArrayArray1491[l][i2] = stream.method409();
+                    aByteArrayArray1491[l][i2] = stream.readSignedByte();
 
             } else
             if(k1 == 1)
@@ -50,7 +50,7 @@ public final class TextDrawingArea extends DrawingArea
                 for(int j2 = 0; j2 < i1; j2++)
                 {
                     for(int l2 = 0; l2 < j1; l2++)
-                        aByteArrayArray1491[l][j2 + l2 * i1] = stream.method409();
+                        aByteArrayArray1491[l][j2 + l2 * i1] = stream.readSignedByte();
 
                 }
 

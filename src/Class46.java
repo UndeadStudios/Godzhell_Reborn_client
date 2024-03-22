@@ -5,6 +5,26 @@ public final class Class46 {
 
 	private short[] default_texture_id, new_texture_id;
 	private byte[] aByteArray1422;
+	private int[] bgsounds;
+	private int hillskewType = 0;
+	private short hillskewAmount = -1;
+	private int bgsound = -1;
+	private int bgsoundrange = 0;
+	private int bgsoundmin= 0;
+	private boolean render = false;
+	private int bgsoundmax = 0;
+	private boolean hasanimation = false;
+	private boolean mapSceneRotated = false;
+	private boolean aBoolean211 = false;
+	private boolean castshadow = true;
+	private boolean allowrandomizedanimation = true;
+	private short[] retex_d;
+	private short[] retex_s;
+	private byte[] recol_p;
+	private boolean members = false;
+	private boolean aBoolean214 = false;
+	private int cursor1Op = -1;
+	private int cursor1 = -1;
 
 	public static Class46 forID(int i) {
 		if (i > anIntArray755.length)
@@ -15,7 +35,7 @@ public final class Class46 {
 		anInt771 = (anInt771 + 1) % 20;
 		Class46 class46 = aClass46Array782[anInt771];
 		try {
-			aStream_753.anInt1406 = anIntArray755[i];
+			aStream_753.currentPosition = anIntArray755[i];
 		} catch(Exception e) {}
 		class46.type = i;
 		class46.method573();
@@ -102,7 +122,7 @@ public final class Class46 {
         Stream stream = new Stream(class30_sub2_sub2Loader.method571("loc.idx", null), 891);
 		int anInt756 = stream.readUnsignedShort();
 		System.out.println("508 Object Amount: " + anInt756);
-		anIntArray755 = new int[anInt756+100000];
+		anIntArray755 = new int[anInt756];
 		int i = 2;
 		for (int j = 0; j < anInt756; j++) {
 			anIntArray755[j] = i;
@@ -284,7 +304,7 @@ public final class Class46 {
 			model_3.method478(anInt748, anInt740, anInt743, anInt772);
 		if (flag2)
 			model_3.method475(anInt738, anInt745, 16384, anInt783);
-		model_3.method479(64 + aByte737, 768 + aByte742 * 5, -50, -10, -50,
+		model_3.method479(64 + aByte737, 768 + aByte742, -50, -10, -50,
 				!aBoolean769);
 		if (anInt760 == 1)
 			model_3.anInt1654 = model_3.anInt1426;
@@ -293,18 +313,14 @@ public final class Class46 {
 	}
 
 	private void method582(boolean hurr, Stream stream) {
-		int i = -1;
-		label0:
-		do {
-			int j;
-			while (true) {
-				j = stream.readUnsignedByte();
-				if (j == 0)
-					break label0;
-				if (j == 1) {
+		while (true) {
+			int j = stream.readUnsignedByte();
+			if (j == 0) {
+				break;
+			} else if (j == 1) {
 					int k = stream.readUnsignedByte();
 					if (k > 0)
-						if (anIntArray773 == null || aBoolean752) {
+						if (anIntArray773 == null) {
 							anIntArray776 = new int[k];
 							anIntArray773 = new int[k];
 							for (int k1 = 0; k1 < k; k1++) {
@@ -312,22 +328,21 @@ public final class Class46 {
 								anIntArray776[k1] = stream.readUnsignedByte();
 							}
 						} else {
-							stream.anInt1406 += k * 3;
+							stream.currentPosition += k * 3;
 						}
 				} else if (j == 2)
-					aString739 = stream.method415();
-				else if (j == 3)
-					aByteArray777 = stream.method416((byte) 30);
+					aString739 = stream.readString();
 				else if (j == 5) {
 					int l = stream.readUnsignedByte();
 					if (l > 0)
-						if (anIntArray773 == null || aBoolean752) {
-							anIntArray776 = null;
+						if (anIntArray773 == null) {
 							anIntArray773 = new int[l];
-							for (int l1 = 0; l1 < l; l1++)
+							anIntArray776 = null;
+							for (int l1 = 0; l1 < l; l1++) {
 								anIntArray773[l1] = stream.readUnsignedShort();
+							}
 						} else {
-							stream.anInt1406 += l * 2;
+							stream.currentPosition += l * 2;
 						}
 				} else if (j == 14)
 					anInt744 = stream.readUnsignedByte();
@@ -338,7 +353,7 @@ public final class Class46 {
 				else if (j == 18)
 					aBoolean757 = false;
 				else if (j == 19) {
-					i = stream.readUnsignedByte();
+					int i = stream.readUnsignedByte();
 					if (i == 1)
 						hasactions = true;
 				} else if (j == 21)
@@ -354,13 +369,13 @@ public final class Class46 {
 				} else if (j == 28)
 					anInt775 = stream.readUnsignedByte();
 				else if (j == 29)
-					aByte737 = stream.method409();
+					aByte737 = stream.readSignedByte();
 				else if (j == 39)
-					aByte742 = stream.method409();
+					aByte742 = (byte) (stream.readSignedByte() * 25);
 				else if (j >= 30 && j < 35) {
 					if (aStringArray786 == null)
 						aStringArray786 = new String[10];
-					aStringArray786[j - 30] = stream.method415();
+					aStringArray786[j - 30] = stream.readString();
 					if (aStringArray786[j - 30].equalsIgnoreCase("hidden"))
 						aStringArray786[j - 30] = null;
 				} else if (j == 40) {
@@ -371,14 +386,20 @@ public final class Class46 {
 						anIntArray784[i2] = stream.readUnsignedShort();
 						anIntArray747[i2] = stream.readUnsignedShort();
 					}
-				} else if (j == 41) {
-					int length = stream.readUnsignedByte();
-					default_texture_id = new short[length];
-					new_texture_id = new short[length];
-					for (int index = 0; index < length; index++) {
-						default_texture_id[index] = (short) stream.readUnsignedShort();
-						new_texture_id[index] = (short) stream.readUnsignedShort();
-					}
+			} else if (j == 41) {
+				int count = stream.readUnsignedByte();
+				this.retex_d = new short[count];
+				this.retex_s = new short[count];
+				for (int len = 0; len < count; len++) {
+					this.retex_s[len] = (short) stream.readUnsignedShort();
+					this.retex_d[len] = (short) stream.readUnsignedShort();
+				}
+			} else if (j == 42) {
+				int count = stream.readUnsignedByte();
+				this.recol_p = new byte[count];
+				for (int len = 0; len < count; len++) {
+					this.recol_p[len] = stream.readSignedByte();
+				}
 				} else if (j == 60)
 					anInt746 = stream.readUnsignedShort();
 				else if (j == 62)
@@ -391,34 +412,22 @@ public final class Class46 {
 					anInt772 = stream.readUnsignedShort();
 				else if (j == 67)
 					anInt740 = stream.readUnsignedShort();
-				else if (j == 68)
-					anInt758 = stream.readUnsignedShort();
+		 		else if (j == 68)
+					this.anInt758 = stream.readUnsignedShort();
 				else if (j == 69)
 					anInt768 = stream.readUnsignedByte();
 				else if (j == 70)
-					anInt738 = stream.method411();
+					anInt738 = stream.readUnsignedShort();
 				else if (j == 71)
-					anInt745 = stream.method411();
+					anInt745 = stream.readUnsignedShort();
 				else if (j == 72)
-					anInt783 = stream.method411();
+					anInt783 = stream.readUnsignedShort();
 				else if (j == 73)
 					aBoolean736 = true;
 				else if (j == 74) {
 					aBoolean766 = true;
 				} else if (j == 75) {
 					anInt760 = stream.readUnsignedByte();
-				} else if (j == 78) {
-					stream.readUnsignedShort(); // ambient sound id
-					stream.readUnsignedByte();
-				} else if (j == 79) {
-					stream.readUnsignedShort();
-					stream.readUnsignedShort();
-					stream.readUnsignedByte();
-					int len = stream.readUnsignedByte();
-
-					for (int i1 = 0; i1 < len; i1++) {
-						stream.readUnsignedShort();
-					}
 				} else if (j == 77 || j == 92) {
 					anInt774 = stream.readUnsignedShort();
 					if (anInt774 == 65535)
@@ -443,11 +452,59 @@ public final class Class46 {
 							childrenIDs[j2] = -1;
 					}
 					childrenIDs[j1 + 1] = var3;
-				}
-			}
+			} else if (j == 78) {
+				this.bgsound = stream.readUnsignedShort();
+				this.bgsoundrange = stream.readUnsignedByte();
+			} else if (j == 79) {
+				this.bgsoundmin = stream.readUnsignedShort(); // interval
+				this.bgsoundmax = stream.readUnsignedShort(); // interval
+				this.bgsoundrange = stream.readUnsignedByte();
 
-		} while (true);
-		if (i == -1) {
+				int count = stream.readUnsignedByte();
+				this.bgsounds = new int[count];
+				for (int len = 0; len < count; len++) {
+					this.bgsounds[len] = stream.readUnsignedShort();
+				}
+			} else if (j == 81) {
+				this.hillskewType = 2;
+				this.hillskewAmount = (short) (stream.readUnsignedByte() * 256);
+			} else if (j == 82) {
+				this.render = true;
+			} else if (j == 88) {
+				this.castshadow = false;
+			} else if (j == 89) {
+				this.allowrandomizedanimation = false;
+			} else if (j == 90) {
+				this.aBoolean211 = true;
+			} else if (j == 91) {
+				this.members = true;
+			} else if (j == 93) {
+				this.hillskewType = 3;
+				this.hillskewAmount = (short) stream.readUnsignedShort();
+			} else if (j == 94) {
+				this.hillskewType = 4;
+			} else if (j == 95) {
+				this.hillskewType = 5;
+			} else if (j == 96) {
+				this.hasanimation = true;
+			} else if (j == 97) {
+				this.mapSceneRotated = true;
+			} else if (j == 98) {
+				this.aBoolean214 = true;
+			} else if (j == 99) {
+				this.cursor1Op = stream.readUnsignedByte();
+				this.cursor1 = stream.readUnsignedShort();
+			} else if (j == 100) {
+				stream.readUnsignedByte();
+				 stream.readUnsignedShort();
+			} else if (j == 101) {
+				stream.readUnsignedByte();
+			} else if (j == 102) {
+				 stream.readUnsignedShort();
+				}
+
+		}
+		if (aString739 != null && !aString739.equals("null")) {
 			hasactions = anIntArray773 != null && (anIntArray776 == null || anIntArray776[0] == 10);
 			if (aStringArray786 != null)
 				hasactions = true;

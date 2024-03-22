@@ -162,7 +162,7 @@ public Sprite(String s)
 		aBoolean1438 = false;
 		Stream stream = new Stream(class44.method571((new StringBuilder()).append(s).append(".dat").toString(), ((byte []) (null))), 891);
 		Stream stream_1 = new Stream(class44.method571("index.dat", ((byte []) (null))), 891);
-		stream_1.anInt1406 = stream.readUnsignedShort();
+		stream_1.currentPosition = stream.readUnsignedShort();
 		anInt1444 = stream_1.readUnsignedShort();
 		anInt1445 = stream_1.readUnsignedShort();
 		int j = stream_1.readUnsignedByte();
@@ -176,9 +176,9 @@ public Sprite(String s)
 
 		for (int l = 0; l < i; l++)
 		{
-			stream_1.anInt1406 += 2;
-			stream.anInt1406 += stream_1.readUnsignedShort() * stream_1.readUnsignedShort();
-			stream_1.anInt1406++;
+			stream_1.currentPosition += 2;
+			stream.currentPosition += stream_1.readUnsignedShort() * stream_1.readUnsignedShort();
+			stream_1.currentPosition++;
 		}
 
 		drawOffsetX = stream_1.readUnsignedByte();

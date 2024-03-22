@@ -13,12 +13,12 @@ final class Class5
 
         anInt56 = (anInt56 + 1) % 20;
         Class5 class5 = aClass5Array80[anInt56] = new Class5();
-        aStream_60.anInt1406 = anIntArray72[i];
+        aStream_60.currentPosition = anIntArray72[i];
         class5.aLong78 = i;
         class5.method165(aStream_60);
 
 		if(i == 97) {
-			aStream_60.anInt1406 = anIntArray72[630];
+			aStream_60.currentPosition = anIntArray72[630];
 			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
@@ -30,7 +30,7 @@ final class Class5
  			class5.aByteArray89 = "It\'s Pikachu.".getBytes();
 		}
 				if(i == 96) {
-			aStream_60.anInt1406 = anIntArray72[630];
+			aStream_60.currentPosition = anIntArray72[630];
 			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
@@ -42,7 +42,7 @@ final class Class5
  			class5.aByteArray89 = "It\'s a Charmander.".getBytes();
 		}
 				if(i == 95) {
-			aStream_60.anInt1406 = anIntArray72[630];
+			aStream_60.currentPosition = anIntArray72[630];
 			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
@@ -54,7 +54,7 @@ final class Class5
  			class5.aByteArray89 = "It\'s a .... thug.".getBytes();
 		}
 				if(i == 98) {
-			aStream_60.anInt1406 = anIntArray72[630];
+			aStream_60.currentPosition = anIntArray72[630];
 			class5.method165(aStream_60);
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
@@ -237,6 +237,7 @@ return class5;
         aClass5Array80 = new Class5[20];
         for(int k = 0; k < 20; k++)
             aClass5Array80[k] = new Class5();
+		//dumpNpcList();
 		if (Configuration.dumpDataLists) {
 
 			TempWriter writer2 = new TempWriter("npc_fields");
@@ -252,7 +253,7 @@ return class5;
     }
 	
 		public static void dumpNpcList() {
-	for(int i = 0; i < 9200; i++) {
+	for(int i = 0; i < anInt62; i++) {
 	Class5 class5 = method159(i);
 	BufferedWriter bw = null;
 	try {
@@ -369,13 +370,13 @@ return class5;
 
 			} else
 			if(i == 2)
-				aString65 = stream.method415();
+				aString65 = stream.readString();
 			else
 			if(i == 3)
 				aByteArray89 = stream.method416((byte)30);
 			else
 			if(i == 12)
-				aByte68 = stream.method409();
+				aByte68 = stream.readSignedByte();
 			else
 			if(i == 13)
 				anInt77 = stream.readUnsignedShort();
@@ -389,12 +390,20 @@ return class5;
 				anInt58 = stream.readUnsignedShort();
 				anInt83 = stream.readUnsignedShort();
 				anInt55 = stream.readUnsignedShort();
+                if (anInt67 == 65535)
+                    anInt67 = -1;
+                if (anInt58 == 65535)
+                    anInt58 = -1;
+                if (anInt83 == 65535)
+                    anInt83 = -1;
+                if (anInt55 == 65535)
+                    anInt55 = -1;
 			} else
 			if(i >= 30 && i < 40)
 			{
 				if(aStringArray66 == null)
 					aStringArray66 = new String[5];
-				aStringArray66[i - 30] = stream.method415();
+				aStringArray66[i - 30] = stream.readString();
 				if(aStringArray66[i - 30].equalsIgnoreCase("hidden"))
 					aStringArray66[i - 30] = null;
 			} else
@@ -443,10 +452,10 @@ return class5;
 				aBoolean93 = true;
 			else
 			if(i == 100)
-				anInt85 = stream.method409();
+				anInt85 = stream.readSignedByte();
 			else
 			if(i == 101)
-				anInt92 = stream.method409() * 5;
+				anInt92 = stream.readSignedByte() * 5;
 			else
 			if(i == 102)
 				anInt75 = stream.readUnsignedShort();

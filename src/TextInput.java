@@ -102,12 +102,12 @@ public final class TextInput
             stream.writeUnsignedByte(i << 4);
     }
     public static String anArea435 = "y";
-    public static String method527(String s, int i)
+    public static String processText(String s, int i)
     {
-        aStream_632.anInt1406 = 0;
+        aStream_632.currentPosition = 0;
         method526(s, aBoolean630, aStream_632);
-        int j = aStream_632.anInt1406;
-        aStream_632.anInt1406 = 0;
+        int j = aStream_632.currentPosition;
+        aStream_632.currentPosition = 0;
         if(i != 0)
             aBoolean629 = !aBoolean629;
         String s1 = method525(j, true, aStream_632);

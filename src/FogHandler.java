@@ -17,7 +17,7 @@ public class FogHandler {
      */
     public void renderFog(boolean belowGround, int fogStartDistance, int fogEndDistance, int fogIntensity) {
         getColor(setColor);
-        int pos = Class30_Sub2_Sub1_Sub3.lineOffsets[0];
+        int pos = Rasterizer.lineOffsets[0];
         int src, dst, alpha;
         int fogBegin = (int) (fogStartDistance + fogDistance);
         int fogEnd = (int) (fogEndDistance + fogDistance);

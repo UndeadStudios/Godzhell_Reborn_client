@@ -8,7 +8,7 @@ public final class Background extends DrawingArea
         aByte1449 = 3;
         Stream stream = new Stream(class44.method571(s + ".dat", null), 891);
         Stream stream_1 = new Stream(class44.method571("index.dat", null), 891);
-        stream_1.anInt1406 = stream.readUnsignedShort();
+        stream_1.currentPosition = stream.readUnsignedShort();
         anInt1456 = stream_1.readUnsignedShort();
         anInt1457 = stream_1.readUnsignedShort();
         int j = stream_1.readUnsignedByte();
@@ -18,9 +18,9 @@ public final class Background extends DrawingArea
 
         for(int l = 0; l < i; l++)
         {
-            stream_1.anInt1406 += 2;
-            stream.anInt1406 += stream_1.readUnsignedShort() * stream_1.readUnsignedShort();
-            stream_1.anInt1406++;
+            stream_1.currentPosition += 2;
+            stream.currentPosition += stream_1.readUnsignedShort() * stream_1.readUnsignedShort();
+            stream_1.currentPosition++;
         }
 
         anInt1454 = stream_1.readUnsignedByte();
@@ -33,7 +33,7 @@ public final class Background extends DrawingArea
         if(i1 == 0)
         {
             for(int k1 = 0; k1 < j1; k1++)
-                aByteArray1450[k1] = stream.method409();
+                aByteArray1450[k1] = stream.readSignedByte();
 
             return;
         }
@@ -42,7 +42,7 @@ public final class Background extends DrawingArea
             for(int l1 = 0; l1 < anInt1452; l1++)
             {
                 for(int i2 = 0; i2 < anInt1453; i2++)
-                    aByteArray1450[l1 + i2 * anInt1452] = stream.method409();
+                    aByteArray1450[l1 + i2 * anInt1452] = stream.readSignedByte();
 
             }
 

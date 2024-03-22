@@ -48,7 +48,7 @@ public class Class16
             int j = stream.readUnsignedByte();
             if(j != 0)
             {
-                stream.anInt1406--;
+                stream.currentPosition--;
                 aClass6Array329[i] = new Class6();
                 aClass6Array329[i].method169(true, stream);
             }
@@ -88,7 +88,7 @@ public class Class16
     private final Stream method244(int i, int j)
     {
         int k = method245(i);
-        aStream_328.anInt1406 = 0;
+        aStream_328.currentPosition = 0;
         aStream_328.writeDWord(0x52494646);
         aStream_328.method403(0, 36 + k);
         aStream_328.writeDWord(0x57415645);
@@ -106,7 +106,7 @@ public class Class16
         aStream_328.method400(true, 8);
         aStream_328.writeDWord(0x64617461);
         aStream_328.method403(0, k);
-        aStream_328.anInt1406 += k;
+        aStream_328.currentPosition += k;
         return aStream_328;
     }
 

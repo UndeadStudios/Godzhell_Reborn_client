@@ -238,7 +238,7 @@ final class ObjectManager {
 								}
 								int i22 = 0;
 								if(j21 != -1) {
-									i22 = Class30_Sub2_Sub1_Sub3.anIntArray1482[method187(k21, 96)];
+									i22 = Rasterizer.anIntArray1482[method187(k21, 96)];
 								}
 								if(i19 == 0) {
 									class25.method279(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
@@ -257,7 +257,7 @@ final class ObjectManager {
 									i23 = -1;
 								}
 									if(i23 >= 0) {
-										k23 = Class30_Sub2_Sub1_Sub3.method369(i23, 12660);
+										k23 = Rasterizer.method369(i23, 12660);
 										j23 = -1;
 									} else
 										if(class22_2.rgb == 0xff00ff) {
@@ -266,7 +266,7 @@ final class ObjectManager {
 										i23 = -1;
 										} else {
 										j23 = method177(class22_2.anInt394, class22_2.anInt395, class22_2.anInt396);
-										k23 = Class30_Sub2_Sub1_Sub3.anIntArray1482[method185(class22_2.anInt399, 96)];
+										k23 = Rasterizer.anIntArray1482[method185(class22_2.anInt399, 96)];
 										}
 	if ((i19-1) == 54) {
                     k23  = 0x8B8B83;
@@ -274,7 +274,7 @@ final class ObjectManager {
                     i23 = -1;
                 }
 										if((i19-1) == 111){
-											k23 = Class30_Sub2_Sub1_Sub3.method369(1, 12660);
+											k23 = Rasterizer.method369(1, 12660);
 											j23 = -1;
                                     							i23 = 1;
 											}
@@ -472,7 +472,7 @@ final class ObjectManager {
 			}
 			do
 			{
-				int j = stream.readUSmart2();
+				int j = stream.method1606();
 				if(j == 0) {
 					break label0;
 				}
@@ -481,7 +481,7 @@ final class ObjectManager {
 				class46.method574(class42_sub1, -235);
 				do
 				{
-					int k = stream.readUSmart();
+					int k = stream.readUShortSmart();
 					if(k == 0) {
 						break;
 					}
@@ -951,9 +951,6 @@ final class ObjectManager {
 
 		}
 
-		if(k < 9 || k > 9) {
-			for(int k2 = 1; k2 > 0; k2++) { }
-		}
 		Stream stream = new Stream(abyte0, 891);
 		for(int l2 = 0; l2 < 4; l2++) {
 			for(int i3 = 0; i3 < 64; i3++) {
@@ -1031,7 +1028,7 @@ final class ObjectManager {
 					}
 				}
 				if(l1 <= 49) {
-					aByteArrayArrayArray130[l][k][i] = stream.method409();
+					aByteArrayArrayArray130[l][k][i] = stream.readSignedByte();
 					aByteArrayArrayArray136[l][k][i] = (byte)((l1 - 2) / 4);
 					aByteArrayArrayArray148[l][k][i] = (byte)((l1 - 2) + i1 & 3);
 				} else
@@ -1083,7 +1080,7 @@ final class ObjectManager {
 			}
 			do
 			{
-				int i2 = stream.readUSmart2();
+				int i2 = stream.method1606();
 				if(i2 == 0) {
 					break label0;
 				}
@@ -1091,7 +1088,7 @@ final class ObjectManager {
 				int j2 = 0;
 				do
 				{
-					int k2 = stream.readUSmart();
+					int k2 = stream.readUShortSmart();
 					if(k2 == 0) {
 						break;
 					}
@@ -1128,7 +1125,7 @@ final class ObjectManager {
 	}
 
 	private static final int method184(int i, int j, int k, int l) {
-		int i1 = 0x10000 - Class30_Sub2_Sub1_Sub3.anIntArray1471[(k * 1024) / l] >> 1;
+		int i1 = 0x10000 - Rasterizer.anIntArray1471[(k * 1024) / l] >> 1;
 		return (i * (0x10000 - i1) >> 16) + (j * i1 >> 16);
 	}
 
@@ -1401,8 +1398,6 @@ final class ObjectManager {
 	}
 
 	public static final boolean method189(int i, byte[] is, int i_250_, int i_251_) {
-		if (i_251_ < 6 || i_251_ > 6)
-			throw new NullPointerException();
 		boolean bool = true;
 		Stream stream = new Stream(is, 891);
 		int i_252_ = -1;
@@ -1445,20 +1440,17 @@ final class ObjectManager {
 	public final void method190(int i, Class11 aclass11[], int j, int k, Class25 class25, byte abyte0[]) {
 		label0:
 		{
-			if(k < 7 || k > 7) {
-				return;
-			}
 			Stream stream = new Stream(abyte0, 891);
 			int l = -1;
 			do {
-				int i1 = stream.readUSmart2();
+				int i1 = stream.method1606();
 				if(i1 == 0) {
 					break label0;
 				}
 				l += i1;
 				int j1 = 0;
 				do {
-					int k1 = stream.readUSmart();
+					int k1 = stream.readUShortSmart();
 					if(k1 == 0) {
 						break;
 					}
@@ -1480,7 +1472,11 @@ final class ObjectManager {
 						if(l3 >= 0) {
 							class11 = aclass11[l3];
 						}
-						renderObject(k3, class25, class11, l2, j2, j3, l, false, i3);
+						try {
+							renderObject(k3, class25, class11, l2, j2, j3, l, false, i3);
+						} catch(Exception e){
+							e.printStackTrace();
+						}
 					}
 				} while(true);
 			} while(true);

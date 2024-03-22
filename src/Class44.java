@@ -44,7 +44,7 @@ public final class Class44
         anIntArray729 = new int[anInt727];
         anIntArray730 = new int[anInt727];
         anIntArray731 = new int[anInt727];
-        int k = stream.anInt1406 + anInt727 * 10;
+        int k = stream.currentPosition + anInt727 * 10;
         for(int l = 0; l < anInt727; l++)
         {
             anIntArray728[l] = stream.method413();

@@ -235,7 +235,7 @@ final class Class8 {
         aClass8Array172 = new Class8[10];
         for (int k = 0; k < 10; k++)
             aClass8Array172[k] = new Class8();
-
+       // dumpCfg();
         if (Configuration.dumpDataLists) {
             TempWriter writer2 = new TempWriter("item_fields");
             FieldGenerator generator = new FieldGenerator(writer2::writeLine);
@@ -248,6 +248,7 @@ final class Class8 {
             });
             writer2.close();
         }
+
     }
 
     public static Class8 method198(int i) {
@@ -257,13 +258,14 @@ final class Class8 {
 
         anInt180 = (anInt180 + 1) % 10;
         Class8 class8 = aClass8Array172[anInt180];
-        aStream_183.anInt1406 = anIntArray195[i];
+        aStream_183.currentPosition = anIntArray195[i];
         class8.anInt157 = i;
         class8.method197();
         class8.readValues(true, aStream_183);
         method198_2(i, class8);
         method198_3(i, class8);
         method198_4(i, class8);
+        method198_5(i, class8);
 
         if (i == 13004) {
             class8.aStringArray189 = new String[5];
@@ -287,47 +289,48 @@ final class Class8 {
             class8.aByteArray178 = "Wear a monkey for FREE!".getBytes();
         }
 
-        if (i == 15340) {
+        if(i == 15340)
+        {
             class8.aStringArray189 = new String[5];
             class8.aStringArray189[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
             class8.originalModelColors[0] = 0;
-            class8.modelId = 14923;
-            class8.anInt181 = 1957;
-            class8.anInt190 = 498;
-            class8.anInt198 = 484;
+            class8.originalModelColors[0] = 0;
+            class8.modelId = 71770;
+            class8.anInt181 = 2050;
+            class8.anInt190 = 222;
+            class8.anInt198 = 1958;
             class8.anInt204 = 0;
             class8.anInt169 = -1;
             class8.anInt194 = -1;
-            class8.anInt165 = 13427;
-            class8.anInt200 = 13427;
-            class8.anInt175 = -1;
-            class8.anInt197 = -1;
+            class8.anInt165 = 72130;
+            class8.anInt200 = 72130;
+            class8.anInt175 = 0;
+            class8.anInt197 = -28;
             class8.name = "Lucky Saradomin Godsword";
-            class8.aByteArray178 = "A heavy sword".getBytes();
+            class8.aByteArray178 = "A brutally heavy sword. Requires Attack (75).".getBytes();
         }
-        if (i == 15341)  // change this if you need to "item number"
+        if(i == 15341)  // change this if you need to "item number"
         {
             class8.aStringArray189 = new String[5];
             class8.aStringArray189[1] = "Wield";//New option
             class8.modifiedModelColors = new int[0];
             class8.originalModelColors = new int[0];
-            class8.modelId = 7212; //Model ID
-            class8.anInt181 = 1957;
-            class8.anInt190 = 498;
-            class8.anInt198 = 484;
+            class8.modelId = 71769; //Model ID
+            class8.anInt181 = 2000;
+            class8.anInt190 = 228;
+            class8.anInt198 = 1985;
             class8.anInt204 = 0;
             class8.anInt169 = -1;
             class8.anInt194 = -1;
-            class8.anInt175 = -1;
-            class8.anInt197 = -1;
-            class8.anInt165 = 7209;//male wearing
-            class8.anInt200 = 7209;//female wearing
+            class8.anInt175 = 5;
+            class8.anInt197 = -55;
+            class8.anInt165 = 72135;//male wearing
+            class8.anInt200 = 72135;//female wearing
             class8.aBoolean176 = false;//Stackable
             class8.name = "Lucky Armadyl Godsword";//Name of the new item
-            class8.aByteArray178 = "A heavy sword".getBytes();//examin info
+            class8.aByteArray178 = "A brutally heavy sword. Requires Attack (75).".getBytes();//examin info
         }
         if (i == 18431)  // change this if you need to "item number"
         {
@@ -377,20 +380,20 @@ final class Class8 {
             class8.aStringArray189[1] = "Wield";//New option
             class8.modifiedModelColors = new int[0];
             class8.originalModelColors = new int[0];
-            class8.modelId = 7213; //Model ID
-            class8.anInt181 = 1957;
-            class8.anInt190 = 498;
-            class8.anInt198 = 484;
+            class8.modelId = 71767; //Model ID
+            class8.anInt181 = 2128;
+            class8.anInt190 = 243;
+            class8.anInt198 = 1964;
             class8.anInt204 = 0;
             class8.anInt169 = -1;
             class8.anInt194 = -1;
-            class8.anInt175 = -1;
-            class8.anInt197 = -1;
-            class8.anInt165 = 7206;//male wearing
-            class8.anInt200 = 7206;//female wearing
+            class8.anInt175 = 0;
+            class8.anInt197 = 0;
+            class8.anInt165 = 72138;//male wearing
+            class8.anInt200 = 72138;//female wearing
             class8.aBoolean176 = false;//Stackable
             class8.name = "Lucky Zamorak Godsword";//Name of the new item
-            class8.aByteArray178 = "A heavy sword".getBytes();//examin info
+            class8.aByteArray178 = "A brutally heavy sword. Requires Attack (75).".getBytes();//examin info
         }
         if (i == 15343) {
             class8.aStringArray189 = new String[5];
@@ -399,19 +402,103 @@ final class Class8 {
             class8.originalModelColors = new int[1];
             class8.modifiedModelColors[0] = 0;
             class8.originalModelColors[0] = 0;
-            class8.modelId = 12354;//item look
-            class8.anInt181 = 1957;
-            class8.anInt190 = 498;
-            class8.anInt198 = 484;
+            class8.modelId = 71766;//item look
+            class8.anInt181 = 1616;
+            class8.anInt190 = 192;
+            class8.anInt198 = 1161;
             class8.anInt204 = 0;
             class8.anInt169 = -1;
             class8.anInt194 = -1;
-            class8.anInt165 = 7355;
-            class8.anInt200 = 7355;
-            class8.anInt175 = -1;
-            class8.anInt197 = -1;
+            class8.anInt165 = 72137;
+            class8.anInt200 = 72137;
+            class8.anInt175 = -18;
+            class8.anInt197 = 75;
             class8.name = "Lucky Bandos godsword";
-            class8.aByteArray178 = "A heavy sword".getBytes();
+            class8.aByteArray178 = "A brutally heavy sword. Requires Attack (75).".getBytes();
+        }
+        if(i == 25342)  // change this if you need to "item number"
+        {
+            class8.aStringArray189 = new String[5];
+            class8.aStringArray189[1] = "Wield";//New option
+            class8.modifiedModelColors = new int[0];
+            class8.originalModelColors = new int[0];
+            class8.modelId = 71768; //Model ID
+            class8.anInt181 = 3355;
+            class8.anInt190 = 512;
+            class8.anInt198 = 256;
+            class8.anInt204 = 0;
+            class8.anInt169 = -1;
+            class8.anInt194 = -1;
+            class8.anInt175 = 3;
+            class8.anInt197 = -9;
+            class8.anInt165 = 72134;//male wearing
+            class8.anInt200 = 72134;//female wearing
+            class8.aBoolean176 = false;//Stackable
+            class8.name = "Lucky Zamorakian spear";//Name of the new item
+            class8.aByteArray178 = "A versatile spear wielded by agents of chaos. Requires Attack (75).".getBytes();//examin info
+        }
+        if(i == 25343)  // change this if you need to "item number"
+        {
+            class8.aStringArray189 = new String[5];
+            class8.aStringArray189[1] = "Wield";//New option
+            class8.modifiedModelColors = new int[0];
+            class8.originalModelColors = new int[0];
+            class8.modelId = 66212; //Model ID
+            class8.anInt181 = 2151;
+            class8.anInt190 = 636;
+            class8.anInt198 = 1521;
+            class8.anInt204 = 0;
+            class8.anInt169 = -1;
+            class8.anInt194 = -1;
+            class8.anInt175 = 0;
+            class8.anInt197 = 3;
+            class8.anInt165 = 66272;//male wearing
+            class8.anInt200 = 66272;//female wearing
+            class8.aBoolean176 = false;//Stackable
+            class8.name = "Lucky Saradomin sword";//Name of the new item
+            class8.aByteArray178 = "The incredible blade of an icyene. Requires Attack (75).".getBytes();//examin info
+        }
+        if(i == 25344)  // change this if you need to "item number"
+        {
+            class8.aStringArray189 = new String[5];
+            class8.aStringArray189[1] = "Wield";//New option
+            class8.modifiedModelColors = new int[0];
+            class8.originalModelColors = new int[0];
+            class8.modelId = 66196; //Model ID
+            class8.anInt181 = 840;
+            class8.anInt190 = 200;
+            class8.anInt198 = 0;
+            class8.anInt204 = 0;
+            class8.anInt169 = -1;
+            class8.anInt194 = -1;
+            class8.anInt175 = -2;
+            class8.anInt197 = 56;
+            class8.anInt165 = 66262;//male wearing
+            class8.anInt200 = 66262;//female wearing
+            class8.aBoolean176 = false;//Stackable
+            class8.name = "Lucky abyssal whip";//Name of the new item
+            class8.aByteArray178 = "A weapon from the Abyss. Requires Attack (70).".getBytes();//examin info
+        }
+        if(i == 25345)  // change this if you need to "item number"
+        {
+            class8.aStringArray189 = new String[5];
+            class8.aStringArray189[1] = "Wield";//New option
+            class8.modifiedModelColors = new int[0];
+            class8.originalModelColors = new int[0];
+            class8.modelId = 79426; //Model ID
+            class8.anInt181 = 2891;
+            class8.anInt190 = 512;
+            class8.anInt198 = 1266;
+            class8.anInt204 = 0;
+            class8.anInt169 = -1;
+            class8.anInt194 = -1;
+            class8.anInt175 = 0;
+            class8.anInt197 = 0;
+            class8.anInt165 = 80034;//male wearing
+            class8.anInt200 = 80034;//female wearing
+            class8.aBoolean176 = false;//Stackable
+            class8.name = "Lucky dragon 2h sword";//Name of the new item
+            class8.aByteArray178 = "A two-handed dragon sword.".getBytes();//examin info
         }
         if (i == 16212) // Your desired item id (the one you use after ::pickup ##### #)
         {
@@ -2794,28 +2881,6 @@ final class Class8 {
             class8.aByteArray178 = "Its A fighter Torso".getBytes();//examin info
         }
 
-        if (i == 4827)  // change this if you need to "item number"
-        {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";//New option
-            class8.modelId = 4676; //Model ID
-            class8.anInt181 = 2128;//Model Zoom
-            class8.anInt190 = 591;//Model Rotation
-            class8.anInt198 = 1034;//model rotate side ways increase to move right in circle
-            class8.anInt204 = 138;//Unknown
-            class8.anInt199 = -1;//noteable
-            class8.anInt169 = 8;// model offset increase to move to the right
-            class8.anInt194 = 11;//model offset increase to move up
-            class8.anInt165 = 4677;//male wearing
-            class8.anInt200 = 4677;//female wearing
-            class8.anInt175 = -1;//Unknown
-            class8.aBoolean176 = false;//Stackable//Unknown
-            class8.anInt164 = -1;//Female arms/sleeves
-            class8.anInt188 = -1;//male arms/sleeves
-            class8.aBoolean176 = false;//Stackable
-            class8.name = "Dark bow";//Name of the new item
-            class8.aByteArray178 = "A very PowerFull Bow".getBytes();//examin info
-        }
         if (i == 2904)  // change this if you need to "item number"
         {
             class8.aStringArray189 = new String[5];
@@ -8593,126 +8658,7 @@ final class Class8 {
             class8.name = "Owner cape";
             class8.aByteArray178 = "Its an owner cape".getBytes();
         }
-        if (i == 1275) {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";
-            class8.modelId = 2529;
-            class8.modifiedModelColors = new int[1];
-            class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
-            class8.originalModelColors[0] = 36133;
-            class8.anInt181 = 1382;
-            class8.anInt190 = 660;
-            class8.anInt198 = 997;
-            class8.anInt169 = -6;
-            class8.anInt194 = 1;
-            class8.anInt165 = 509;
-            class8.anInt200 = 509;
-            class8.anInt188 = -1;
-            class8.anInt164 = -1;
-            class8.name = "Rune pickaxe";
-            class8.aByteArray178 = "It's a Rune pickaxe.".getBytes();
-        }
-        if (i == 1265) {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";
-            class8.modelId = 2529;
-            class8.modifiedModelColors = new int[1];
-            class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
-            class8.originalModelColors[0] = 5652;
-            class8.anInt181 = 1382;
-            class8.anInt190 = 660;
-            class8.anInt198 = 997;
-            class8.anInt169 = -6;
-            class8.anInt194 = 1;
-            class8.anInt165 = 509;
-            class8.anInt200 = 509;
-            class8.anInt188 = -1;
-            class8.anInt164 = -1;
-            class8.name = "Bronze pickaxe";
-            class8.aByteArray178 = "It's a bronze pickaxe.".getBytes();
-        }
-        if (i == 1267) {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";
-            class8.modelId = 2529;
-            class8.modifiedModelColors = new int[1];
-            class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
-            class8.originalModelColors[0] = 33;
-            class8.anInt181 = 1382;
-            class8.anInt190 = 660;
-            class8.anInt198 = 997;
-            class8.anInt169 = -6;
-            class8.anInt194 = 1;
-            class8.anInt165 = 509;
-            class8.anInt200 = 509;
-            class8.anInt188 = -1;
-            class8.anInt164 = -1;
-            class8.name = "Iron pickaxe";
-            class8.aByteArray178 = "It's a iron pickaxe.".getBytes();
-        }
-        if (i == 1269) {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";
-            class8.modelId = 2529;
-            class8.modifiedModelColors = new int[1];
-            class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
-            class8.originalModelColors[0] = 2130;
-            class8.anInt181 = 1382;
-            class8.anInt190 = 660;
-            class8.anInt198 = 997;
-            class8.anInt169 = -6;
-            class8.anInt194 = 1;
-            class8.anInt165 = 509;
-            class8.anInt200 = 509;
-            class8.anInt188 = -1;
-            class8.anInt164 = -1;
-            class8.name = "Steel pickaxe";
-            class8.aByteArray178 = "It's a steel pickaxe.".getBytes();
-        }
-        if (i == 1271) {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";
-            class8.modelId = 2529;
-            class8.modifiedModelColors = new int[1];
-            class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
-            class8.originalModelColors[0] = 21662;
-            class8.anInt181 = 1382;
-            class8.anInt190 = 660;
-            class8.anInt198 = 997;
-            class8.anInt169 = -6;
-            class8.anInt194 = 1;
-            class8.anInt165 = 509;
-            class8.anInt200 = 509;
-            class8.anInt188 = -1;
-            class8.anInt164 = -1;
-            class8.name = "Adamant pickaxe";
-            class8.aByteArray178 = "It's a adamant pickaxe.".getBytes();
-        }
-        if (i == 1273) {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";
-            class8.modelId = 2529;
-            class8.modifiedModelColors = new int[1];
-            class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 0;
-            class8.originalModelColors[0] = 43279;
-            class8.anInt181 = 1382;
-            class8.anInt190 = 660;
-            class8.anInt198 = 997;
-            class8.anInt169 = -6;
-            class8.anInt194 = 1;
-            class8.anInt165 = 509;
-            class8.anInt200 = 509;
-            class8.anInt188 = -1;
-            class8.anInt164 = -1;
-            class8.name = "Mithril pickaxe";
-            class8.aByteArray178 = "It's a mithril pickaxe.".getBytes();
-        }
+
         if (i == 14164) {
             class8.aStringArray189 = new String[5];
             class8.aStringArray189[1] = "Wear";
@@ -23434,6 +23380,10 @@ final class Class8 {
         }
 
 
+        return class8;
+    }
+
+    public static Class8 method198_4(int i, Class8 class8) {
         if (i == 14481) //ID
         {
             class8.aStringArray189 = new String[5];
@@ -24789,12 +24739,10 @@ final class Class8 {
             class8.anInt175 = -1;
             class8.anInt197 = -1;
         }
-
-
         return class8;
     }
 
-    public static Class8 method198_4(int i, Class8 class8) {
+    public static Class8 method198_5(int i, Class8 class8) {
         if (i == 14533) //ID
         {
             class8.aStringArray189 = new String[5];
@@ -24935,30 +24883,6 @@ final class Class8 {
 			class8.anInt175 = -1;
 			class8.anInt197 = -1;
 		}*/
-        if (i == 12765)  // change this if you need to "item number"
-        {
-            class8.aStringArray189 = new String[5];
-            class8.aStringArray189[1] = "Wield";//New option
-            class8.originalModelColors = new int[]{10417, 18983, 24988, 23958, 27144};
-            class8.modifiedModelColors = new int[]{1571, 1575, 1436, 2454, 2576};
-            class8.modelId = 4676; //Model ID
-            class8.anInt181 = 2128;//Model Zoom
-            class8.anInt190 = 591;//Model Rotation
-            class8.anInt198 = 1034;//model rotate side ways increase to move right in circle
-            class8.anInt204 = 138;//Unknown
-            class8.anInt199 = -1;//noteable
-            class8.anInt169 = 8;// model offset increase to move to the right
-            class8.anInt194 = 11;//model offset increase to move up
-            class8.anInt165 = 4677;//male wearing
-            class8.anInt200 = 4677;//female wearing
-            class8.anInt175 = -1;//Unknown
-            class8.aBoolean176 = false;//Stackable//Unknown
-            class8.anInt164 = -1;//Female arms/sleeves
-            class8.anInt188 = -1;//male arms/sleeves
-            class8.aBoolean176 = false;//Stackable
-            class8.name = "Dark bow";//Name of the new item
-            class8.aByteArray178 = "A very PowerFull Bow".getBytes();//examin info
-        }
         if (i == 12766)  // change this if you need to "item number"
         {
             class8.aStringArray189 = new String[5];
@@ -26309,9 +26233,9 @@ final class Class8 {
                 return null;
         }
         Sprite class30_sub2_sub1_sub1_1 = new Sprite(32, 32);
-        int k1 = Class30_Sub2_Sub1_Sub3.anInt1466;
-        int l1 = Class30_Sub2_Sub1_Sub3.anInt1467;
-        int[] ai = Class30_Sub2_Sub1_Sub3.lineOffsets;
+        int k1 = Rasterizer.anInt1466;
+        int l1 = Rasterizer.anInt1467;
+        int[] ai = Rasterizer.lineOffsets;
         int[] ai1 = DrawingArea.pixels;
         int i2 = DrawingArea.width;
         int j2 = DrawingArea.height;
@@ -26319,17 +26243,17 @@ final class Class8 {
         int l2 = DrawingArea.bottomX;
         int i3 = DrawingArea.topY;
         int j3 = DrawingArea.bottomY;
-        Class30_Sub2_Sub1_Sub3.aBoolean1464 = false;
+        Rasterizer.aBoolean1464 = false;
         DrawingArea.method331(32, 32, class30_sub2_sub1_sub1_1.myPixels, null);
         DrawingArea.drawPixels(32, 0, 0, 0, 32);
-        Class30_Sub2_Sub1_Sub3.method364((byte) 6);
+        Rasterizer.method364((byte) 6);
         int k3 = class8.anInt181;
         if (k == -1)
             k3 = (int) ((double) k3 * 1.5D);
         if (k > 0)
             k3 = (int) ((double) k3 * 1.04D);
-        int l3 = Class30_Sub2_Sub1_Sub3.anIntArray1470[class8.anInt190] * k3 >> 16;
-        int i4 = Class30_Sub2_Sub1_Sub3.anIntArray1471[class8.anInt190] * k3 >> 16;
+        int l3 = Rasterizer.anIntArray1470[class8.anInt190] * k3 >> 16;
+        int i4 = Rasterizer.anIntArray1471[class8.anInt190] * k3 >> 16;
         class30_sub2_sub4_sub6.method482(0, class8.anInt198, class8.anInt204, class8.anInt190, class8.anInt169, l3 + class30_sub2_sub4_sub6.anInt1426 / 2 + class8.anInt194, i4 + class8.anInt194);
         for (int i5 = 31; i5 >= 0; i5--) {
             for (int j4 = 31; j4 >= 0; j4--)
@@ -26374,7 +26298,7 @@ final class Class8 {
             int j6 = class30_sub2_sub1_sub1_2.anInt1445;
             class30_sub2_sub1_sub1_2.anInt1444 = 32;
             class30_sub2_sub1_sub1_2.anInt1445 = 32;
-            class30_sub2_sub1_sub1_2.drawSprite(0, 16083, 0);
+            class30_sub2_sub1_sub1_2.drawSprite(0,  0);
             class30_sub2_sub1_sub1_2.anInt1444 = l5;
             class30_sub2_sub1_sub1_2.anInt1445 = j6;
         }
@@ -26382,10 +26306,10 @@ final class Class8 {
             aClass12_158.method223(class30_sub2_sub1_sub1_1, i, (byte) 2);
         DrawingArea.method331(j2, i2, ai1, null);
         DrawingArea.setDrawingArea(j3, k2, l2, i3);
-        Class30_Sub2_Sub1_Sub3.anInt1466 = k1;
-        Class30_Sub2_Sub1_Sub3.anInt1467 = l1;
-        Class30_Sub2_Sub1_Sub3.lineOffsets = ai;
-        Class30_Sub2_Sub1_Sub3.aBoolean1464 = true;
+        Rasterizer.anInt1466 = k1;
+        Rasterizer.anInt1467 = l1;
+        Rasterizer.lineOffsets = ai;
+        Rasterizer.aBoolean1464 = true;
         if (l < 9 || l > 9) {
             for (int i6 = 1; i6 > 0; i6++) ;
         }
@@ -26632,7 +26556,7 @@ final class Class8 {
             if (opcode == 1)
                 modelId = stream.readUnsignedShort();
             else if (opcode == 2)
-                name = stream.method415();
+                name = stream.readString();
             else if (opcode == 3)
                 aByteArray178 = stream.method416((byte) 30);
             else if (opcode == 4)
@@ -26659,24 +26583,24 @@ final class Class8 {
                 aBoolean161 = true;
             else if (opcode == 23) {
                 anInt165 = stream.readUnsignedShort();
-                aByte205 = stream.method409();
+                aByte205 = stream.readSignedByte();
             } else if (opcode == 24)
                 anInt188 = stream.readUnsignedShort();
             else if (opcode == 25) {
                 anInt200 = stream.readUnsignedShort();
-                aByte154 = stream.method409();
+                aByte154 = stream.readSignedByte();
             } else if (opcode == 26)
                 anInt164 = stream.readUnsignedShort();
             else if (opcode >= 30 && opcode < 35) {
                 if (aStringArray168 == null)
                     aStringArray168 = new String[5];
-                aStringArray168[opcode - 30] = stream.method415();
+                aStringArray168[opcode - 30] = stream.readString();
                 if (aStringArray168[opcode - 30].equalsIgnoreCase("hidden"))
                     aStringArray168[opcode - 30] = null;
             } else if (opcode >= 35 && opcode < 40) {
                 if (aStringArray189 == null)
                     aStringArray189 = new String[5];
-                aStringArray189[opcode - 35] = stream.method415();
+                aStringArray189[opcode - 35] = stream.readString();
             } else if (opcode == 40) {
                 int j = stream.readUnsignedByte();
                 modifiedModelColors = new int[j];
@@ -26718,9 +26642,9 @@ final class Class8 {
             else if (opcode == 112)
                 anInt191 = stream.readUnsignedShort();
             else if (opcode == 113)
-                anInt196 = stream.method409();
+                anInt196 = stream.readSignedByte();
             else if (opcode == 114)
-                anInt184 = stream.method409() * 5;
+                anInt184 = stream.readSignedByte() * 5;
             else if (opcode == 115)
                 anInt202 = stream.readUnsignedByte();
         } while (true);

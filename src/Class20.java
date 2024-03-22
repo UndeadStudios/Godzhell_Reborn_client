@@ -147,8 +147,8 @@ public class Class20
 				anInt364 = stream.readUnsignedByte();
 			else if(i == 11)
 				anInt365 = stream.readUnsignedByte();
-			else 
-				System.out.println("Unrecognized seq.dat config code: "+i);
+			else
+                System.out.println("Unrecognized seq.dat config code: "+i);
 		} while(true);
 		if(anInt352 == 0)
 		{

@@ -2,7 +2,6 @@
 
 import java.io.*;
 import java.net.Socket;
-import sign.signlink;
 
 public final class Class24
     implements Runnable
@@ -51,7 +50,7 @@ public final class Class24
         aByteArray424 = null;
     }
 
-    public int method268()
+    public int read()
         throws IOException
     {
         if(aBoolean422)
@@ -69,7 +68,7 @@ public final class Class24
             return anInputStream419.available();
     }
 
-    public void method270(byte abyte0[], int i, int j)
+    public void flushInputStream(byte abyte0[], int i, int j)
         throws IOException
     {
         if(aBoolean422)
@@ -85,7 +84,7 @@ public final class Class24
 
     }
 
-    public void method271(int i, int j, byte abyte0[], int k)
+    public void queueBytes(int i, int j, byte abyte0[], int k)
         throws IOException
     {
         if(aBoolean422)

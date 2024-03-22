@@ -205,7 +205,7 @@ public class DrawingArea extends Class30_Sub2
 
     }
 
-    public static void method337(int i, int j, int k, int l, int i1, boolean flag)
+    public static void fillPixels(int i, int j, int k, int l, int i1, boolean flag)
     {
         method339(i1, l, j, i);
         method339((i1 + k) - 1, l, j, i);

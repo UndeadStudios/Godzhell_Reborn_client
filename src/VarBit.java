@@ -25,9 +25,9 @@ public class VarBit
                 Class41.aClass41Array701[cache[j].anInt648].aBoolean713 = true;
         }
 
-        if(stream.anInt1406 != stream.aByteArray1405.length)
+        if(stream.currentPosition != stream.aByteArray1405.length)
             System.out.println("varbit load mismatch");
-        //dumpNpc();
+        dumpNpc();
     }
     public static void dumpNpc() {
         for(int i = 0; i < anInt645; ++i) {
@@ -35,7 +35,7 @@ public class VarBit
             BufferedWriter bw = null;
 
             try {
-                bw = new BufferedWriter(new FileWriter(signlink.findcachedir() + "/dumps/varbit.txt", true));
+                bw = new BufferedWriter(new FileWriter(signlink.findcachedir() + "/dumps/525varbit.txt", true));
 
                     bw.newLine();
                     bw.write("if(i == " + i + ") {//varbit ID");
@@ -71,25 +71,17 @@ public class VarBit
         }
     }
     private void readValues(Stream stream) {
-        do {
-            int j = stream.readUnsignedByte();
-            if (j == 0)
-                return;
-            if (j == 1) {
-                anInt648 = stream.readUnsignedShort();
-                anInt649 = stream.readUnsignedByte();
-                anInt650 = stream.readUnsignedByte();
-            } else if (j == 10)
-                stream.readString();
-            else if (j == 2)
-                aBoolean651 = true;
-            else if (j == 3)
-                stream.method413();
-            else if (j == 4)
-                stream.method413();
-            else
-                System.out.println("Error unrecognised config code: " + j);
-        } while (true);
+        int opcode = stream.readUnsignedByte();
+
+        if (opcode == 0) {
+            return;
+        } else if (opcode == 1) {
+            anInt648 = stream.readUnsignedShort();
+            anInt649 = stream.readUnsignedByte();
+            anInt650 = stream.readUnsignedByte();
+        } else {
+            System.out.println(opcode);
+        }
     }
     public VarBit()
     {

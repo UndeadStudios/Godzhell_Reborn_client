@@ -320,7 +320,55 @@ public class Class42_Sub1 extends Class42
             aClass2_1361.method150(class30_sub2_sub3_1);
         }
     }
+    public void crcPack(int index, int index_length) {
+        try {
+            String name = null;
+            switch (index) {
+                case 1:
+                    name = "model";
+                    break;
+                case 2:
+                    name = "anim";
+                    break;
+                case 3:
+                    name = "midi";
+                    break;
+                case 4:
+                    name = "map";
+                    break;
+            }
+            DataOutputStream crc_output = new DataOutputStream(new FileOutputStream("./" + name + "_crc"));
+            DataOutputStream version_output = new DataOutputStream(new FileOutputStream("./" + name + "_version"));
+            for (int j = 0; j < index_length; j++) {
+                byte abyte0[] = aClient1343.aClass14Array970[index].method233( j);
+                if (abyte0 != null) {
+                    int k = abyte0.length - 2;
+                    int version = ((abyte0[k] & 0xff) << 8) + (abyte0[k + 1] & 0xff);
+                    aCRC32_1338.reset();
+                    aCRC32_1338.update(abyte0, 0, k);
+                    int crc = (int) aCRC32_1338.getValue();
+                    writeDWord(crc_output, crc); // writes the crc value
+                    version_output.writeShort(version); // writes the version
+                    // value
+                } else {
+                    writeDWord(crc_output, 0); // writes the crc value
+                    version_output.writeShort(0); // writes the version value
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static void writeDWord(DataOutputStream dos, int i) {
+        try {
+            dos.writeByte((byte) (i >> 24));
+            dos.writeByte((byte) (i >> 16));
+            dos.writeByte((byte) (i >> 8));
+            dos.writeByte((byte) i);
+        } catch (IOException ioe) {
+        }
+    }
     public final int method559(int i, int j)
     {
         if(j >= 0)
@@ -490,7 +538,8 @@ public class Class42_Sub1 extends Class42
         }
         catch(IOException _ex)
         {
-            throw new RuntimeException("error unzipping");
+            System.err.println("Failed to unzip [" + class30_sub2_sub3.anInt1421 + "] type = " + class30_sub2_sub3.anInt1419);
+            //throw new RuntimeException("error unzipping");
         }
         class30_sub2_sub3.aByteArray1420 = new byte[i];
         for(int j = 0; j < i; j++)

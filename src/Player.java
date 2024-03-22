@@ -84,7 +84,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1
 
     public final void method451(int i, Stream stream)
     {
-        stream.anInt1406 = 0;
+        stream.currentPosition = 0;
         gender = stream.readUnsignedByte();
         anInt1706 = stream.readUnsignedByte();
         if(i != 0)
@@ -143,7 +143,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1
         super.anInt1505 = stream.readUnsignedShort();
         if(super.anInt1505 == 65535)
             super.anInt1505 = -1;
-        name = TextClass.fixName(TextClass.nameForLong(stream.method414(-35089)));
+        name = TextClass.fixName(TextClass.nameForLong(stream.readQWord(-35089)));
         anInt1705 = stream.readUnsignedByte();
         anInt1723 = stream.readUnsignedShort();
         aBoolean1710 = true;

@@ -19,7 +19,7 @@ public class Class41
 
         if(i != 0)
             aBoolean698 = !aBoolean698;
-        if(stream.anInt1406 != stream.aByteArray1405.length)
+        if(stream.currentPosition != stream.aByteArray1405.length)
             System.out.println("varptype load mismatch");
     }
 
@@ -61,7 +61,7 @@ public class Class41
                 aBoolean713 = true;
             } else
             if(j == 10)
-                aString704 = stream.method415();
+                aString704 = stream.readString();
             else
             if(j == 11)
                 aBoolean713 = true;

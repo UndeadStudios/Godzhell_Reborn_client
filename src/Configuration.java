@@ -17,4 +17,7 @@ public class Configuration {
 
     public static boolean dumpDataLists = false;
     public static boolean dumpAnimationData = false;
+    public static boolean Enable_JagGrab = true;
+    public static boolean Dump_crcs = false;
+    public static boolean smoothShading = true;
 }

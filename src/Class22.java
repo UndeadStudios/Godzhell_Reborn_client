@@ -15,7 +15,7 @@ public class Class22
                 aClass22Array388[j] = new Class22();
             aClass22Array388[j].method261(true, stream);
         }
-	//System.out.println("530 Overlay Loaded: " + anInt387);
+	System.out.println("530 Overlay Loaded: " + anInt387);
     }
 
     public void method261(boolean flag, Stream stream)
@@ -40,7 +40,7 @@ public class Class22
                 aBoolean393 = false;
             else
             if(i == 6)
-                aString389 = stream.method415();
+                aString389 = stream.readString();
             else
             if(i == 7)
             {
