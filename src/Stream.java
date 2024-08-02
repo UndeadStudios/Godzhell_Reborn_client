@@ -5,13 +5,13 @@ public final class Stream extends Class30_Sub2
 {
     public Stream(byte abyte0[])
   {
-            aByteArray1405 = abyte0;
+            buffer = abyte0;
             currentPosition = 0;
 
     }
         final int v(int i) {
                 currentPosition += 3;
-                return (0xff & aByteArray1405[currentPosition - 3] << 16) + (0xff & aByteArray1405[currentPosition - 2] << 8) + (0xff & aByteArray1405[currentPosition - 1]);
+                return (0xff & buffer[currentPosition - 3] << 16) + (0xff & buffer[currentPosition - 2] << 8) + (0xff & buffer[currentPosition - 1]);
             }
     public static Stream method396(int i, int j)
     {
@@ -19,12 +19,12 @@ public final class Stream extends Class30_Sub2
         Stream stream_1 = new Stream(false);
         stream_1.currentPosition = 0;
         if(i == 0)
-            stream_1.aByteArray1405 = new byte[100];
+            stream_1.buffer = new byte[100];
         else
         if(i == 1)
-            stream_1.aByteArray1405 = new byte[40000];
+            stream_1.buffer = new byte[40000];
         else
-            stream_1.aByteArray1405 = new byte[30000];
+            stream_1.buffer = new byte[30000];
         return stream_1;
     }
 
@@ -75,72 +75,68 @@ public final class Stream extends Class30_Sub2
             throw new NullPointerException();
         } else
         {
-            aByteArray1405 = abyte0;
+            buffer = abyte0;
             currentPosition = 0;
             return;
         }
     }
 
-    public void method397(byte byte0, int i)
+    public void createFrame(int i)
     {
-        if(byte0 != 6)
-        {
-            for(int j = 1; j > 0; j++);
-        }
-        aByteArray1405[currentPosition++] = (byte)(i + aClass17_1410.method246());
+        buffer[currentPosition++] = (byte)(i + encryption.getNextKey());
     }
 
-    public void writeUnsignedByte(int i)
+    public void writeByte(int i)
     {
-        aByteArray1405[currentPosition++] = (byte)i;
+        buffer[currentPosition++] = (byte)i;
     }
 
     public void writeWord(int i)
     {
-        aByteArray1405[currentPosition++] = (byte)(i >> 8);
-        aByteArray1405[currentPosition++] = (byte)i;
+        buffer[currentPosition++] = (byte)(i >> 8);
+        buffer[currentPosition++] = (byte)i;
     }
 
     public void method400(boolean flag, int i)
     {
-        aByteArray1405[currentPosition++] = (byte)i;
-        aByteArray1405[currentPosition++] = (byte)(i >> 8);
+        buffer[currentPosition++] = (byte)i;
+        buffer[currentPosition++] = (byte)(i >> 8);
         if(!flag)
             anInt1389 = -142;
     }
 
     public void method401(int i)
     {
-        aByteArray1405[currentPosition++] = (byte)(i >> 16);
-        aByteArray1405[currentPosition++] = (byte)(i >> 8);
-        aByteArray1405[currentPosition++] = (byte)i;
+        buffer[currentPosition++] = (byte)(i >> 16);
+        buffer[currentPosition++] = (byte)(i >> 8);
+        buffer[currentPosition++] = (byte)i;
     }
 
     public void writeDWord(int i)
     {
-        aByteArray1405[currentPosition++] = (byte)(i >> 24);
-        aByteArray1405[currentPosition++] = (byte)(i >> 16);
-        aByteArray1405[currentPosition++] = (byte)(i >> 8);
-        aByteArray1405[currentPosition++] = (byte)i;
+        buffer[currentPosition++] = (byte)(i >> 24);
+        buffer[currentPosition++] = (byte)(i >> 16);
+        buffer[currentPosition++] = (byte)(i >> 8);
+        buffer[currentPosition++] = (byte)i;
     }
 
     public void method403(int i, int j)
     {
-        aByteArray1405[currentPosition++] = (byte)j;
-        aByteArray1405[currentPosition++] = (byte)(j >> 8);
+        buffer[currentPosition++] = (byte)j;
+        buffer[currentPosition++] = (byte)(j >> 8);
         if(i != 0)
         {
             return;
         } else
         {
-            aByteArray1405[currentPosition++] = (byte)(j >> 16);
-            aByteArray1405[currentPosition++] = (byte)(j >> 24);
+            buffer[currentPosition++] = (byte)(j >> 16);
+            buffer[currentPosition++] = (byte)(j >> 24);
             return;
         }
     }
     public int readShort2() {
         currentPosition += 2;
-        int i = ((aByteArray1405[currentPosition - 2] & 0xff) << 8) + (aByteArray1405[currentPosition - 1] & 0xff);
+        int i = ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] & 0xff);
         if(i > 32767)
             i -= 65537;
         return i;
@@ -149,16 +145,16 @@ public final class Stream extends Class30_Sub2
     {
         try
         {
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 56);
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 48);
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 40);
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 32);
+            buffer[currentPosition++] = (byte)(int)(l >> 56);
+            buffer[currentPosition++] = (byte)(int)(l >> 48);
+            buffer[currentPosition++] = (byte)(int)(l >> 40);
+            buffer[currentPosition++] = (byte)(int)(l >> 32);
             if(i < 5 || i > 5)
                 anInt1402 = 409;
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 24);
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 16);
-            aByteArray1405[currentPosition++] = (byte)(int)(l >> 8);
-            aByteArray1405[currentPosition++] = (byte)(int)l;
+            buffer[currentPosition++] = (byte)(int)(l >> 24);
+            buffer[currentPosition++] = (byte)(int)(l >> 16);
+            buffer[currentPosition++] = (byte)(int)(l >> 8);
+            buffer[currentPosition++] = (byte)(int)l;
         }
         catch(RuntimeException runtimeexception)
         {
@@ -169,35 +165,35 @@ public final class Stream extends Class30_Sub2
 
     public void writeString(String s)
     {
-        s.getBytes(0, s.length(), aByteArray1405, currentPosition);
+        s.getBytes(0, s.length(), buffer, currentPosition);
         currentPosition += s.length();
-        aByteArray1405[currentPosition++] = 10;
+        buffer[currentPosition++] = 10;
     }
 
-    public void method406(byte abyte0[], int i, boolean flag, int j)
+    public void writeBytes(byte abyte0[], int i, boolean flag, int j)
     {
         if(!flag)
             aBoolean1401 = !aBoolean1401;
         for(int k = j; k < j + i; k++)
-            aByteArray1405[currentPosition++] = abyte0[k];
+            buffer[currentPosition++] = abyte0[k];
 
     }
 
     public void method407(int i, byte byte0)
     {
-        aByteArray1405[currentPosition - i - 1] = (byte)i;
+        buffer[currentPosition - i - 1] = (byte)i;
         if(byte0 == 0)
             byte0 = 0;
     }
 
     public int readUnsignedByte()
     {
-        return aByteArray1405[currentPosition++] & 0xff;
+        return buffer[currentPosition++] & 0xff;
     }
 
     public byte readSignedByte()
     {
-        return aByteArray1405[currentPosition++];
+        return buffer[currentPosition++];
     }
 
     public int readUnsignedShort()
@@ -205,20 +201,20 @@ public final class Stream extends Class30_Sub2
 
 
         currentPosition += 2;
-        return ((aByteArray1405[currentPosition - 2] & 0xff) << 8) + (aByteArray1405[currentPosition - 1] & 0xff);
+        return ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] & 0xff);
     }
 
     public int method411()
     {
         currentPosition += 2;
-        int i = ((aByteArray1405[currentPosition - 2] & 0xff) << 8) + (aByteArray1405[currentPosition - 1] & 0xff);
+        int i = ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] & 0xff);
         if(i > 32767)
             i -= 0x10000;
         return i;
     }
     public int method912(int i) {
         currentPosition++;
-        int i_6_ = aByteArray1405[currentPosition] & i;
+        int i_6_ = buffer[currentPosition] & i;
         if (i_6_ < 128)
             return readUnsignedByte();
         return -32768 + readUnsignedShort();
@@ -236,7 +232,7 @@ public final class Stream extends Class30_Sub2
     }
 
     public int readUShortSmart() {
-        int var2 = this.aByteArray1405[this.currentPosition] & 255;
+        int var2 = this.buffer[this.currentPosition] & 255;
         return var2 < 128 ? this.readUnsignedByte() : this.readUnsignedShort() - 32768;
     }
     public int method937(boolean bool) {
@@ -271,45 +267,45 @@ public final class Stream extends Class30_Sub2
             int i = 8 * arg0;
             long l = 0L;
             for (/**/; i >= 0; i -= 8)
-                l |= ((long) aByteArray1405[currentPosition++] & 0xffL) << i;
+                l |= ((long) buffer[currentPosition++] & 0xffL) << i;
             return l;
     }
-    public int method412()
+    public int read3Bytes()
     {
         currentPosition += 3;
-        return ((aByteArray1405[currentPosition - 3] & 0xff) << 16) + ((aByteArray1405[currentPosition - 2] & 0xff) << 8) + (aByteArray1405[currentPosition - 1] & 0xff);
+        return ((buffer[currentPosition - 3] & 0xff) << 16) + ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] & 0xff);
     }
 
-    public int method413()
+    public int readDWord()
     {
         currentPosition += 4;
-        return ((aByteArray1405[currentPosition - 4] & 0xff) << 24) + ((aByteArray1405[currentPosition - 3] & 0xff) << 16) + ((aByteArray1405[currentPosition - 2] & 0xff) << 8) + (aByteArray1405[currentPosition - 1] & 0xff);
+        return ((buffer[currentPosition - 4] & 0xff) << 24) + ((buffer[currentPosition - 3] & 0xff) << 16) + ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] & 0xff);
     }
 
     public long readQWord(int i)
     {
-        long l = (long)method413() & 0xffffffffL;
+        long l = (long) readDWord() & 0xffffffffL;
         if(i != -35089)
             aBoolean1403 = !aBoolean1403;
-        long l1 = (long)method413() & 0xffffffffL;
+        long l1 = (long) readDWord() & 0xffffffffL;
         return (l << 32) + l1;
     }
 
     public String readString() {
         int i = currentPosition;
-        while (aByteArray1405[currentPosition++] != 10)
+        while (buffer[currentPosition++] != 10)
             ;
-        return new String(aByteArray1405, i, currentPosition - i - 1);
+        return new String(buffer, i, currentPosition - i - 1);
     }
     public byte[] method416(byte byte0)
     {
         int i = currentPosition;
-        while(aByteArray1405[currentPosition++] != 10) ;
+        while(buffer[currentPosition++] != 10) ;
         byte abyte0[] = new byte[currentPosition - i - 1];
         if(byte0 != 30)
             aBoolean1404 = !aBoolean1404;
         for(int j = i; j < currentPosition - 1; j++)
-            abyte0[j - i] = aByteArray1405[j];
+            abyte0[j - i] = buffer[j];
 
         return abyte0;
     }
@@ -321,7 +317,7 @@ public final class Stream extends Class30_Sub2
             for(int k = 1; k > 0; k++);
         }
         for(int l = j; l < j + i; l++)
-            abyte0[l] = aByteArray1405[currentPosition++];
+            abyte0[l] = buffer[currentPosition++];
 
     }
 
@@ -342,14 +338,14 @@ public final class Stream extends Class30_Sub2
         anInt1407 += i;
         for(; i > l; l = 8)
         {
-            i1 += (aByteArray1405[k++] & anIntArray1409[l]) << i - l;
+            i1 += (buffer[k++] & anIntArray1409[l]) << i - l;
             i -= l;
         }
 
         if(i == l)
-            i1 += aByteArray1405[k] & anIntArray1409[l];
+            i1 += buffer[k] & anIntArray1409[l];
         else
-            i1 += aByteArray1405[k] >> l - i & anIntArray1409[i];
+            i1 += buffer[k] >> l - i & anIntArray1409[i];
         return i1;
     }
 
@@ -364,7 +360,7 @@ public final class Stream extends Class30_Sub2
 
     public int method421()
     {
-        int i = aByteArray1405[currentPosition] & 0xff;
+        int i = buffer[currentPosition] & 0xff;
         if(i < 128)
             return readUnsignedByte() - 64;
         else
@@ -372,7 +368,7 @@ public final class Stream extends Class30_Sub2
     }
 
     public int readUSmart() {
-        int peek = aByteArray1405[currentPosition] & 0xFF;
+        int peek = buffer[currentPosition] & 0xFF;
         return peek < 128 ? this.readUnsignedByte() : this.readUnsignedShort() - 0x8000;
     }
     public int readUSmart2() {
@@ -384,7 +380,7 @@ public final class Stream extends Class30_Sub2
         return baseVal + lastVal;
     }
     public int readSmart() {
-        int value = aByteArray1405[currentPosition] & 0xFF;
+        int value = buffer[currentPosition] & 0xFF;
         if (value < 128) {
             return readUnsignedByte() - 64;
         } else {
@@ -395,7 +391,7 @@ public final class Stream extends Class30_Sub2
             currentPosition++;
             if (arg0 != -1647926640)
                 return 81;
-            int i = 0xff & aByteArray1405[currentPosition];
+            int i = 0xff & buffer[currentPosition];
             if (i >= 128)
                 return -32768 + readUnsignedShort();
             return readUnsignedByte();
@@ -416,13 +412,13 @@ public final class Stream extends Class30_Sub2
         BigInteger biginteger3 = biginteger2.modPow(RSA_EXPONENT, RSA_MODULUS);
         byte abyte1[] = biginteger3.toByteArray();
         currentPosition = 0;
-        writeUnsignedByte(abyte1.length);
-        method406(abyte1, abyte1.length, true, 0);
+        writeByte(abyte1.length);
+        writeBytes(abyte1, abyte1.length, true, 0);
     }
 
     public void method424(int i, int j)
     {
-        aByteArray1405[currentPosition++] = (byte)(-i);
+        buffer[currentPosition++] = (byte)(-i);
         if(j != 0)
         {
             for(int k = 1; k > 0; k++);
@@ -431,7 +427,7 @@ public final class Stream extends Class30_Sub2
 
     public void method425(int i, int j)
     {
-        aByteArray1405[currentPosition++] = (byte)(128 - j);
+        buffer[currentPosition++] = (byte)(128 - j);
         i = 90 / i;
     }
 
@@ -440,21 +436,21 @@ public final class Stream extends Class30_Sub2
         if(i != 0)
             return anInt1395;
         else
-            return aByteArray1405[currentPosition++] - 128 & 0xff;
+            return buffer[currentPosition++] - 128 & 0xff;
     }
 
     public int readByteC(boolean flag)
     {
         if(flag)
             anInt1389 = 310;
-        return -aByteArray1405[currentPosition++] & 0xff;
+        return -buffer[currentPosition++] & 0xff;
     }
 
     public int readByteA(int i)
     {
         if(i != 2)
             aBoolean1404 = !aBoolean1404;
-        return 128 - aByteArray1405[currentPosition++] & 0xff;
+        return 128 - buffer[currentPosition++] & 0xff;
     }
 
     public byte method429(byte byte0)
@@ -462,7 +458,7 @@ public final class Stream extends Class30_Sub2
         if(byte0 != aByte1398)
             throw new NullPointerException();
         else
-            return (byte)(-aByteArray1405[currentPosition++]);
+            return (byte)(-buffer[currentPosition++]);
     }
 
     public byte method430(int i)
@@ -471,31 +467,31 @@ public final class Stream extends Class30_Sub2
         {
             for(int j = 1; j > 0; j++);
         }
-        return (byte)(128 - aByteArray1405[currentPosition++]);
+        return (byte)(128 - buffer[currentPosition++]);
     }
 
     public void method431(boolean flag, int i)
     {
-        aByteArray1405[currentPosition++] = (byte)i;
-        aByteArray1405[currentPosition++] = (byte)(i >> 8);
+        buffer[currentPosition++] = (byte)i;
+        buffer[currentPosition++] = (byte)(i >> 8);
         if(!flag)
             aBoolean1401 = !aBoolean1401;
     }
 
     public void method432(int i, int j)
     {
-        aByteArray1405[currentPosition++] = (byte)(j >> 8);
+        buffer[currentPosition++] = (byte)(j >> 8);
         while(i >= 0) 
             anInt1402 = 376;
-        aByteArray1405[currentPosition++] = (byte)(j + 128);
+        buffer[currentPosition++] = (byte)(j + 128);
     }
 
     public void method433(int i, int j)
     {
-        aByteArray1405[currentPosition++] = (byte)(j + 128);
+        buffer[currentPosition++] = (byte)(j + 128);
         if(i != 0)
             anInt1402 = -238;
-        aByteArray1405[currentPosition++] = (byte)(j >> 8);
+        buffer[currentPosition++] = (byte)(j >> 8);
     }
 
     public int method434(byte byte0)
@@ -504,7 +500,7 @@ public final class Stream extends Class30_Sub2
         if(byte0 != aByte1399)
             return 3;
         else
-            return ((aByteArray1405[currentPosition - 1] & 0xff) << 8) + (aByteArray1405[currentPosition - 2] & 0xff);
+            return ((buffer[currentPosition - 1] & 0xff) << 8) + (buffer[currentPosition - 2] & 0xff);
     }
 
     public int method435(boolean flag)
@@ -514,7 +510,7 @@ public final class Stream extends Class30_Sub2
             for(int i = 1; i > 0; i++);
         }
         currentPosition += 2;
-        return ((aByteArray1405[currentPosition - 2] & 0xff) << 8) + (aByteArray1405[currentPosition - 1] - 128 & 0xff);
+        return ((buffer[currentPosition - 2] & 0xff) << 8) + (buffer[currentPosition - 1] - 128 & 0xff);
     }
 
     public int method436(byte byte0)
@@ -524,7 +520,7 @@ public final class Stream extends Class30_Sub2
         {
             for(int i = 1; i > 0; i++);
         }
-        return ((aByteArray1405[currentPosition - 1] & 0xff) << 8) + (aByteArray1405[currentPosition - 2] - 128 & 0xff);
+        return ((buffer[currentPosition - 1] & 0xff) << 8) + (buffer[currentPosition - 2] - 128 & 0xff);
     }
 
     public int method437(int i)
@@ -532,7 +528,7 @@ public final class Stream extends Class30_Sub2
         currentPosition += 2;
         if(i >= 0)
             return 2;
-        int j = ((aByteArray1405[currentPosition - 1] & 0xff) << 8) + (aByteArray1405[currentPosition - 2] & 0xff);
+        int j = ((buffer[currentPosition - 1] & 0xff) << 8) + (buffer[currentPosition - 2] & 0xff);
         if(j > 32767)
             j -= 0x10000;
         return j;
@@ -545,7 +541,7 @@ public final class Stream extends Class30_Sub2
             for(int i = 1; i > 0; i++);
         }
         currentPosition += 2;
-        int j = ((aByteArray1405[currentPosition - 1] & 0xff) << 8) + (aByteArray1405[currentPosition - 2] - 128 & 0xff);
+        int j = ((buffer[currentPosition - 1] & 0xff) << 8) + (buffer[currentPosition - 2] - 128 & 0xff);
         if(j > 32767)
             j -= 0x10000;
         return j;
@@ -559,7 +555,7 @@ public final class Stream extends Class30_Sub2
         } else
         {
             currentPosition += 4;
-            return ((aByteArray1405[currentPosition - 2] & 0xff) << 24) + ((aByteArray1405[currentPosition - 1] & 0xff) << 16) + ((aByteArray1405[currentPosition - 4] & 0xff) << 8) + (aByteArray1405[currentPosition - 3] & 0xff);
+            return ((buffer[currentPosition - 2] & 0xff) << 24) + ((buffer[currentPosition - 1] & 0xff) << 16) + ((buffer[currentPosition - 4] & 0xff) << 8) + (buffer[currentPosition - 3] & 0xff);
         }
     }
 
@@ -568,7 +564,7 @@ public final class Stream extends Class30_Sub2
         if(!flag)
             aBoolean1396 = !aBoolean1396;
         currentPosition += 4;
-        return ((aByteArray1405[currentPosition - 3] & 0xff) << 24) + ((aByteArray1405[currentPosition - 4] & 0xff) << 16) + ((aByteArray1405[currentPosition - 1] & 0xff) << 8) + (aByteArray1405[currentPosition - 2] & 0xff);
+        return ((buffer[currentPosition - 3] & 0xff) << 24) + ((buffer[currentPosition - 4] & 0xff) << 16) + ((buffer[currentPosition - 1] & 0xff) << 8) + (buffer[currentPosition - 2] & 0xff);
     }
 
     public void method441(int i, byte byte0, byte abyte0[], int j)
@@ -576,7 +572,7 @@ public final class Stream extends Class30_Sub2
         if(byte0 != 6)
             aBoolean1396 = !aBoolean1396;
         for(int k = (i + j) - 1; k >= i; k--)
-            aByteArray1405[currentPosition++] = (byte)(abyte0[k] + 128);
+            buffer[currentPosition++] = (byte)(abyte0[k] + 128);
 
     }
 
@@ -585,7 +581,7 @@ public final class Stream extends Class30_Sub2
         if(!flag)
             aBoolean1396 = !aBoolean1396;
         for(int k = (j + i) - 1; k >= j; k--)
-            abyte0[k] = aByteArray1405[currentPosition++];
+            abyte0[k] = buffer[currentPosition++];
 
     }
 
@@ -605,7 +601,7 @@ public final class Stream extends Class30_Sub2
     private int anInt1402;
     private boolean aBoolean1403;
     private boolean aBoolean1404;
-    public byte aByteArray1405[];
+    public byte buffer[];
     public int currentPosition;
     public int anInt1407;
     private static int anIntArray1408[];
@@ -615,7 +611,7 @@ public final class Stream extends Class30_Sub2
         0xfffff, 0x1fffff, 0x3fffff, 0x7fffff, 0xffffff, 0x1ffffff, 0x3ffffff, 0x7ffffff, 0xfffffff, 0x1fffffff, 
         0x3fffffff, 0x7fffffff, -1
     };
-    public Class17 aClass17_1410;
+    public ISAACRandomGen encryption;
     private static int anInt1411;
     private static int anInt1412;
     private static int anInt1413;

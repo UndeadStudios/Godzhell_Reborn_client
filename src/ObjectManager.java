@@ -463,7 +463,7 @@ final class ObjectManager {
 		return k;
 	}
 
-	public static final void method173(byte byte0, Stream stream, Class42_Sub1 class42_sub1) {
+	public static final void method173(byte byte0, Stream stream, OnDemandFetcher onDemandFetcher) {
 		label0:
 		{
 			int i = -1;
@@ -478,7 +478,7 @@ final class ObjectManager {
 				}
 				i += j;
 				Class46 class46 = Class46.forID(i);
-				class46.method574(class42_sub1, -235);
+				class46.method574(onDemandFetcher, -235);
 				do
 				{
 					int k = stream.readUShortSmart();

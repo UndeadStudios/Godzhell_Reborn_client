@@ -1,12 +1,12 @@
 public final class Censor
 {
 
-    public static final void method487(Class44 class44)
+    public static final void method487(FileArchive fileArchive)
     {
-        Stream stream = new Stream(class44.method571("fragmentsenc.txt", null), 891);
-        Stream stream_1 = new Stream(class44.method571("badenc.txt", null), 891);
-        Stream class30_sub2_sub2_2 = new Stream(class44.method571("domainenc.txt", null), 891);
-        Stream stream_3 = new Stream(class44.method571("tldlist.txt", null), 891);
+        Stream stream = new Stream(fileArchive.method571("fragmentsenc.txt"), 891);
+        Stream stream_1 = new Stream(fileArchive.method571("badenc.txt"), 891);
+        Stream class30_sub2_sub2_2 = new Stream(fileArchive.method571("domainenc.txt"), 891);
+        Stream stream_3 = new Stream(fileArchive.method571("tldlist.txt"), 891);
         method488(stream, stream_1, class30_sub2_sub2_2, stream_3);
     }
 
@@ -20,7 +20,7 @@ public final class Censor
 
     private static final void method489(byte byte0, Stream stream)
     {
-        int i = stream.method413();
+        int i = stream.readDWord();
         aCharArrayArray624 = new char[i][];
         anIntArray625 = new int[i];
         if(byte0 != 2)
@@ -41,7 +41,7 @@ public final class Censor
     {
         if(i != 9121)
             aBoolean619 = !aBoolean619;
-        int j = stream.method413();
+        int j = stream.readDWord();
         aCharArrayArray621 = new char[j][];
         aByteArrayArrayArray622 = new byte[j][][];
         method493(stream, aCharArrayArray621, true, aByteArrayArrayArray622);
@@ -49,7 +49,7 @@ public final class Censor
 
     private static final void method491(Stream stream, byte byte0)
     {
-        int i = stream.method413();
+        int i = stream.readDWord();
         aCharArrayArray623 = new char[i][];
         if(byte0 != -28)
         {
@@ -63,7 +63,7 @@ public final class Censor
 
     private static final void method492(Stream stream, boolean flag)
     {
-        anIntArray620 = new int[stream.method413()];
+        anIntArray620 = new int[stream.readDWord()];
         for(int i = 0; i < anIntArray620.length; i++)
             anIntArray620[i] = stream.readUnsignedShort();
 

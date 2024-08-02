@@ -221,10 +221,10 @@ return class5;
             return method159(anIntArray88[j]);
     }
 
-    public static final void method162(Class44 class44)
+    public static final void method162(FileArchive fileArchive)
     {
-        aStream_60 = new Stream(class44.method571("npc.dat", null), 891);
-        Stream stream = new Stream(class44.method571("npc.idx", null), 891);
+        aStream_60 = new Stream(fileArchive.method571("npc.dat"), 891);
+        Stream stream = new Stream(fileArchive.method571("npc.idx"), 891);
         anInt62 = stream.readUnsignedShort();
         anIntArray72 = new int[anInt62+6000];
         int i = 2;

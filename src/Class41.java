@@ -1,9 +1,9 @@
 public class Class41
 {
 
-    public static void method546(int i, Class44 class44)
+    public static void method546(int i, FileArchive fileArchive)
     {
-        Stream stream = new Stream(class44.method571("varp.dat", null), 891);
+        Stream stream = new Stream(fileArchive.method571("varp.dat"), 891);
         anInt702 = 0;
         anInt700 = stream.readUnsignedShort();
         if(aClass41Array701 == null)
@@ -19,7 +19,7 @@ public class Class41
 
         if(i != 0)
             aBoolean698 = !aBoolean698;
-        if(stream.currentPosition != stream.aByteArray1405.length)
+        if(stream.currentPosition != stream.buffer.length)
             System.out.println("varptype load mismatch");
     }
 
@@ -53,7 +53,7 @@ public class Class41
                 aBoolean710 = true;
             else
             if(j == 7)
-                anInt711 = stream.method413();
+                anInt711 = stream.readDWord();
             else
             if(j == 8)
             {
@@ -67,7 +67,7 @@ public class Class41
                 aBoolean713 = true;
             else
             if(j == 12)
-                anInt714 = stream.method413();
+                anInt714 = stream.readDWord();
             else
             if(j == 13)
                 anInt712 = 2;

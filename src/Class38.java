@@ -1,9 +1,9 @@
 public class Class38
 {
 
-    public static void method535(int i, Class44 class44)
+    public static void method535(int i, FileArchive fileArchive)
     {
-        Stream stream = new Stream(class44.method571("idk.dat", null), 891);
+        Stream stream = new Stream(fileArchive.method571("idk.dat"), 891);
         anInt655 = stream.readUnsignedShort();
         if(aClass38Array656 == null)
             aClass38Array656 = new Class38[anInt655];

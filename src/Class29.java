@@ -9,8 +9,8 @@ public class Class29
             throw new NullPointerException();
         } else
         {
-            anInt538 = stream.method413();
-            anInt539 = stream.method413();
+            anInt538 = stream.readDWord();
+            anInt539 = stream.readDWord();
             method326((byte)-112, stream);
             return;
         }

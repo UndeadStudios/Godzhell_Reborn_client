@@ -35,7 +35,7 @@ public final class Class1
         try
         {
             if(class30.aClass30_550 != null)
-                class30.method329();
+                class30.unlink();
             Class30 class30_1 = aClass30Array40[(int)(l & (long)(anInt39 - 1))];
             if(byte0 != 7)
             {

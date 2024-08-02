@@ -3,7 +3,6 @@
 // Decompiler options: packimports(3) 
 // Source File Name:   OverLayFlo317.java
 
-import java.io.PrintStream;
 import java.nio.ByteBuffer;
 
 public class OverLayFlo317
@@ -14,9 +13,9 @@ public class OverLayFlo317
         textureId = -1;
     }
 
-    public static void load(Class44 arg1)
+    public static void load(FileArchive arg1)
     {
-        ByteBuffer bb = ByteBuffer.wrap(arg1.method571("flo2.dat", null));
+        ByteBuffer bb = ByteBuffer.wrap(arg1.method571("flo2.dat"));
         int count = bb.getShort();
         overLayFlo317s = new OverLayFlo317[count];
         for(int i = 0; i < count; i++)

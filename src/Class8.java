@@ -221,9 +221,9 @@ final class Class8 {
         }
     }
 
-    public static void method193(Class44 class44) {
-        aStream_183 = new Stream(class44.method571("obj.dat", null), 891);
-        Stream stream = new Stream(class44.method571("obj.idx", null), 891);
+    public static void method193(FileArchive fileArchive) {
+        aStream_183 = new Stream(fileArchive.method571("obj.dat"), 891);
+        Stream stream = new Stream(fileArchive.method571("obj.idx"), 891);
         anInt203 = stream.readUnsignedShort();
         anIntArray195 = new int[anInt203 + 20000];
         int i = 2;
@@ -26203,7 +26203,7 @@ final class Class8 {
         if (k == 0) {
             Sprite sprite = (Sprite) aClass12_158.method222(i);
             if (sprite != null && sprite.anInt1445 != j && sprite.anInt1445 != -1) {
-                sprite.method329();
+                sprite.unlink();
                 sprite = null;
             }
             if (sprite != null)
@@ -26578,7 +26578,7 @@ final class Class8 {
             else if (opcode == 11)
                 aBoolean176 = true;
             else if (opcode == 12)
-                anInt155 = stream.method413();
+                anInt155 = stream.readDWord();
             else if (opcode == 16)
                 aBoolean161 = true;
             else if (opcode == 23) {

@@ -1,7 +1,3 @@
- 
-
-import sign.signlink;
-
 public final class Class19
 {
 
@@ -16,10 +12,10 @@ public final class Class19
         aClass30_346.aClass30_550 = aClass30_346;
     }
 
-    public void method249(Class30 class30)
+    public void insertHead(Class30 class30)
     {
         if(class30.aClass30_550 != null)
-            class30.method329();
+            class30.unlink();
         class30.aClass30_550 = aClass30_346.aClass30_550;
         class30.aClass30_549 = aClass30_346;
         class30.aClass30_550.aClass30_549 = class30;
@@ -29,7 +25,7 @@ public final class Class19
     public void method250(int i, Class30 class30)
     {
         if(class30.aClass30_550 != null)
-            class30.method329();
+            class30.unlink();
         class30.aClass30_550 = aClass30_346;
         class30.aClass30_549 = aClass30_346.aClass30_549;
         while(i >= 0) 
@@ -46,12 +42,12 @@ public final class Class19
             return null;
         } else
         {
-            class30.method329();
+            class30.unlink();
             return class30;
         }
     }
 
-    public Class30 method252()
+    public Class30 reverseGetFirst()
     {
         Class30 class30 = aClass30_346.aClass30_549;
         if(class30 == aClass30_346)
@@ -81,7 +77,7 @@ public final class Class19
         }
     }
 
-    public Class30 method254(boolean flag)
+    public Class30 reverseGetNext(boolean flag)
     {
         Class30 class30 = aClass30_347;
         if(flag)
@@ -121,7 +117,7 @@ public final class Class19
             Class30 class30 = aClass30_346.aClass30_549;
             if(class30 == aClass30_346)
                 return;
-            class30.method329();
+            class30.unlink();
         } while(true);
     }
 

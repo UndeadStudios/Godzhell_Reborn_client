@@ -80,7 +80,7 @@ public class Rasterizer extends DrawingArea
         }
     }
 
-    public static final void method368(Class44 class44, int i)
+    public static final void method368(FileArchive fileArchive, int i)
     {
         anInt1473 = 0;
         if(i != 0)
@@ -88,7 +88,7 @@ public class Rasterizer extends DrawingArea
         for(int j = 0; j < 100; j++)
             try
             {
-                aBackgroundArray1474[j] = new Background(class44, String.valueOf(j), 0);
+                aBackgroundArray1474[j] = new Background(fileArchive, String.valueOf(j), 0);
                 if(aBoolean1461 && aBackgroundArray1474[j].anInt1456 == 128)
                     aBackgroundArray1474[j].method356(false);
                 else

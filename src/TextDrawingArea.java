@@ -3,7 +3,7 @@ import java.util.Random;
 public final class TextDrawingArea extends DrawingArea
 {
 
-    public TextDrawingArea(boolean flag, String s, int i, Class44 class44)
+    public TextDrawingArea(boolean flag, String s, int i, FileArchive fileArchive)
     {
         aBoolean1484 = false;
         anInt1485 = 445;
@@ -20,8 +20,8 @@ public final class TextDrawingArea extends DrawingArea
         anIntArray1496 = new int[256];
         aRandom1498 = new Random();
         aBoolean1499 = false;
-        Stream stream = new Stream(class44.method571(s + ".dat", null), 891);
-        Stream stream_1 = new Stream(class44.method571("index.dat", null), 891);
+        Stream stream = new Stream(fileArchive.method571(s + ".dat"), 891);
+        Stream stream_1 = new Stream(fileArchive.method571("index.dat"), 891);
         byte byte0 = -1;
         if(i != 0)
             aBoolean1490 = !aBoolean1490;

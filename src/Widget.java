@@ -33,7 +33,7 @@ public class Widget
     public int parentID;
     public int spellUsableOn;
     private static Class12 aClass12_238;
-    static Class44 aClass44;
+    static FileArchive aFileArchive;
     public int anInt239;
     public int children[];
     public int childX[];
@@ -86,16 +86,16 @@ public class Widget
         invStackSizes[j] = k;
     }
 
-    public static void unpack(Class44 class44, RSFont aclass30_sub2_sub1_sub4[], byte byte0, Class44 class44_1)
+    public static void unpack(FileArchive fileArchive, RSFont aclass30_sub2_sub1_sub4[], byte byte0, FileArchive fileArchive_1)
     {
         aClass12_238 = new Class12(false, 50000);
-        Stream stream = new Stream(class44.method571("data", null), 891);
+        Stream stream = new Stream(fileArchive.method571("data"), 891);
         int i = -1;
         int j = stream.readUnsignedShort();
         interfaceCache = new Widget[50000];
         do
         {
-            if(stream.currentPosition >= stream.aByteArray1405.length)
+            if(stream.currentPosition >= stream.buffer.length)
             {
                 break;
             }
@@ -194,10 +194,10 @@ public class Widget
                     class9.spritesX[i2] = stream.method411();
                     class9.spritesY[i2] = stream.method411();
                     String s1 = stream.readString();
-                    if(class44_1 != null && s1.length() > 0)
+                    if(fileArchive_1 != null && s1.length() > 0)
                     {
                         int i5 = s1.lastIndexOf(",");
-                        class9.sprites[i2] = method207(Integer.parseInt(s1.substring(i5 + 1)), false, class44_1, s1.substring(0, i5));
+                        class9.sprites[i2] = method207(Integer.parseInt(s1.substring(i5 + 1)), false, fileArchive_1, s1.substring(0, i5));
                     }
                 }
 
@@ -235,27 +235,27 @@ public class Widget
             }
             if(class9.type == 1 || class9.type == 3 || class9.type == 4)
             {
-                class9.textColor = stream.method413();
+                class9.textColor = stream.readDWord();
             }
             if(class9.type == 3 || class9.type == 4)
             {
-                class9.anInt219 = stream.method413();
-                class9.anInt216 = stream.method413();
-                class9.anInt239 = stream.method413();
+                class9.anInt219 = stream.readDWord();
+                class9.anInt216 = stream.readDWord();
+                class9.anInt239 = stream.readDWord();
             }
             if(class9.type == 5)
             {
                 String s = stream.readString();
-                if(class44_1 != null && s.length() > 0)
+                if(fileArchive_1 != null && s.length() > 0)
                 {
                     int i4 = s.lastIndexOf(",");
-                    class9.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)), false, class44_1, s.substring(0, i4));
+                    class9.disabledSprite = method207(Integer.parseInt(s.substring(i4 + 1)), false, fileArchive_1, s.substring(0, i4));
                 }
                 s = stream.readString();
-                if(class44_1 != null && s.length() > 0)
+                if(fileArchive_1 != null && s.length() > 0)
                 {
                     int j4 = s.lastIndexOf(",");
-                    class9.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)), false, class44_1, s.substring(0, j4));
+                    class9.enabledSprite = method207(Integer.parseInt(s.substring(j4 + 1)), false, fileArchive_1, s.substring(0, j4));
                 }
             }
             if(class9.type == 6)
@@ -303,7 +303,7 @@ public class Widget
                     class9.textDrawingAreas = aclass30_sub2_sub1_sub4[i3];
                 }
                 class9.textShadow = stream.readUnsignedByte() == 1;
-                class9.textColor = stream.method413();
+                class9.textColor = stream.readDWord();
                 class9.invSpritePadX = stream.method411();
                 class9.invSpritePadY = stream.method411();
                 class9.isInventoryInterface = stream.readUnsignedByte() == 1;
@@ -352,7 +352,7 @@ public class Widget
                 }
             }
         } while(true);
-	aClass44 = class44;
+	aFileArchive = fileArchive;
         clanChatTab(aclass30_sub2_sub1_sub4);
         clanChatSetup(aclass30_sub2_sub1_sub4);
         aClass12_238 = null;
@@ -752,7 +752,7 @@ public class Widget
         }
         if(i == 3)
         {
-            class30_sub2_sub4_sub6 = client.aPlayer_1126.method453((byte)-41);
+            class30_sub2_sub4_sub6 = client.localPlayer.method453((byte)-41);
         }
         if(i == 4)
         {
@@ -769,7 +769,7 @@ public class Widget
         return class30_sub2_sub4_sub6;
     }
 
-    private static Sprite method207(int i, boolean flag, Class44 class44, String s)
+    private static Sprite method207(int i, boolean flag, FileArchive fileArchive, String s)
     {
         long l = (TextClass.method585((byte)1, s) << 8) + (long)i;
         if(flag)
@@ -783,7 +783,7 @@ public class Widget
         }
         try
         {
-            sprite = new Sprite(class44, s, i);
+            sprite = new Sprite(fileArchive, s, i);
             aClass12_238.method223(sprite, l, (byte)2);
         }
         catch(Exception exception)

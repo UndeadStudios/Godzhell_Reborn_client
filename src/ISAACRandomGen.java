@@ -1,9 +1,7 @@
-import sign.signlink;
-
-public final class Class17
+public final class ISAACRandomGen
 {
 
-    public Class17(int i, int ai[])
+    public ISAACRandomGen(int ai[])
     {
         anInt332 = -436;
         anInt333 = -431;
@@ -12,22 +10,20 @@ public final class Class17
         for(int j = 0; j < ai.length; j++)
             anIntArray335[j] = ai[j];
 
-        if(i >= 0)
-            anInt333 = -242;
-        method248();
+        initializeState();
     }
 
-    public final int method246()
+    public final int getNextKey()
     {
         if(anInt334-- == 0)
         {
-            method247();
+            isaacAlgorithm();
             anInt334 = 255;
         }
         return anIntArray335[anInt334];
     }
 
-    private final void method247()
+    private final void isaacAlgorithm()
     {
         anInt338 += ++anInt339;
         for(int i = 0; i < 256; i++)
@@ -52,7 +48,7 @@ public final class Class17
 
     }
 
-    private final void method248()
+    private final void initializeState()
     {
         int i1;
         int j1;
@@ -178,7 +174,7 @@ public final class Class17
             anIntArray336[k + 7] = k2;
         }
 
-        method247();
+        isaacAlgorithm();
         anInt334 = 256;
     }
 

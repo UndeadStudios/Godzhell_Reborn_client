@@ -7,11 +7,11 @@ import java.io.IOException;
 public class VarBit
 {
 
-    public static void method533(int i, Class44 class44)
+    public static void method533(int i, FileArchive fileArchive)
     {
         if(i != 0)
             anInt644 = 91;
-        Stream stream = new Stream(class44.method571("varbit.dat", null), 891);
+        Stream stream = new Stream(fileArchive.method571("varbit.dat"), 891);
         anInt645 = stream.readUnsignedShort();
         if(cache == null)
             cache = new VarBit[anInt645];
@@ -25,7 +25,7 @@ public class VarBit
                 Class41.aClass41Array701[cache[j].anInt648].aBoolean713 = true;
         }
 
-        if(stream.currentPosition != stream.aByteArray1405.length)
+        if(stream.currentPosition != stream.buffer.length)
             System.out.println("varbit load mismatch");
         dumpNpc();
     }

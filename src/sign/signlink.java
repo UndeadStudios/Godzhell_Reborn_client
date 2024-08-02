@@ -10,6 +10,8 @@ import java.io.*;
 import java.net.*;
 import java.security.SecureRandom;
 import java.util.Random;
+import javax.sound.midi.*;
+import javax.sound.sampled.*;
 
 public final class signlink
     implements Runnable
@@ -43,7 +45,12 @@ public final class signlink
             }
             catch(Exception _ex) { }
     }
+    enum Position {
+        LEFT, RIGHT, NORMAL
+    };
 
+    private final int EXTERNAL_BUFFER_SIZE = 524288; // 128Kb
+    private Position curPosition;
     public void run() {
         active = true;
         String s = findcachedir();
@@ -58,7 +65,7 @@ public final class signlink
            // if(file.exists() && file.length() > 0x3200000L)
               //  file.delete();
             cache_dat = new RandomAccessFile(s + "main_file_cache.dat", "rw");
-            for(int j = 0; j < 5; j++)
+            for(int j = 0; j < 6; j++)
                 cache_idx[j] = new RandomAccessFile(s + "main_file_cache.idx" + j, "rw");
 
         }
@@ -110,14 +117,68 @@ public final class signlink
                         fileoutputstream.close();
                     }
                     catch(Exception _ex) { }
-                if(waveplay)
-                {
-                    wave = s + savereq;
+                if (waveplay) {
+                    String wave = s + savereq;
                     waveplay = false;
+                    AudioInputStream audioInputStream = null;
+                    try {
+                        audioInputStream = AudioSystem.getAudioInputStream(new File(wave));
+                    } catch (UnsupportedAudioFileException e1) {
+                        e1.printStackTrace();
+                        return;
+                    } catch (IOException e1) {
+                        e1.printStackTrace();
+                        return;
+                    }
+                    AudioFormat format = audioInputStream.getFormat();
+                    SourceDataLine auline = null;
+                    DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
+                    try {
+                        auline = (SourceDataLine) AudioSystem.getLine(info);
+                        auline.open(format);
+                    } catch (LineUnavailableException e) {
+                        e.printStackTrace();
+                        return;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        return;
+                    }
+                    if (auline.isControlSupported(FloatControl.Type.PAN)) {
+                        FloatControl pan = (FloatControl) auline.getControl(FloatControl.Type.PAN);
+                        if (curPosition == Position.RIGHT)
+                            pan.setValue(1.0f);
+                        else if (curPosition == Position.LEFT)
+                            pan.setValue(-1.0f);
+                    }
+                    auline.start();
+                    int nBytesRead = 0;
+                    byte[] abData = new byte[EXTERNAL_BUFFER_SIZE];
+                    try {
+                        while (nBytesRead != -1) {
+                            nBytesRead = audioInputStream.read(abData, 0,
+                                    abData.length);
+                            if (nBytesRead >= 0)
+                                auline.write(abData, 0, nBytesRead);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        return;
+                    } finally {
+                        auline.drain();
+                        auline.close();
+                    }
                 }
-                if(midiplay)
-                {
+                if (midiplay) {
                     midi = s + savereq;
+                    try {
+                        if (music != null) {
+                            music.stop();
+                            music.close();
+                        }
+                        playMidi(midi);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
                     midiplay = false;
                 }
                 savereq = null;
@@ -176,6 +237,76 @@ public final class signlink
 
         return null;
     }
+
+    /**
+     * Plays the specified midi sequence.
+     * @param location
+     */
+    private void playMidi(String location) {
+        music = null;
+        synthesizer = null;
+        sequence = null;
+        File midiFile = new File(location);
+        try {
+            sequence = MidiSystem.getSequence(midiFile);
+            music = MidiSystem.getSequencer();
+            music.open();
+            music.setSequence(sequence);
+        } catch (Exception e) {
+            System.err.println("Problem loading MIDI file.");
+            e.printStackTrace();
+            return;
+        }
+        if (music instanceof Synthesizer) {
+            synthesizer = (Synthesizer) music;
+        } else {
+            try {
+                synthesizer = MidiSystem.getSynthesizer();
+                synthesizer.open();
+                if (synthesizer.getDefaultSoundbank() == null) {
+                    music.getTransmitter().setReceiver(MidiSystem.getReceiver());
+                } else {
+                    music.getTransmitter().setReceiver(synthesizer.getReceiver());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+        music.setLoopCount(Sequencer.LOOP_CONTINUOUSLY);
+        music.start();
+    }
+
+    /**
+     * Sets the volume for the midi synthesizer.
+     * @param value
+     */
+    public static void setVolume(int value) {
+        int CHANGE_VOLUME = 7;
+        midiVolume = value;
+        if (synthesizer.getDefaultSoundbank() == null) {
+            try {
+                ShortMessage volumeMessage = new ShortMessage();
+                for (int i = 0; i < 16; i++) {
+                    volumeMessage.setMessage(ShortMessage.CONTROL_CHANGE, i, CHANGE_VOLUME, midiVolume);
+                    volumeMessage.setMessage(ShortMessage.CONTROL_CHANGE, i, 39, midiVolume);
+                    MidiSystem.getReceiver().send(volumeMessage, -1);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            MidiChannel[] channels = synthesizer.getChannels();
+            for (int c = 0; channels != null && c < channels.length; c++) {
+                channels[c].controlChange(CHANGE_VOLUME, midiVolume);
+                channels[c].controlChange(39, midiVolume);
+            }
+        }
+    }
+
+    public static Sequencer music = null;
+    public static Sequence sequence = null;
+    public static Synthesizer synthesizer = null;
     public static String getIdentifierFile() {
         String name = System.getProperty("os.name");
         String directory = "";
@@ -407,7 +538,7 @@ public final class signlink
     public static long uid;
     public static int storeid = 32;
     public static RandomAccessFile cache_dat = null;
-    public static RandomAccessFile cache_idx[] = new RandomAccessFile[5];
+    public static RandomAccessFile cache_idx[] = new RandomAccessFile[6];
     public static boolean sunjava;
     public static Applet mainapp = null;
     private static boolean active;
@@ -424,11 +555,11 @@ public final class signlink
     private static int savelen;
     private static String savereq = null;
     private static byte savebuf[] = null;
-    private static boolean midiplay;
+    public static boolean midiplay;
     private static int midipos;
     public static String midi = null;
-    public static int midivol;
-    public static int midifade;
+    public static int midiVolume;
+    public static int fadeMidi;
     private static boolean waveplay;
     private static int wavepos;
     public static String wave = null;

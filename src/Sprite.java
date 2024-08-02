@@ -148,7 +148,7 @@ public Sprite(String s)
         }
     }
 
-    public Sprite(Class44 class44, String s, int i)
+    public Sprite(FileArchive fileArchive, String s, int i)
     {
 		aBoolean1428 = false;
 		anInt1429 = 24869;
@@ -160,8 +160,8 @@ public Sprite(String s)
 		aBoolean1436 = true;
 		aBoolean1437 = true;
 		aBoolean1438 = false;
-		Stream stream = new Stream(class44.method571((new StringBuilder()).append(s).append(".dat").toString(), ((byte []) (null))), 891);
-		Stream stream_1 = new Stream(class44.method571("index.dat", ((byte []) (null))), 891);
+		Stream stream = new Stream(fileArchive.method571((new StringBuilder()).append(s).append(".dat").toString()), 891);
+		Stream stream_1 = new Stream(fileArchive.method571("index.dat"), 891);
 		stream_1.currentPosition = stream.readUnsignedShort();
 		anInt1444 = stream_1.readUnsignedShort();
 		anInt1445 = stream_1.readUnsignedShort();
@@ -169,7 +169,7 @@ public Sprite(String s)
 		int ai[] = new int[j];
 		for (int k = 0; k < j - 1; k++)
 		{
-			ai[k + 1] = stream_1.method412();
+			ai[k + 1] = stream_1.read3Bytes();
 			if (ai[k + 1] == 0)
 				ai[k + 1] = 1;
 		}

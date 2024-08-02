@@ -1,11 +1,11 @@
-public class Class42
+public class OnDemandFetcherParent
 {
 
     public void method548(int i)
     {
     }
 
-    public Class42()
+    public OnDemandFetcherParent()
     {
         aBoolean715 = true;
     }

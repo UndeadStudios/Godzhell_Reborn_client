@@ -102,11 +102,11 @@ public final class Class46 {
 		childrenIDs = null;
 	}
 
-	public void method574(Class42_Sub1 class42_sub1, int luls) {
+	public void method574(OnDemandFetcher onDemandFetcher, int luls) {
 		if (anIntArray773 == null)
 			return;
 		for (int j = 0; j < anIntArray773.length; j++)
-			class42_sub1.method560(anIntArray773[j] & 0xffff, 0, false);
+			onDemandFetcher.method560(anIntArray773[j] & 0xffff, 0, false);
 	}
 
 	public static void method575(int i) {
@@ -117,9 +117,9 @@ public final class Class46 {
 		aStream_753 = null;
 	}
 
-	public static void method576(Class44 class30_sub2_sub2Loader) {
-        aStream_753 = new Stream(class30_sub2_sub2Loader.method571("loc.dat", null), 891);
-        Stream stream = new Stream(class30_sub2_sub2Loader.method571("loc.idx", null), 891);
+	public static void method576(FileArchive class30_sub2_sub2Loader) {
+        aStream_753 = new Stream(class30_sub2_sub2Loader.method571("loc.dat"), 891);
+        Stream stream = new Stream(class30_sub2_sub2Loader.method571("loc.idx"), 891);
 		int anInt756 = stream.readUnsignedShort();
 		System.out.println("508 Object Amount: " + anInt756);
 		anIntArray755 = new int[anInt756];

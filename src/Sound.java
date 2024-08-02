@@ -1,7 +1,7 @@
-public class Class16
+public class Sound
 {
 
-    private Class16(int i)
+    private Sound(int i)
     {
         aBoolean321 = true;
         aClass6Array329 = new Class6[10];
@@ -21,20 +21,18 @@ public class Class16
             int j = stream.readUnsignedShort();
             if(j == 65535)
                 return;
-            aClass16Array325[j] = new Class16(8);
-            aClass16Array325[j].method242(true, stream);
-            anIntArray326[j] = aClass16Array325[j].method243(0);
+            aSoundArray325[j] = new Sound(8);
+            aSoundArray325[j].method242(true, stream);
+            anIntArray326[j] = aSoundArray325[j].method243(0);
         } while(true);
     }
 
-    public static final Stream method241(int i, int j, boolean flag)
+    public static final Stream method241(int i, int j)
     {
-        if(flag)
-            aBoolean323 = !aBoolean323;
-        if(aClass16Array325[j] != null)
+        if(aSoundArray325[j] != null)
         {
-            Class16 class16 = aClass16Array325[j];
-            return class16.method244(i, 6);
+            Sound sound = aSoundArray325[j];
+            return sound.method244(i, 6);
         } else
         {
             return null;
@@ -165,7 +163,7 @@ public class Class16
     private static boolean aBoolean322;
     private static boolean aBoolean323 = true;
     private int anInt324;
-    private static Class16 aClass16Array325[] = new Class16[5000];
+    private static Sound aSoundArray325[] = new Sound[5000];
     public static int anIntArray326[] = new int[5000];
     private static byte aByteArray327[];
     private static Stream aStream_328;

@@ -976,7 +976,7 @@ if(anIntArray1638 != null) {
 	public static boolean newmodel[];
 
 	public static void method459(int i,
-			Class42 onDemandFetcherParent) {
+			OnDemandFetcherParent onDemandFetcherParent) {
 		aClass21Array1661 = new Class21[100000];
 		newmodel = new boolean[100000];
 		aOnDemandFetcherParent_1662 = onDemandFetcherParent;
@@ -2764,7 +2764,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public boolean aBoolean1659;
 	Class33 aClass33Array1660[];
 	static Class21 aClass21Array1661[];
-	static Class42 aOnDemandFetcherParent_1662;
+	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
 	static boolean aBooleanArray1663[] = new boolean[8000];
 	static boolean aBooleanArray1664[] = new boolean[8000];
 	static int anIntArray1665[] = new int[8000];

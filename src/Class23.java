@@ -5,9 +5,9 @@
 public class Class23
 {
 
-    public static void method264(int i, Class44 class44)
+    public static void method264(int i, FileArchive fileArchive)
     {
-        Stream stream = new Stream(class44.method571("spotanim.dat", null));
+        Stream stream = new Stream(fileArchive.method571("spotanim.dat"));
         anInt402 = stream.readUnsignedShort();
         if(aClass23Array403 == null)
             aClass23Array403 = new Class23[anInt402];

@@ -1,20 +1,20 @@
 public final class Background extends DrawingArea
 {
 
-    public Background(Class44 class44, String s, int i)
+    public Background(FileArchive fileArchive, String s, int i)
     {
         aBoolean1447 = false;
         anInt1448 = 360;
         aByte1449 = 3;
-        Stream stream = new Stream(class44.method571(s + ".dat", null), 891);
-        Stream stream_1 = new Stream(class44.method571("index.dat", null), 891);
+        Stream stream = new Stream(fileArchive.method571(s + ".dat"), 891);
+        Stream stream_1 = new Stream(fileArchive.method571("index.dat"), 891);
         stream_1.currentPosition = stream.readUnsignedShort();
         anInt1456 = stream_1.readUnsignedShort();
         anInt1457 = stream_1.readUnsignedShort();
         int j = stream_1.readUnsignedByte();
         anIntArray1451 = new int[j];
         for(int k = 0; k < j - 1; k++)
-            anIntArray1451[k + 1] = stream_1.method412();
+            anIntArray1451[k + 1] = stream_1.read3Bytes();
 
         for(int l = 0; l < i; l++)
         {

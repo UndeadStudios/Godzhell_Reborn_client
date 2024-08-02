@@ -7,9 +7,9 @@ import java.util.Arrays;
 public class Class20
 {
 
-    public static void method257(int i, Class44 class44)
+    public static void method257(int i, FileArchive fileArchive)
     {
-        Stream stream = new Stream(class44.method571("seq.dat", null));
+        Stream stream = new Stream(fileArchive.method571("seq.dat"));
         anInt350 = stream.readUnsignedShort();
         if(aClass20Array351 == null)
             aClass20Array351 = new Class20[anInt350];
@@ -116,7 +116,7 @@ public class Class20
 				anIntArray354 = new int[anInt352];
 				anIntArray355 = new int[anInt352];
 				for(int i_ = 0; i_ < anInt352; i_++){
-					anIntArray353[i_] = stream.method413();
+					anIntArray353[i_] = stream.readDWord();
 					anIntArray354[i_] = -1;
 				}
 				for(int i_ = 0; i_ < anInt352; i_++)

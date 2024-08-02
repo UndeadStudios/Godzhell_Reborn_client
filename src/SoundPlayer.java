@@ -1,117 +1,112 @@
-import java.io.File;
 import java.io.InputStream;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
+import javax.sound.sampled.FloatControl;
 
-/**
- * Plays a sound.
- * @author Bluurr (Modified by Primadude).
- */
 public class SoundPlayer implements Runnable {
 
-        /**
-         * The path and name of the custom sound file.
-         */
-        private String fileName;
-
-        /**
-         * If the sound to be played is custom.
-         */
-        private boolean custom;
-
-        /**
-         * The audioInputStream object.
-         */
         private AudioInputStream stream;
-
-        /**
-         * The Info object.
-         */
         private DataLine.Info info;
+        private Clip sound;
+
+        private InputStream soundStream;
+        private Thread player;
+        private int delay;
+        private int soundLevel;
+        public static int volume;
 
         /**
-         * The Clip object.
+         * Initializes the sound player.
+         * @param stream
+         * @param level
+         * @param delay
          */
-        private Clip clip;
-
-        /**
-         * The soundInputStream object.
-         */
-        private InputStream soundInputStream;
-
-        /**
-         * The Thread object.
-         */
-        private Thread thread;
-
-        /**
-         * Gets the custom sound file path and name
-         * @return The fileName variable.
-         */
-        public String getFileName() {
-                return fileName;
+        public SoundPlayer(InputStream stream, int level, int delay) {
+                if (level == 0 || volume == 4 || level - volume <= 0) {
+                        return;
+                }
+                this.soundStream = stream;
+                this.soundLevel = level;
+                this.delay = delay;
+                player = new Thread(this);
+                player.start();
         }
 
         /**
-         * If the sound to be played is custom.
-         * @return True or false.
+         * Plays the sound.
          */
-        public boolean isCustom() {
-                return custom;
-        }
-
-        /**
-         * Sets the custom variable to true or false.
-         * @param custom True or false.
-         */
-        public void setCustom(boolean custom) {
-                this.custom = custom;
-        }
-
-        /**
-         * Sets the custom sound file path and name.
-         * @param fileName The path and name of the custom sound.
-         */
-        public void setFileName(String fileName) {
-                this.fileName = fileName;
-        }
-
-        /**
-         * Starts the sound thread and creates a new thread.
-         * @param soundInputStream The InputSteam of the sound file to play.
-         */
-        public void startSoundPlayer(InputStream musicfile) {
-                this.soundInputStream = musicfile;
-                thread = new Thread(this);
-                thread.start();
-        }
-
         @Override
         public void run() {
                 try {
-                        if (isCustom()) {
-                                stream = AudioSystem.getAudioInputStream(new File(fileName));
-                                setCustom(false);
-                        } else {
-                                stream = AudioSystem.getAudioInputStream(soundInputStream);
-                        }
+                        stream = AudioSystem.getAudioInputStream(soundStream);
                         info = new DataLine.Info(Clip.class, stream.getFormat());
-                        clip = (Clip) AudioSystem.getLine(info);
-                        clip.open(stream);
-                        clip.start();
-                        while (clip.isActive()) {
+                        sound = (Clip) AudioSystem.getLine(info);
+                        sound.open(stream);
+                        FloatControl volume = (FloatControl) sound.getControl(FloatControl.Type.MASTER_GAIN);
+                        volume.setValue(getDecibels(soundLevel - getVolume()));
+                        if (delay > 0) {
+                                Thread.sleep(delay);
+                        }
+                        sound.start();
+                        while (sound.isActive()) {
                                 Thread.sleep(250);
                         }
                         Thread.sleep(10000);
-                        clip.close();
-                        stream.close(); 
-                        thread.interrupt();
+                        sound.close();
+                        stream.close();
+                        player.interrupt();
                 } catch (Exception e) {
-                        System.out.println("Error thrown whilst playing sounds:");
-                        thread.interrupt();
+                        player.interrupt();
                         e.printStackTrace();
+                }
+        }
+
+        /**
+         * Sets the client's volume level.
+         * @param level
+         */
+        public static void setVolume(int level) {
+                volume = level;
+        }
+
+        /**
+         * Returns the client's volume level.
+         */
+        public static int getVolume() {
+                return volume;
+        }
+
+        /**
+         * Returns the decibels for a given volume level.
+         * @param level
+         * @return
+         */
+        public float getDecibels(int level) {
+                switch (level) {
+                        case 1:
+                                return (float) -80.0;
+                        case 2:
+                                return (float) -70.0;
+                        case 3:
+                                return (float) -60.0;
+                        case 4:
+                                return (float) -50.0;
+                        case 5:
+                                return (float) -40.0;
+                        case 6:
+                                return (float) -30.0;
+                        case 7:
+                                return (float) -20.0;
+                        case 8:
+                                return (float) -10.0;
+                        case 9:
+                                return (float) -0.0;
+                        case 10:
+                                return (float) 6.0;
+                        default:
+                                return (float) 0.0;
                 }
         }
 }

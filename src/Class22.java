@@ -1,11 +1,11 @@
 public class Class22
 {
 
-    public static void method260(int i, Class44 class44)
+    public static void method260(int i, FileArchive fileArchive)
     {
         if(i != 0)
             anInt386 = 115;
-        Stream stream = new Stream(class44.method571("flo.dat", null));
+        Stream stream = new Stream(fileArchive.method571("flo.dat"));
         anInt387 = stream.readUnsignedShort();
         if(aClass22Array388 == null)
             aClass22Array388 = new Class22[anInt387];
@@ -27,7 +27,7 @@ public class Class22
                 return;
             if(i == 1)
             {
-                anInt390 = stream.method412();
+                anInt390 = stream.read3Bytes();
                 method262(anInt390, 9);
             } else
             if(i == 2)
@@ -48,7 +48,7 @@ public class Class22
                 int k = anInt395;
                 int l = anInt396;
                 int i1 = anInt397;
-                int j1 = stream.method412();
+                int j1 = stream.read3Bytes();
                 method262(j1, 9);
 				if(anInt390==0x35720A ||
 				anInt390==0x50680B ||

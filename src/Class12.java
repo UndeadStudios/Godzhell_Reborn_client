@@ -39,12 +39,12 @@ public final class Class12
             if(anInt302 == 0)
             {
                 Class30_Sub2 class30_sub2_1 = aClass2_304.method151();
-                class30_sub2_1.method329();
+                class30_sub2_1.unlink();
                 class30_sub2_1.method330();
                 if(class30_sub2_1 == aClass30_Sub2_300)
                 {
                     Class30_Sub2 class30_sub2_2 = aClass2_304.method151();
-                    class30_sub2_2.method329();
+                    class30_sub2_2.unlink();
                     class30_sub2_2.method330();
                 }
             } else
@@ -69,7 +69,7 @@ public final class Class12
             Class30_Sub2 class30_sub2 = aClass2_304.method151();
             if(class30_sub2 != null)
             {
-                class30_sub2.method329();
+                class30_sub2.unlink();
                 class30_sub2.method330();
             } else
             {

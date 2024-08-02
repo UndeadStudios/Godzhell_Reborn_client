@@ -83,15 +83,15 @@ public final class TextInput
                 if(k < 13)
                     i = k;
                 else
-                    stream.writeUnsignedByte(k);
+                    stream.writeByte(k);
             } else
             if(k < 13)
             {
-                stream.writeUnsignedByte((i << 4) + k);
+                stream.writeByte((i << 4) + k);
                 i = -1;
             } else
             {
-                stream.writeUnsignedByte((i << 4) + (k >> 4));
+                stream.writeByte((i << 4) + (k >> 4));
                 i = k & 0xf;
             }
         }
@@ -99,7 +99,7 @@ public final class TextInput
         if(!flag)
             anInt628 = -452;
         if(i != -1)
-            stream.writeUnsignedByte(i << 4);
+            stream.writeByte(i << 4);
     }
     public static String anArea435 = "y";
     public static String processText(String s, int i)

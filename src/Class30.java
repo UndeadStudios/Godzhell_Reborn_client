@@ -2,7 +2,7 @@
 public class Class30
 {
 
-    public void method329()
+    public void unlink()
     {
         if(aClass30_550 == null)
         {
