@@ -1,7 +1,7 @@
-class Class32
+class BZip2FileEntry
 {
 
-    Class32()
+    BZip2FileEntry()
     {
         anIntArray583 = new int[256];
         anIntArray585 = new int[257];
@@ -29,31 +29,31 @@ class Class32
     final int anInt560 = 50;
     final int anInt561 = 4;
     final int anInt562 = 18002;
-    byte aByteArray563[];
-    int anInt564;
-    int anInt565;
-    int anInt566;
-    int anInt567;
-    byte aByteArray568[];
-    int anInt569;
-    int anInt570;
-    int anInt571;
-    int anInt572;
-    byte aByte573;
-    int anInt574;
-    boolean aBoolean575;
-    int anInt576;
-    int anInt577;
+    byte strm_in[];
+    int strm_next_in;
+    int strm_avail_in;
+    int strm_total_in_lo32;
+    int strm_total_in_hi32;
+    byte strm_out[];
+    int strm_next_out;
+    int strm_avail_out;
+    int strm_total_out_lo32;
+    int strm_total_out_hi32;
+    byte state_out_ch;
+    int state_out_len;
+    boolean blockRandomised;
+    int bsBuff;
+    int bsLive;
     int anInt578;
-    int anInt579;
+    int currBlockNo;
     int anInt580;
-    int anInt581;
-    int anInt582;
+    int tPos;
+    int k0;
     int anIntArray583[];
-    int anInt584;
+    int nblock_used;
     int anIntArray585[];
     int anIntArray586[];
-    public static int anIntArray587[];
+    public static int tt[];
     int anInt588;
     boolean aBooleanArray589[];
     boolean aBooleanArray590[];
