@@ -3,8 +3,6 @@ public final class ISAACRandomGen
 
     public ISAACRandomGen(int ai[])
     {
-        anInt332 = -436;
-        anInt333 = -431;
         anIntArray336 = new int[256];
         anIntArray335 = new int[256];
         for(int j = 0; j < ai.length; j++)
@@ -13,7 +11,7 @@ public final class ISAACRandomGen
         initializeState();
     }
 
-    public final int getNextKey()
+    public int getNextKey()
     {
         if(anInt334-- == 0)
         {
@@ -23,7 +21,7 @@ public final class ISAACRandomGen
         return anIntArray335[anInt334];
     }
 
-    private final void isaacAlgorithm()
+    private void isaacAlgorithm()
     {
         anInt338 += ++anInt339;
         for(int i = 0; i < 256; i++)
@@ -48,7 +46,7 @@ public final class ISAACRandomGen
 
     }
 
-    private final void initializeState()
+    private void initializeState()
     {
         int i1;
         int j1;
@@ -178,11 +176,9 @@ public final class ISAACRandomGen
         anInt334 = 256;
     }
 
-    private int anInt332;
-    private int anInt333;
     private int anInt334;
-    private int anIntArray335[];
-    private int anIntArray336[];
+    private final int[] anIntArray335;
+    private final int[] anIntArray336;
     private int anInt337;
     private int anInt338;
     private int anInt339;

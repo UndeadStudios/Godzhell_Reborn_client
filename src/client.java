@@ -6359,6 +6359,7 @@ public class client extends Applet_Sub1 {
         compassImage = null;
         aSpriteArray987 = null;
         aSpriteArray1095 = null;
+        this.skullIcons = null;
         aSpriteArray1150 = null;
         aSprite_1074 = null;
         aSprite_1075 = null;
@@ -9452,10 +9453,19 @@ public class client extends Applet_Sub1 {
             catch(Exception _ex) { }*/
             try
             {
-                for(int j4 = 0; j4 < 85; j4++)
+                for(int j4 = 0; j4 < 85; j4++) {
                     aSpriteArray1095[j4] = new Sprite(fileArchive_2, "headicons_prayer", j4);
+                }
             }
             catch(Exception _ex) { }
+            try {
+                for (int j4 = 0; j4 < 5; ++j4) {
+                    this.skullIcons[j4] = new Sprite(fileArchive_2, "headicons_pk", j4);
+                }
+            } catch(Exception e) {
+
+            }
+
             aSprite_870 = new Sprite(fileArchive_2, "mapmarker", 0);
             aSprite_871 = new Sprite(fileArchive_2, "mapmarker", 1);
             for(int k4 = 0; k4 < 8; k4++)
@@ -11132,9 +11142,9 @@ public class client extends Applet_Sub1 {
         if (openWalkableInterface != -1) {
             method119(anInt945, false, openWalkableInterface);
             if (openWalkableInterface == 197 && currentScreenMode != ScreenMode.FIXED) {
-               // skullIcons[0].drawSprite(currentGameWidth - 157, 168);
-                //String text = Widget.interfaceCache[199].message.replace("@yel@", "");
-                //regularText.drawChatInput(0xE1981D, currentGameWidth - 165, text, 207, true);
+                skullIcons[0].drawSprite(currentGameWidth - 157, 168);
+                String text = Widget.interfaceCache[199].message.replace("@yel@", "");
+                regularText.drawChatInput(0xE1981D, currentGameWidth - 165, text, 207, true);
         } else if (openWalkableInterface == 201 && currentScreenMode != ScreenMode.FIXED) {
             drawInterface(0, currentGameWidth - 560, Widget.interfaceCache[openWalkableInterface], -109);
         } else {
@@ -14764,6 +14774,7 @@ public class client extends Applet_Sub1 {
         menuActionID = new int[500];
         menuActionCmd1 = new long[500];
         aSpriteArray1095 = new Sprite[20];
+        this.skullIcons = new Sprite[20];
         aBoolean1103 = false;
         anInt1105 = 519;
         aBoolean1106 = false;
@@ -15121,6 +15132,7 @@ public class client extends Applet_Sub1 {
     private int menuActionID[];
     private long menuActionCmd1[];
     private Sprite aSpriteArray1095[];
+    private Sprite[] skullIcons;
     private static int anInt1096 = -192;
     private static int anInt1097;
     private int anInt1098;

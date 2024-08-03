@@ -506,4 +506,8 @@ public final class TextDrawingArea extends DrawingArea
     public int anInt1497;
     Random aRandom1498;
     boolean aBoolean1499;
+
+    public void drawChatInput(int i, int j, String s, int l, boolean flag) {
+        this.method389(true, flag, j, i, s, l);
+    }
 }
