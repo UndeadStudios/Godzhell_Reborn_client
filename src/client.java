@@ -1,8 +1,11 @@
 import java.applet.AppletContext;
 import java.awt.*;
 import java.io.*;
+import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.*;
+import java.util.AbstractMap;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.zip.CRC32;
 
@@ -33,6 +36,7 @@ public class client extends Applet_Sub1 {
     public boolean roofsOff = false;
     public boolean skyLoad = true;
     public boolean hp = true;
+    public static int currentFogColor = 0;
     public int resizeable = 0;
     public static int MapX;
     public static int MapY;
@@ -236,7 +240,30 @@ public class client extends Applet_Sub1 {
         }
         return !checkBounds(0, 0, currentGameHeight - 168, 516, currentGameHeight);
     }
+    static AbstractMap.SimpleEntry getMostFrequentN2(ArrayList values) {
+        ArrayList frequencies = new ArrayList();
+        int maxIndex = 0;
 
+        label28: for (int i = 0; i < values.size(); ++i) {
+            int value = ((Integer) values.get(i)).intValue();
+
+            for (int j = 0; j < frequencies.size(); ++j) {
+                if (((Integer) ((AbstractMap.SimpleEntry) frequencies.get(j)).getKey()).intValue() == value) {
+                    ((AbstractMap.SimpleEntry) frequencies.get(j)).setValue(
+                            Integer.valueOf(((Integer) ((AbstractMap.SimpleEntry) frequencies.get(j)).getValue()).intValue() + 1));
+                    if (((Integer) ((AbstractMap.SimpleEntry) frequencies.get(maxIndex)).getValue())
+                            .intValue() < ((Integer) ((AbstractMap.SimpleEntry) frequencies.get(j)).getValue()).intValue()) {
+                        maxIndex = j;
+                    }
+                    continue label28;
+                }
+            }
+
+            frequencies.add(new AbstractMap.SimpleEntry(Integer.valueOf(value), Integer.valueOf(1)));
+        }
+
+        return (AbstractMap.SimpleEntry) frequencies.get(maxIndex);
+    }
     private boolean checkBounds(int type, int x1, int y1, int x2, int y2) {
         if (type == 0)
             return mouseX >= x1 && mouseX <= x2 && mouseY >= y1 && mouseY <= y2;
@@ -245,9 +272,9 @@ public class client extends Applet_Sub1 {
     }
 
     private static void setBounds() {
-        Rasterizer.method365(-950,currentGameWidth, currentGameHeight);
+        Rasterizer.method365(currentGameWidth, currentGameHeight);
         fullScreenTextureArray = Rasterizer.lineOffsets;
-        Rasterizer.method365(-950,
+        Rasterizer.method365(
                 currentScreenMode == ScreenMode.FIXED
                         ? (aRSImageProducer_1166 != null ? aRSImageProducer_1166.anInt316 : 519)
                         : currentGameWidth,
@@ -255,7 +282,7 @@ public class client extends Applet_Sub1 {
                         ? (aRSImageProducer_1166 != null ? aRSImageProducer_1166.anInt317 : 165)
                         : currentGameHeight);
         anIntArray1180 = Rasterizer.lineOffsets;
-        Rasterizer.method365(-950,
+        Rasterizer.method365(
                 currentScreenMode == ScreenMode.FIXED
                         ? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.anInt316 : 249)
                         : currentGameWidth,
@@ -263,7 +290,7 @@ public class client extends Applet_Sub1 {
                         ? (aRSImageProducer_1163 != null ? aRSImageProducer_1163.anInt317 : 335)
                         : currentGameHeight);
         anIntArray1181 = Rasterizer.lineOffsets;
-        Rasterizer.method365(-950, screenAreaWidth, screenAreaHeight);
+        Rasterizer.method365( screenAreaWidth, screenAreaHeight);
         anIntArray1182 = Rasterizer.lineOffsets;
         method456();
     }
@@ -397,7 +424,7 @@ public class client extends Applet_Sub1 {
             String sss = fileArray[y].getName();
             System.out.println("Parsing model file "+sss);
             byte[] buffer = ReadFile((signlink.findcachedir()+"/raw/"+sss));
-            Class30_Sub2_Sub4_Sub6.method460(buffer, Integer.parseInt(getFileNameWithoutExtension(sss)));
+            Model.method460(buffer, Integer.parseInt(getFileNameWithoutExtension(sss)));
         }
     }
 
@@ -647,14 +674,81 @@ public class client extends Applet_Sub1 {
                     int yPos = 70 - j77 * 14 + anInt1089 + 5;
                     String s1 = this.chatNames[var16];
                     byte byte0 = 0;
-                    if (s1.startsWith("@cr")) {
-                        String s2 = s1.substring(3);
-                        int index = s2.indexOf("@");
-                        if (index != -1) {
-                            s2 = s2.substring(0, index);
-                            byte0 = Byte.parseByte(s2);
-                            s1 = s1.substring(4 + s2.length());
-                        }
+                    if (s1 != null && s1.startsWith("@cr1@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 1;
+                    } else if (s1 != null && s1.startsWith("@cr2@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 2;
+                    } else if (s1 != null && s1.startsWith("@cr3@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 3;
+                    } else if (s1 != null && s1.startsWith("@cr4@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 4;
+                    } else if (s1 != null && s1.startsWith("@cr5@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 5;
+                    } else if (s1 != null && s1.startsWith("@cr6@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 6;
+                    } else if (s1 != null && s1.startsWith("@cr7@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 7;
+                    } else if (s1 != null && s1.startsWith("@cr8@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 8;
+                    } else if (s1 != null && s1.startsWith("@cr9@")) {
+                        s1 = s1.substring(5);
+                        byte0 = 9;
+                    } else if (s1 != null && s1.startsWith("@cr10@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 10;
+                    } else if (s1 != null && s1.startsWith("@cr11@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 11;
+                    } else if (s1 != null && s1.startsWith("@cr12@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 12;
+                    } else if (s1 != null && s1.startsWith("@cr13@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 13;
+                    } else if (s1 != null && s1.startsWith("@cr14@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 14;
+                    } else if (s1 != null && s1.startsWith("@cr15@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 15;
+                    } else if (s1 != null && s1.startsWith("@cr16@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 16;
+                    } else if (s1 != null && s1.startsWith("@cr17@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 17;
+                    } else if (s1 != null && s1.startsWith("@cr18@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 18;
+                    } else if (s1 != null && s1.startsWith("@cr19@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 19;
+                    } else if (s1 != null && s1.startsWith("@cr20@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 20;
+                    } else if (s1 != null && s1.startsWith("@cr21@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 21;
+                    } else if (s1 != null && s1.startsWith("@cr22@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 22;
+                    } else if (s1 != null && s1.startsWith("@cr23@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 23;
+                    } else if (s1 != null && s1.startsWith("@cr24@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 24;
+                    } else if (s1 != null && s1.startsWith("@cr25@")) {
+                        s1 = s1.substring(6);
+                        byte0 = 25;
                     }
 
 
@@ -668,24 +762,24 @@ public class client extends Applet_Sub1 {
                     int xPos;
                     if ((xOffset == 1 || xOffset == 2)
                             && (xOffset == 1 || this.publicChatMode == 0
-                            || this.publicChatMode == 1 && method109(false, s1))
+                            || this.publicChatMode == 1 && method109( s1))
                             && (this.chatTypeView == 1 || this.chatTypeView == 0)) {
                         xPos = 11;
                         switch (byte0) {
                             case 1:
-                                this.ModIcons[0].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[0].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 2:
-                                this.ModIcons[1].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[1].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 3:
-                                this.ModIcons[2].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[2].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 4:
-                                this.ModIcons[3].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[3].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 5:
@@ -693,11 +787,11 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 6:
-                                this.ModIcons[5].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[5].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 7:
-                                this.ModIcons[6].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[6].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 8:
@@ -705,51 +799,51 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 9:
-                                this.ModIcons[8].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[8].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 10:
-                                this.ModIcons[9].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[9].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 11:
-                                this.ModIcons[10].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[10].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 12:
-                                this.ModIcons[11].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[11].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 13:
-                                this.ModIcons[12].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[12].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 14:
-                                this.ModIcons[13].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[13].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 15:
-                                this.ModIcons[14].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[14].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 16:
-                                this.ModIcons[15].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[15].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 17:
-                                this.ModIcons[16].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[16].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 18:
-                                this.ModIcons[17].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[17].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 19:
-                                this.ModIcons[18].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[18].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 20:
-                                this.ModIcons[19].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[19].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                                 break;
                             case 21:
@@ -767,7 +861,7 @@ public class client extends Applet_Sub1 {
                                 this.ModIcons[23].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                             case 25:
-                                this.ModIcons[24].drawSprite(xPos,yPos - 12 + yOffset);
+                                this.ModIcons[24].drawSprite(xPos, yPos - 12 + yOffset);
                                 xPos += 14;
                         }
 
@@ -782,7 +876,7 @@ public class client extends Applet_Sub1 {
 
                     if ((xOffset == 3 || xOffset == 7) && (this.splitPrivateChat == 0 || this.chatTypeView == 2)
                             && (xOffset == 7 || this.privateChatMode == 0
-                            || this.privateChatMode == 1 && this.method109(false,s1))
+                            || this.privateChatMode == 1 && this.method109( s1))
                             && (this.chatTypeView == 2 || this.chatTypeView == 0)) {
                         byte j2 = 11;
                         this.newRegularFont.drawBasicString("From", j2, yPos + yOffset, changeChatArea ? 0 : 16777215,
@@ -790,23 +884,23 @@ public class client extends Applet_Sub1 {
                         xPos = j2 + textDrawingArea.getTextWidth("From ");
                         switch (byte0) {
                             case 1:
-                                this.ModIcons[0].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[0].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 2:
-                                this.ModIcons[1].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[1].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 3:
-                                this.ModIcons[2].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[2].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 4:
-                                this.ModIcons[3].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[3].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 5:
-                                this.ModIcons[4].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[4].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 6:
@@ -814,11 +908,11 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 7:
-                                this.ModIcons[6].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[6].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 8:
-                                this.ModIcons[7].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[7].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 9:
@@ -838,11 +932,11 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 13:
-                                this.ModIcons[12].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[12].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 14:
-                                this.ModIcons[13].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[13].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 15:
@@ -850,19 +944,19 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 16:
-                                this.ModIcons[15].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[15].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 17:
-                                this.ModIcons[16].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[16].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 18:
-                                this.ModIcons[17].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[17].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 19:
-                                this.ModIcons[18].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[18].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 20:
@@ -870,15 +964,15 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 21:
-                                this.ModIcons[20].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[20].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 22:
-                                this.ModIcons[21].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[21].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 23:
-                                this.ModIcons[22].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[22].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                             case 24:
@@ -886,7 +980,7 @@ public class client extends Applet_Sub1 {
                                 xPos += 14;
                                 break;
                             case 25:
-                                this.ModIcons[24].drawSprite(xPos,yPos - 12);
+                                this.ModIcons[24].drawSprite(xPos, yPos - 12);
                                 xPos += 14;
                                 break;
                         }
@@ -899,7 +993,7 @@ public class client extends Applet_Sub1 {
                         ++j77;
                     }
 
-                    if (xOffset == 4 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(false,s1))
+                    if (xOffset == 4 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(s1))
                             && (this.chatTypeView == 3 || this.chatTypeView == 0)) {
                         this.newRegularFont.drawBasicString(s1 + " " + this.chatMessages[var16], 11, yPos + yOffset,
                                 8388736, shadow);
@@ -925,7 +1019,7 @@ public class client extends Applet_Sub1 {
                         ++j77;
                     }
 
-                    if (xOffset == 8 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(false,s1))) {
+                    if (xOffset == 8 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(s1))) {
                         if (this.chatTypeView == 3 || this.chatTypeView == 0) {
                             this.newRegularFont.drawBasicString(s1 + " " + this.chatMessages[var16], 11, yPos + yOffset,
                                     8270336, shadow);
@@ -950,39 +1044,158 @@ public class client extends Applet_Sub1 {
                     }
 
                     if (xOffset == 16) {
-                        int j2 = 40 + 11;
-                        String clanname = clanList[var16];
-                        int clanNameWidth = textDrawingArea
-                                .getTextWidth(clanname);
-                        if (chatTypeView == 11 || chatTypeView == 0) {
-                            if (yPos > 0 && yPos < 110)
-                                if (this.chatRights[var16] > 0) {
-                                    j2 += clanNameWidth;
-                                    this.ModIcons[this.chatRights[var16] - 1].drawSprite(j2 - 18, yPos - 12);
-                                    j2 += 15;
-                                    if (this.chatRights[var16] == 0) {
-                                        j2 += clanNameWidth;
+                        int var161 = 51;
+                        int clanNameWidth = textDrawingArea.getTextWidth(this.clanname);
+                        if (this.chatTypeView == 11 || this.chatTypeView == 0) {
+                            if (yPos > 0 && yPos < 110) {
+                                switch (this.chatRights[var16]) {
+                                    case 1:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[0].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
                                         break;
-                                    }
+                                    case 2:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[1].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 3:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[2].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 4:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[3].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 5:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[4].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 6:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[5].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 7:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[6].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 8:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[7].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 9:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[8].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 10:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[9].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 11:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[10].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 12:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[11].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 13:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[12].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 14:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[13].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 15:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[14].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 16:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[15].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 17:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[16].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 18:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[17].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 19:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[18].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 20:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[19].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 21:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[20].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 22:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[21].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 23:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[22].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 24:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[23].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    case 25:
+                                        var161 += clanNameWidth;
+                                        this.ModIcons[24].drawSprite(var161 - 18, yPos - 12);
+                                        var161 += 15;
+                                        break;
+                                    default:
+                                        var161 += clanNameWidth;
                                 }
-                        }
-                        newRegularFont
-                                .drawBasicString("[", 19, yPos, changeChatArea ? 0xffffff : 0, shadow);
-                        newRegularFont.drawBasicString("]",
-                                clanNameWidth + 16 + 11, yPos, changeChatArea ? 0xffffff : 0, shadow);
-                        newRegularFont.drawBasicString(""
-                                        + capitalize(clanname) + "", 25, yPos, 255,
-                                -1);
-                        newRegularFont.drawBasicString(
-                                capitalize(chatNames[var16]) + ":", j2 - 17,
-                                yPos);
-                        j2 += newRegularFont.getTextWidth(chatNames[var16]) + 7;
-                        newRegularFont.drawBasicString(
-                                capitalize(chatMessages[var16]), j2 - 16, yPos,
-                                0x800000, -1);
+                            }
+                            newRegularFont
+                                    .drawBasicString("[", 19, yPos, changeChatArea ? 0xffffff : 0, shadow);
+                            newRegularFont.drawBasicString("]",
+                                    clanNameWidth + 16 + 11, yPos, changeChatArea ? 0xffffff : 0, shadow);
+                            newRegularFont.drawBasicString(""
+                                            + capitalize(clanname) + "", 25, yPos, 255,
+                                    -1);
+                            newRegularFont.drawBasicString(
+                                    capitalize(chatNames[var16]) + ":", var161 - 17,
+                                    yPos);
+                            var161 += newRegularFont.getTextWidth(chatNames[var16]) + 7;
+                            newRegularFont.drawBasicString(
+                                    capitalize(chatMessages[var16]), var161 - 16, yPos,
+                                    0x800000, -1);
 
-                        j++;
-                        j77++;
+                            j++;
+                            j77++;
+                        }
                     }
                 }
             }
@@ -1002,8 +1215,8 @@ public class client extends Applet_Sub1 {
                 s = TextClass.fixName(myUsername);
             DrawingArea.setDrawingArea(140 + yOffset, 8, 509, 120 + yOffset);
             xOffset = 0;
-            if (this.rights > 0) {
-                this.ModIcons[this.rights - 1].drawSprite(10,122 + yOffset);
+            if (this.myPrivilege > 0) {
+                this.ModIcons[this.myPrivilege - 1].drawSprite(10,122 + yOffset);
                 xOffset += 14;
             }
 
@@ -1242,8 +1455,8 @@ public class client extends Applet_Sub1 {
                 int l2 = super.saveClickY;
                 switch (menuScreenArea) {
                     case 0:
-                        k2 -= 0;
-                        l2 -= 0;
+                        k2 -= 4;
+                        l2 -= 4;
                         break;
                     case 1:
                         k2 -= 519;
@@ -1362,7 +1575,7 @@ public class client extends Applet_Sub1 {
             aClass19_1056.method256();
             aClass19_1013.method256();
             loadNewObjects();
-            Rasterizer.method366(anInt846);
+            Rasterizer.method366();
             method23(false);
             aClass25_946.method274(619);
             System.gc();
@@ -1500,6 +1713,7 @@ public class client extends Applet_Sub1 {
             }
             stream.createFrame(0);
             objectManager.method171(collisionMaps, aClass25_946, 2);
+            fadingTo = ((Integer) getMostFrequentN2(objectManager.colors).getKey()).intValue();
             aRSImageProducer_1165.initDrawingArea();
             stream.createFrame(0);
             int k3 = ObjectManager.anInt145;
@@ -1541,12 +1755,12 @@ public class client extends Applet_Sub1 {
             {
                 int l1 = onDemandFetcher.method559(i1, -203);
                 if((l1 & 0x79) == 0)
-                    Class30_Sub2_Sub4_Sub6.method461(116, i1);
+                    Model.method461(116, i1);
             }
 
         }
         System.gc();
-        Rasterizer.method367(20, true);
+        Rasterizer.method367();
         onDemandFetcher.method566(0);
         int k = (currentRegionX - 6) / 8 - 1;
         int j1 = (currentRegionX + 6) / 8 + 1;
@@ -1581,8 +1795,8 @@ public class client extends Applet_Sub1 {
         Class46.aClass12_785.method224();
         Class46.aClass12_780.method224();
         Class5.aClass12_95.method224();
-        Class8.aClass12_159.method224();
-        Class8.aClass12_158.method224();
+        ItemDefinition.aClass12_159.method224();
+        ItemDefinition.aClass12_158.method224();
         if(flag)
             packet = -1;
         Player.aClass12_1704.method224();
@@ -1684,9 +1898,9 @@ public class client extends Applet_Sub1 {
         Object obj = null;
         for(Class30_Sub2_Sub4_Sub2 class30_sub2_sub4_sub2 = (Class30_Sub2_Sub4_Sub2)class19.reverseGetFirst(); class30_sub2_sub4_sub2 != null; class30_sub2_sub4_sub2 = (Class30_Sub2_Sub4_Sub2)class19.reverseGetNext(false))
         {
-            Class8 class8 = Class8.method198(class30_sub2_sub4_sub2.anInt1558);
-            int l = class8.anInt155;
-            if(class8.aBoolean176)
+            ItemDefinition class8 = ItemDefinition.method198(class30_sub2_sub4_sub2.anInt1558);
+            int l = class8.value;
+            if(class8.stackable)
                 l *= class30_sub2_sub4_sub2.anInt1559 + 1;
             if(l > k)
             {
@@ -1707,7 +1921,7 @@ public class client extends Applet_Sub1 {
         }
 
         int i1 = i + (j << 7) + 0x60000000;
-        aClass25_946.method281((byte)7, i, i1, ((Class30_Sub2_Sub4) (obj1)), method42(anInt918, j * 128 + 64, true, i * 128 + 64), ((Class30_Sub2_Sub4) (obj2)), ((Class30_Sub2_Sub4) (obj)), anInt918, j);
+        aClass25_946.method281((byte)7, i, i1, ((Animable) (obj1)), method42(anInt918, j * 128 + 64, true, i * 128 + 64), ((Animable) (obj2)), ((Animable) (obj)), anInt918, j);
     }
 
     public final void method26(boolean flag, int i)
@@ -1862,10 +2076,10 @@ public class client extends Applet_Sub1 {
                                 anInt1066 = k2;
                                 anInt1067 = class9_1.id;
                                 if(class9_1.inv[k2] > 0) {
-                                    Class8 class8 = Class8.method198(class9_1.inv[k2] - 1);
+                                    ItemDefinition class8 = ItemDefinition.method198(class9_1.inv[k2] - 1);
                                     if(anInt1282 == 1 && class9_1.isInventoryInterface) {
                                         if(class9_1.id != anInt1284 || k2 != anInt1283) {
-                                            menuActionName[menuActionRow] = "Use " + aString1286 + " with @lre@" + class8.name;
+                                            menuActionName[menuActionRow] = "Use " + aString1286 + " with <col=ff9040>" + class8.name;
                                             menuActionID[menuActionRow] = 870;
                                             menuActionCmd1[menuActionRow] = class8.anInt157;
                                             menuActionCmd2[menuActionRow] = k2;
@@ -1875,7 +2089,7 @@ public class client extends Applet_Sub1 {
                                     } else
                                     if(anInt1136 == 1 && class9_1.isInventoryInterface) {
                                         if((anInt1138 & 0x10) == 16) {
-                                            menuActionName[menuActionRow] = aString1139 + " @lre@" + class8.name;
+                                            menuActionName[menuActionRow] = aString1139 + " <col=ff9040>" + class8.name;
                                             menuActionID[menuActionRow] = 543;
                                             menuActionCmd1[menuActionRow] = class8.anInt157;
                                             menuActionCmd2[menuActionRow] = k2;
@@ -1885,8 +2099,8 @@ public class client extends Applet_Sub1 {
                                     } else {
                                         if(class9_1.isInventoryInterface) {
                                             for(int l3 = 4; l3 >= 3; l3--)
-                                                if(class8.aStringArray189 != null && class8.aStringArray189[l3] != null) {
-                                                    menuActionName[menuActionRow] = class8.aStringArray189[l3] + " @lre@" + class8.name;
+                                                if(class8.itemActions != null && class8.itemActions[l3] != null) {
+                                                    menuActionName[menuActionRow] = class8.itemActions[l3] + " <col=ff9040>" + class8.name;
                                                     if(l3 == 3)
                                                         menuActionID[menuActionRow] = 493;
                                                     if(l3 == 4)
@@ -1896,7 +2110,7 @@ public class client extends Applet_Sub1 {
                                                     menuActionCmd3[menuActionRow] = class9_1.id;
                                                     menuActionRow++;
                                                 } else if(l3 == 4) {
-                                                    menuActionName[menuActionRow] = "Drop @lre@" + class8.name;
+                                                    menuActionName[menuActionRow] = "Drop <col=ff9040>" + class8.name;
                                                     menuActionID[menuActionRow] = 847;
                                                     menuActionCmd1[menuActionRow] = class8.anInt157;
                                                     menuActionCmd2[menuActionRow] = k2;
@@ -1906,17 +2120,17 @@ public class client extends Applet_Sub1 {
 
                                         }
                                         if(class9_1.usableItemInterface) {
-                                            menuActionName[menuActionRow] = "Use @lre@" + class8.name;
+                                            menuActionName[menuActionRow] = "Use <col=ff9040>" + class8.name;
                                             menuActionID[menuActionRow] = 447;
                                             menuActionCmd1[menuActionRow] = class8.anInt157;
                                             menuActionCmd2[menuActionRow] = k2;
                                             menuActionCmd3[menuActionRow] = class9_1.id;
                                             menuActionRow++;
                                         }
-                                        if(class9_1.isInventoryInterface && class8.aStringArray189 != null) {
+                                        if(class9_1.isInventoryInterface && class8.itemActions != null) {
                                             for(int i4 = 2; i4 >= 0; i4--)
-                                                if(class8.aStringArray189[i4] != null) {
-                                                    menuActionName[menuActionRow] = class8.aStringArray189[i4] + " @lre@" + class8.name;
+                                                if(class8.itemActions[i4] != null) {
+                                                    menuActionName[menuActionRow] = class8.itemActions[i4] + " <col=ff9040>" + class8.name;
                                                     if(i4 == 0)
                                                         menuActionID[menuActionRow] = 74;
                                                     if(i4 == 1)
@@ -1933,7 +2147,7 @@ public class client extends Applet_Sub1 {
                                         if(class9_1.actions != null) {
                                             for(int j4 = 4; j4 >= 0; j4--)
                                                 if(class9_1.actions[j4] != null) {
-                                                    menuActionName[menuActionRow] = class9_1.actions[j4] + " @lre@" + class8.name;
+                                                    menuActionName[menuActionRow] = class9_1.actions[j4] + " <col=ff9040>" + class8.name;
                                                     if(j4 == 0)
                                                         menuActionID[menuActionRow] = 632;
                                                     if(j4 == 1)
@@ -1951,10 +2165,15 @@ public class client extends Applet_Sub1 {
                                                 }
 
                                         }
-                                        if(rights >= 2)
-                                            menuActionName[menuActionRow] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
-                                        if(rights <= 1)
-                                            menuActionName[menuActionRow] = "Examine @lre@"+class8.name;
+                                        if (this.myPrivilege == 2 || this.myPrivilege == 9
+                                                || this.myPrivilege == 10 || this.myPrivilege == 4) {
+                                            this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>"
+                                                    + class8.name + "</col><col=65280>(</col><col=ffffff>" + class8.anInt157
+                                                    + "</col><col=65280>)</col>";
+                                        } else {
+                                            this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>"
+                                                    + class8.name+"</col>";
+                                        }
                                         menuActionID[menuActionRow] = 1125;
                                         menuActionCmd1[menuActionRow] = class8.anInt157;
                                         menuActionCmd2[menuActionRow] = k2;
@@ -2121,7 +2340,32 @@ public class client extends Applet_Sub1 {
 
     }
 
+    public void launchURL(String url) {
 
+        if (!url.toLowerCase().startsWith("http")) {
+            url = "http://" + url;
+        }
+        String osName = System.getProperty("os.name");
+        try {
+            if (osName.startsWith("Mac OS")) {
+                @SuppressWarnings("rawtypes")
+                Class fileMgr = Class.forName("com.apple.eio.FileManager");
+                @SuppressWarnings("unchecked")
+                Method openURL = fileMgr.getDeclaredMethod("openURL", String.class);
+                openURL.invoke(null, url);
+            } else if (osName.startsWith("Windows"))
+                Runtime.getRuntime().exec("rundll32 url.dll,FileProtocolHandler " + url);
+            else { // assume Unix or Linux
+                if (Desktop.isDesktopSupported() && Desktop.getDesktop().isSupported(Desktop.Action.BROWSE)) {
+                    Desktop.getDesktop().browse(new URI(url));
+                }
+            }
+        } catch (Exception e) {
+            pushMessage("Failed to open URL.", 0, "");
+            System.err.println("Failed to launcher url on operating system " + osName);
+            e.printStackTrace();
+        }
+    }
     private final void method31(Stream stream, int i, int j)
     {
         anInt839 = 0;
@@ -2226,14 +2470,14 @@ public class client extends Applet_Sub1 {
         if(j == 1)
         {
             if(k == 1)
-                Rasterizer.method372(0.90000000000000002D, aByte1200);
+                Rasterizer.method372(0.90000000000000002D);
             if(k == 2)
-                Rasterizer.method372(0.80000000000000004D, aByte1200);
+                Rasterizer.method372(0.80000000000000004D);
             if(k == 3)
-                Rasterizer.method372(0.69999999999999996D, aByte1200);
+                Rasterizer.method372(0.69999999999999996D);
             if(k == 4)
-                Rasterizer.method372(0.59999999999999998D, aByte1200);
-            Class8.aClass12_158.method224();
+                Rasterizer.method372(0.59999999999999998D);
+            ItemDefinition.aClass12_158.method224();
             aBoolean1255 = true;
         }
         if(j == 3)
@@ -2381,7 +2625,7 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-                if(((Class30_Sub2_Sub4_Sub1) var3).aString1506 != null && (var2 >= this.anInt891 || this.publicChatMode == 0 || this.publicChatMode == 3 || this.publicChatMode == 1 && this.method109(false, ((Player)var3).name))) {
+                if(((Class30_Sub2_Sub4_Sub1) var3).aString1506 != null && (var2 >= this.anInt891 || this.publicChatMode == 0 || this.publicChatMode == 3 || this.publicChatMode == 1 && this.method109(((Player)var3).name))) {
                     this.method127(true, (Class30_Sub2_Sub4_Sub1) var3, ((Class30_Sub2_Sub4_Sub1) var3).anInt1507);
                     if(this.anInt963 > -1 && this.anInt974 < this.anInt975) {
                         this.anIntArray979[this.anInt974] = this.boldText.method384(((Class30_Sub2_Sub4_Sub1) var3).aString1506, true) / 2;
@@ -2761,6 +3005,368 @@ public class client extends Applet_Sub1 {
         }
 
     }
+    private void buildPublicChat(int j) {
+        int l = 0;
+
+        for (int i1 = 0; i1 < 500; ++i1) {
+            if (this.chatMessages[i1] != null && this.chatTypeView == 1) {
+                int j1 = this.chatTypes[i1];
+                String s = this.chatNames[i1];
+                int k1 = 70 - l * 14 + 42 + anInt1089 + 4 + 5;
+                if (k1 < -23) {
+                    break;
+                }
+
+                if (s != null && s.startsWith("@cr1@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr2@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr3@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr4@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr5@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr6@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr7@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr8@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr9@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr10@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr11@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr12@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr13@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr14@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr15@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr16@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr17@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr18@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr19@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr20@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr21@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr22@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr23@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr24@")) {
+                    s = s.substring(6);
+                }
+                if (s != null && s.startsWith("@cr25@")) {
+                    s = s.substring(6);
+                }
+                if ((j1 == 1 || j1 == 2) && (j1 == 1 || this.publicChatMode == 0
+                        || this.publicChatMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1 && !s.equals(localPlayer.name)) {
+                        if (this.myPrivilege == 1 || this.myPrivilege == 2 || this.myPrivilege == 9
+                                || this.myPrivilege == 10 || this.myPrivilege == 4) {
+                            this.menuActionName[this.menuActionRow] = "Report abuse <col=FFFFFF>" + s;
+                            this.menuActionID[this.menuActionRow] = 606;
+                            ++this.menuActionRow;
+                        }
+
+                        this.menuActionName[this.menuActionRow] = "Add ignore <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 42;
+                        ++this.menuActionRow;
+                        this.menuActionName[this.menuActionRow] = "Add friend <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 337;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
+                }
+            }
+        }
+
+    }
+    private void buildFriendChat(int j) {
+        int l = 0;
+
+        for (int i1 = 0; i1 < 500; ++i1) {
+            if (this.chatMessages[i1] != null && this.chatTypeView == 2) {
+                int j1 = this.chatTypes[i1];
+                String s = this.chatNames[i1];
+                int k1 = 70 - l * 14 + 42 + anInt1089 + 4 + 5;
+                if (k1 < -23)
+                    break;
+                if (s != null && s.startsWith("@cr1@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr2@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr3@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr4@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr5@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr6@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr7@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr8@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr9@"))
+                    s = s.substring(5);
+                if (s != null && s.startsWith("@cr10@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr11@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr12@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr13@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr14@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr15@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr16@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr17@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr18@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr19@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr20@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr21@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr22@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr23@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr24@"))
+                    s = s.substring(6);
+                if (s != null && s.startsWith("@cr25@"))
+                    s = s.substring(6);
+                if ((j1 == 5 || j1 == 6) && (this.splitPrivateChat == 0 || this.chatTypeView == 2) && (j1 == 6
+                        || this.privateChatMode == 0 || this.privateChatMode == 1 && this.method109(s))) {
+                    ++l;
+                }
+
+                if ((j1 == 3 || j1 == 7) && (this.splitPrivateChat == 0 || this.chatTypeView == 2) && (j1 == 7
+                        || this.privateChatMode == 0 || this.privateChatMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1) {
+                        if (this.myPrivilege == 1 || this.myPrivilege == 2 || this.myPrivilege == 9
+                                || this.myPrivilege == 10 || this.myPrivilege == 4) {
+                            this.menuActionName[this.menuActionRow] = "Report abuse <col=FFFFFF>" + s;
+                            this.menuActionID[this.menuActionRow] = 606;
+                            ++this.menuActionRow;
+                        }
+
+                        this.menuActionName[this.menuActionRow] = "Add ignore <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 42;
+                        ++this.menuActionRow;
+                        this.menuActionName[this.menuActionRow] = "Add friend <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 337;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
+                }
+            }
+        }
+
+    }
+
+    private void buildDuelorTrade(int j) {
+        int l = 0;
+
+        for (int i1 = 0; i1 < 500; ++i1) {
+            if (this.chatMessages[i1] != null && (this.chatTypeView == 3 || this.chatTypeView == 4)) {
+                int j1 = this.chatTypes[i1];
+                String s = this.chatNames[i1];
+                int k1 = 70 - l * 14 + 42 + anInt1089 + 4 + 5;
+                if (k1 < -23) {
+                    break;
+                }
+
+                if (s != null && s.startsWith("@cr1@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr2@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr3@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr4@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr5@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr6@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr7@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr8@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr9@")) {
+                    s = s.substring(5);
+                }
+
+                if (s != null && s.startsWith("@cr10@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr11@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr12@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr13@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr14@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr15@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr16@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr17@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr18@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr19@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr20@")) {
+                    s = s.substring(6);
+                }
+                if (s != null && s.startsWith("@cr21@")) {
+                    s = s.substring(6);
+                }
+                if (s != null && s.startsWith("@cr22@")) {
+                    s = s.substring(6);
+                }
+                if (s != null && s.startsWith("@cr23@")) {
+                    s = s.substring(6);
+                }
+                if (s != null && s.startsWith("@cr24@")) {
+                    s = s.substring(6);
+                }
+                if (this.chatTypeView == 3 && j1 == 4
+                        && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1) {
+                        this.menuActionName[this.menuActionRow] = "Accept trade <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 484;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
+                }
+
+                if (this.chatTypeView == 4 && j1 == 8
+                        && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1) {
+                        this.menuActionName[this.menuActionRow] = "Accept challenge <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 6;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
+                }
+
+                if (j1 == 12) {
+                    if (j > k1 - 14 && j <= k1) {
+                        this.menuActionName[this.menuActionRow] = "Go-to <col=255>" + s;
+                        this.menuActionID[this.menuActionRow] = 915;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
+                }
+            }
+        }
+
+    }
     public final void method37(int i, int j)
     {
         if(i <= 0)
@@ -2768,7 +3374,7 @@ public class client extends Applet_Sub1 {
         if(!lowMemory)
         {
             if(Rasterizer.anIntArray1480[24] >= j) {
-                Background class30_sub2_sub1_sub2_2 = Rasterizer.aBackgroundArray1474[24];
+                Background class30_sub2_sub1_sub2_2 = Rasterizer.aBackgroundArray1474s[24];
                 int l = class30_sub2_sub1_sub2_2.anInt1452 * class30_sub2_sub1_sub2_2.anInt1453 - 1;
                 int k1 = class30_sub2_sub1_sub2_2.anInt1452 * anInt945 * 2;
                 byte abyte1[] = class30_sub2_sub1_sub2_2.aByteArray1450;
@@ -2778,11 +3384,11 @@ public class client extends Applet_Sub1 {
 
                 class30_sub2_sub1_sub2_2.aByteArray1450 = abyte4;
                 aByteArray912 = abyte1;
-                Rasterizer.method370(24, -477);
+                Rasterizer.method370(24);
             }
             if(Rasterizer.anIntArray1480[17] >= j)
             {
-                Background background = Rasterizer.aBackgroundArray1474[17];
+                Background background = Rasterizer.aBackgroundArray1474s[17];
                 int k = background.anInt1452 * background.anInt1453 - 1;
                 int j1 = background.anInt1452 * anInt945 * 2;
                 byte abyte0[] = background.aByteArray1450;
@@ -2792,7 +3398,7 @@ public class client extends Applet_Sub1 {
 
                 background.aByteArray1450 = abyte3;
                 aByteArray912 = abyte0;
-                Rasterizer.method370(17, -477);
+                Rasterizer.method370(17);
                 anInt854++;
                 if(anInt854 > 1235)
                 {
@@ -2816,7 +3422,7 @@ public class client extends Applet_Sub1 {
             }
             if(Rasterizer.anIntArray1480[24] >= j)
             {
-                Background class30_sub2_sub1_sub2_1 = Rasterizer.aBackgroundArray1474[24];
+                Background class30_sub2_sub1_sub2_1 = Rasterizer.aBackgroundArray1474s[24];
                 int l = class30_sub2_sub1_sub2_1.anInt1452 * class30_sub2_sub1_sub2_1.anInt1453 - 1;
                 int k1 = class30_sub2_sub1_sub2_1.anInt1452 * anInt945 * 2;
                 byte abyte1[] = class30_sub2_sub1_sub2_1.aByteArray1450;
@@ -2826,11 +3432,11 @@ public class client extends Applet_Sub1 {
 
                 class30_sub2_sub1_sub2_1.aByteArray1450 = abyte4;
                 aByteArray912 = abyte1;
-                Rasterizer.method370(24, -477);
+                Rasterizer.method370(24);
             }
             if(Rasterizer.anIntArray1480[40] >= j)
             {
-                Background class30_sub2_sub1_sub2_1 = Rasterizer.aBackgroundArray1474[40];
+                Background class30_sub2_sub1_sub2_1 = Rasterizer.aBackgroundArray1474s[40];
                 int l = class30_sub2_sub1_sub2_1.anInt1452 * class30_sub2_sub1_sub2_1.anInt1453 - 1;
                 int k1 = class30_sub2_sub1_sub2_1.anInt1452 * anInt945 * 2;
                 byte abyte1[] = class30_sub2_sub1_sub2_1.aByteArray1450;
@@ -2840,11 +3446,11 @@ public class client extends Applet_Sub1 {
 
                 class30_sub2_sub1_sub2_1.aByteArray1450 = abyte4;
                 aByteArray912 = abyte1;
-                Rasterizer.method370(40, -477);
+                Rasterizer.method370(40);
             }
             if(Rasterizer.anIntArray1480[34] >= j)
             {
-                Background class30_sub2_sub1_sub2_2 = Rasterizer.aBackgroundArray1474[34];
+                Background class30_sub2_sub1_sub2_2 = Rasterizer.aBackgroundArray1474s[34];
                 int i1 = class30_sub2_sub1_sub2_2.anInt1452 * class30_sub2_sub1_sub2_2.anInt1453 - 1;
                 int l1 = class30_sub2_sub1_sub2_2.anInt1452 * anInt945 * 2;
                 byte abyte2[] = class30_sub2_sub1_sub2_2.aByteArray1450;
@@ -2854,7 +3460,7 @@ public class client extends Applet_Sub1 {
 
                 class30_sub2_sub1_sub2_2.aByteArray1450 = abyte5;
                 aByteArray912 = abyte2;
-                Rasterizer.method370(34, -477);
+                Rasterizer.method370(34);
             }
         }
     }
@@ -3000,16 +3606,18 @@ public class client extends Applet_Sub1 {
         DrawingArea.drawPixels(l, yPos, xPos, i1, k);
         DrawingArea.drawPixels(16, yPos + 1, xPos + 1, 0, k - 2);
         DrawingArea.fillPixels(xPos + 1, k - 2, l - 19, 0, yPos + 18, true);
-        boldText.method385(i1, "Choose Option", yPos + 14, 822, xPos + 3);
+        newBoldFont.drawBasicString("Choose Option", xPos + 3, yPos + 14, i1, 0x000000);
         int j1 = super.mouseX - x;
         int k1 = -y + super.mouseY;
         for(int l1 = 0; l1 < menuActionRow; l1++)
         {
             int i2 = yPos + 31 + (menuActionRow - 1 - l1) * 15;
             int j2 = 0xffffff;
-            if(j1 > xPos && j1 < xPos + k && k1 > i2 - 13 && k1 < i2 + 3)
+            if(j1 > xPos && j1 < xPos + k && k1 > i2 - 13 && k1 < i2 + 3) {
+                DrawingArea.drawPixels(15, i2 - 11, xPos + 3, 7301469, this.anInt951 - 6);
                 j2 = 0xffff00;
-            boldText.method389(false, true, xPos + 3, j2, menuActionName[l1], i2);
+            }
+            this.newBoldFont.drawBasicString(this.menuActionName[l1], xPos + 3, i2, j2, 0);
         }
 
     }
@@ -3232,7 +3840,7 @@ public class client extends Applet_Sub1 {
             int k1 = ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551 >> 7;
             if(j1 < 0 || j1 >= 104 || k1 < 0 || k1 >= 104)
                 continue;
-            if(player.aClass30_Sub2_Sub4_Sub6_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708)
+            if(player.aModel_1714 != null && loopCycle >= player.anInt1707 && loopCycle < player.anInt1708)
             {
                 player.aBoolean1699 = false;
                 player.anInt1709 = method42(anInt918, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1551, true, ((Class30_Sub2_Sub4_Sub1) (player)).anInt1550);
@@ -3363,7 +3971,7 @@ public class client extends Applet_Sub1 {
         if(j == 620)
         {
             canMute = !canMute;
-            if(rights >= 1)
+            if(myPrivilege >= 1)
             {
                 if(canMute)
                 {
@@ -3660,8 +4268,8 @@ public class client extends Applet_Sub1 {
 
     public static final void method52(boolean flag)
     {
-        Class25.aBoolean436 = false;
-        Rasterizer.aBoolean1461 = false;
+        Class25.lowMem = false;
+        Rasterizer.lowMem = false;
         lowMemory = false;
         ObjectManager.aBoolean151 = false;
         if(flag)
@@ -3865,7 +4473,7 @@ public class client extends Applet_Sub1 {
                     return;
                 if(onDemandData.dataType == 0)
                 {
-                    Class30_Sub2_Sub4_Sub6.method460(onDemandData.buffer, onDemandData.ID);
+                    Model.method460(onDemandData.buffer, onDemandData.ID);
                     if((onDemandFetcher.method559(onDemandData.ID, -203) & 0x62) != 0)
                     {
                         tabAreaAltered = true;
@@ -3895,6 +4503,8 @@ public class client extends Applet_Sub1 {
                     }
 
                 }
+                if (onDemandData.dataType == 4)
+                    Texture.decode(onDemandData.ID, onDemandData.buffer);
             } while(onDemandData.dataType != 93 || !onDemandFetcher.method564(onDemandData.ID, -520));
             ObjectManager.method173((byte)-107, new Stream(onDemandData.buffer, 891), onDemandFetcher);
         } while(true);
@@ -4254,7 +4864,7 @@ public class client extends Applet_Sub1 {
             int k = Class25.anInt470;
             int k1 = Class25.anInt471;
             boolean flag = false;
-            if (rights >= 2 && controlIsDown) {
+            if (myPrivilege >= 2 && controlIsDown) {
                 teleport(baseX + k, baseY + k1);
             } else {
                  flag = doWalkTo(0, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (localPlayer)).anIntArray1501[0], 0, 0, k1, ((Class30_Sub2_Sub4_Sub1) (localPlayer)).anIntArray1500[0], true, k);
@@ -5204,7 +5814,7 @@ public class client extends Applet_Sub1 {
         if(l == 337 || l == 42 || l == 792 || l == 322)
         {
             String s = menuActionName[i];
-            int k1 = s.indexOf("@whi@");
+            int k1 = s.indexOf("<col=ffffff>");
             if(k1 != -1)
             {
                 long l3 = TextClass.longForName(s.substring(k1 + 5).trim());
@@ -5267,7 +5877,7 @@ public class client extends Applet_Sub1 {
         if(l == 484 || l == 6)
         {
             String s1 = menuActionName[i];
-            int l1 = s1.indexOf("@whi@");
+            int l1 = s1.indexOf("<col=ffffff>");
             if(l1 != -1)
             {
                 s1 = s1.substring(l1 + 5).trim();
@@ -5863,7 +6473,7 @@ public class client extends Applet_Sub1 {
         if(l == 606)
         {
             String s2 = menuActionName[i];
-            int j2 = s2.indexOf("@whi@");
+            int j2 = s2.indexOf("<col=ffffff>");
             if(j2 != -1)
                 if(openInterfaceID == -1)
                 {
@@ -5903,7 +6513,7 @@ public class client extends Applet_Sub1 {
         if(l == 639)
         {
             String s3 = menuActionName[i];
-            int k2 = s3.indexOf("@whi@");
+            int k2 = s3.indexOf("<col=ffffff>");
             if(k2 != -1)
             {
                 long l4 = TextClass.longForName(s3.substring(k2 + 5).trim());
@@ -5991,14 +6601,14 @@ public class client extends Applet_Sub1 {
         }
         if(l == 1125)
         {
-            Class8 class8 = Class8.method198(i1);
+            ItemDefinition class8 = ItemDefinition.method198(i1);
             Widget class9_4 = Widget.interfaceCache[k];
             String s5;
             if(class9_4 != null && class9_4.invStackSizes[j] >= 0x186a0)
                 s5 = class9_4.invStackSizes[j] + " x " + class8.name;
             else
-            if(class8.aByteArray178 != null)
-                s5 = new String(class8.aByteArray178);
+            if(class8.description != null)
+                s5 = new String(class8.description);
             else
                 s5 = "It's a " + class8.name + ".";
             pushMessage(s5, 0, "");
@@ -6022,7 +6632,7 @@ public class client extends Applet_Sub1 {
             anInt1283 = j;
             anInt1284 = k;
             anInt1285 = i1;
-            aString1286 = Class8.method198(i1).name;
+            aString1286 = ItemDefinition.method198(i1).name;
             anInt1136 = 0;
             tabAreaAltered = true;
             return;
@@ -6054,10 +6664,10 @@ public class client extends Applet_Sub1 {
         }
         if(l == 1448)
         {
-            Class8 class8_1 = Class8.method198(i1);
+            ItemDefinition class8_1 = ItemDefinition.method198(i1);
             String s6;
-            if(class8_1.aByteArray178 != null)
-                s6 = new String(class8_1.aByteArray178);
+            if(class8_1.description != null)
+                s6 = new String(class8_1.description);
             else
                 s6 = "It's a " + class8_1.name + ".";
             pushMessage(s6, 0, "");
@@ -6119,9 +6729,9 @@ public class client extends Applet_Sub1 {
             menuActionRow++;
         }
         long j = -1;
-        for(int k = 0; k < Class30_Sub2_Sub4_Sub6.anInt1687; k++)
+        for(int k = 0; k < Model.anInt1687; k++)
         {
-            Long l = Class30_Sub2_Sub4_Sub6.anIntArray1688[k];
+            Long l = Model.anIntArray1688[k];
             int i1 = ObjectKey.getObjectX(l);
             int j1 = ObjectKey.getObjectY(l);
             int k1 = ObjectKey.getObjectOpcode(l);
@@ -6138,7 +6748,7 @@ public class client extends Applet_Sub1 {
                     continue;
                 if(anInt1282 == 1)
                 {
-                    menuActionName[menuActionRow] = "Use " + aString1286 + " with @cya@" + class46.aString739;
+                    menuActionName[menuActionRow] = "Use " + aString1286 + " with <col=65535>" + class46.aString739;
                     menuActionID[menuActionRow] = 62;
                     menuActionCmd1[menuActionRow] = l;
                     menuActionCmd2[menuActionRow] = i1;
@@ -6149,7 +6759,7 @@ public class client extends Applet_Sub1 {
                 {
                     if((anInt1138 & 4) == 4)
                     {
-                        menuActionName[menuActionRow] = aString1139 + " @cya@" + class46.aString739;
+                        menuActionName[menuActionRow] = aString1139 + " <col=65535>" + class46.aString739;
                         menuActionID[menuActionRow] = 956;
                         menuActionCmd1[menuActionRow] = l;
                         menuActionCmd2[menuActionRow] = i1;
@@ -6163,7 +6773,7 @@ public class client extends Applet_Sub1 {
                         for(int i2 = 4; i2 >= 0; i2--)
                             if(class46.aStringArray786[i2] != null)
                             {
-                                menuActionName[menuActionRow] = class46.aStringArray786[i2] + " @cya@" + class46.aString739;
+                                menuActionName[menuActionRow] = class46.aStringArray786[i2] + " <col=65535>" + class46.aString739;
                                 if(i2 == 0)
                                     menuActionID[menuActionRow] = 502;
                                 if(i2 == 1)
@@ -6181,10 +6791,14 @@ public class client extends Applet_Sub1 {
                             }
 
                     }
-                    if(rights >= 2)
-                        menuActionName[menuActionRow] = "Examine @cya@"+class46.aString739+"@blu@(@whi@Object Id: "+class46.type +"@blu@)(@whi@Model id: "+class46.anIntArray773[0]+"@blu@)(@whi@VarBit: "+class46.anInt749+"@blu@)";
-                    if(rights <= 1)
-                        menuActionName[menuActionRow] = "Examine @cya@"+class46.aString739+"@blu@(@whi@"+class46.type +"@blu@)";
+                    if (this.myPrivilege == 2 || this.myPrivilege == 10 || this.myPrivilege == 9
+                            || this.myPrivilege == 4) {
+                        this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class46.aString739
+                                + "</col><col=255>(</col><col=FFFFFF>" + class46.type + "</col><col=255>)</col>";
+                    } else {
+                        this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class46.aString739 + "</col>";
+                    }
+
                     menuActionID[menuActionRow] = 1226;
                     menuActionCmd1[menuActionRow] = l;
                     menuActionCmd2[menuActionRow] = i1;
@@ -6243,10 +6857,10 @@ public class client extends Applet_Sub1 {
                 {
                     for(Class30_Sub2_Sub4_Sub2 class30_sub2_sub4_sub2 = (Class30_Sub2_Sub4_Sub2)class19.method253(5); class30_sub2_sub4_sub2 != null; class30_sub2_sub4_sub2 = (Class30_Sub2_Sub4_Sub2)class19.method255(8))
                     {
-                        Class8 class8 = Class8.method198(class30_sub2_sub4_sub2.anInt1558);
+                        ItemDefinition class8 = ItemDefinition.method198(class30_sub2_sub4_sub2.anInt1558);
                         if(anInt1282 == 1)
                         {
-                            menuActionName[menuActionRow] = "Use " + aString1286 + " with @lre@" + class8.name;
+                            menuActionName[menuActionRow] = "Use " + aString1286 + " with <col=ff9040>" + class8.name;
                             menuActionID[menuActionRow] = 511;
                             menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
                             menuActionCmd2[menuActionRow] = i1;
@@ -6257,7 +6871,7 @@ public class client extends Applet_Sub1 {
                         {
                             if((anInt1138 & 1) == 1)
                             {
-                                menuActionName[menuActionRow] = aString1139 + " @lre@" + class8.name;
+                                menuActionName[menuActionRow] = aString1139 + " <col=ff9040>" + class8.name;
                                 menuActionID[menuActionRow] = 94;
                                 menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
                                 menuActionCmd2[menuActionRow] = i1;
@@ -6269,17 +6883,21 @@ public class client extends Applet_Sub1 {
                             for(int j3 = 4; j3 >= 0; j3--)
                                 if(j3 == 2)
                                 {
-                                    menuActionName[menuActionRow] = "Take @lre@" + class8.name;
+                                    menuActionName[menuActionRow] = "Take <col=ff9040>" + class8.name;
                                     menuActionID[menuActionRow] = 234;
                                     menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
                                     menuActionCmd2[menuActionRow] = i1;
                                     menuActionCmd3[menuActionRow] = j1;
                                     menuActionRow++;
                                 }
-                            if(rights >= 2)
-                                menuActionName[menuActionRow] = "Examine @lre@"+class8.name +"@gre@(@whi@"+class8.anInt157+"@gre@)";
-                            if(rights <= 1)
-                                menuActionName[menuActionRow] = "Examine @lre@"+class8.name;
+                            if (this.myPrivilege == 2 || this.myPrivilege == 9 || this.myPrivilege == 10
+                                    || this.myPrivilege == 4) {
+                                this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name
+                                        + "<col=65280>(<col=FFFFFF>" + class8.anInt157 + "<col=65280>)";
+                            } else {
+                                this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name;
+                            }
+
                             menuActionID[menuActionRow] = 1448;
                             menuActionCmd1[menuActionRow] = class30_sub2_sub4_sub2.anInt1558;
                             menuActionCmd2[menuActionRow] = i1;
@@ -6406,7 +7024,7 @@ public class client extends Applet_Sub1 {
         method118(3);
         Class46.method575(-501);
         Class5.method163(-501);
-        Class8.method191(-501);
+        ItemDefinition.method191(-501);
         Class22.aClass22Array388 = null;
         Class38.aClass38Array656 = null;
         Widget.interfaceCache = null;
@@ -6417,9 +7035,9 @@ public class client extends Applet_Sub1 {
         Class41.aClass41Array701 = null;
         super.aRSImageProducer_13 = null;
         Player.aClass12_1704 = null;
-        Rasterizer.method363(-501);
+        Rasterizer.nullLoader();
         Class25.method273(-501);
-        Class30_Sub2_Sub4_Sub6.method458(-501);
+        Model.nullLoader();
         Class36.method530(-501);
         System.gc();
     }
@@ -6606,7 +7224,8 @@ public class client extends Applet_Sub1 {
                 }
                 if((j == 13 || j == 10) && inputString.length() > 0)
                 {
-                    if(rights >= 2)
+
+                    if(myPrivilege >= 2)
                     {
                         if(inputString.equals("::clientdrop"))
                             method68(-670);
@@ -6618,13 +7237,9 @@ public class client extends Applet_Sub1 {
                                 onDemandFetcher.method563((byte)1, 2, j1, (byte)8);
 
                         }
-                        if(inputString.equals("::fpson"))
-                            fpsOn = true;
                         if(inputString.equals("::data"))
                             clientData = !clientData;
 
-                        if(inputString.equals("::fpsoff"))
-                            fpsOn = false;
                         if(inputString.equals("::noclip"))
                         {
                             for(int k1 = 0; k1 < 4; k1++)
@@ -6639,6 +7254,17 @@ public class client extends Applet_Sub1 {
                             }
 
                         }
+                    }
+                    if(inputString.equals("::fpson"))
+                        fpsOn = true;
+                    if(inputString.equals("::fpsoff"))
+                        fpsOn = false;
+                    if (this.inputString.equals("::hd")) {
+                        Configuration.hdTexturing = !Configuration.hdTexturing;
+                    }
+
+                    if (this.inputString.equals("::fog")) {
+                        Configuration.distanceFog = !Configuration.distanceFog;
                     }
                     if (this.inputString.equals("::optab") && currentScreenMode != ScreenMode.FIXED) {
                         transparentTabArea = !transparentTabArea;
@@ -6656,7 +7282,7 @@ public class client extends Applet_Sub1 {
                     if (inputString.equals("::resize")) {
                         currentScreenMode(ScreenMode.RESIZABLE);
                     }
-                    if (inputString.equals("::fullscreen") && rights >= 2) {
+                    if (inputString.equals("::fullscreen") && myPrivilege >= 2) {
                         currentScreenMode(ScreenMode.FULLSCREEN);
                     }
                     if (inputString.startsWith("::drawdistance")) {
@@ -6675,30 +7301,6 @@ public class client extends Applet_Sub1 {
                             pushMessage("Set view distance to " + distance+"", 0, "");
                         } catch (Exception e) {
                             e.printStackTrace();
-                        }
-                    }
-                    if(inputString.equals("::vote"))
-                    {
-                        try {
-                            //http://www.mmorpgtoplist.com/in.php?site=56792
-                            String url = "http://www.rune-server.org/toplist/detail/8732/GodzHell_since_2008/";
-                            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-                        }
-                        catch (java.io.IOException e)
-                        {
-                            System.out.println(e.getMessage());
-                        }
-                    }
-                    if(inputString.equals("::vote2"))
-                    {
-                        try {
-                            //http://www.mmorpgtoplist.com/in.php?site=56792
-                            String url = "http://topg.org/Runescape/in-364386";
-                            java.awt.Desktop.getDesktop().browse(java.net.URI.create(url));
-                        }
-                        catch (java.io.IOException e)
-                        {
-                            System.out.println(e.getMessage());
                         }
                     }
                     if(inputString.startsWith("/"))
@@ -6779,10 +7381,10 @@ public class client extends Applet_Sub1 {
 
 
                         if(s.startsWith("dumpcfg")) {
-                            Class8.dumpCfg();
+                            ItemDefinition.dumpCfg();
                         }
                         if(s.startsWith("dumpitems")) {
-                            Class8.dumpItems();
+                            ItemDefinition.dumpItems();
                         }
                         if(s.startsWith("dumpnpc")) {
                             Class5.dumpNpcList();
@@ -6895,55 +7497,55 @@ public class client extends Applet_Sub1 {
                         localPlayer.anInt1513 = j2;
                         localPlayer.anInt1531 = i3;
                         localPlayer.textCycle = 150;
-                        if(rights == 1){
+                        if(myPrivilege == 1){
                             pushMessage(localPlayer.aString1506, 1, "@cr1@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 2) {
+                        } else if(myPrivilege == 2) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr2@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 3) {
+                        } else if(myPrivilege == 3) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr3@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 4) {
+                        } else if(myPrivilege == 4) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr4@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 5) {
+                        } else if(myPrivilege == 5) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr5@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 6) {
+                        } else if(myPrivilege == 6) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr6@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 7) {
+                        } else if(myPrivilege == 7) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr7@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 8) {
+                        } else if(myPrivilege == 8) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr8@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 9) {
+                        } else if(myPrivilege == 9) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr9@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 10) {
+                        } else if(myPrivilege == 10) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr10@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 11) {
+                        } else if(myPrivilege == 11) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr11@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 12) {
+                        } else if(myPrivilege == 12) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr12@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 13) {
+                        } else if(myPrivilege == 13) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr13@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 14) {
+                        } else if(myPrivilege == 14) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr14@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 15) {
+                        } else if(myPrivilege == 15) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr15@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 16) {
+                        } else if(myPrivilege == 16) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr16@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 17) {
+                        } else if(myPrivilege == 17) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr17@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 18) {
+                        } else if(myPrivilege == 18) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr18@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 19) {
+                        } else if(myPrivilege == 19) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr19@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 20) {
+                        } else if(myPrivilege == 20) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr20@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 21) {
+                        } else if(myPrivilege == 21) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr21@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 22) {
+                        } else if(myPrivilege == 22) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr22@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 23) {
+                        } else if(myPrivilege == 23) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr23@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 24) {
+                        } else if(myPrivilege == 24) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr24@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
-                        } else if(rights == 25) {
+                        } else if(myPrivilege == 25) {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 1, "@cr25@" + prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
                         } else {
                             pushMessage(((Class30_Sub2_Sub4_Sub1) (localPlayer)).aString1506, 2, prefixRank(localPlayer.anInt1723) + localPlayer.name + suffixRank(localPlayer.anInt1723));
@@ -6986,178 +7588,198 @@ public class client extends Applet_Sub1 {
         {return null;}
     }
 
-    public final void buildChatAreaMenu(int j)
-    {
+    private void buildChatAreaMenu(int j) {
         int l = 0;
-        for(int i1 = 0; i1 < 500; i1++)
-        {
-            if(chatMessages[i1] == null && this.chatTypeView == 1)
-                continue;
-            int j1 = chatTypes[i1];
-            String s = chatNames[i1];
-            int k1 = (70 - l * 14) + anInt1089 + 4;
-            if(k1 < -20)
-                break;
-            boolean flag = false;
-            if (s != null && s.startsWith("@cr1@")) {
-                s = s.substring(5);
-            }
 
-            if (s != null && s.startsWith("@cr2@")) {
-                s = s.substring(5);
-            }
+        for (int i1 = 0; i1 < 500; ++i1) {
+            if (this.chatMessages[i1] != null) {
+                int j1 = this.chatTypes[i1];
+                int k1 = 70 - l * 14 + 42 + anInt1089 + 4 + 5;
+                String s = this.chatNames[i1];
+                if (this.chatTypeView == 1) {
+                    this.buildPublicChat(j);
+                    break;
+                }
 
-            if (s != null && s.startsWith("@cr3@")) {
-                s = s.substring(5);
-            }
+                if (this.chatTypeView == 2) {
+                    this.buildFriendChat(j);
+                    break;
+                }
 
-            if (s != null && s.startsWith("@cr4@")) {
-                s = s.substring(5);
-            }
+                if (this.chatTypeView == 3 || this.chatTypeView == 4) {
+                    this.buildDuelorTrade(j);
+                    break;
+                }
 
-            if (s != null && s.startsWith("@cr5@")) {
-                s = s.substring(5);
-            }
+                if (this.chatTypeView == 5) {
+                    break;
+                }
 
-            if (s != null && s.startsWith("@cr6@")) {
-                s = s.substring(5);
-            }
+                if (s != null && s.startsWith("@cr1@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr7@")) {
-                s = s.substring(5);
-            }
+                if (s != null && s.startsWith("@cr2@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr8@")) {
-                s = s.substring(5);
-            }
+                if (s != null && s.startsWith("@cr3@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr9@")) {
-                s = s.substring(5);
-            }
+                if (s != null && s.startsWith("@cr4@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr10@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr5@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr11@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr6@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr12@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr7@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr13@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr8@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr14@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr9@")) {
+                    s = s.substring(5);
+                }
 
-            if (s != null && s.startsWith("@cr15@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr10@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr16@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr11@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr17@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr12@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr18@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr13@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr19@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr14@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr20@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr15@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr21@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr16@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr22@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr17@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr23@")) {
-                s = s.substring(6);
-            }
+                if (s != null && s.startsWith("@cr18@")) {
+                    s = s.substring(6);
+                }
 
-            if (s != null && s.startsWith("@cr24@")) {
-                s = s.substring(6);
-            }
-            if (s != null && s.startsWith("@cr25@")) {
-                s = s.substring(6);
-            }
-            if(j1 == 0)
-                l++;
-            if((j1 == 1 || j1 == 2) && (j1 == 1 || publicChatMode == 0 || publicChatMode == 1 && method109(false, s)))
-            {
-                if(j > k1 - 14 && j <= k1 && !s.equals(localPlayer.name))
-                {
-                    if(rights >= 1)
-                    {
-                        menuActionName[menuActionRow] = "Report abuse @whi@" + s;
-                        menuActionID[menuActionRow] = 606;
-                        menuActionRow++;
+                if (s != null && s.startsWith("@cr19@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr20@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr21@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr22@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr23@")) {
+                    s = s.substring(6);
+                }
+
+                if (s != null && s.startsWith("@cr24@")) {
+                    s = s.substring(6);
+                }
+
+                if (j1 == 0) {
+                    ++l;
+                }
+
+                if ((j1 == 1 || j1 == 2) && (j1 == 1 || this.publicChatMode == 0
+                        || this.publicChatMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1 && !s.equals(localPlayer.name)) {
+                        if (this.myPrivilege == 1 || this.myPrivilege == 2 || this.myPrivilege == 9
+                                || this.myPrivilege == 10 || this.myPrivilege == 4) {
+                            this.menuActionName[this.menuActionRow] = "Report abuse <col=FFFFFF>" + s;
+                            this.menuActionID[this.menuActionRow] = 606;
+                            ++this.menuActionRow;
+                        }
+
+                        this.menuActionName[this.menuActionRow] = "Add ignore <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 42;
+                        ++this.menuActionRow;
+                        this.menuActionName[this.menuActionRow] = "Add friend <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 337;
+                        ++this.menuActionRow;
                     }
-                    menuActionName[menuActionRow] = "Add ignore @blu@" + s;
-                    menuActionID[menuActionRow] = 42;
-                    menuActionRow++;
-                    menuActionName[menuActionRow] = "Add friend @gre@" + s;
-                    menuActionID[menuActionRow] = 337;
-                    menuActionRow++;
+
+                    ++l;
                 }
-                l++;
-            }
-            if((j1 == 3 || j1 == 7) && splitPrivateChat == 0 && (j1 == 7 || privateChatMode == 0 || privateChatMode == 1 && method109(false, s)))
-            {
-                if(j > k1 - 14 && j <= k1)
-                {
-                    if(rights >= 1)
-                    {
-                        menuActionName[menuActionRow] = "Report abuse @whi@" + s;
-                        menuActionID[menuActionRow] = 606;
-                        menuActionRow++;
+
+                if ((j1 == 3 || j1 == 7) && this.splitPrivateChat == 0 && (j1 == 7 || this.privateChatMode == 0
+                        || this.privateChatMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1) {
+                        if (this.myPrivilege == 1 || this.myPrivilege == 2 || this.myPrivilege == 9
+                                || this.myPrivilege == 10 || this.myPrivilege == 4) {
+                            this.menuActionName[this.menuActionRow] = "Report abuse <col=FFFFFF>" + s;
+                            this.menuActionID[this.menuActionRow] = 606;
+                            ++this.menuActionRow;
+                        }
+
+                        this.menuActionName[this.menuActionRow] = "Add ignore <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 42;
+                        ++this.menuActionRow;
+                        this.menuActionName[this.menuActionRow] = "Add friend <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 337;
+                        ++this.menuActionRow;
                     }
-                    menuActionName[menuActionRow] = "Add ignore @blu@" + s;
-                    menuActionID[menuActionRow] = 42;
-                    menuActionRow++;
-                    menuActionName[menuActionRow] = "Add friend @gre@" + s;
-                    menuActionID[menuActionRow] = 337;
-                    menuActionRow++;
+
+                    ++l;
                 }
-                l++;
-            }
-            if(j1 == 4 && (tradeMode == 0 || tradeMode == 1 && method109(false, s)))
-            {
-                if(j > k1 - 14 && j <= k1)
-                {
-                    menuActionName[menuActionRow] = "Accept trade @whi@" + s;
-                    menuActionID[menuActionRow] = 484;
-                    menuActionRow++;
+
+                if (j1 == 4 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1) {
+                        this.menuActionName[this.menuActionRow] = "Accept trade <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 484;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
                 }
-                l++;
-            }
-            if((j1 == 5 || j1 == 6) && splitPrivateChat == 0 && privateChatMode < 2)
-                l++;
-            if(j1 == 8 && (tradeMode == 0 || tradeMode == 1 && method109(false, s)))
-            {
-                if(j > k1 - 14 && j <= k1)
-                {
-                    menuActionName[menuActionRow] = "Accept challenge @whi@" + s;
-                    menuActionID[menuActionRow] = 6;
-                    menuActionRow++;
+
+                if ((j1 == 5 || j1 == 6) && this.splitPrivateChat == 0 && this.privateChatMode < 2) {
+                    ++l;
                 }
-                l++;
+
+                if (j1 == 8 && (this.tradeMode == 0 || this.tradeMode == 1 && this.method109(s))) {
+                    if (j > k1 - 14 && j <= k1) {
+                        this.menuActionName[this.menuActionRow] = "Accept challenge <col=FFFFFF>" + s;
+                        this.menuActionID[this.menuActionRow] = 6;
+                        ++this.menuActionRow;
+                    }
+
+                    ++l;
+                }
             }
         }
 
@@ -7292,7 +7914,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 aBoolean1031 = false;
-                Class30_Sub2_Sub4_Sub6 aclass30_sub2_sub4_sub6[] = new Class30_Sub2_Sub4_Sub6[7];
+                Model aclass30_sub2_sub4_sub6[] = new Model[7];
                 int i2 = 0;
                 for(int j2 = 0; j2 < 7; j2++)
                 {
@@ -7301,21 +7923,21 @@ public class client extends Applet_Sub1 {
                         aclass30_sub2_sub4_sub6[i2++] = Class38.aClass38Array656[k2].method538(false);
                 }
 
-                Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6 = new Class30_Sub2_Sub4_Sub6(i2, aclass30_sub2_sub4_sub6, -38);
+                Model model = new Model(i2, aclass30_sub2_sub4_sub6, -38);
                 for(int l2 = 0; l2 < 5; l2++)
                     if(anIntArray990[l2] != 0)
                     {
-                        class30_sub2_sub4_sub6.method476(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
+                        model.method476(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
                         if(l2 == 1)
-                            class30_sub2_sub4_sub6.method476(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
+                            model.method476(anIntArray1204[0], anIntArray1204[anIntArray990[l2]]);
                     }
 
-                class30_sub2_sub4_sub6.method469((byte)-71);
-                class30_sub2_sub4_sub6.method470(Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (localPlayer)).anInt1511].anIntArray353[0], 40542);
-                class30_sub2_sub4_sub6.method479(64, 850, -30, -50, -30, true);
+                model.method469((byte)-71);
+                model.method470(Class20.aClass20Array351[((Class30_Sub2_Sub4_Sub1) (localPlayer)).anInt1511].anIntArray353[0], 40542);
+                model.method479(64, 850, -30, -50, -30, true);
                 class9.anInt233 = 5;
                 class9.anInt234 = 0;
-                Widget.method208(0, aBoolean994, 5, class30_sub2_sub4_sub6);
+                Widget.method208(0, aBoolean994, 5, model);
             }
             return;
         }
@@ -7325,7 +7947,7 @@ public class client extends Applet_Sub1 {
             class9.modelRotation1 = verticleTilt;
             class9.modelRotation2 = animationSpeed;
             if(aBoolean1031) {
-                Class30_Sub2_Sub4_Sub6 characterDisplay = ((Player) (localPlayer)).method452(0);
+                Model characterDisplay = ((Player) (localPlayer)).method452(0);
                 for(int l2 = 0; l2 < 5; l2++) if(anIntArray990[l2] != 0) {
                     characterDisplay.method476(anIntArrayArray1003[l2][0], anIntArrayArray1003[l2][anIntArray990[l2]]);
                     if(l2 == 1)
@@ -7386,7 +8008,7 @@ public class client extends Applet_Sub1 {
                 return;
             }
         }
-        if(j == 620 && class9.message != " " && rights < 1)
+        if(j == 620 && class9.message != " " && myPrivilege < 1)
             class9.message = " ";
         if(j == 650 || j == 655)
             if(anInt1193 != 0)
@@ -7589,7 +8211,7 @@ public class client extends Applet_Sub1 {
                 if (s != null && s.startsWith("@cr24@")) {
                     s = s.substring(6);
                 }
-                if((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && method109(false, s)))
+                if((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && method109( s)))
                 {
                     int l = 329 - i * 13;
                     if (currentScreenMode != ScreenMode.FIXED) {
@@ -8098,8 +8720,8 @@ public class client extends Applet_Sub1 {
         if(l > 4225 && l < 0x15f90)
         {
             int i1 = anInt1185 + anInt1209 & 0x7ff;
-            int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[i1];
-            int k1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[i1];
+            int j1 = Model.anIntArray1689[i1];
+            int k1 = Model.anIntArray1690[i1];
             j1 = (j1 * 256) / (anInt1170 + 256);
             k1 = (k1 * 256) / (anInt1170 + 256);
             int l1 = j * j1 + k * k1 >> 16;
@@ -8171,6 +8793,165 @@ public class client extends Applet_Sub1 {
             }
         }
     }
+    private void buildSplitPrivateChatMenu() {
+        if (this.splitPrivateChat != 0) {
+            int listPosition = 0;
+            boolean update = anInt1104 != 0;
+            boolean broadcast = BroadcastManager.isDisplayed();
+            listPosition = update && broadcast ? 2 : broadcast || update ? 1 : 0;
+            int xPosition = 0;
+            int yPosition = 0;
+            for (int j = 0; j < 100; ++j) {
+                if (this.chatMessages[j] != null) {
+                    int k = this.chatTypes[j];
+                    String s = this.chatNames[j];
+                    if (s != null && s.startsWith("@cr1@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr2@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr3@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr4@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr5@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr6@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr7@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr8@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr9@")) {
+                        s = s.substring(5);
+                    }
+
+                    if (s != null && s.startsWith("@cr10@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr11@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr12@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr13@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr14@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr15@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr16@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr17@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr18@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr19@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr20@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr21@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr22@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr23@")) {
+                        s = s.substring(6);
+                    }
+
+                    if (s != null && s.startsWith("@cr24@")) {
+                        s = s.substring(6);
+                    }
+                    if (s != null && s.startsWith("@cr25@")) {
+                        s = s.substring(6);
+                    }
+
+                    if ((k == 3 || k == 7) && (k == 7 || this.privateChatMode == 0
+                            || this.privateChatMode == 1 && this.method109(s))) {
+                         xPosition = currentScreenMode == ScreenMode.FIXED ? 4 : 0;
+                         yPosition = 329 - listPosition * 13;
+                        if (currentScreenMode != ScreenMode.FIXED) {
+                            yPosition = currentGameHeight - 170 - listPosition * 13;
+                        }
+
+                        if (super.mouseX > 4 && super.mouseY - xPosition > yPosition - 10 && super.mouseY - xPosition <= yPosition + 3) {
+                            int i1 = this.regularText.getTextWidth("From:  " + s + this.chatMessages[j]) + 25;
+                            if (i1 > 450) {
+                                i1 = 450;
+                            }
+
+                            if (super.mouseX < 4 + i1) {
+                                if (this.myPrivilege == 1 || this.myPrivilege == 2 || this.myPrivilege == 9
+                                        || this.myPrivilege == 10 || this.myPrivilege == 4) {
+                                    this.menuActionName[this.menuActionRow] = "Report abuse <col=ffffff>" + s;
+                                    this.menuActionID[this.menuActionRow] = 2606;
+                                    ++this.menuActionRow;
+                                }
+
+                                this.menuActionName[this.menuActionRow] = "Add ignore <col=ffffff>" + s;
+                                this.menuActionID[this.menuActionRow] = 2042;
+                                ++this.menuActionRow;
+                                this.menuActionName[this.menuActionRow] = "Add friend <col=ffffff>" + s;
+                                this.menuActionID[this.menuActionRow] = 2337;
+                                ++this.menuActionRow;
+                            }
+                        }
+
+                        ++listPosition;
+                        if (listPosition >= 5) {
+                            return;
+                        }
+                    }
+
+                    if ((k == 5 || k == 6) && this.privateChatMode < 2) {
+                        ++listPosition;
+                        if (listPosition >= 5) {
+                            return;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
     public final void processRightClick(int i)
     {
         if(anInt1086 != 0)
@@ -8179,7 +8960,7 @@ public class client extends Applet_Sub1 {
         menuActionID[0] = 1107;
         menuActionRow = 1;
         if (showChatComponents) {
-            method129(false);
+            buildSplitPrivateChatMenu();
         }
         buildBroadcasts();
         anInt886 = 0;
@@ -8203,9 +8984,11 @@ public class client extends Applet_Sub1 {
                 }
             }
         }
-        if(anInt886 != anInt1026)
+        if (anInt886 != anInt1026) {
             anInt1026 = anInt886;
-        anInt886 = 0;
+        }
+
+        this.anInt886 = 0;
         if (!changeTabArea) {
             final int yOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameHeight - 503;
             final int xOffset = currentScreenMode == ScreenMode.FIXED ? 0 : currentGameWidth - 765;
@@ -8237,6 +9020,7 @@ public class client extends Applet_Sub1 {
             tabAreaAltered = true;
             anInt1048 = anInt886;
         }
+
         anInt886 = 0;
         if (super.mouseX > 0 && super.mouseY > (currentScreenMode == ScreenMode.FIXED ? 338 : currentGameHeight - 165)
                 && super.mouseX < 490 && super.mouseY < (currentScreenMode == ScreenMode.FIXED ? 463 : currentGameHeight - 40)
@@ -8368,7 +9152,7 @@ public class client extends Applet_Sub1 {
             }
             if(responseCode == 2)
             {
-                rights = socketStream.read();
+                myPrivilege = socketStream.read();
                 aBoolean1205 = socketStream.read() == 1;
                 aLong1220 = 0L;
                 anInt1022 = 0;
@@ -8515,7 +9299,7 @@ public class client extends Applet_Sub1 {
                 return;
             }
             if(responseCode == 11) {
-                aString1267 = "@red@Login server rejected session.";
+                aString1266 = "@red@Login server rejected session.";
                 aString1267 = "@lre@Please try again.";
                 return;
             }
@@ -8960,10 +9744,10 @@ public class client extends Applet_Sub1 {
         if(flag)
             aBoolean919 = !aBoolean919;
         if(class5.anInt61 != 0)
-            s = s + method110(localPlayer.anInt1705, class5.anInt61, true) + " (level-" + class5.anInt61 + ")";
+            s = s + combatDiffColor(localPlayer.anInt1705, class5.anInt61, true) + " (level-" + class5.anInt61 + ")";
         if(anInt1282 == 1)
         {
-            menuActionName[menuActionRow] = "Use " + aString1286 + " with @yel@" + s;
+            menuActionName[menuActionRow] = "Use " + aString1286 + " with <col=ffff00>" + s;
             menuActionID[menuActionRow] = 582;
             menuActionCmd1[menuActionRow] = i;
             menuActionCmd2[menuActionRow] = k;
@@ -8975,7 +9759,7 @@ public class client extends Applet_Sub1 {
         {
             if((anInt1138 & 2) == 2)
             {
-                menuActionName[menuActionRow] = aString1139 + " @yel@" + s;
+                menuActionName[menuActionRow] = aString1139 + " <col=ffff00>" + s;
                 menuActionID[menuActionRow] = 413;
                 menuActionCmd1[menuActionRow] = i;
                 menuActionCmd2[menuActionRow] = k;
@@ -8990,7 +9774,7 @@ public class client extends Applet_Sub1 {
                 for(int l = 4; l >= 0; l--)
                     if(class5.aStringArray66[l] != null && !class5.aStringArray66[l].equalsIgnoreCase("attack"))
                     {
-                        menuActionName[menuActionRow] = class5.aStringArray66[l] + " @yel@" + s;
+                        menuActionName[menuActionRow] = class5.aStringArray66[l] + " <col=ffff00>" + s;
                         if(l == 0)
                             menuActionID[menuActionRow] = 20;
                         if(l == 1)
@@ -9016,7 +9800,7 @@ public class client extends Applet_Sub1 {
                         char c = '\0';
                         if(class5.anInt61 > localPlayer.anInt1705)
                             c = '\u07D0';
-                        menuActionName[menuActionRow] = class5.aStringArray66[i1] + " @yel@" + s;
+                        menuActionName[menuActionRow] = class5.aStringArray66[i1] + " <col=ffff00>" + s;
                         if(i1 == 0)
                             menuActionID[menuActionRow] = 20 + c;
                         if(i1 == 1)
@@ -9034,10 +9818,14 @@ public class client extends Applet_Sub1 {
                     }
 
             }
-            if(rights >= 2)
-                menuActionName[menuActionRow] = "Examine @yel@" + s+"@gre@(@whi@"+class5.aLong78 +"@gre@)";
-            if(rights <= 1)
-                menuActionName[menuActionRow] = "Examine @yel@" + s;
+            if (this.myPrivilege == 2 || this.myPrivilege == 9 || this.myPrivilege == 10
+                    || this.myPrivilege == 4) {
+                this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s + "</col><col=65280>(<col=ffffff>" + class5.aLong78
+                        + "</col><col=65280>)</col>";
+            } else {
+                this.menuActionName[this.menuActionRow] = "Examine <col=ffff00>" + s;
+            }
+
             menuActionID[menuActionRow] = 1025;
             menuActionCmd1[menuActionRow] = i;
             menuActionCmd2[menuActionRow] = k;
@@ -9056,12 +9844,12 @@ public class client extends Applet_Sub1 {
             return;
         String s;
         if(player.anInt1723 == 0)
-            s = prefixColor(player.anInt1723) + prefixRank(player.anInt1723) + "@whi@" + player.name + suffixColor(player.anInt1723) + suffixRank(player.anInt1723) + method110(localPlayer.anInt1705, player.anInt1705, true) + " (level-" + player.anInt1705 + ")";
+            s = prefixColor(player.anInt1723) + prefixRank(player.anInt1723) + "<col=ffffff>" + player.name + suffixColor(player.anInt1723) + suffixRank(player.anInt1723) + combatDiffColor(localPlayer.anInt1705, player.anInt1705, true) + " (level-" + player.anInt1705 + ")";
         else
-            s = prefixColor(player.anInt1723) + prefixRank(player.anInt1723) + "@whi@" + player.name + suffixColor(player.anInt1723) + suffixRank(player.anInt1723) + method110(localPlayer.anInt1705, player.anInt1705, true) + " (level-" + player.anInt1705 + ")";
+            s = prefixColor(player.anInt1723) + prefixRank(player.anInt1723) + "<col=ffffff>" + player.name + suffixColor(player.anInt1723) + suffixRank(player.anInt1723) + combatDiffColor(localPlayer.anInt1705, player.anInt1705, true) + " (level-" + player.anInt1705 + ")";
         if(anInt1282 == 1)
         {
-            menuActionName[menuActionRow] = "Use " + aString1286 + " with @whi@" + s;
+            menuActionName[menuActionRow] = "Use " + aString1286 + " with <col=ffffff>" + s;
             menuActionID[menuActionRow] = 491;
             menuActionCmd1[menuActionRow] = j;
             menuActionCmd2[menuActionRow] = i;
@@ -9072,7 +9860,7 @@ public class client extends Applet_Sub1 {
         {
             if((anInt1138 & 8) == 8)
             {
-                menuActionName[menuActionRow] = aString1139 + " @whi@" + s;
+                menuActionName[menuActionRow] = aString1139 + " <col=ffffff>" + s;
                 menuActionID[menuActionRow] = 365;
                 menuActionCmd1[menuActionRow] = j;
                 menuActionCmd2[menuActionRow] = i;
@@ -9084,7 +9872,7 @@ public class client extends Applet_Sub1 {
             for(int l = 4; l >= 0; l--)
                 if(aStringArray1127[l] != null)
                 {
-                    menuActionName[menuActionRow] = aStringArray1127[l] + " @whi@" + s;
+                    menuActionName[menuActionRow] = aStringArray1127[l] + " <col=ffffff>" + s;
                     char c = '\0';
                     if(aStringArray1127[l].equalsIgnoreCase("attack"))
                     {
@@ -9118,7 +9906,7 @@ public class client extends Applet_Sub1 {
         for(int i1 = 0; i1 < menuActionRow; i1++)
             if(menuActionID[i1] == 516)
             {
-                menuActionName[i1] = "Walk here @whi@" + s;
+                menuActionName[i1] = "Walk here <col=ffffff>" + s;
                 return;
             }
 
@@ -9264,7 +10052,7 @@ public class client extends Applet_Sub1 {
                 }
             }
             Class36.method528(onDemandFetcher.method557(0));
-            Class30_Sub2_Sub4_Sub6.method459(onDemandFetcher.method555(79, 0), onDemandFetcher);
+            Model.method459(onDemandFetcher.method555(79, 0), onDemandFetcher);
             method13(67, (byte)4, "Requesting Music");
             if(!lowMemory)
             {
@@ -9335,6 +10123,33 @@ public class client extends Applet_Sub1 {
                 }
                 catch(Exception _ex) { }
             }
+            method13(75, (byte)4, "Requesting textures");
+            k = onDemandFetcher.method555(79, 4);
+            for(int k1 = 0; k1 < k; k1++)
+            {
+                int l1 = onDemandFetcher.method559(k1, -203);
+                if((l1 & 1) != 0)
+                    onDemandFetcher.method558(4, k1);
+            }
+
+            k = onDemandFetcher.method552();
+            while(onDemandFetcher.method552() > 0)
+            {
+                int i2 = k - onDemandFetcher.method552();
+                if(i2 > 0)
+                    method13(75, (byte)4, "Loading textures - " + (i2 * 100) / k + "%");
+                method57(false);
+                try
+                {
+                    Thread.sleep(100L);
+                }
+                catch(Exception _ex) { }
+            }
+            if(onDemandFetcher.anInt1349 > 3)
+            {
+                method28("ondemand");
+                return;
+            }
             if(aClass14Array970[0] != null)
             {
                 method13(80, (byte)4, "Requesting maps");
@@ -9364,7 +10179,6 @@ public class client extends Applet_Sub1 {
                     catch(Exception _ex) { }
                 }
             }
-            k = onDemandFetcher.method555(79, 0);
             for(int k2 = 0; k2 < k; k2++)
             {
                 int l2 = onDemandFetcher.method559(k2, -203);
@@ -9521,11 +10335,11 @@ public class client extends Applet_Sub1 {
             }
 
             method13(86, (byte)4, "Unpacking textures");
-            Rasterizer.method368(fileArchive_3, 0);
-            Rasterizer.method372(0.80000000000000004D, aByte1200);
-            Rasterizer.method367(20, true);
+            Rasterizer.method368(fileArchive_3);
+            Rasterizer.method372(0.80000000000000004D);
+            Rasterizer.method367();
             //method13(87, (byte)4, "Loading Custom Models");
-            ModelDecompressor.loadModels();
+            //ModelDecompressor.loadModels();
             //maps();
             preloadModels();
             //repackCacheIndex(1);
@@ -9534,14 +10348,15 @@ public class client extends Applet_Sub1 {
             Class46.method576(fileArchive);
             Class22.method260(0, fileArchive);
             OverLayFlo317.load(fileArchive);
-            Class8.method193(fileArchive);
+            ItemDefinition.method193(fileArchive);
+
             Class5.method162(fileArchive);
             Class38.method535(0, fileArchive);
             Class23.method264(0, fileArchive);
             Class41.method546(0, fileArchive);
             VarBit.method533(0, fileArchive);
             //playerTitle.unpack();
-            Class8.aBoolean182 = aBoolean959;
+            ItemDefinition.aBoolean182 = aBoolean959;
             if(!lowMemory)
             {
                 method13(92, (byte)4, "Unpacking sounds");
@@ -9692,7 +10507,7 @@ public class client extends Applet_Sub1 {
                 int i2 = ((Class30_Sub2_Sub4_Sub1) (localPlayer)).anInt1550 + k1 >> 7;
                 int j2 = ((Class30_Sub2_Sub4_Sub1) (localPlayer)).anInt1551 - l1 >> 7;
                 boolean flag1 = false;
-                if (rights >= 2 && controlIsDown) {
+                if (myPrivilege >= 2 && controlIsDown) {
                     teleport(baseX + i2, baseY + j2);
                 } else {
                     flag1 = doWalkTo(1, 0, 0, -11308, 0, ((Class30_Sub2_Sub4_Sub1) (localPlayer)).anIntArray1501[0], 0, 0, j2, ((Class30_Sub2_Sub4_Sub1) (localPlayer)).anIntArray1500[0], true, i2);
@@ -10275,17 +11090,17 @@ public class client extends Applet_Sub1 {
                 i -= 101;
             else
                 i--;
-            menuActionName[menuActionRow] = "Remove @whi@" + aStringArray1082[i];
+            menuActionName[menuActionRow] = "Remove <col=ffffff>" + aStringArray1082[i];
             menuActionID[menuActionRow] = 792;
             menuActionRow++;
-            menuActionName[menuActionRow] = "Message @whi@" + aStringArray1082[i];
+            menuActionName[menuActionRow] = "Message <col=ffffff>" + aStringArray1082[i];
             menuActionID[menuActionRow] = 639;
             menuActionRow++;
-            if(rights >= 2){
-                menuActionName[menuActionRow] = "TeleToMe @whi@" + aStringArray1082[i];
+            if(myPrivilege >= 2){
+                menuActionName[menuActionRow] = "TeleToMe <col=ffffff>" + aStringArray1082[i];
                 menuActionID[menuActionRow] = 638;
                 menuActionRow++;
-                menuActionName[menuActionRow] = "TeleTo @whi@" + aStringArray1082[i];
+                menuActionName[menuActionRow] = "TeleTo <col=ffffff>" + aStringArray1082[i];
                 menuActionID[menuActionRow] = 637;
                 menuActionRow++;
             }
@@ -10293,7 +11108,7 @@ public class client extends Applet_Sub1 {
         }
         if(i >= 401 && i <= 500)
         {
-            menuActionName[menuActionRow] = "Remove @whi@" + class9.message;
+            menuActionName[menuActionRow] = "Remove <col=ffffff>" + class9.message;
             menuActionID[menuActionRow] = 322;
             menuActionRow++;
             return true;
@@ -10378,7 +11193,7 @@ public class client extends Applet_Sub1 {
                                     int l9 = 0;
                                     if(anInt1282 == 1 && anInt1283 == i3 && anInt1284 == class9_1.id)
                                         l9 = 0xffffff;
-                                    Sprite class30_sub2_sub1_sub1_2 = Class8.method200(j9, class9_1.invStackSizes[i3], l9, 9);
+                                    Sprite class30_sub2_sub1_sub1_2 = ItemDefinition.method200(j9, class9_1.invStackSizes[i3], l9, 9);
                                     if(class30_sub2_sub1_sub1_2 != null)
                                     {
                                         if(anInt1086 != 0 && anInt1085 == i3 && anInt1084 == class9_1.id)
@@ -10420,7 +11235,7 @@ public class client extends Applet_Sub1 {
                                             class30_sub2_sub1_sub1_2.method350(k5, j6, 128, aBoolean1043);
                                         else
                                             class30_sub2_sub1_sub1_2.drawSprite(k5, j6);
-                                        if(class30_sub2_sub1_sub1_2.anInt1444 == 33 || class9_1.invStackSizes[i3] != 1)
+                                        if(class30_sub2_sub1_sub1_2.maxWidth == 33 || class9_1.invStackSizes[i3] != 1)
                                         {
                                             int k10 = class9_1.invStackSizes[i3];
                                             {
@@ -10577,10 +11392,10 @@ public class client extends Applet_Sub1 {
                 } else
                 if(class9_1.type == 6)
                 {
-                    int k3 = Rasterizer.anInt1466;
-                    int j4 = Rasterizer.anInt1467;
-                    Rasterizer.anInt1466 = k2 + class9_1.width / 2;
-                    Rasterizer.anInt1467 = l2 + class9_1.height / 2;
+                    int k3 = Rasterizer.centerX;
+                    int j4 = Rasterizer.centerY;
+                    Rasterizer.centerX = k2 + class9_1.width / 2;
+                    Rasterizer.centerY = l2 + class9_1.height / 2;
                     int i5 = Rasterizer.anIntArray1470[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
                     int l5 = Rasterizer.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
                     boolean flag2 = method131(class9_1, false);
@@ -10589,19 +11404,19 @@ public class client extends Applet_Sub1 {
                         i7 = class9_1.anInt258;
                     else
                         i7 = class9_1.anInt257;
-                    Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6;
+                    Model model;
                     if(i7 == -1)
                     {
-                        class30_sub2_sub4_sub6 = class9_1.method209(0, -1, -1, flag2);
+                        model = class9_1.method209(0, -1, -1, flag2);
                     } else
                     {
                         Class20 class20 = Class20.aClass20Array351[i7];
-                        class30_sub2_sub4_sub6 = class9_1.method209(0, class20.anIntArray354[class9_1.anInt246], class20.anIntArray353[class9_1.anInt246], flag2);
+                        model = class9_1.method209(0, class20.anIntArray354[class9_1.anInt246], class20.anIntArray353[class9_1.anInt246], flag2);
                     }
-                    if(class30_sub2_sub4_sub6 != null)
-                        class30_sub2_sub4_sub6.method482(0, class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, i5, l5);
-                    Rasterizer.anInt1466 = k3;
-                    Rasterizer.anInt1467 = j4;
+                    if(model != null)
+                        model.method482(0, class9_1.modelRotation2, 0, class9_1.modelRotation1, 0, i5, l5);
+                    Rasterizer.centerX = k3;
+                    Rasterizer.centerY = j4;
                 } else
                 if(class9_1.type == 7)
                 {
@@ -10613,9 +11428,9 @@ public class client extends Applet_Sub1 {
                         {
                             if(class9_1.inv[k4] > 0)
                             {
-                                Class8 class8 = Class8.method198(class9_1.inv[k4] - 1);
+                                ItemDefinition class8 = ItemDefinition.method198(class9_1.inv[k4] - 1);
                                 String s2 = class8.name;
-                                if(class8.aBoolean176 || class9_1.invStackSizes[k4] != 1)
+                                if(class8.stackable || class9_1.invStackSizes[k4] != 1)
                                     s2 = s2 + " x" + method14(class9_1.invStackSizes[k4], 0);
                                 int i9 = k2 + i6 * (115 + class9_1.invSpritePadX);
                                 int k9 = l2 + j5 * (12 + class9_1.invSpritePadY);
@@ -10870,7 +11685,7 @@ public class client extends Applet_Sub1 {
                             default:
                                 pushMessage(s, 2,  prefixRank(player.anInt1723) + player.name + suffixRank(player.anInt1723));
                         }
-                        
+
                     }
                     catch(Exception exception)
                     {
@@ -11036,42 +11851,40 @@ public class client extends Applet_Sub1 {
         anInt1213 = 0;
     }
 
-    public final boolean method109(boolean flag, String s)
+    public final boolean method109(String s)
     {
         if(s == null)
             return false;
         for(int i = 0; i < anInt899; i++)
             if(s.equalsIgnoreCase(aStringArray1082[i]))
                 return true;
-
-        if(flag)
-            stream.writeByte(138);
+        
         return s.equalsIgnoreCase(localPlayer.name);
     }
 
-    public static final String method110(int i, int j, boolean flag)
+    public static final String combatDiffColor(int i, int j, boolean flag)
     {
         if(!flag)
             throw new NullPointerException();
         int k = i - j;
         if(k < -9)
-            return "@red@";
+            return "<col=ff0000>";//red
         if(k < -6)
-            return "@or3@";
+            return "<col=ff3000>";//or3
         if(k < -3)
-            return "@or2@";
+            return "<col=ff7000>";//or2
         if(k < 0)
-            return "@or1@";
+            return "<col=ffb000>";//or1
         if(k > 9)
-            return "@gre@";
+            return "<col=65280>";//green
         if(k > 6)
-            return "@gr3@";
+            return "<col=40ff00>";//gre3
         if(k > 3)
-            return "@gr2@";
+            return "<col=80ff00>";//gre2
         if(k > 0)
-            return "@gr1@";
+            return "<col=c0ff00>";//gre1
         else
-            return "@yel@";
+            return "<col=ffff00>";//yel
     }
 
     public final void method111(byte byte0, int i)
@@ -11354,11 +12167,12 @@ public class client extends Applet_Sub1 {
 
     public final void method116(boolean flag)
     {
-        int i = boldText.method383(anInt1116, "Choose Option");
+        int i = this.newBoldFont.getTextWidth("Choose Option");
+
         aBoolean1157 &= flag;
         for(int j = 0; j < menuActionRow; j++)
         {
-            int k = boldText.method383(anInt1116, menuActionName[j]);
+            int k = this.newBoldFont.getTextWidth(this.menuActionName[j]);
             if(k > i)
                 i = k;
         }
@@ -11372,7 +12186,7 @@ public class client extends Applet_Sub1 {
                 i1 = currentGameWidth - 4- i;
             if(i1 < 0)
                 i1 = 0;
-            int l1 = super.saveClickY - 0;
+            int l1 = super.saveClickY;
             if(l1 + l > currentGameHeight- 2)
                 l1 = currentGameHeight - 2 - l;
             if(l1 < 0)
@@ -11699,7 +12513,7 @@ public class client extends Applet_Sub1 {
                 {
                     Widget class9_1 = Widget.interfaceCache[ai[l++]];
                     int k2 = ai[l++];
-                    if(k2 >= 0 && k2 < Class8.anInt203 && (!Class8.method198(k2).aBoolean161 || aBoolean959))
+                    if(k2 >= 0 && k2 < ItemDefinition.anInt203 && (!ItemDefinition.method198(k2).membersObject || aBoolean959))
                     {
                         for(int j3 = 0; j3 < class9_1.inv.length; j3++)
                             if(class9_1.inv[j3] == k2 + 1)
@@ -11726,7 +12540,7 @@ public class client extends Applet_Sub1 {
                 {
                     Widget class9_2 = Widget.interfaceCache[ai[l++]];
                     int l2 = ai[l++] + 1;
-                    if(l2 >= 0 && l2 < Class8.anInt203 && (!Class8.method198(l2).aBoolean161 || aBoolean959))
+                    if(l2 >= 0 && l2 < ItemDefinition.anInt203 && (!ItemDefinition.method198(l2).membersObject || aBoolean959))
                     {
                         for(int k3 = 0; k3 < class9_2.inv.length; k3++)
                         {
@@ -11807,7 +12621,7 @@ public class client extends Applet_Sub1 {
             s = menuActionName[menuActionRow - 1];
         if(menuActionRow > 2)
             s = s + "@whi@ / " + (menuActionRow - 2) + " more options";
-        boldText.method390(true, 4, 0xffffff, s, loopCycle / 1000, 973, 15);
+        this.newBoldFont.drawBasicString(s, 4, 15, 0xffffff, 0);
         if(i != 45706)
         {
             for(int j = 1; j > 0; j++);
@@ -11997,10 +12811,10 @@ public class client extends Applet_Sub1 {
         i -= xCameraPos;
         i1 -= zCameraPos;
         l -= yCameraPos;
-        int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[yCameraCurve];
-        int k1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[yCameraCurve];
-        int l1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[xCameraCurve];
-        int i2 = Class30_Sub2_Sub4_Sub6.anIntArray1690[xCameraCurve];
+        int j1 = Model.anIntArray1689[yCameraCurve];
+        int k1 = Model.anIntArray1690[yCameraCurve];
+        int l1 = Model.anIntArray1689[xCameraCurve];
+        int i2 = Model.anIntArray1690[xCameraCurve];
         int j2 = l * l1 + i * i2 >> 16;
         l = l * i2 - i * l1 >> 16;
         i = j2;
@@ -12009,8 +12823,8 @@ public class client extends Applet_Sub1 {
         i1 = j2;
         if(l >= 50)
         {
-            anInt963 = Rasterizer.anInt1466 + (i << client.log_view_dist) / l;
-            anInt964 = Rasterizer.anInt1467 + (i1 << client.log_view_dist) / l;
+            anInt963 = Rasterizer.centerX + (i << client.log_view_dist) / l;
+            anInt964 = Rasterizer.centerY + (i1 << client.log_view_dist) / l;
         } else {
             anInt963 = -1;
             anInt964 = -1;
@@ -12084,7 +12898,7 @@ public class client extends Applet_Sub1 {
                     s = s.substring(6);
                 if (s != null && s.startsWith("@cr25@"))
                     s = s.substring(6);
-                if((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && method109(false, s)))
+                if((k == 3 || k == 7) && (k == 7 || privateChatMode == 0 || privateChatMode == 1 && method109( s)))
                 {
                     int l = (!isResized() ? 330 : currentGameHeight - 173) - listPosition * 13;
                     if(super.mouseX > 4 && super.mouseY - 4 > l - 10 && super.mouseY - (!isResized() ? 5 : 0) <= l + 3)
@@ -12094,9 +12908,9 @@ public class client extends Applet_Sub1 {
                             i1 = 450;
                         if(super.mouseX < 4 + i1)
                         {
-                            if(rights >= 1)
+                            if(myPrivilege >= 1)
                             {
-                                menuActionName[menuActionRow] = "Report @whi@" + s;
+                                menuActionName[menuActionRow] = "Report <col=ffffff>" + s;
                                 menuActionID[menuActionRow] = 2606;
                                 menuActionRow++;
                             }
@@ -12620,11 +13434,11 @@ public class client extends Applet_Sub1 {
                         int k21 = ObjectKey.getObjectId(class10.anInt280);
                         if(j12 == 2)
                         {
-                            class10.aClass30_Sub2_Sub4_278 = new Class30_Sub2_Sub4_Sub5(k21, 4 + k14, 2, i19, (byte)7, l19, j18, k20, j17, false);
-                            class10.aClass30_Sub2_Sub4_279 = new Class30_Sub2_Sub4_Sub5(k21, k14 + 1 & 3, 2, i19, (byte)7, l19, j18, k20, j17, false);
+                            class10.aAnimable_278 = new Class30_Sub2_Sub4_Sub5(k21, 4 + k14, 2, i19, (byte)7, l19, j18, k20, j17, false);
+                            class10.aAnimable_279 = new Class30_Sub2_Sub4_Sub5(k21, k14 + 1 & 3, 2, i19, (byte)7, l19, j18, k20, j17, false);
                         } else
                         {
-                            class10.aClass30_Sub2_Sub4_278 = new Class30_Sub2_Sub4_Sub5(k21, k14, j12, i19, (byte)7, l19, j18, k20, j17, false);
+                            class10.aAnimable_278 = new Class30_Sub2_Sub4_Sub5(k21, k14, j12, i19, (byte)7, l19, j18, k20, j17, false);
                         }
                     }
                 }
@@ -12632,7 +13446,7 @@ public class client extends Applet_Sub1 {
                 {
                     Class26 class26 = aClass25_946.method297(j4, 866, i7, anInt918);
                     if(class26 != null)
-                        class26.aClass30_Sub2_Sub4_504 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class26.anInt505), 0, 4, i19, (byte)7, l19, j18, k20, j17, false);
+                        class26.aAnimable_504 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class26.anInt505), 0, 4, i19, (byte)7, l19, j18, k20, j17, false);
                 }
                 if(j16 == 2)
                 {
@@ -12640,13 +13454,13 @@ public class client extends Applet_Sub1 {
                     if(j12 == 11)
                         j12 = 10;
                     if(class28 != null)
-                        class28.aClass30_Sub2_Sub4_521 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class28.anInt529), k14, j12, i19, (byte)7, l19, j18, k20, j17, false);
+                        class28.aAnimable_521 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class28.anInt529), k14, j12, i19, (byte)7, l19, j18, k20, j17, false);
                 }
                 if(j16 == 3)
                 {
                     Class49 class49 = aClass25_946.method299(i7, j4, anInt918, 0);
                     if(class49 != null)
-                        class49.aClass30_Sub2_Sub4_814 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class49.anInt815), k14, 22, i19, (byte)7, l19, j18, k20, j17, false);
+                        class49.aAnimable_814 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(class49.anInt815), k14, 22, i19, (byte)7, l19, j18, k20, j17, false);
                 }
             }
             return;
@@ -12680,13 +13494,13 @@ public class client extends Applet_Sub1 {
                 int j22 = anIntArrayArrayArray1214[anInt918][k4 + 1][j7];
                 int k22 = anIntArrayArrayArray1214[anInt918][k4 + 1][j7 + 1];
                 int l22 = anIntArrayArrayArray1214[anInt918][k4][j7 + 1];
-                Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6 = class46.method578(j19, i20, i22, j22, k22, l22, -1);
-                if(class30_sub2_sub4_sub6 != null)
+                Model model = class46.method578(j19, i20, i22, j22, k22, l22, -1);
+                if(model != null)
                 {
                     method130(404, k17 + 1, -1, 0, l20, j7, 0, anInt918, k4, l14 + 1);
                     player.anInt1707 = l14 + loopCycle;
                     player.anInt1708 = k17 + loopCycle;
-                    player.aClass30_Sub2_Sub4_Sub6_1714 = class30_sub2_sub4_sub6;
+                    player.aModel_1714 = model;
                     int i23 = class46.anInt744;
                     int j23 = class46.anInt761;
                     if(i20 == 1 || i20 == 3)
@@ -12808,12 +13622,12 @@ public class client extends Applet_Sub1 {
     }
 
     public static final void method138(byte byte0) {
-        Class25.aBoolean436 = true;
+        Class25.lowMem = true;
         if(byte0 != aByte823)
         {
             for(int i = 1; i > 0; i++);
         }
-        Rasterizer.aBoolean1461 = true;
+        Rasterizer.lowMem = true;
         lowMemory = true;
         ObjectManager.aBoolean151 = true;
         Class46.aBoolean752 = true;
@@ -12966,7 +13780,7 @@ public class client extends Applet_Sub1 {
                             myPassword += (char)l1;
                         if(myPassword.length() > 20)
                             myPassword = myPassword.substring(0, 20);
-                    } 
+                    }
                 } while(true);
                 return;
             }
@@ -12989,16 +13803,16 @@ public class client extends Applet_Sub1 {
             if (flag)
                 return;
             if (l <= 6400) {
-                int i1 = Class30_Sub2_Sub4_Sub6.anIntArray1689[k];
-                int j1 = Class30_Sub2_Sub4_Sub6.anIntArray1690[k];
+                int i1 = Model.anIntArray1689[k];
+                int j1 = Model.anIntArray1690[k];
                 i1 = (i1 * 256) / (anInt1170 + 256);
                 j1 = (j1 * 256) / (anInt1170 + 256);
                 int k1 = j * i1 + i * j1 >> 16;
                 int l1 = j * j1 - i * i1 >> 16;
                 if (currentScreenMode == ScreenMode.FIXED) {
-                    sprite.drawSprite(((97 + k1) - sprite.anInt1444 / 2)  + 30, 83 - l1 - sprite.anInt1445 / 2 - 4 + 5);
+                    sprite.drawSprite(((97 + k1) - sprite.maxWidth / 2)  + 30, 83 - l1 - sprite.maxHeight / 2 - 4 + 5);
                 } else {
-                    sprite.drawSprite(((77 + k1) - sprite.anInt1444 / 2) + 4 + (currentGameWidth - 167), 85 - l1 - sprite.anInt1445 / 2 - 4);
+                    sprite.drawSprite(((77 + k1) - sprite.maxWidth / 2) + 4 + (currentGameWidth - 167), 85 - l1 - sprite.maxHeight / 2 - 4);
                 }
             }
         }
@@ -13104,8 +13918,8 @@ public class client extends Applet_Sub1 {
             method6();
         if(l1 != 0)
         {
-            int i3 = Class30_Sub2_Sub4_Sub6.anIntArray1689[l1];
-            int k3 = Class30_Sub2_Sub4_Sub6.anIntArray1690[l1];
+            int i3 = Model.anIntArray1689[l1];
+            int k3 = Model.anIntArray1690[l1];
             int i4 = k2 * k3 - l2 * i3 >> 16;
             l2 = k2 * i3 + l2 * k3 >> 16;
             k2 = i4;
@@ -13123,8 +13937,8 @@ public class client extends Applet_Sub1 {
                 j2 = lftrit;
                 l2 = fwdbwd;
             }
-            int j3 = Class30_Sub2_Sub4_Sub6.anIntArray1689[i2];
-            int l3 = Class30_Sub2_Sub4_Sub6.anIntArray1690[i2];
+            int j3 = Model.anIntArray1689[i2];
+            int l3 = Model.anIntArray1690[i2];
             int j4 = l2 * j3 + j2 * l3 >> 16;
             l2 = l2 * l3 - j2 * j3 >> 16;
             j2 = j4;
@@ -14121,12 +14935,12 @@ public class client extends Applet_Sub1 {
                     return true;
                 } else
                 {
-                    Class8 class8 = Class8.method198(k18);
+                    ItemDefinition class8 = ItemDefinition.method198(k18);
                     Widget.interfaceCache[i6].anInt233 = 4;
                     Widget.interfaceCache[i6].anInt234 = k18;
-                    Widget.interfaceCache[i6].modelRotation1 = class8.anInt190;
-                    Widget.interfaceCache[i6].modelRotation2 = class8.anInt198;
-                    Widget.interfaceCache[i6].modelZoom = (class8.anInt181 * 100) / i13;
+                    Widget.interfaceCache[i6].modelRotation1 = class8.spritePitch;
+                    Widget.interfaceCache[i6].modelRotation2 = class8.spriteCameraRoll;
+                    Widget.interfaceCache[i6].modelZoom = (class8.spriteScale * 100) / i13;
                     packet = -1;
                     return true;
                 }
@@ -14165,6 +14979,11 @@ public class client extends Applet_Sub1 {
             {
                 String s1 = in.readString();
                 int k13 = in.method435(true);
+                if (s1.startsWith("www.") || s1.startsWith("http")) {
+                    launchURL(s1);
+                    packet = -1;
+                    return true;
+                }
                 if (k13 >= 18144 && k13 <= 18244) {
                     this.clanList[k13 - 18144] = s1;
                 }
@@ -14538,7 +15357,13 @@ public class client extends Applet_Sub1 {
         }
         return true;
     }
-
+    public int mixColors(Color color1, Color color2, float i) {
+        float ratio = i / 100.0F;
+        int red = (int) ((float) color2.getRed() * ratio + (float) color1.getRed() * (1.0F - ratio));
+        int green = (int) ((float) color2.getGreen() * ratio + (float) color1.getGreen() * (1.0F - ratio));
+        int blue = (int) ((float) color2.getBlue() * ratio + (float) color1.getBlue() * (1.0F - ratio));
+        return (new Color(red, green, blue)).getRGB();
+    }
     public final void method146(byte byte0)
     {
         anInt1265++;
@@ -14594,23 +15419,32 @@ public class client extends Applet_Sub1 {
             }
 
         int k2 = Rasterizer.anInt1481;
-        Class30_Sub2_Sub4_Sub6.aBoolean1684 = true;
-            Class30_Sub2_Sub4_Sub6.anInt1687 = 0;
-            Class30_Sub2_Sub4_Sub6.anInt1685 = super.mouseX - (currentScreenMode == ScreenMode.FIXED ? 0 : 0);
-            Class30_Sub2_Sub4_Sub6.anInt1686 = super.mouseY - (currentScreenMode == ScreenMode.FIXED ? 0 : 0);
+        Model.aBoolean1684 = true;
+            Model.anInt1687 = 0;
+            Model.anInt1685 = super.mouseX - (currentScreenMode == ScreenMode.FIXED ? 0 : 0);
+            Model.anInt1686 = super.mouseY - (currentScreenMode == ScreenMode.FIXED ? 0 : 0);
             DrawingArea.setAllPixelsToZero();
-            if(skyLoad){
-                DrawingArea.drawPixels(screenAreaHeight, 0, 0, 0xC8C0A8, screenAreaWidth );
+            if(Configuration.distanceFog){
+        if (!switching && currentFogColor != fadingTo) {
+            switching = true;
+        }
+
+        if (switching) {
+            ++step;
+            if (step >= 100) {
+                step = 1;
+                switching = false;
+                currentFogColor = fadingTo;
+            } else {
+                currentFogColor = this.mixColors(new Color(currentFogColor), new Color(fadingTo), (float) step);
             }
+        }
+    }
+
+		DrawingArea.drawPixels(currentGameHeight, 0, 0, Configuration.distanceFog ? currentFogColor : 0, currentGameWidth);
+
             try {
                 aClass25_946.method313(xCameraPos, yCameraPos, xCameraCurve, zCameraPos, j, yCameraCurve, false);
-                if (FogToggle) {
-                    double fogDistance = Math.sqrt(Math.pow(zCameraPos, 2));
-                    int fogStartDistance = 1430;
-                    int fogEndDistance = 2100;
-                    fogHandler.setFogDistance((float) fogDistance);
-                    fogHandler.renderFog(false, fogStartDistance, fogEndDistance, 3);
-                }
                 aClass25_946.method288((byte) 104);
             } catch(Exception e){
                 e.printStackTrace();
@@ -14888,7 +15722,7 @@ public class client extends Applet_Sub1 {
     private int yCameraPos;
     private int yCameraCurve;
     private int xCameraCurve;
-    private int rights;
+    private int myPrivilege;
     private int anIntArray864[];
     private Sprite aSprite_865;
     private Sprite aSprite_866;
@@ -14972,6 +15806,8 @@ public class client extends Applet_Sub1 {
     private int anInt950;
     private int anInt951;
     private int anInt952;
+    static int step;
+    static boolean switching;
     private long aLong953;
     boolean aBoolean954;
     private long aLongArray955[];
@@ -15104,7 +15940,7 @@ public class client extends Applet_Sub1 {
     private int anIntArray1065[];
     private int anInt1066;
     private int anInt1067;
-    private OnDemandFetcher onDemandFetcher;
+    public static OnDemandFetcher onDemandFetcher;
     private int currentRegionX;
     private int currentRegionY;
     private int anInt1071;
@@ -15135,6 +15971,7 @@ public class client extends Applet_Sub1 {
     private Sprite[] skullIcons;
     private static int anInt1096 = -192;
     private static int anInt1097;
+    public static int fadingTo;
     private int anInt1098;
     private int anInt1099;
     private int anInt1100;
@@ -15394,6 +16231,7 @@ public class client extends Applet_Sub1 {
             anIntArray1232[k] = i - 1;
             i += i;
         }
-
+        step = 1;
+        switching = false;
     }
 }

@@ -11,6 +11,8 @@ public class OverLayFlo317
     public OverLayFlo317()
     {
         textureId = -1;
+        int_9 = 512;
+        int_16 = 127;
     }
 
     public static void load(FileArchive arg1)
@@ -160,7 +162,7 @@ public class OverLayFlo317
         else
         if(i_13_ > 255)
             i_13_ = 255;
-        anInt399 = method263(i, i_12_, i_13_);
+        hsl16 = method263(i, i_12_, i_13_);
     }
 
     private final int method263(int arg0, int arg1, int arg2)
@@ -196,5 +198,5 @@ public class OverLayFlo317
     public int anInt396;
     public int anInt397;
     public int anInt398;
-    public int anInt399;
+    public int hsl16;
 }

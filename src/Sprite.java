@@ -8,6 +8,88 @@ import javax.swing.ImageIcon;
 public final class Sprite extends DrawingArea
 {
     public String location = signlink.findcachedir() + "Sprites/";
+    public void drawSprite(int i, int k, int color) {
+        int tempWidth = this.myWidth + 2;
+        int tempHeight = this.myHeight + 2;
+        int[] tempArray = new int[tempWidth * tempHeight];
+
+        int l;
+        int i1;
+        for(l = 0; l < this.myWidth; ++l) {
+            for(i1 = 0; i1 < this.myHeight; ++i1) {
+                if(this.myPixels[l + i1 * this.myWidth] != 0) {
+                    tempArray[l + 1 + (i1 + 1) * tempWidth] = this.myPixels[l + i1 * this.myWidth];
+                }
+            }
+        }
+
+        for(l = 0; l < tempWidth; ++l) {
+            for(i1 = 0; i1 < tempHeight; ++i1) {
+                if(tempArray[l + i1 * tempWidth] == 0) {
+                    if(l < tempWidth - 1 && tempArray[l + 1 + i1 * tempWidth] > 0 && tempArray[l + 1 + i1 * tempWidth] != 16777215) {
+                        tempArray[l + i1 * tempWidth] = color;
+                    }
+
+                    if(l > 0 && tempArray[l - 1 + i1 * tempWidth] > 0 && tempArray[l - 1 + i1 * tempWidth] != 16777215) {
+                        tempArray[l + i1 * tempWidth] = color;
+                    }
+
+                    if(i1 < tempHeight - 1 && tempArray[l + (i1 + 1) * tempWidth] > 0 && tempArray[l + (i1 + 1) * tempWidth] != 16777215) {
+                        tempArray[l + i1 * tempWidth] = color;
+                    }
+
+                    if(i1 > 0 && tempArray[l + (i1 - 1) * tempWidth] > 0 && tempArray[l + (i1 - 1) * tempWidth] != 16777215) {
+                        tempArray[l + i1 * tempWidth] = color;
+                    }
+                }
+            }
+        }
+
+        --i;
+        --k;
+        i += this.drawOffsetX;
+        k += this.drawOffsetY;
+        l = i + k * DrawingArea.width;
+        i1 = 0;
+        int j1 = tempHeight;
+        int k1 = tempWidth;
+        int l1 = DrawingArea.width - tempWidth;
+        int i2 = 0;
+        int l2;
+        if(k < DrawingArea.topY) {
+            l2 = DrawingArea.topY - k;
+            j1 = tempHeight - l2;
+            k = DrawingArea.topY;
+            i1 += l2 * tempWidth;
+            l += l2 * DrawingArea.width;
+        }
+
+        if(k + j1 > DrawingArea.bottomY) {
+            j1 -= k + j1 - DrawingArea.bottomY;
+        }
+
+        if(i < DrawingArea.leftX) {
+            l2 = DrawingArea.leftX - i;
+            k1 = tempWidth - l2;
+            i = DrawingArea.leftX;
+            i1 += l2;
+            l += l2;
+            i2 += l2;
+            l1 += l2;
+        }
+
+        if(i + k1 > DrawingArea.bottomX) {
+            l2 = i + k1 - DrawingArea.bottomX;
+            k1 -= l2;
+            i2 += l2;
+            l1 += l2;
+        }
+
+        if(k1 > 0 && j1 > 0) {
+            this.method349(DrawingArea.pixels, tempArray, i1, l, k1, j1, l1, i2, 8);
+        }
+
+    }
 	public void drawTransparent(int i, int j, int k)
 	{
 		i += drawOffsetX;
@@ -58,8 +140,8 @@ public Sprite(String s)
             ImageIcon sprite = new ImageIcon(image);
             myWidth = sprite.getIconWidth();
             myHeight = sprite.getIconHeight();
-            anInt1444 = myWidth;
-            anInt1445 = myHeight;
+            maxWidth = myWidth;
+            maxHeight = myHeight;
             drawOffsetX = 0;
             drawOffsetY = 0;
             myPixels = new int[myWidth * myHeight];
@@ -77,8 +159,8 @@ public Sprite(String s)
             Image image = Toolkit.getDefaultToolkit().createImage(FileOperations.ReadFile(s));
             myWidth = width;
             myHeight = height;
-            anInt1444 = myWidth;
-            anInt1445 = myHeight;
+            maxWidth = myWidth;
+            maxHeight = myHeight;
             drawOffsetX = 0;
             drawOffsetY = 0;
             myPixels = new int[myWidth * myHeight];
@@ -101,8 +183,8 @@ public Sprite(String s)
         aBoolean1437 = true;
         aBoolean1438 = false;
         myPixels = new int[i * j];
-        myWidth = anInt1444 = i;
-        myHeight = anInt1445 = j;
+        myWidth = maxWidth = i;
+        myHeight = maxHeight = j;
         drawOffsetX = drawOffsetY = 0;
     }
     public void setTransparency(int transRed, int transGreen, int transBlue) {
@@ -133,8 +215,8 @@ public Sprite(String s)
             mediatracker.waitForAll();
             myWidth = image.getWidth(component);
             myHeight = image.getHeight(component);
-            anInt1444 = myWidth;
-            anInt1445 = myHeight;
+            maxWidth = myWidth;
+            maxHeight = myHeight;
             drawOffsetX = 0;
             drawOffsetY = 0;
             myPixels = new int[myWidth * myHeight];
@@ -163,8 +245,8 @@ public Sprite(String s)
 		Stream stream = new Stream(fileArchive.method571((new StringBuilder()).append(s).append(".dat").toString()), 891);
 		Stream stream_1 = new Stream(fileArchive.method571("index.dat"), 891);
 		stream_1.currentPosition = stream.readUnsignedShort();
-		anInt1444 = stream_1.readUnsignedShort();
-		anInt1445 = stream_1.readUnsignedShort();
+		maxWidth = stream_1.readUnsignedShort();
+		maxHeight = stream_1.readUnsignedShort();
 		int j = stream_1.readUnsignedByte();
 		int ai[] = new int[j];
 		for (int k = 0; k < j - 1; k++)
@@ -410,19 +492,19 @@ else {
 
     public void method345(int i)
     {
-        int ai[] = new int[anInt1444 * anInt1445];
+        int ai[] = new int[maxWidth * maxHeight];
         if(i != 5059)
             anInt1429 = -247;
         for(int j = 0; j < myHeight; j++)
         {
             for(int k = 0; k < myWidth; k++)
-                ai[(j + drawOffsetY) * anInt1444 + (k + drawOffsetX)] = myPixels[j * myWidth + k];
+                ai[(j + drawOffsetY) * maxWidth + (k + drawOffsetX)] = myPixels[j * myWidth + k];
 
         }
 
         myPixels = ai;
-        myWidth = anInt1444;
-        myHeight = anInt1445;
+        myWidth = maxWidth;
+        myHeight = maxHeight;
         drawOffsetX = 0;
         drawOffsetY = 0;
     }
@@ -945,7 +1027,7 @@ else {
     public int myHeight;
     public int drawOffsetX;
     public int drawOffsetY;
-    public int anInt1444;
-    public int anInt1445;
+    public int maxWidth;
+    public int maxHeight;
 
 }

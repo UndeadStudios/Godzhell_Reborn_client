@@ -783,7 +783,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent
         aCRC32_1338 = new CRC32();
         ioBuffer = new byte[500];
         anInt1340 = 923;
-        aByteArrayArray1342 = new byte[5][];
+        aByteArrayArray1342 = new byte[6][];
         aClass19_1344 = new Class19(169);
         anInt1352 = 13603;
         aBoolean1353 = true;
@@ -792,8 +792,8 @@ public class OnDemandFetcher extends OnDemandFetcherParent
         aClass19_1358 = new Class19(169);
         aByteArray1359 = new byte[90000];
         aClass2_1361 = new Class2(anInt1345);
-        anIntArrayArray1364 = new int[5][];
-        anIntArrayArray1365 = new int[5][];
+        anIntArrayArray1364 = new int[6][];
+        anIntArrayArray1365 = new int[6][];
         aClass19_1368 = new Class19(169);
         aClass19_1370 = new Class19(169);
     }

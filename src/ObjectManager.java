@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+
 final class ObjectManager {
 
 	private static int anInt123 = (int)(Math.random() * 17D) - 8;
@@ -39,6 +41,7 @@ final class ObjectManager {
 		1, 2, 4, 8
 	};
 	private static int anInt153 = -388;
+	public ArrayList<Integer> colors = new ArrayList<Integer>();
 
 	public ObjectManager(byte abyte0[][][], int i, int j, int k, int ai[][][]) {
 		aBoolean132 = true;
@@ -241,44 +244,83 @@ final class ObjectManager {
 									i22 = Rasterizer.anIntArray1482[method187(k21, 96)];
 								}
 								if(i19 == 0) {
-									class25.method279(l, l6, k17, 0, 0, -1, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0);
+									class25.method279(l, l6, k17, 0, 0, -1, 154, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), 0, 0, 0, 0, i22, 0, false);
 								} else {
 									int k22 = aByteArrayArrayArray136[l][l6][k17] + 1;
 									byte byte4 = aByteArrayArrayArray148[l][l6][k17];
-									//Class22 class22_2 = Class22.aClass22Array388[i19 - 1];
-									
 									if((i19 - 1) > OverLayFlo317.overLayFlo317s.length)
 										i19 = OverLayFlo317.overLayFlo317s.length;//42 = invisible
 									OverLayFlo317 class22_2 = OverLayFlo317.overLayFlo317s[i19 - 1];
-									int i23 = class22_2.textureId;
+									int textureId = class22_2.textureId;
 									int j23;
 									int k23;
-																	if (i23 > 50) {
-									i23 = -1;
+									int floorId = (i19 - 1);
+									if (textureId == 51)
+										textureId = 3;
+									if (textureId > 50) {
+									textureId = -1;
 								}
-									if(i23 >= 0) {
-										k23 = Rasterizer.method369(i23, 12660);
+									if(textureId >= 0) {
+										k23 = Rasterizer.method369(textureId);
 										j23 = -1;
-									} else
-										if(class22_2.rgb == 0xff00ff) {
+									} else if(class22_2.rgb == 0xff00ff) {
 										k23 = 0;
 										j23 = -2;
-										i23 = -1;
+										} else if(class22_2.rgb == 0x333333) {
+											k23 = Rasterizer.anIntArray1482[method185(class22_2.hsl16, 96)];
+											j23 = -2;
+											//   textureId = -1;
 										} else {
 										j23 = method177(class22_2.anInt394, class22_2.anInt395, class22_2.anInt396);
-										k23 = Rasterizer.anIntArray1482[method185(class22_2.anInt399, 96)];
+										k23 = Rasterizer.anIntArray1482[method185(class22_2.hsl16, 96)];
 										}
-	if ((i19-1) == 54) {
-                    k23  = 0x8B8B83;
-                    j23 = -2;
-                    i23 = -1;
-                }
-										if((i19-1) == 111){
-											k23 = Rasterizer.method369(1, 12660);
-											j23 = -1;
-                                    							i23 = 1;
-											}
-									class25.method279(l, l6, k17, k22, byte4, i23, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23);
+
+									if(floorId == 111) {                                            //Water
+										k23 = Rasterizer.method369(1);
+										j23 = -1;
+										textureId = 1;
+									} else if(floorId == 53) {                                        //Blue at duel arena
+										k23 = class22_2.rgb = 0xAA9166;
+										textureId = -1;
+									} else if(floorId == 52) {                                        //Green in duel arena
+										k23 = class22_2.rgb = 0x736836;
+										textureId = -1;
+									} else if(floorId == 125) {                                        //Roofs, duel arena
+										k23 = class22_2.rgb = 0xAA9166;
+										j23 = -1;
+										textureId = 32;
+									} else if(floorId == 135) {                                        //Water at duel arena
+										k23 = Rasterizer.method369(1);
+										j23 = -2;
+										textureId = -1;
+									} else if(j23 == 6041) {                                        //Al kharid floors
+										k23 = class22_2.rgb = 0xAA9166;
+										j23 = -1;
+										textureId = 32;
+									} else if(floorId == 63) {                                        //Seer's court stairs
+										k23 = class22_2.rgb = 0x767676;
+										j23 = -2;
+										textureId = -1;
+									} else if(floorId == 177) {                                        //Castle Wars, lobby floor
+										k23 = class22_2.rgb = 0x4D4D4D;
+										j23 = method177(0,0,55);
+										textureId = -1;
+									} else if(floorId == 72) {                                        //Cliffside at ogres
+										k23 = class22_2.rgb = 0x483B21;
+										j23 = method177(25,146,24);
+									} else if (j23 == 6363 || j23 == 549) {                        //Dirt banks, etc
+										k23 = 0x483B21;
+										j23 = method177(25,146,24);
+									} else if (j23 == 40) {//Grey roads
+										k23 = class22_2.rgb;
+										textureId = -1;
+
+									}
+									colors.add(k23);
+									if (textureId == -1)
+										textureId = class22_2.int_16;
+									class25.method279(l, l6, k17, k22, byte4, textureId, class22_2.int_16, j19, k19, l19, i20, method187(j21, j20), method187(j21, k20), method187(j21, l20), method187(j21, i21), method185(j23, j20), method185(j23, k20), method185(j23, l20), method185(j23, i21), i22, k23, textureId >= 0
+											&& textureId <= 50);
 								}
 							}
 						}
@@ -586,7 +628,7 @@ final class ObjectManager {
 			} else {
 				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method280(z, k2, y, 68, ((Class30_Sub2_Sub4) (obj)), byte0, key, x);
+			class25.method280(z, k2, y, 68, ((Animable) (obj)), byte0, key, x);
 			if(class46.aBoolean767 && class46.hasactions && class11 != null) {
 				class11.method213(y, 0, x);
 			}
@@ -613,17 +655,17 @@ final class ObjectManager {
 					j4 = class46.anInt744;
 					l4 = class46.anInt761;
 				}
-				if(class25.method284(key, byte0, k2, l4, ((Class30_Sub2_Sub4) (obj1)), j4, z, i5, (byte)110, y, x) && class46.aBoolean779) {
-					Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6;
-					if(obj1 instanceof Class30_Sub2_Sub4_Sub6) {
-						class30_sub2_sub4_sub6 = (Class30_Sub2_Sub4_Sub6)obj1;
+				if(class25.method284(key, byte0, k2, l4, ((Animable) (obj1)), j4, z, i5, (byte)110, y, x) && class46.aBoolean779) {
+					Model model;
+					if(obj1 instanceof Model) {
+						model = (Model)obj1;
 					} else {
-						class30_sub2_sub4_sub6 = class46.method578(10, orientation, k1, l1, i2, j2, -1);
+						model = class46.method578(10, orientation, k1, l1, i2, j2, -1);
 					}
-					if(class30_sub2_sub4_sub6 != null) {
+					if(model != null) {
 						for(int j5 = 0; j5 <= j4; j5++) {
 							for(int k5 = 0; k5 <= l4; k5++) {
-								int l5 = class30_sub2_sub4_sub6.anInt1650 / 4;
+								int l5 = model.anInt1650 / 4;
 								if(l5 > 30) {
 									l5 = 30;
 								}
@@ -649,7 +691,7 @@ final class ObjectManager {
 			} else {
 				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method284(key, byte0, k2, 1, ((Class30_Sub2_Sub4) (obj2)), 1, z, 0, (byte)110, y, x);
+			class25.method284(key, byte0, k2, 1, ((Animable) (obj2)), 1, z, 0, (byte)110, y, x);
 			if(type >= 12 && type <= 17 && type != 13 && z > 0) {
 				anIntArrayArrayArray135[z][x][y] |= 0x924;
 			}
@@ -665,7 +707,7 @@ final class ObjectManager {
 			} else {
 				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Class30_Sub2_Sub4) (obj3)), true, key, y, byte0, x, null, k2, 0, z);
+			class25.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte0, x, null, k2, 0, z);
 			if(orientation == 0) {
 				if(class46.aBoolean779) {
 					aByteArrayArrayArray134[z][x][y] = 50;
@@ -717,7 +759,7 @@ final class ObjectManager {
 			} else {
 				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Class30_Sub2_Sub4) (obj4)), true, key, y, byte0, x, null, k2, 0, z);
+			class25.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte0, x, null, k2, 0, z);
 			if(class46.aBoolean779) {
 				if(orientation == 0) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
@@ -748,7 +790,7 @@ final class ObjectManager {
 				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 				obj12 = new Class30_Sub2_Sub4_Sub5(id, i3, 2, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Class30_Sub2_Sub4) (obj11)), true, key, y, byte0, x, ((Class30_Sub2_Sub4) (obj12)), k2, anIntArray152[i3], z);
+			class25.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte0, x, ((Animable) (obj12)), k2, anIntArray152[i3], z);
 			if(class46.aBoolean764) {
 				if(orientation == 0) {
 					anIntArrayArrayArray135[z][x][y] |= 0x249;
@@ -782,7 +824,7 @@ final class ObjectManager {
 			} else {
 				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Class30_Sub2_Sub4) (obj5)), true, key, y, byte0, x, null, k2, 0, z);
+			class25.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte0, x, null, k2, 0, z);
 			if(class46.aBoolean779) {
 				if(orientation == 0) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
@@ -809,7 +851,7 @@ final class ObjectManager {
 			} else {
 				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method284(key, byte0, k2, 1, ((Class30_Sub2_Sub4) (obj6)), 1, z, 0, (byte)110, y, x);
+			class25.method284(key, byte0, k2, 1, ((Animable) (obj6)), 1, z, 0, (byte)110, y, x);
 			if(class46.aBoolean767 && class11 != null) {
 				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
 			}
@@ -846,7 +888,7 @@ final class ObjectManager {
 			} else {
 				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, z, 0, k2, ((Class30_Sub2_Sub4) (obj7)), x, byte0, 0, anIntArray152[orientation]);
+			class25.method283(key, y, orientation * 512, -460, z, 0, k2, ((Animable) (obj7)), x, byte0, 0, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 5) {
@@ -861,7 +903,7 @@ final class ObjectManager {
 			} else {
 				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, z, anIntArray137[orientation] * i4, k2, ((Class30_Sub2_Sub4) (obj13)), x, byte0, anIntArray144[orientation] * i4, anIntArray152[orientation]);
+			class25.method283(key, y, orientation * 512, -460, z, anIntArray137[orientation] * i4, k2, ((Animable) (obj13)), x, byte0, anIntArray144[orientation] * i4, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 6) {
@@ -871,7 +913,7 @@ final class ObjectManager {
 			} else {
 				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, z, 0, k2, ((Class30_Sub2_Sub4) (obj8)), x, byte0, 0, 256);
+			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj8)), x, byte0, 0, 256);
 			return;
 		}
 		if(type == 7) {
@@ -881,7 +923,7 @@ final class ObjectManager {
 			} else {
 				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, z, 0, k2, ((Class30_Sub2_Sub4) (obj9)), x, byte0, 0, 512);
+			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj9)), x, byte0, 0, 512);
 			return;
 		}
 		if(type == 8) {
@@ -891,7 +933,7 @@ final class ObjectManager {
 			} else {
 				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, z, 0, k2, ((Class30_Sub2_Sub4) (obj10)), x, byte0, 0, 768);
+			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj10)), x, byte0, 0, 768);
 		}
 	}
 
@@ -1201,7 +1243,7 @@ final class ObjectManager {
 			} else {
 				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method280(k1, l2, y, 68, ((Class30_Sub2_Sub4) (obj)), byte1, key, x);
+			class25.method280(k1, l2, y, 68, ((Animable) (obj)), byte1, key, x);
 			if(class46.aBoolean767 && class46.hasactions) {
 				class11.method213(y, 0, x);
 			}
@@ -1228,7 +1270,7 @@ final class ObjectManager {
 					k4 = class46.anInt744;
 					i5 = class46.anInt761;
 				}
-				class25.method284(key, byte1, l2, i5, ((Class30_Sub2_Sub4) (obj1)), k4, k1, j5, (byte)110, y, x);
+				class25.method284(key, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, (byte)110, y, x);
 			}
 			if(class46.aBoolean767) {
 				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
@@ -1242,7 +1284,7 @@ final class ObjectManager {
 			} else {
 				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method284(key, byte1, l2, 1, ((Class30_Sub2_Sub4) (obj2)), 1, k1, 0, (byte)110, y, x);
+			class25.method284(key, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, (byte)110, y, x);
 			if(class46.aBoolean767) {
 				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
 			}
@@ -1255,7 +1297,7 @@ final class ObjectManager {
 			} else {
 				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Class30_Sub2_Sub4) (obj3)), true, key, y, byte1, x, null, l2, 0, k1);
+			class25.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte1, x, null, l2, 0, k1);
 			if(class46.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
 			}
@@ -1268,7 +1310,7 @@ final class ObjectManager {
 			} else {
 				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Class30_Sub2_Sub4) (obj4)), true, key, y, byte1, x, null, l2, 0, k1);
+			class25.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte1, x, null, l2, 0, k1);
 			if(class46.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
 			}
@@ -1285,7 +1327,7 @@ final class ObjectManager {
 				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 				obj12 = new Class30_Sub2_Sub4_Sub5(id, j3, 2, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray152[orientation], ((Class30_Sub2_Sub4) (obj11)), true, key, y, byte1, x, ((Class30_Sub2_Sub4) (obj12)), l2, anIntArray152[j3], k1);
+			class25.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte1, x, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
 			if(class46.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
 			}
@@ -1298,7 +1340,7 @@ final class ObjectManager {
 			} else {
 				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method282(anIntArray140[orientation], ((Class30_Sub2_Sub4) (obj5)), true, key, y, byte1, x, null, l2, 0, k1);
+			class25.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte1, x, null, l2, 0, k1);
 			if(class46.aBoolean767) {
 				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
 			}
@@ -1311,7 +1353,7 @@ final class ObjectManager {
 			} else {
 				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method284(key, byte1, l2, 1, ((Class30_Sub2_Sub4) (obj6)), 1, k1, 0, (byte)110, y, x);
+			class25.method284(key, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, (byte)110, y, x);
 			if(class46.aBoolean767) {
 				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
 			}
@@ -1348,7 +1390,7 @@ final class ObjectManager {
 			} else {
 				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, k1, 0, l2, ((Class30_Sub2_Sub4) (obj7)), x, byte1, 0, anIntArray152[orientation]);
+			class25.method283(key, y, orientation * 512, -460, k1, 0, l2, ((Animable) (obj7)), x, byte1, 0, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 5) {
@@ -1363,7 +1405,7 @@ final class ObjectManager {
 			} else {
 				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation * 512, -460, k1, anIntArray137[orientation] * j4, l2, ((Class30_Sub2_Sub4) (obj13)), x, byte1, anIntArray144[orientation] * j4, anIntArray152[orientation]);
+			class25.method283(key, y, orientation * 512, -460, k1, anIntArray137[orientation] * j4, l2, ((Animable) (obj13)), x, byte1, anIntArray144[orientation] * j4, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 6) {
@@ -1373,7 +1415,7 @@ final class ObjectManager {
 			} else {
 				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Class30_Sub2_Sub4) (obj8)), x, byte1, 0, 256);
+			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj8)), x, byte1, 0, 256);
 			return;
 		}
 		if(type == 7) {
@@ -1383,7 +1425,7 @@ final class ObjectManager {
 			} else {
 				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Class30_Sub2_Sub4) (obj9)), x, byte1, 0, 512);
+			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj9)), x, byte1, 0, 512);
 			return;
 		}
 		if(type == 8) {
@@ -1393,7 +1435,7 @@ final class ObjectManager {
 			} else {
 				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
 			}
-			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Class30_Sub2_Sub4) (obj10)), x, byte1, 0, 768);
+			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj10)), x, byte1, 0, 768);
 		}
 	}
 

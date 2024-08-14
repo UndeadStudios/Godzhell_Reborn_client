@@ -1,4 +1,4 @@
-class Class30_Sub2_Sub4_Sub1 extends Class30_Sub2_Sub4
+class Class30_Sub2_Sub4_Sub1 extends Animable
 {
 
     public final void method445(int i, int j, boolean flag, boolean flag1)

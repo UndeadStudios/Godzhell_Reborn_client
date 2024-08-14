@@ -1,6 +1,6 @@
-public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
+public class Model extends Animable {
 
-	public static void method458(int i) {
+	public static void nullLoader() {
 		aClass21Array1661 = null;
 		aBooleanArray1663 = null;
 		aBooleanArray1664 = null;
@@ -221,11 +221,11 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		nc6.currentPosition = l7;
 		nc7.currentPosition = i8;
 		for (int i12 = 0; i12 < numTriangles; i12++) {
-			triangleColours2[i12] = nc1.readUnsignedShort();
+			triangleColours2[i12] =  nc1.readUnsignedShort();
 			if (l1 == 1) {
 				anIntArray1637[i12] = nc2.readSignedByte();
 				if (anIntArray1637[i12] == 2)
-					triangleColours2[i12] = 65535;
+					triangleColours2[i12] =  65535;
 				anIntArray1637[i12] = 0;
 			}
 			if (i2 == 255) {
@@ -357,7 +357,7 @@ public class Class30_Sub2_Sub4_Sub6 extends Class30_Sub2_Sub4 {
 		convertTexturesTo317(D, texTrianglesPoint1, texTrianglesPoint2, texTrianglesPoint3, false, x);
 	}
 
-	public Class30_Sub2_Sub4_Sub6(int modelId, int j) {
+	public Model(int modelId, int j) {
 		byte[] is = aClass21Array1661[modelId].aByteArray368;
 		if (is[is.length - 1] == -1 && is[is.length - 2] == -1)
 			read622Model(is, modelId);
@@ -838,7 +838,7 @@ if(anIntArray1638 != null) {
 		stream_3.currentPosition = class21.anInt382;
 		stream_4.currentPosition = class21.anInt383;
 		for (int l1 = 0; l1 < anInt1630; l1++) {
-			anIntArray1640[l1] = stream.readUnsignedShort();
+			anIntArray1640[l1] =  stream.readUnsignedShort();
 			if (anIntArray1637 != null)
 				anIntArray1637[l1] = stream_1.readUnsignedByte();
 			if (anIntArray1638 != null)
@@ -986,7 +986,7 @@ if(anIntArray1638 != null) {
 		aClass21Array1661[j] = null;
 	}
 
-	public static Class30_Sub2_Sub4_Sub6 method462(int i, int j) {
+	public static Model method462(int i, int j) {
 		if (aClass21Array1661 == null)
 			return null;
 		Class21 class21 = aClass21Array1661[j];
@@ -994,7 +994,7 @@ if(anIntArray1638 != null) {
 			aOnDemandFetcherParent_1662.method548(j);
 			return null;
 		} else {
-			return new Class30_Sub2_Sub4_Sub6(j,0);
+			return new Model(j,0);
 		}
 	}
 
@@ -1011,7 +1011,7 @@ if(anIntArray1638 != null) {
 		}
 	}
 
-	private Class30_Sub2_Sub4_Sub6(boolean flag) {
+	private Model(boolean flag) {
 		anInt1614 = 9;
 		aBoolean1615 = false;
 		anInt1616 = 360;
@@ -1022,7 +1022,7 @@ if(anIntArray1638 != null) {
 			aBoolean1618 = !aBoolean1618;
 	}
 
-	public Class30_Sub2_Sub4_Sub6(int i, Class30_Sub2_Sub4_Sub6 amodel[], int j) {
+	public Model(int i, Model amodel[], int j) {
 		anInt1614 = 9;
 		aBoolean1615 = false;
 		anInt1616 = 360;
@@ -1039,7 +1039,7 @@ if(anIntArray1638 != null) {
 		anInt1642 = 0;
 		anInt1641 = -1;
 		for (int k = 0; k < i; k++) {
-			Class30_Sub2_Sub4_Sub6 model = amodel[k];
+			Model model = amodel[k];
 			if (model != null) {
 				anInt1626 += model.anInt1626;
 				anInt1630 += model.anInt1630;
@@ -1082,7 +1082,7 @@ if(anIntArray1638 != null) {
 		anInt1642 = 0;
 		int l = 0;
 		for (int i1 = 0; i1 < i; i1++) {
-			Class30_Sub2_Sub4_Sub6 model_1 = amodel[i1];
+			Model model_1 = amodel[i1];
 			if (model_1 != null) {
 				for (int j1 = 0; j1 < model_1.anInt1630; j1++) {
 					if (flag)
@@ -1133,7 +1133,7 @@ if(anIntArray1638 != null) {
 
 	}
 
-	public Class30_Sub2_Sub4_Sub6(int hurr, int ima, boolean flag, Class30_Sub2_Sub4_Sub6 amodel[]) {
+	public Model(int hurr, int ima, boolean flag, Model amodel[]) {
 		int i = 2;
 		anInt1614 = 9;
 		aBoolean1615 = false;
@@ -1151,7 +1151,7 @@ if(anIntArray1638 != null) {
 		anInt1642 = 0;
 		anInt1641 = -1;
 		for (int k = 0; k < i; k++) {
-			Class30_Sub2_Sub4_Sub6 model = amodel[k];
+			Model model = amodel[k];
 			if (model != null) {
 				anInt1626 += model.anInt1626;
 				anInt1630 += model.anInt1630;
@@ -1195,7 +1195,7 @@ if(anIntArray1638 != null) {
 		anInt1642 = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < i; j1++) {
-			Class30_Sub2_Sub4_Sub6 model_1 = amodel[j1];
+			Model model_1 = amodel[j1];
 			if (model_1 != null) {
 				int k1 = anInt1626;
 				for (int l1 = 0; l1 < model_1.anInt1626; l1++) {
@@ -1251,7 +1251,7 @@ if(anIntArray1638 != null) {
 		method466(false);
 	}
 
-	public Class30_Sub2_Sub4_Sub6(int derp, boolean flag, boolean flag1, boolean flag2, Class30_Sub2_Sub4_Sub6 model) {
+	public Model(int derp, boolean flag, boolean flag1, boolean flag2, Model model) {
 		anInt1614 = 9;
 		aBoolean1615 = false;
 		anInt1616 = 360;
@@ -1312,7 +1312,7 @@ if(anIntArray1638 != null) {
 		anIntArray1645 = model.anIntArray1645;
 	}
 
-	public Class30_Sub2_Sub4_Sub6(boolean flag, int derp, boolean flag1, Class30_Sub2_Sub4_Sub6 model) {
+	public Model(boolean flag, int derp, boolean flag1, Model model) {
 		anInt1614 = 9;
 		aBoolean1615 = false;
 		anInt1616 = 360;
@@ -1380,7 +1380,7 @@ if(anIntArray1638 != null) {
 		anIntArray1643 = model.anIntArray1643;
 		anIntArray1644 = model.anIntArray1644;
 		anIntArray1645 = model.anIntArray1645;
-		super.anInt1426 = ((Class30_Sub2_Sub4) (model)).anInt1426;
+		super.anInt1426 = ((Animable) (model)).anInt1426;
 		anInt1650 = model.anInt1650;
 		anInt1653 = model.anInt1653;
 		anInt1652 = model.anInt1652;
@@ -1390,7 +1390,7 @@ if(anIntArray1638 != null) {
 		anInt1647 = model.anInt1647;
 	}
 
-	public void method464(int i, Class30_Sub2_Sub4_Sub6 model, boolean flag) {
+	public void method464(int i, Model model, boolean flag) {
 		anInt1626 = model.anInt1626;
 		anInt1630 = model.anInt1630;
 		anInt1642 = model.anInt1642;
@@ -1441,7 +1441,7 @@ if(anIntArray1638 != null) {
 		anIntArray1645 = model.anIntArray1645;
 	}
 
-	private final int method465(Class30_Sub2_Sub4_Sub6 model, int i) {
+	private final int method465(Model model, int i) {
 		int j = -1;
 		int k = model.anIntArray1627[i];
 		int l = model.anIntArray1628[i];
@@ -2040,8 +2040,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 
 	public final void method482(int hai, int j, int k, int l, int i1, int j1, int k1) {
 		int i = 0;
-		int l1 = Rasterizer.anInt1466;
-		int i2 = Rasterizer.anInt1467;
+		int l1 = Rasterizer.centerX;
+		int i2 = Rasterizer.centerY;
 		int j2 = anIntArray1689[i];
 		int k2 = anIntArray1690[i];
 		int l2 = anIntArray1689[j];
@@ -2188,16 +2188,16 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 						k4 /= i3;
 						i5 /= k5;
 					}
-					int i6 = anInt1685 - Rasterizer.anInt1466;
-					int k6 = anInt1686 - Rasterizer.anInt1467;
+					int i6 = anInt1685 - Rasterizer.centerX;
+					int k6 = anInt1686 - Rasterizer.centerY;
 					if (i6 > k3 && i6 < l3 && k6 > i5 && k6 < k4)
 						if (aBoolean1659)
 							anIntArray1688[anInt1687++] = i2;
 						else
 							flag1 = true;
 				}
-				int l5 = Rasterizer.anInt1466;
-				int j6 = Rasterizer.anInt1467;
+				int l5 = Rasterizer.centerX;
+				int j6 = Rasterizer.centerY;
 				int l6 = 0;
 				int i7 = 0;
 				if (i != 0) {
@@ -2231,6 +2231,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			flag = true;
 		}
 		if (flag || anInt1642 > 0) {
+			if(Configuration.distanceFog) {
+				anIntArray1670[j7] = i8;
+			}
 			anIntArray1668[j7] = k7;
 			anIntArray1669[j7] = l7;
 			anIntArray1670[j7] = i8;
@@ -2434,16 +2437,29 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		else
 			i1 = anIntArray1637[i] & 3;
 		if (i1 == 0) {
-			Rasterizer.method374(anIntArray1666[j], anIntArray1666[k],
+			if(Configuration.distanceFog) {
+				Rasterizer.drawFogTriangle(anIntArray1666[j], anIntArray1666[k],
+						anIntArray1666[l], anIntArray1665[j], anIntArray1665[k],
+						anIntArray1665[l], anIntArray1634[i], anIntArray1635[i],
+						anIntArray1636[i]);
+			}
+			Rasterizer.drawGouraudTriangle(anIntArray1666[j], anIntArray1666[k],
 					anIntArray1666[l], anIntArray1665[j], anIntArray1665[k],
 					anIntArray1665[l], anIntArray1634[i], anIntArray1635[i],
 					anIntArray1636[i]);
 			return;
 		}
 		if (i1 == 1) {
+			if(Configuration.distanceFog) {
+				Rasterizer.drawFogTriangle(anIntArray1666[j], anIntArray1666[k],
+						anIntArray1666[l], anIntArray1665[j], anIntArray1665[k],
+						anIntArray1665[l], anIntArray1634[i], anIntArray1635[i],
+						anIntArray1636[i]);
+			}
 			Rasterizer.method376(anIntArray1666[j], anIntArray1666[k],
 					anIntArray1666[l], anIntArray1665[j], anIntArray1665[k],
 					anIntArray1665[l], anIntArray1691[anIntArray1634[i]]);
+
 			return;
 		}
 		if (i1 == 2) {
@@ -2451,6 +2467,15 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			int l1 = anIntArray1643[j1];
 			int j2 = anIntArray1644[j1];
 			int l2 = anIntArray1645[j1];
+			if(Configuration.distanceFog) {
+				Rasterizer.drawTexturedFogTriangle(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l],
+						anIntArray1665[j], anIntArray1665[k],anIntArray1665[l],
+						anIntArray1634[i], anIntArray1635[i], anIntArray1636[i],
+						anIntArray1668[l2], anIntArray1668[l1], anIntArray1668[j2],
+						anIntArray1669[l2], anIntArray1669[l1], anIntArray1669[j2],
+						anIntArray1670[l2], anIntArray1670[l1], anIntArray1670[j2],
+						anIntArray1640[i]);
+			}
 			Rasterizer.method378(anIntArray1666[j], anIntArray1666[k],
 					anIntArray1666[l], anIntArray1665[j], anIntArray1665[k],
 					anIntArray1665[l], anIntArray1634[i], anIntArray1635[i],
@@ -2465,6 +2490,15 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				int i2 = anIntArray1643[k1];
 				int k2 = anIntArray1644[k1];
 				int i3 = anIntArray1645[k1];
+			if(Configuration.distanceFog) {
+				Rasterizer.drawTexturedFogTriangle(anIntArray1666[j], anIntArray1666[k], anIntArray1666[l],
+						anIntArray1665[j], anIntArray1665[k],anIntArray1665[l],
+						anIntArray1634[i], anIntArray1635[i], anIntArray1636[i],
+						anIntArray1668[i3], anIntArray1668[i2], anIntArray1668[k2],
+						anIntArray1669[i3], anIntArray1669[i2], anIntArray1669[k2],
+						anIntArray1670[i3], anIntArray1670[i2], anIntArray1670[k2],
+						anIntArray1640[i]);
+			}
 				Rasterizer.method378(anIntArray1666[j], anIntArray1666[k],
 						anIntArray1666[l], anIntArray1665[j], anIntArray1665[k],
 						anIntArray1665[l], anIntArray1634[i], anIntArray1634[i],
@@ -2479,8 +2513,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		if (anIntArray1640 != null)
 			if (anIntArray1640[i] == 65535)
 				return;
-		int j = Rasterizer.anInt1466;
-		int k = Rasterizer.anInt1467;
+		int j = Rasterizer.centerX;
+		int k = Rasterizer.centerY;
 		int l = 0;
 		int i1 = anIntArray1631[i];
 		int j1 = anIntArray1632[i];
@@ -2594,14 +2628,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					l7 = 0;
 				else
 					l7 = anIntArray1637[i] & 3;
-				if (l7 == 0)
-					Rasterizer.method374(i7, j7, k7, j3, j4, j5,
+				if (l7 == 0) {
+					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5,
 							anIntArray1680[0], anIntArray1680[1],
 							anIntArray1680[2]);
-				else if (l7 == 1)
+				} else if (l7 == 1) {
 					Rasterizer.method376(i7, j7, k7, j3, j4, j5,
 							anIntArray1691[anIntArray1634[i]]);
-				else if (l7 == 2) {
+				}else if (l7 == 2) {
 					int j8 = anIntArray1637[i] >> 2;
 					int k9 = anIntArray1643[j8];
 					int k10 = anIntArray1644[j8];
@@ -2641,10 +2675,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				else
 					i8 = anIntArray1637[i] & 3;
 				if (i8 == 0) {
-					Rasterizer.method374(i7, j7, k7, j3, j4, j5,
+					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5,
 							anIntArray1680[0], anIntArray1680[1],
 							anIntArray1680[2]);
-					Rasterizer.method374(i7, k7, anIntArray1679[3], j3, j5,
+					Rasterizer.drawGouraudTriangle(i7, k7, anIntArray1679[3], j3, j5,
 							anIntArray1678[3], anIntArray1680[0],
 							anIntArray1680[2], anIntArray1680[3]);
 					return;
@@ -2723,7 +2757,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	private boolean aBoolean1618;
 	private static int anInt1619 = -192;
 	public static int anInt1620;
-	public static Class30_Sub2_Sub4_Sub6 aClass30_Sub2_Sub4_Sub6_1621 = new Class30_Sub2_Sub4_Sub6(true);
+	public static Model aModel_1621 = new Model(true);
 	private static int anIntArray1622[] = new int[2000];
 	private static int anIntArray1623[] = new int[2000];
 	private static int anIntArray1624[] = new int[2000];
@@ -2742,7 +2776,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public int anIntArray1637[];
 	public int anIntArray1638[];
 	public int anIntArray1639[];
-	public int anIntArray1640[];
+	public int[] anIntArray1640;
 	public int anInt1641;
 	public int anInt1642;
 	public int anIntArray1643[];
@@ -2765,16 +2799,16 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	Class33 aClass33Array1660[];
 	static Class21 aClass21Array1661[];
 	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
-	static boolean aBooleanArray1663[] = new boolean[8000];
-	static boolean aBooleanArray1664[] = new boolean[8000];
-	static int anIntArray1665[] = new int[8000];
-	static int anIntArray1666[] = new int[8000];
-	static int anIntArray1667[] = new int[8000];
-	static int anIntArray1668[] = new int[8000];
-	static int anIntArray1669[] = new int[8000];
-	static int anIntArray1670[] = new int[8000];
-	static int anIntArray1671[] = new int[1500];
-	static int anIntArrayArray1672[][] = new int[1500][512];
+	static boolean aBooleanArray1663[] = new boolean[16000];
+	static boolean aBooleanArray1664[] = new boolean[16000];
+	static int anIntArray1665[] = new int[16000];
+	static int anIntArray1666[] = new int[16000];
+	static int anIntArray1667[] = new int[16000];
+	static int anIntArray1668[] = new int[16000];
+	static int anIntArray1669[] = new int[16000];
+	static int anIntArray1670[] = new int[16000];
+	static int anIntArray1671[] = new int[16000];
+	static int anIntArrayArray1672[][] = new int[16000][512];
 	static int anIntArray1673[] = new int[12];
 	static int anIntArrayArray1674[][] = new int[12][2000];
 	static int anIntArray1675[] = new int[2000];

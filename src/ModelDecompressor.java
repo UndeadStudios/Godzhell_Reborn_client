@@ -1,7 +1,6 @@
 import java.io.DataInputStream;
 import java.io.FileInputStream;
-import java.io.DataOutputStream;
-import java.io.FileOutputStream;
+
 import sign.signlink;
 
 public class ModelDecompressor {
@@ -16,7 +15,7 @@ int id = indexFile.readInt();
 int invlength = indexFile.readInt();
 byte[] data = new byte[invlength];
 dataFile.readFully(data);
-Class30_Sub2_Sub4_Sub6.method460(data, id);
+Model.method460(data, id);
 }
 indexFile.close();
 dataFile.close();

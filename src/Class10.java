@@ -10,8 +10,8 @@ public final class Class10
     int anInt275;
     int anInt276;
     int anInt277;
-    public Class30_Sub2_Sub4 aClass30_Sub2_Sub4_278;
-    public Class30_Sub2_Sub4 aClass30_Sub2_Sub4_279;
+    public Animable aAnimable_278;
+    public Animable aAnimable_279;
     public long anInt280;
     byte aByte281;
 }

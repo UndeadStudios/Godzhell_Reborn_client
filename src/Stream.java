@@ -169,7 +169,15 @@ public final class Stream extends Class30_Sub2
         currentPosition += s.length();
         buffer[currentPosition++] = 10;
     }
+    public int getShort() {
+        this.currentPosition += 2;
+        return ((this.buffer[this.currentPosition - 2] & 255) << 8) + (this.buffer[this.currentPosition - 1] & 255);
+    }
 
+    public int getTribyte() {
+        this.currentPosition += 3;
+        return ((this.buffer[this.currentPosition - 3] & 255) << 16) + ((this.buffer[this.currentPosition - 2] & 255) << 8) + (this.buffer[this.currentPosition - 1] & 255);
+    }
     public void writeBytes(byte abyte0[], int i, boolean flag, int j)
     {
         if(!flag)

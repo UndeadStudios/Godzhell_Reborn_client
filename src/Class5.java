@@ -162,7 +162,7 @@ return class5;
 		      }
 
 		   }
-    public final Class30_Sub2_Sub4_Sub6 method160(boolean flag)
+    public final Model method160(boolean flag)
     {
         if(anIntArray88 != null)
         {
@@ -178,27 +178,27 @@ return class5;
         if(!flag)
             anInt64 = 303;
         for(int i = 0; i < anIntArray73.length; i++)
-            if(!Class30_Sub2_Sub4_Sub6.method463(anIntArray73[i]))
+            if(!Model.method463(anIntArray73[i]))
                 flag1 = true;
 
         if(flag1)
             return null;
-        Class30_Sub2_Sub4_Sub6 aclass30_sub2_sub4_sub6[] = new Class30_Sub2_Sub4_Sub6[anIntArray73.length];
+        Model aclass30_sub2_sub4_sub6[] = new Model[anIntArray73.length];
         for(int j = 0; j < anIntArray73.length; j++)
-            aclass30_sub2_sub4_sub6[j] = Class30_Sub2_Sub4_Sub6.method462(anInt69, anIntArray73[j]);
+            aclass30_sub2_sub4_sub6[j] = Model.method462(anInt69, anIntArray73[j]);
 
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6;
+        Model model;
         if(aclass30_sub2_sub4_sub6.length == 1)
-            class30_sub2_sub4_sub6 = aclass30_sub2_sub4_sub6[0];
+            model = aclass30_sub2_sub4_sub6[0];
         else
-            class30_sub2_sub4_sub6 = new Class30_Sub2_Sub4_Sub6(aclass30_sub2_sub4_sub6.length, aclass30_sub2_sub4_sub6, -38);
+            model = new Model(aclass30_sub2_sub4_sub6.length, aclass30_sub2_sub4_sub6, -38);
         if(anIntArray76 != null)
         {
             for(int k = 0; k < anIntArray76.length; k++)
-                class30_sub2_sub4_sub6.method476(anIntArray76[k], anIntArray70[k]);
+                model.method476(anIntArray76[k], anIntArray70[k]);
 
         }
-        return class30_sub2_sub4_sub6;
+        return model;
     }
 
     public final Class5 method161() {
@@ -226,7 +226,7 @@ return class5;
         aStream_60 = new Stream(fileArchive.method571("npc.dat"), 891);
         Stream stream = new Stream(fileArchive.method571("npc.idx"), 891);
         anInt62 = stream.readUnsignedShort();
-        anIntArray72 = new int[anInt62+6000];
+        anIntArray72 = new int[anInt62];
         int i = 2;
         for(int j = 0; j < anInt62; j++)
         {
@@ -237,7 +237,7 @@ return class5;
         aClass5Array80 = new Class5[20];
         for(int k = 0; k < 20; k++)
             aClass5Array80[k] = new Class5();
-		//dumpNpcList();
+		//dumpNpccfg();
 		if (Configuration.dumpDataLists) {
 
 			TempWriter writer2 = new TempWriter("npc_fields");
@@ -259,7 +259,7 @@ return class5;
 	try {
 	bw = new BufferedWriter(new FileWriter("Npccconfigs.txt", true));
 	if(class5.aString65!= null) {
-	bw.write("ID: "+i+"\t\tName: "+class5.aString65+", Combat: "+class5.anInt61+" walk anim: "+class5.anInt67+" stand anim: "+ class5.anInt77+" walking right anim: "+class5.anInt55+" walk left anim: "+class5.anInt83);
+	bw.write("ID: "+i+"\t\tName: "+class5.aString65.replace(" ", "_")+", Combat: "+class5.anInt61+" walk anim: "+class5.anInt67+" stand anim: "+ class5.anInt77+" walking right anim: "+class5.anInt55+" walk left anim: "+class5.anInt83);
 	bw.newLine();
 	bw.flush();
 	bw.close();
@@ -269,13 +269,13 @@ return class5;
 	}
 }
 		public static void dumpNpccfg() {
-	for(int i = 0; i < 9200; i++) {
+	for(int i = 8589; i < anInt62; i++) {
 	Class5 class5 = method159(i);
 	BufferedWriter bw = null;
 	try {
 	bw = new BufferedWriter(new FileWriter("npc.cfg", true));
 	if(class5.aString65!= null) {
-	bw.write("npc = "+i+"\t\t"+class5.aString65+"\t"+class5.anInt61+"\t0");
+	bw.write("npc = "+i+"\t"+class5.aString65.replace(" ", "_")+"\t"+class5.anInt61+"\t0\t"+class5.aByte68+"");
 	bw.newLine();
 	bw.flush();
 	bw.close();
@@ -295,7 +295,7 @@ return class5;
         aStream_60 = null;
     }
 
-    public final Class30_Sub2_Sub4_Sub6 method164(int i, int j, int k, int ai[])
+    public final Model method164(int i, int j, int k, int ai[])
     {
         if(anIntArray88 != null)
         {
@@ -305,53 +305,53 @@ return class5;
             else
                 return class5.method164(0, j, k, ai);
         }
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6 = (Class30_Sub2_Sub4_Sub6)aClass12_95.method222(aLong78);
+        Model model = (Model)aClass12_95.method222(aLong78);
         if(i != 0)
         {
             for(int l = 1; l > 0; l++);
         }
-        if(class30_sub2_sub4_sub6 == null)
+        if(model == null)
         {
             boolean flag = false;
             for(int i1 = 0; i1 < anIntArray94.length; i1++)
-                if(!Class30_Sub2_Sub4_Sub6.method463(anIntArray94[i1]))
+                if(!Model.method463(anIntArray94[i1]))
                     flag = true;
 
             if(flag)
                 return null;
-            Class30_Sub2_Sub4_Sub6 aclass30_sub2_sub4_sub6[] = new Class30_Sub2_Sub4_Sub6[anIntArray94.length];
+            Model aclass30_sub2_sub4_sub6[] = new Model[anIntArray94.length];
             for(int j1 = 0; j1 < anIntArray94.length; j1++)
-                aclass30_sub2_sub4_sub6[j1] = Class30_Sub2_Sub4_Sub6.method462(anInt69, anIntArray94[j1]);
+                aclass30_sub2_sub4_sub6[j1] = Model.method462(anInt69, anIntArray94[j1]);
 
             if(aclass30_sub2_sub4_sub6.length == 1)
-                class30_sub2_sub4_sub6 = aclass30_sub2_sub4_sub6[0];
+                model = aclass30_sub2_sub4_sub6[0];
             else
-                class30_sub2_sub4_sub6 = new Class30_Sub2_Sub4_Sub6(aclass30_sub2_sub4_sub6.length, aclass30_sub2_sub4_sub6, -38);
+                model = new Model(aclass30_sub2_sub4_sub6.length, aclass30_sub2_sub4_sub6, -38);
             if(anIntArray76 != null)
             {
                 for(int k1 = 0; k1 < anIntArray76.length; k1++)
-                    class30_sub2_sub4_sub6.method476(anIntArray76[k1], anIntArray70[k1]);
+                    model.method476(anIntArray76[k1], anIntArray70[k1]);
 
             }
-            class30_sub2_sub4_sub6.method469((byte)-71);
-            class30_sub2_sub4_sub6.method479(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
-            aClass12_95.method223(class30_sub2_sub4_sub6, aLong78, (byte)2);
+            model.method469((byte)-71);
+            model.method479(64 + anInt85, 850 + anInt92, -30, -50, -30, true);
+            aClass12_95.method223(model, aLong78, (byte)2);
         }
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_1 = Class30_Sub2_Sub4_Sub6.aClass30_Sub2_Sub4_Sub6_1621;
-        class30_sub2_sub4_sub6_1.method464(7, class30_sub2_sub4_sub6, Class36.method532(k, false) & Class36.method532(j, false));
+        Model model_1 = Model.aModel_1621;
+        model_1.method464(7, model, Class36.method532(k, false) & Class36.method532(j, false));
         if(k != -1 && j != -1)
-            class30_sub2_sub4_sub6_1.method471(-20491, ai, j, k);
+            model_1.method471(-20491, ai, j, k);
         else
         if(k != -1)
-            class30_sub2_sub4_sub6_1.method470(k, 40542);
+            model_1.method470(k, 40542);
         if(anInt91 != 128 || anInt86 != 128)
-            class30_sub2_sub4_sub6_1.method478(anInt91, anInt91, anInt63, anInt86);
-        class30_sub2_sub4_sub6_1.method466(false);
-        class30_sub2_sub4_sub6_1.anIntArrayArray1658 = null;
-        class30_sub2_sub4_sub6_1.anIntArrayArray1657 = null;
+            model_1.method478(anInt91, anInt91, anInt63, anInt86);
+        model_1.method466(false);
+        model_1.anIntArrayArray1658 = null;
+        model_1.anIntArrayArray1657 = null;
         if(aByte68 == 1)
-            class30_sub2_sub4_sub6_1.aBoolean1659 = true;
-        return class30_sub2_sub4_sub6_1;
+            model_1.aBoolean1659 = true;
+        return model_1;
     }
 
 	private void method165(Stream stream)

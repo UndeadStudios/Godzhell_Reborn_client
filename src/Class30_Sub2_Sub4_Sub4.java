@@ -1,6 +1,4 @@
-import sign.signlink;
-
-final class Class30_Sub2_Sub4_Sub4 extends Class30_Sub2_Sub4
+final class Class30_Sub2_Sub4_Sub4 extends Animable
 {
 
     public final void method455(int i, int j, int k, int l, byte byte0)
@@ -25,30 +23,30 @@ final class Class30_Sub2_Sub4_Sub4 extends Class30_Sub2_Sub4
         aDouble1578 = (2D * ((double)k - aDouble1587 - aDouble1577 * d1)) / (d1 * d1);
     }
 
-    public final Class30_Sub2_Sub4_Sub6 method444(int i)
+    public final Model method444(int i)
     {
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6 = aClass23_1592.method266();
-        if(class30_sub2_sub4_sub6 == null)
+        Model model = aClass23_1592.method266();
+        if(model == null)
             return null;
         int j = -1;
         if(aClass23_1592.aClass20_407 != null)
             j = aClass23_1592.aClass20_407.anIntArray353[anInt1593];
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_1 = new Class30_Sub2_Sub4_Sub6(9, true, Class36.method532(j, false), false, class30_sub2_sub4_sub6);
+        Model model_1 = new Model(9, true, Class36.method532(j, false), false, model);
         if(j != -1)
         {
-            class30_sub2_sub4_sub6_1.method469((byte)-71);
-            class30_sub2_sub4_sub6_1.method470(j, 40542);
-            class30_sub2_sub4_sub6_1.anIntArrayArray1658 = null;
-            class30_sub2_sub4_sub6_1.anIntArrayArray1657 = null;
+            model_1.method469((byte)-71);
+            model_1.method470(j, 40542);
+            model_1.anIntArrayArray1658 = null;
+            model_1.anIntArrayArray1657 = null;
         }
         if(aClass23_1592.anInt410 != 128 || aClass23_1592.anInt411 != 128)
-            class30_sub2_sub4_sub6_1.method478(aClass23_1592.anInt410, aClass23_1592.anInt410, anInt1573, aClass23_1592.anInt411);
-        class30_sub2_sub4_sub6_1.method474(anInt1596, 1);
-        class30_sub2_sub4_sub6_1.method479(64 + aClass23_1592.anInt413, 850 + aClass23_1592.anInt414, -30, -50, -30, true);
+            model_1.method478(aClass23_1592.anInt410, aClass23_1592.anInt410, anInt1573, aClass23_1592.anInt411);
+        model_1.method474(anInt1596, 1);
+        model_1.method479(64 + aClass23_1592.anInt413, 850 + aClass23_1592.anInt414, -30, -50, -30, true);
         if(i != 4016)
             throw new NullPointerException();
         else
-            return class30_sub2_sub4_sub6_1;
+            return model_1;
     }
 
     public Class30_Sub2_Sub4_Sub4(int i, int j, int k, int l, int i1, int j1, int k1, 

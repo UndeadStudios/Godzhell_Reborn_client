@@ -1,7 +1,7 @@
 final class Class43
 {
 
-    public Class43(int i, int j, int k, int l, int i1, int j1, boolean flag)
+    public Class43(int i, int j, int k, int l, int i1, int j1, boolean flag, boolean tex)
     {
         aBoolean721 = true;
         anInt716 = i;
@@ -11,6 +11,7 @@ final class Class43
         anInt720 = i1;
         anInt722 = j1;
         aBoolean721 = flag;
+        this.textured = tex;
     }
 
     int anInt716;
@@ -20,4 +21,5 @@ final class Class43
     int anInt720;
     boolean aBoolean721;
     int anInt722;
+    public final boolean textured;
 }

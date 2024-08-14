@@ -175,13 +175,13 @@ public class Class25
         }
     }
 
-    public void method279(int i, int j, int k, int l, int i1, int j1, int k1, 
+    public void method279(int i, int j, int k, int l, int i1, int overlaytex, int underlaytex,int k1,
             int l1, int i2, int j2, int k2, int l2, int i3, int j3, 
-            int k3, int l3, int i4, int j4, int k4, int l4)
+            int k3, int l3, int i4, int j4, int k4, int l4, boolean tex)
     {
         if(l == 0)
         {
-            Class43 class43 = new Class43(k2, l2, i3, j3, -1, k4, false);
+            Class43 class43 = new Class43(k2, l2, i3, j3, underlaytex, k4, false, tex);
             for(int i5 = i; i5 >= 0; i5--)
                 if(aClass30_Sub3ArrayArrayArray441[i5][j][k] == null)
                     aClass30_Sub3ArrayArrayArray441[i5][j][k] = new Class30_Sub3(i5, j, k);
@@ -191,7 +191,7 @@ public class Class25
         }
         if(l == 1)
         {
-            Class43 class43_1 = new Class43(k3, l3, i4, j4, j1, l4, k1 == l1 && k1 == i2 && k1 == j2);
+            Class43 class43_1 = new Class43(k3, l3, i4, j4, overlaytex, l4, k1 == l1 && k1 == i2 && k1 == j2, tex);
             for(int j5 = i; j5 >= 0; j5--)
                 if(aClass30_Sub3ArrayArrayArray441[j5][j][k] == null)
                     aClass30_Sub3ArrayArrayArray441[j5][j][k] = new Class30_Sub3(j5, j, k);
@@ -199,7 +199,7 @@ public class Class25
             aClass30_Sub3ArrayArrayArray441[i][j][k].aClass43_1311 = class43_1;
             return;
         }
-        Class40 class40 = new Class40(k, k3, j3, i2, j1, i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, 3, j, l4);
+        Class40 class40 = new Class40(k, k3, j3, i2, overlaytex, underlaytex,i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, 3, j, l4, tex);
         for(int k5 = i; k5 >= 0; k5--)
             if(aClass30_Sub3ArrayArrayArray441[k5][j][k] == null)
                 aClass30_Sub3ArrayArrayArray441[k5][j][k] = new Class30_Sub3(k5, j, k);
@@ -207,13 +207,13 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[i][j][k].aClass40_1312 = class40;
     }
 
-    public void method280(int i, int j, int k, int l, Class30_Sub2_Sub4 class30_sub2_sub4, byte byte0, long i1,
+    public void method280(int i, int j, int k, int l, Animable animable, byte byte0, long i1,
                           int j1)
     {
-        if(class30_sub2_sub4 == null)
+        if(animable == null)
             return;
         Class49 class49 = new Class49();
-        class49.aClass30_Sub2_Sub4_814 = class30_sub2_sub4;
+        class49.aAnimable_814 = animable;
         class49.anInt812 = j1 * 128 + 64;
         class49.anInt813 = k * 128 + 64;
         if(l <= 0)
@@ -226,27 +226,27 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[i][j1][k].aClass49_1315 = class49;
     }
 
-    public void method281(byte byte0, int i, int j, Class30_Sub2_Sub4 class30_sub2_sub4, int k, Class30_Sub2_Sub4 class30_sub2_sub4_1, Class30_Sub2_Sub4 class30_sub2_sub4_2, 
-            int l, int i1)
+    public void method281(byte byte0, int i, int j, Animable animable, int k, Animable animable_1, Animable class30_sub2_sub4_2,
+                          int l, int i1)
     {
         Class3 class3 = new Class3();
-        class3.aClass30_Sub2_Sub4_48 = class30_sub2_sub4_2;
+        class3.aAnimable_48 = class30_sub2_sub4_2;
         class3.anInt46 = i * 128 + 64;
         class3.anInt47 = i1 * 128 + 64;
         if(byte0 != 7)
             return;
         class3.anInt45 = k;
         class3.anInt51 = j;
-        class3.aClass30_Sub2_Sub4_49 = class30_sub2_sub4;
-        class3.aClass30_Sub2_Sub4_50 = class30_sub2_sub4_1;
+        class3.aAnimable_49 = animable;
+        class3.aAnimable_50 = animable_1;
         int j1 = 0;
         Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[l][i][i1];
         if(class30_sub3 != null)
         {
             for(int k1 = 0; k1 < class30_sub3.anInt1317; k1++)
-                if(class30_sub3.aClass28Array1318[k1].aClass30_Sub2_Sub4_521 instanceof Class30_Sub2_Sub4_Sub6)
+                if(class30_sub3.aClass28Array1318[k1].aAnimable_521 instanceof Model)
                 {
-                    int l1 = ((Class30_Sub2_Sub4_Sub6)class30_sub3.aClass28Array1318[k1].aClass30_Sub2_Sub4_521).anInt1654;
+                    int l1 = ((Model)class30_sub3.aClass28Array1318[k1].aAnimable_521).anInt1654;
                     if(l1 > j1)
                         j1 = l1;
                 }
@@ -258,12 +258,12 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[l][i][i1].aClass3_1316 = class3;
     }
 
-    public void method282(int i, Class30_Sub2_Sub4 class30_sub2_sub4, boolean flag, long j, int k, byte byte0, int l,
-                          Class30_Sub2_Sub4 class30_sub2_sub4_1, int i1, int j1, int k1)
+    public void method282(int i, Animable animable, boolean flag, long j, int k, byte byte0, int l,
+                          Animable animable_1, int i1, int j1, int k1)
     {
         if(!flag)
             aBoolean434 = !aBoolean434;
-        if(class30_sub2_sub4 == null && class30_sub2_sub4_1 == null)
+        if(animable == null && animable_1 == null)
             return;
         Class10 class10 = new Class10();
         class10.anInt280 = j;
@@ -271,8 +271,8 @@ public class Class25
         class10.anInt274 = l * 128 + 64;
         class10.anInt275 = k * 128 + 64;
         class10.anInt273 = i1;
-        class10.aClass30_Sub2_Sub4_278 = class30_sub2_sub4;
-        class10.aClass30_Sub2_Sub4_279 = class30_sub2_sub4_1;
+        class10.aAnimable_278 = animable;
+        class10.aAnimable_279 = animable_1;
         class10.anInt276 = i;
         class10.anInt277 = j1;
         for(int l1 = k1; l1 >= 0; l1--)
@@ -283,9 +283,9 @@ public class Class25
     }
 
     public void method283(long i, int j, int k, int l, int i1, int j1, int k1,
-                          Class30_Sub2_Sub4 class30_sub2_sub4, int l1, byte byte0, int i2, int j2)
+                          Animable animable, int l1, byte byte0, int i2, int j2)
     {
-        if(class30_sub2_sub4 == null)
+        if(animable == null)
             return;
         Class26 class26 = new Class26();
         class26.anInt505 = i;
@@ -295,7 +295,7 @@ public class Class25
         class26.anInt500 = l1 * 128 + 64 + j1;
         class26.anInt501 = j * 128 + 64 + i2;
         class26.anInt499 = k1;
-        class26.aClass30_Sub2_Sub4_504 = class30_sub2_sub4;
+        class26.aAnimable_504 = animable;
         class26.anInt502 = j2;
         class26.anInt503 = k;
         for(int k2 = i1; k2 >= 0; k2--)
@@ -305,26 +305,26 @@ public class Class25
         aClass30_Sub3ArrayArrayArray441[i1][l1][j].aClass26_1314 = class26;
     }
 
-    public boolean method284(long i, byte byte0, int j, int k, Class30_Sub2_Sub4 class30_sub2_sub4, int l, int i1,
+    public boolean method284(long i, byte byte0, int j, int k, Animable animable, int l, int i1,
                              int j1, byte byte1, int k1, int l1)
     {
         if(byte1 != 110)
             anInt431 = 250;
-        if(class30_sub2_sub4 == null)
+        if(animable == null)
         {
             return true;
         } else
         {
             int i2 = l1 * 128 + 64 * l;
             int j2 = k1 * 128 + 64 * k;
-            return method287(i1, l1, k1, l, k, i2, j2, j, class30_sub2_sub4, j1, false, i, byte0);
+            return method287(i1, l1, k1, l, k, i2, j2, j, animable, j1, false, i, byte0);
         }
     }
 
     public boolean method285(int i, int j, byte byte0, int k, long l, int i1, int j1,
-            int k1, Class30_Sub2_Sub4 class30_sub2_sub4, boolean flag)
+                             int k1, Animable animable, boolean flag)
     {
-        if(class30_sub2_sub4 == null)
+        if(animable == null)
             return true;
         int l1 = k1 - j1;
         int i2 = i1 - j1;
@@ -349,24 +349,24 @@ public class Class25
         i2 /= 128;
         j2 /= 128;
         k2 /= 128;
-        return method287(i, l1, i2, (j2 - l1) + 1, (k2 - i2) + 1, k1, i1, k, class30_sub2_sub4, j, true, l, (byte)0);
+        return method287(i, l1, i2, (j2 - l1) + 1, (k2 - i2) + 1, k1, i1, k, animable, j, true, l, (byte)0);
     }
 
-    public boolean method286(int i, int j, int k, Class30_Sub2_Sub4 class30_sub2_sub4, int l, int i1, int j1, 
-            int k1, int l1, int i2, long j2, int k2, byte byte0)
+    public boolean method286(int i, int j, int k, Animable animable, int l, int i1, int j1,
+                             int k1, int l1, int i2, long j2, int k2, byte byte0)
     {
         if(byte0 != 35)
         {
             for(int l2 = 1; l2 > 0; l2++);
         }
-        if(class30_sub2_sub4 == null)
+        if(animable == null)
             return true;
         else
-            return method287(j, l1, k2, (i2 - l1) + 1, (i1 - k2) + 1, j1, k, k1, class30_sub2_sub4, l, true, j2, (byte)0);
+            return method287(j, l1, k2, (i2 - l1) + 1, (i1 - k2) + 1, j1, k, k1, animable, l, true, j2, (byte)0);
     }
 
     private boolean method287(int i, int j, int k, int l, int i1, int j1, int k1,
-                              int l1, Class30_Sub2_Sub4 class30_sub2_sub4, int i2, boolean flag, long j2, byte byte0)
+                              int l1, Animable animable, int i2, boolean flag, long j2, byte byte0)
     {
         for(int k2 = j; k2 < j + l; k2++)
         {
@@ -388,7 +388,7 @@ public class Class25
         class28.anInt519 = j1;
         class28.anInt520 = k1;
         class28.anInt518 = l1;
-        class28.aClass30_Sub2_Sub4_521 = class30_sub2_sub4;
+        class28.aAnimable_521 = animable;
         class28.anInt522 = i2;
         class28.anInt523 = j;
         class28.anInt525 = k;
@@ -702,32 +702,32 @@ public class Class25
                     if(class30_sub3 != null)
                     {
                         Class10 class10 = class30_sub3.aClass10_1313;
-                        if(class10 != null && class10.aClass30_Sub2_Sub4_278 != null && class10.aClass30_Sub2_Sub4_278.aClass33Array1425 != null)
+                        if(class10 != null && class10.aAnimable_278 != null && class10.aAnimable_278.aClass33Array1425 != null)
                         {
-                            method307(l1, 1, 1, i2, (byte)115, j2, (Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_278);
-                            if(class10.aClass30_Sub2_Sub4_279 != null && class10.aClass30_Sub2_Sub4_279.aClass33Array1425 != null)
+                            method307(l1, 1, 1, i2, (byte)115, j2, (Model)class10.aAnimable_278);
+                            if(class10.aAnimable_279 != null && class10.aAnimable_279.aClass33Array1425 != null)
                             {
-                                method307(l1, 1, 1, i2, (byte)115, j2, (Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_279);
-                                method308((Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_278, (Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_279, 0, 0, 0, false);
-                                ((Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_279).method480(j, k1, k, i, i1);
+                                method307(l1, 1, 1, i2, (byte)115, j2, (Model)class10.aAnimable_279);
+                                method308((Model)class10.aAnimable_278, (Model)class10.aAnimable_279, 0, 0, 0, false);
+                                ((Model)class10.aAnimable_279).method480(j, k1, k, i, i1);
                             }
-                            ((Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_278).method480(j, k1, k, i, i1);
+                            ((Model)class10.aAnimable_278).method480(j, k1, k, i, i1);
                         }
                         for(int k2 = 0; k2 < class30_sub3.anInt1317; k2++)
                         {
                             Class28 class28 = class30_sub3.aClass28Array1318[k2];
-                            if(class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.aClass33Array1425 != null)
+                            if(class28 != null && class28.aAnimable_521 != null && class28.aAnimable_521.aClass33Array1425 != null)
                             {
-                                method307(l1, (class28.anInt524 - class28.anInt523) + 1, (class28.anInt526 - class28.anInt525) + 1, i2, (byte)115, j2, (Class30_Sub2_Sub4_Sub6)class28.aClass30_Sub2_Sub4_521);
-                                ((Class30_Sub2_Sub4_Sub6)class28.aClass30_Sub2_Sub4_521).method480(j, k1, k, i, i1);
+                                method307(l1, (class28.anInt524 - class28.anInt523) + 1, (class28.anInt526 - class28.anInt525) + 1, i2, (byte)115, j2, (Model)class28.aAnimable_521);
+                                ((Model)class28.aAnimable_521).method480(j, k1, k, i, i1);
                             }
                         }
 
                         Class49 class49 = class30_sub3.aClass49_1315;
-                        if(class49 != null && class49.aClass30_Sub2_Sub4_814.aClass33Array1425 != null)
+                        if(class49 != null && class49.aAnimable_814.aClass33Array1425 != null)
                         {
-                            method306(i2, l1, (Class30_Sub2_Sub4_Sub6)class49.aClass30_Sub2_Sub4_814, (byte)37, j2);
-                            ((Class30_Sub2_Sub4_Sub6)class49.aClass30_Sub2_Sub4_814).method480(j, k1, k, i, i1);
+                            method306(i2, l1, (Model)class49.aAnimable_814, (byte)37, j2);
+                            ((Model)class49.aAnimable_814).method480(j, k1, k, i, i1);
                         }
                     }
                 }
@@ -739,7 +739,7 @@ public class Class25
     }
 
 
-    private void method306(int i, int j, Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6, byte byte0, int k)
+    private void method306(int i, int j, Model model, byte byte0, int k)
     {
         if(byte0 != 37)
         {
@@ -748,30 +748,30 @@ public class Class25
         if(i < anInt438)
         {
             Class30_Sub3 class30_sub3 = aClass30_Sub3ArrayArrayArray441[j][i + 1][k];
-            if(class30_sub3 != null && class30_sub3.aClass49_1315 != null && class30_sub3.aClass49_1315.aClass30_Sub2_Sub4_814.aClass33Array1425 != null)
-                method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class30_sub3.aClass49_1315.aClass30_Sub2_Sub4_814, 128, 0, 0, true);
+            if(class30_sub3 != null && class30_sub3.aClass49_1315 != null && class30_sub3.aClass49_1315.aAnimable_814.aClass33Array1425 != null)
+                method308(model, (Model)class30_sub3.aClass49_1315.aAnimable_814, 128, 0, 0, true);
         }
         if(k < anInt438)
         {
             Class30_Sub3 class30_sub3_1 = aClass30_Sub3ArrayArrayArray441[j][i][k + 1];
-            if(class30_sub3_1 != null && class30_sub3_1.aClass49_1315 != null && class30_sub3_1.aClass49_1315.aClass30_Sub2_Sub4_814.aClass33Array1425 != null)
-                method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class30_sub3_1.aClass49_1315.aClass30_Sub2_Sub4_814, 0, 0, 128, true);
+            if(class30_sub3_1 != null && class30_sub3_1.aClass49_1315 != null && class30_sub3_1.aClass49_1315.aAnimable_814.aClass33Array1425 != null)
+                method308(model, (Model)class30_sub3_1.aClass49_1315.aAnimable_814, 0, 0, 128, true);
         }
         if(i < anInt438 && k < anInt439)
         {
             Class30_Sub3 class30_sub3_2 = aClass30_Sub3ArrayArrayArray441[j][i + 1][k + 1];
-            if(class30_sub3_2 != null && class30_sub3_2.aClass49_1315 != null && class30_sub3_2.aClass49_1315.aClass30_Sub2_Sub4_814.aClass33Array1425 != null)
-                method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class30_sub3_2.aClass49_1315.aClass30_Sub2_Sub4_814, 128, 0, 128, true);
+            if(class30_sub3_2 != null && class30_sub3_2.aClass49_1315 != null && class30_sub3_2.aClass49_1315.aAnimable_814.aClass33Array1425 != null)
+                method308(model, (Model)class30_sub3_2.aClass49_1315.aAnimable_814, 128, 0, 128, true);
         }
         if(i < anInt438 && k > 0)
         {
             Class30_Sub3 class30_sub3_3 = aClass30_Sub3ArrayArrayArray441[j][i + 1][k - 1];
-            if(class30_sub3_3 != null && class30_sub3_3.aClass49_1315 != null && class30_sub3_3.aClass49_1315.aClass30_Sub2_Sub4_814.aClass33Array1425 != null)
-                method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class30_sub3_3.aClass49_1315.aClass30_Sub2_Sub4_814, 128, 0, -128, true);
+            if(class30_sub3_3 != null && class30_sub3_3.aClass49_1315 != null && class30_sub3_3.aClass49_1315.aAnimable_814.aClass33Array1425 != null)
+                method308(model, (Model)class30_sub3_3.aClass49_1315.aAnimable_814, 128, 0, -128, true);
         }
     }
 
-    private void method307(int i, int j, int k, int l, byte byte0, int i1, Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6)
+    private void method307(int i, int j, int k, int l, byte byte0, int i1, Model model)
     {
         boolean flag = true;
         if(byte0 != 115)
@@ -794,18 +794,18 @@ public class Class25
                                 {
                                     int i3 = (anIntArrayArrayArray440[j2][k2][l2] + anIntArrayArrayArray440[j2][k2 + 1][l2] + anIntArrayArrayArray440[j2][k2][l2 + 1] + anIntArrayArrayArray440[j2][k2 + 1][l2 + 1]) / 4 - (anIntArrayArrayArray440[i][l][i1] + anIntArrayArrayArray440[i][l + 1][i1] + anIntArrayArrayArray440[i][l][i1 + 1] + anIntArrayArrayArray440[i][l + 1][i1 + 1]) / 4;
                                     Class10 class10 = class30_sub3.aClass10_1313;
-                                    if(class10 != null && class10.aClass30_Sub2_Sub4_278 != null && class10.aClass30_Sub2_Sub4_278.aClass33Array1425 != null)
-                                        method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_278, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
-                                    if(class10 != null && class10.aClass30_Sub2_Sub4_279 != null && class10.aClass30_Sub2_Sub4_279.aClass33Array1425 != null)
-                                        method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class10.aClass30_Sub2_Sub4_279, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
+                                    if(class10 != null && class10.aAnimable_278 != null && class10.aAnimable_278.aClass33Array1425 != null)
+                                        method308(model, (Model)class10.aAnimable_278, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
+                                    if(class10 != null && class10.aAnimable_279 != null && class10.aAnimable_279.aClass33Array1425 != null)
+                                        method308(model, (Model)class10.aAnimable_279, (k2 - l) * 128 + (1 - j) * 64, i3, (l2 - i1) * 128 + (1 - k) * 64, flag);
                                     for(int j3 = 0; j3 < class30_sub3.anInt1317; j3++)
                                     {
                                         Class28 class28 = class30_sub3.aClass28Array1318[j3];
-                                        if(class28 != null && class28.aClass30_Sub2_Sub4_521 != null && class28.aClass30_Sub2_Sub4_521.aClass33Array1425 != null)
+                                        if(class28 != null && class28.aAnimable_521 != null && class28.aAnimable_521.aClass33Array1425 != null)
                                         {
                                             int k3 = (class28.anInt524 - class28.anInt523) + 1;
                                             int l3 = (class28.anInt526 - class28.anInt525) + 1;
-                                            method308(class30_sub2_sub4_sub6, (Class30_Sub2_Sub4_Sub6)class28.aClass30_Sub2_Sub4_521, (class28.anInt523 - l) * 128 + (k3 - j) * 64, i3, (class28.anInt525 - i1) * 128 + (l3 - k) * 64, flag);
+                                            method308(model, (Model)class28.aAnimable_521, (class28.anInt523 - l) * 128 + (k3 - j) * 64, i3, (class28.anInt525 - i1) * 128 + (l3 - k) * 64, flag);
                                         }
                                     }
 
@@ -820,32 +820,32 @@ public class Class25
 
     }
 
-    private void method308(Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6, Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_1, int i, int j, int k, boolean flag)
+    private void method308(Model model, Model model_1, int i, int j, int k, boolean flag)
     {
         anInt488++;
         int l = 0;
-        int ai[] = class30_sub2_sub4_sub6_1.anIntArray1627;
-        int i1 = class30_sub2_sub4_sub6_1.anInt1626;
-        for(int j1 = 0; j1 < class30_sub2_sub4_sub6.anInt1626; j1++)
+        int ai[] = model_1.anIntArray1627;
+        int i1 = model_1.anInt1626;
+        for(int j1 = 0; j1 < model.anInt1626; j1++)
         {
-            Class33 class33 = ((Class30_Sub2_Sub4) (class30_sub2_sub4_sub6)).aClass33Array1425[j1];
-            Class33 class33_1 = class30_sub2_sub4_sub6.aClass33Array1660[j1];
+            Class33 class33 = ((Animable) (model)).aClass33Array1425[j1];
+            Class33 class33_1 = model.aClass33Array1660[j1];
             if(class33_1.anInt605 != 0)
             {
-                int i2 = class30_sub2_sub4_sub6.anIntArray1628[j1] - j;
-                if(i2 <= class30_sub2_sub4_sub6_1.anInt1651)
+                int i2 = model.anIntArray1628[j1] - j;
+                if(i2 <= model_1.anInt1651)
                 {
-                    int j2 = class30_sub2_sub4_sub6.anIntArray1627[j1] - i;
-                    if(j2 >= class30_sub2_sub4_sub6_1.anInt1646 && j2 <= class30_sub2_sub4_sub6_1.anInt1647)
+                    int j2 = model.anIntArray1627[j1] - i;
+                    if(j2 >= model_1.anInt1646 && j2 <= model_1.anInt1647)
                     {
-                        int k2 = class30_sub2_sub4_sub6.anIntArray1629[j1] - k;
-                        if(k2 >= class30_sub2_sub4_sub6_1.anInt1649 && k2 <= class30_sub2_sub4_sub6_1.anInt1648)
+                        int k2 = model.anIntArray1629[j1] - k;
+                        if(k2 >= model_1.anInt1649 && k2 <= model_1.anInt1648)
                         {
                             for(int l2 = 0; l2 < i1; l2++)
                             {
-                                Class33 class33_2 = ((Class30_Sub2_Sub4) (class30_sub2_sub4_sub6_1)).aClass33Array1425[l2];
-                                Class33 class33_3 = class30_sub2_sub4_sub6_1.aClass33Array1660[l2];
-                                if(j2 == ai[l2] && k2 == class30_sub2_sub4_sub6_1.anIntArray1629[l2] && i2 == class30_sub2_sub4_sub6_1.anIntArray1628[l2] && class33_3.anInt605 != 0)
+                                Class33 class33_2 = ((Animable) (model_1)).aClass33Array1425[l2];
+                                Class33 class33_3 = model_1.aClass33Array1660[l2];
+                                if(j2 == ai[l2] && k2 == model_1.anIntArray1629[l2] && i2 == model_1.anIntArray1628[l2] && class33_3.anInt605 != 0)
                                 {
                                     class33.anInt602 += class33_3.anInt602;
                                     class33.anInt603 += class33_3.anInt603;
@@ -869,13 +869,13 @@ public class Class25
 
         if(l < 3 || !flag)
             return;
-        for(int k1 = 0; k1 < class30_sub2_sub4_sub6.anInt1630; k1++)
-            if(anIntArray486[class30_sub2_sub4_sub6.anIntArray1631[k1]] == anInt488 && anIntArray486[class30_sub2_sub4_sub6.anIntArray1632[k1]] == anInt488 && anIntArray486[class30_sub2_sub4_sub6.anIntArray1633[k1]] == anInt488)
-                class30_sub2_sub4_sub6.anIntArray1637[k1] = -1;
+        for(int k1 = 0; k1 < model.anInt1630; k1++)
+            if(anIntArray486[model.anIntArray1631[k1]] == anInt488 && anIntArray486[model.anIntArray1632[k1]] == anInt488 && anIntArray486[model.anIntArray1633[k1]] == anInt488)
+                model.anIntArray1637[k1] = -1;
 
-        for(int l1 = 0; l1 < class30_sub2_sub4_sub6_1.anInt1630; l1++)
-            if(anIntArray487[class30_sub2_sub4_sub6_1.anIntArray1631[l1]] == anInt488 && anIntArray487[class30_sub2_sub4_sub6_1.anIntArray1632[l1]] == anInt488 && anIntArray487[class30_sub2_sub4_sub6_1.anIntArray1633[l1]] == anInt488)
-                class30_sub2_sub4_sub6_1.anIntArray1637[l1] = -1;
+        for(int l1 = 0; l1 < model_1.anInt1630; l1++)
+            if(anIntArray487[model_1.anIntArray1631[l1]] == anInt488 && anIntArray487[model_1.anIntArray1632[l1]] == anInt488 && anIntArray487[model_1.anIntArray1633[l1]] == anInt488)
+                model_1.anIntArray1637[l1] = -1;
 
     }
 
@@ -954,10 +954,10 @@ public class Class25
         {
             for(int j1 = 0; j1 < 2048; j1 += 64)
             {
-                anInt458 = Class30_Sub2_Sub4_Sub6.anIntArray1689[i1];
-                anInt459 = Class30_Sub2_Sub4_Sub6.anIntArray1690[i1];
-                anInt460 = Class30_Sub2_Sub4_Sub6.anIntArray1689[j1];
-                anInt461 = Class30_Sub2_Sub4_Sub6.anIntArray1690[j1];
+                anInt458 = Model.anIntArray1689[i1];
+                anInt459 = Model.anIntArray1690[i1];
+                anInt460 = Model.anIntArray1689[j1];
+                anInt461 = Model.anIntArray1690[j1];
                 int l1 = (i1 - 128) / 32;
                 int j2 = j1 / 64;
                 for(int l2 = -26; l2 <= 26; l2++)
@@ -1070,16 +1070,16 @@ label0:
         if(j >= anInt439 * 128)
             j = anInt439 * 128 - 1;
         anInt448++;
-        anInt458 = Class30_Sub2_Sub4_Sub6.anIntArray1689[j1];
-        anInt459 = Class30_Sub2_Sub4_Sub6.anIntArray1690[j1];
+        anInt458 = Model.anIntArray1689[j1];
+        anInt459 = Model.anIntArray1690[j1];
         if(flag)
             return;
-        anInt460 = Class30_Sub2_Sub4_Sub6.anIntArray1689[k];
-        anInt461 = Class30_Sub2_Sub4_Sub6.anIntArray1690[k];
+        anInt460 = Model.anIntArray1689[k];
+        anInt461 = Model.anIntArray1690[k];
         aBooleanArrayArray492 = aBooleanArrayArrayArrayArray491[(j1 - 128) / 32][k / 64];
         anInt455 = i;
-        anInt456 = l;
-        anInt457 = j;
+        cameraY = l;
+        cameraZ = j;
         anInt453 = i / 128;
         anInt454 = j / 128;
         anInt447 = i1;
@@ -1305,15 +1305,15 @@ label0:
                             method315(class30_sub3_7.aClass43_1311, 0, anInt458, anInt459, anInt460, anInt461, i, j);
                     } else
                     if(class30_sub3_7.aClass40_1312 != null && !method320(0, i, j))
-                        method316(i, (byte)99, anInt458, anInt460, class30_sub3_7.aClass40_1312, anInt459, j, anInt461);
+                        method316(i,  anInt458, anInt460, class30_sub3_7.aClass40_1312, anInt459, j, anInt461);
                     Class10 class10 = class30_sub3_7.aClass10_1313;
                     if(class10 != null)
-                        class10.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10.anInt274 - anInt455, class10.anInt273 - anInt456, class10.anInt275 - anInt457, class10.anInt280);
+                        class10.aAnimable_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10.anInt274 - anInt455, class10.anInt273 - cameraY, class10.anInt275 - cameraZ, class10.anInt280);
                     for(int i2 = 0; i2 < class30_sub3_7.anInt1317; i2++)
                     {
                         Class28 class28 = class30_sub3_7.aClass28Array1318[i2];
                         if(class28 != null)
-                            class28.aClass30_Sub2_Sub4_521.method443(class28.anInt522, anInt458, anInt459, anInt460, anInt461, class28.anInt519 - anInt455, class28.anInt518 - anInt456, class28.anInt520 - anInt457, class28.anInt529);
+                            class28.aAnimable_521.method443(class28.anInt522, anInt458, anInt459, anInt460, anInt461, class28.anInt519 - anInt455, class28.anInt518 - cameraY, class28.anInt520 - cameraZ, class28.anInt529);
                     }
 
                 }
@@ -1329,7 +1329,7 @@ label0:
                 if(class30_sub3_1.aClass40_1312 != null && !method320(l, i, j))
                 {
                     flag1 = true;
-                    method316(i, (byte)99, anInt458, anInt460, class30_sub3_1.aClass40_1312, anInt459, j, anInt461);
+                    method316(i,  anInt458, anInt460, class30_sub3_1.aClass40_1312, anInt459, j, anInt461);
                 }
                 int j1 = 0;
                 int j2 = 0;
@@ -1382,19 +1382,19 @@ label0:
                         class30_sub3_1.anInt1325 = 0;
                     }
                     if((class10_3.anInt276 & j2) != 0 && !method321(l, i, j, class10_3.anInt276))
-                        class10_3.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10_3.anInt274 - anInt455, class10_3.anInt273 - anInt456, class10_3.anInt275 - anInt457, class10_3.anInt280);
+                        class10_3.aAnimable_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10_3.anInt274 - anInt455, class10_3.anInt273 - cameraY, class10_3.anInt275 - cameraZ, class10_3.anInt280);
                     if((class10_3.anInt277 & j2) != 0 && !method321(l, i, j, class10_3.anInt277))
-                        class10_3.aClass30_Sub2_Sub4_279.method443(0, anInt458, anInt459, anInt460, anInt461, class10_3.anInt274 - anInt455, class10_3.anInt273 - anInt456, class10_3.anInt275 - anInt457, class10_3.anInt280);
+                        class10_3.aAnimable_279.method443(0, anInt458, anInt459, anInt460, anInt461, class10_3.anInt274 - anInt455, class10_3.anInt273 - cameraY, class10_3.anInt275 - cameraZ, class10_3.anInt280);
                 }
-                if(class26_1 != null && !method322(l, i, j, class26_1.aClass30_Sub2_Sub4_504.anInt1426))
+                if(class26_1 != null && !method322(l, i, j, class26_1.aAnimable_504.anInt1426))
                     if((class26_1.anInt502 & j2) != 0)
-                        class26_1.aClass30_Sub2_Sub4_504.method443(class26_1.anInt503, anInt458, anInt459, anInt460, anInt461, class26_1.anInt500 - anInt455, class26_1.anInt499 - anInt456, class26_1.anInt501 - anInt457, class26_1.anInt505);
+                        class26_1.aAnimable_504.method443(class26_1.anInt503, anInt458, anInt459, anInt460, anInt461, class26_1.anInt500 - anInt455, class26_1.anInt499 - cameraY, class26_1.anInt501 - cameraZ, class26_1.anInt505);
                     else
                     if((class26_1.anInt502 & 0x300) != 0)
                     {
                         int j4 = class26_1.anInt500 - anInt455;
-                        int l5 = class26_1.anInt499 - anInt456;
-                        int k6 = class26_1.anInt501 - anInt457;
+                        int l5 = class26_1.anInt499 - cameraY;
+                        int k6 = class26_1.anInt501 - cameraZ;
                         int i8 = class26_1.anInt503;
                         int k9;
                         if(i8 == 1 || i8 == 2)
@@ -1410,29 +1410,29 @@ label0:
                         {
                             int i11 = j4 + anIntArray463[i8];
                             int k11 = k6 + anIntArray464[i8];
-                            class26_1.aClass30_Sub2_Sub4_504.method443(i8 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i11, l5, k11, class26_1.anInt505);
+                            class26_1.aAnimable_504.method443(i8 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i11, l5, k11, class26_1.anInt505);
                         }
                         if((class26_1.anInt502 & 0x200) != 0 && k10 > k9)
                         {
                             int j11 = j4 + anIntArray465[i8];
                             int l11 = k6 + anIntArray466[i8];
-                            class26_1.aClass30_Sub2_Sub4_504.method443(i8 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j11, l5, l11, class26_1.anInt505);
+                            class26_1.aAnimable_504.method443(i8 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j11, l5, l11, class26_1.anInt505);
                         }
                     }
                 if(flag1)
                 {
                     Class49 class49 = class30_sub3_1.aClass49_1315;
                     if(class49 != null)
-                        class49.aClass30_Sub2_Sub4_814.method443(0, anInt458, anInt459, anInt460, anInt461, class49.anInt812 - anInt455, class49.anInt811 - anInt456, class49.anInt813 - anInt457, class49.anInt815);
+                        class49.aAnimable_814.method443(0, anInt458, anInt459, anInt460, anInt461, class49.anInt812 - anInt455, class49.anInt811 - cameraY, class49.anInt813 - cameraZ, class49.anInt815);
                     Class3 class3_1 = class30_sub3_1.aClass3_1316;
                     if(class3_1 != null && class3_1.anInt52 == 0)
                     {
-                        if(class3_1.aClass30_Sub2_Sub4_49 != null)
-                            class3_1.aClass30_Sub2_Sub4_49.method443(0, anInt458, anInt459, anInt460, anInt461, class3_1.anInt46 - anInt455, class3_1.anInt45 - anInt456, class3_1.anInt47 - anInt457, class3_1.anInt51);
-                        if(class3_1.aClass30_Sub2_Sub4_50 != null)
-                            class3_1.aClass30_Sub2_Sub4_50.method443(0, anInt458, anInt459, anInt460, anInt461, class3_1.anInt46 - anInt455, class3_1.anInt45 - anInt456, class3_1.anInt47 - anInt457, class3_1.anInt51);
-                        if(class3_1.aClass30_Sub2_Sub4_48 != null)
-                            class3_1.aClass30_Sub2_Sub4_48.method443(0, anInt458, anInt459, anInt460, anInt461, class3_1.anInt46 - anInt455, class3_1.anInt45 - anInt456, class3_1.anInt47 - anInt457, class3_1.anInt51);
+                        if(class3_1.aAnimable_49 != null)
+                            class3_1.aAnimable_49.method443(0, anInt458, anInt459, anInt460, anInt461, class3_1.anInt46 - anInt455, class3_1.anInt45 - cameraY, class3_1.anInt47 - cameraZ, class3_1.anInt51);
+                        if(class3_1.aAnimable_50 != null)
+                            class3_1.aAnimable_50.method443(0, anInt458, anInt459, anInt460, anInt461, class3_1.anInt46 - anInt455, class3_1.anInt45 - cameraY, class3_1.anInt47 - cameraZ, class3_1.anInt51);
+                        if(class3_1.aAnimable_48 != null)
+                            class3_1.aAnimable_48.method443(0, anInt458, anInt459, anInt460, anInt461, class3_1.anInt46 - anInt455, class3_1.anInt45 - cameraY, class3_1.anInt47 - cameraZ, class3_1.anInt51);
                     }
                 }
                 int k4 = class30_sub3_1.anInt1320;
@@ -1479,7 +1479,7 @@ label0:
                 {
                     Class10 class10_1 = class30_sub3_1.aClass10_1313;
                     if(!method321(l, i, j, class10_1.anInt276))
-                        class10_1.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10_1.anInt274 - anInt455, class10_1.anInt273 - anInt456, class10_1.anInt275 - anInt457, class10_1.anInt280);
+                        class10_1.aAnimable_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10_1.anInt274 - anInt455, class10_1.anInt273 - cameraY, class10_1.anInt275 - cameraZ, class10_1.anInt280);
                     class30_sub3_1.anInt1325 = 0;
                 }
             }
@@ -1554,9 +1554,9 @@ label0:
                                 if(class28_2.anInt527 == i3)
                                 {
                                     int j7 = class28_2.anInt519 - anInt455;
-                                    int k8 = class28_2.anInt520 - anInt457;
+                                    int k8 = class28_2.anInt520 - cameraZ;
                                     int l9 = aClass28Array462[l3].anInt519 - anInt455;
-                                    int l10 = aClass28Array462[l3].anInt520 - anInt457;
+                                    int l10 = aClass28Array462[l3].anInt520 - cameraZ;
                                     if(j7 * j7 + k8 * k8 > l9 * l9 + l10 * l10)
                                         l3 = j5;
                                 }
@@ -1566,8 +1566,8 @@ label0:
                             break;
                         Class28 class28_3 = aClass28Array462[l3];
                         class28_3.anInt528 = anInt448;
-                        if(!method323(l, class28_3.anInt523, class28_3.anInt524, class28_3.anInt525, class28_3.anInt526, class28_3.aClass30_Sub2_Sub4_521.anInt1426))
-                            class28_3.aClass30_Sub2_Sub4_521.method443(class28_3.anInt522, anInt458, anInt459, anInt460, anInt461, class28_3.anInt519 - anInt455, class28_3.anInt518 - anInt456, class28_3.anInt520 - anInt457, class28_3.anInt529);
+                        if(!method323(l, class28_3.anInt523, class28_3.anInt524, class28_3.anInt525, class28_3.anInt526, class28_3.aAnimable_521.anInt1426))
+                            class28_3.aAnimable_521.method443(class28_3.anInt522, anInt458, anInt459, anInt460, anInt461, class28_3.anInt519 - anInt455, class28_3.anInt518 - cameraY, class28_3.anInt520 - cameraZ, class28_3.anInt529);
                         for(int k7 = class28_3.anInt523; k7 <= class28_3.anInt524; k7++)
                         {
                             for(int l8 = class28_3.anInt525; l8 <= class28_3.anInt526; l8++)
@@ -1621,25 +1621,25 @@ label0:
             Class3 class3 = class30_sub3_1.aClass3_1316;
             if(class3 != null && class3.anInt52 != 0)
             {
-                if(class3.aClass30_Sub2_Sub4_49 != null)
-                    class3.aClass30_Sub2_Sub4_49.method443(0, anInt458, anInt459, anInt460, anInt461, class3.anInt46 - anInt455, class3.anInt45 - anInt456 - class3.anInt52, class3.anInt47 - anInt457, class3.anInt51);
-                if(class3.aClass30_Sub2_Sub4_50 != null)
-                    class3.aClass30_Sub2_Sub4_50.method443(0, anInt458, anInt459, anInt460, anInt461, class3.anInt46 - anInt455, class3.anInt45 - anInt456 - class3.anInt52, class3.anInt47 - anInt457, class3.anInt51);
-                if(class3.aClass30_Sub2_Sub4_48 != null)
-                    class3.aClass30_Sub2_Sub4_48.method443(0, anInt458, anInt459, anInt460, anInt461, class3.anInt46 - anInt455, class3.anInt45 - anInt456 - class3.anInt52, class3.anInt47 - anInt457, class3.anInt51);
+                if(class3.aAnimable_49 != null)
+                    class3.aAnimable_49.method443(0, anInt458, anInt459, anInt460, anInt461, class3.anInt46 - anInt455, class3.anInt45 - cameraY - class3.anInt52, class3.anInt47 - cameraZ, class3.anInt51);
+                if(class3.aAnimable_50 != null)
+                    class3.aAnimable_50.method443(0, anInt458, anInt459, anInt460, anInt461, class3.anInt46 - anInt455, class3.anInt45 - cameraY - class3.anInt52, class3.anInt47 - cameraZ, class3.anInt51);
+                if(class3.aAnimable_48 != null)
+                    class3.aAnimable_48.method443(0, anInt458, anInt459, anInt460, anInt461, class3.anInt46 - anInt455, class3.anInt45 - cameraY - class3.anInt52, class3.anInt47 - cameraZ, class3.anInt51);
             }
             if(class30_sub3_1.anInt1328 != 0)
             {
                 Class26 class26 = class30_sub3_1.aClass26_1314;
-                if(class26 != null && !method322(l, i, j, class26.aClass30_Sub2_Sub4_504.anInt1426))
+                if(class26 != null && !method322(l, i, j, class26.aAnimable_504.anInt1426))
                     if((class26.anInt502 & class30_sub3_1.anInt1328) != 0)
-                        class26.aClass30_Sub2_Sub4_504.method443(class26.anInt503, anInt458, anInt459, anInt460, anInt461, class26.anInt500 - anInt455, class26.anInt499 - anInt456, class26.anInt501 - anInt457, class26.anInt505);
+                        class26.aAnimable_504.method443(class26.anInt503, anInt458, anInt459, anInt460, anInt461, class26.anInt500 - anInt455, class26.anInt499 - cameraY, class26.anInt501 - cameraZ, class26.anInt505);
                     else
                     if((class26.anInt502 & 0x300) != 0)
                     {
                         int l2 = class26.anInt500 - anInt455;
-                        int j3 = class26.anInt499 - anInt456;
-                        int i4 = class26.anInt501 - anInt457;
+                        int j3 = class26.anInt499 - cameraY;
+                        int i4 = class26.anInt501 - cameraZ;
                         int k5 = class26.anInt503;
                         int j6;
                         if(k5 == 1 || k5 == 2)
@@ -1655,22 +1655,22 @@ label0:
                         {
                             int i9 = l2 + anIntArray463[k5];
                             int i10 = i4 + anIntArray464[k5];
-                            class26.aClass30_Sub2_Sub4_504.method443(k5 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i9, j3, i10, class26.anInt505);
+                            class26.aAnimable_504.method443(k5 * 512 + 256, anInt458, anInt459, anInt460, anInt461, i9, j3, i10, class26.anInt505);
                         }
                         if((class26.anInt502 & 0x200) != 0 && l7 <= j6)
                         {
                             int j9 = l2 + anIntArray465[k5];
                             int j10 = i4 + anIntArray466[k5];
-                            class26.aClass30_Sub2_Sub4_504.method443(k5 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j9, j3, j10, class26.anInt505);
+                            class26.aAnimable_504.method443(k5 * 512 + 1280 & 0x7ff, anInt458, anInt459, anInt460, anInt461, j9, j3, j10, class26.anInt505);
                         }
                     }
                 Class10 class10_2 = class30_sub3_1.aClass10_1313;
                 if(class10_2 != null)
                 {
                     if((class10_2.anInt277 & class30_sub3_1.anInt1328) != 0 && !method321(l, i, j, class10_2.anInt277))
-                        class10_2.aClass30_Sub2_Sub4_279.method443(0, anInt458, anInt459, anInt460, anInt461, class10_2.anInt274 - anInt455, class10_2.anInt273 - anInt456, class10_2.anInt275 - anInt457, class10_2.anInt280);
+                        class10_2.aAnimable_279.method443(0, anInt458, anInt459, anInt460, anInt461, class10_2.anInt274 - anInt455, class10_2.anInt273 - cameraY, class10_2.anInt275 - cameraZ, class10_2.anInt280);
                     if((class10_2.anInt276 & class30_sub3_1.anInt1328) != 0 && !method321(l, i, j, class10_2.anInt276))
-                        class10_2.aClass30_Sub2_Sub4_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10_2.anInt274 - anInt455, class10_2.anInt273 - anInt456, class10_2.anInt275 - anInt457, class10_2.anInt280);
+                        class10_2.aAnimable_278.method443(0, anInt458, anInt459, anInt460, anInt461, class10_2.anInt274 - anInt455, class10_2.anInt273 - cameraY, class10_2.anInt275 - cameraZ, class10_2.anInt280);
                 }
             }
             if(k < anInt437 - 1)
@@ -1706,197 +1706,239 @@ label0:
         } while(true);
     }
 
-    public void method315(Class43 class43, int i, int j, int k, int l, int i1, int j1, 
-            int k1)
-    {
+    private void method315(Class43 class43, int i, int j, int k, int l, int i1, int j1, int k1) {
         int l1;
         int i2 = l1 = (j1 << 7) - anInt455;
-        int j2;
-        int k2 = j2 = (k1 << 7) - anInt457;
+        int z2;
+        int z1 = z2 = (k1 << 7) - cameraZ;
         int l2;
         int i3 = l2 = i2 + 128;
-        int j3;
-        int k3 = j3 = k2 + 128;
-        int l3 = anIntArrayArrayArray440[i][j1][k1] - anInt456;
-        int i4 = anIntArrayArrayArray440[i][j1 + 1][k1] - anInt456;
-        int j4 = anIntArrayArrayArray440[i][j1 + 1][k1 + 1] - anInt456;
-        int k4 = anIntArrayArrayArray440[i][j1][k1 + 1] - anInt456;
-        int l4 = k2 * l + i2 * i1 >> 16;
-        k2 = k2 * i1 - i2 * l >> 16;
+        int z4;
+        int z3 = z4 = z1 + 128;
+        int l3 = anIntArrayArrayArray440[i][j1][k1] - cameraY;
+        int i4 = anIntArrayArrayArray440[i][j1 + 1][k1] - cameraY;
+        int j4 = anIntArrayArrayArray440[i][j1 + 1][k1 + 1] - cameraY;
+        int k4 = anIntArrayArrayArray440[i][j1][k1 + 1] - cameraY;
+        int l4 = z1 * l + i2 * i1 >> 16;
+        z1 = z1 * i1 - i2 * l >> 16;
         i2 = l4;
-        l4 = l3 * k - k2 * j >> 16;
-        k2 = l3 * j + k2 * k >> 16;
+        l4 = l3 * k - z1 * j >> 16;
+        z1 = l3 * j + z1 * k >> 16;
         l3 = l4;
-        if(k2 < 50)
+        if (z1 < 50) {
             return;
-        l4 = j2 * l + i3 * i1 >> 16;
-        j2 = j2 * i1 - i3 * l >> 16;
+        }
+        l4 = z2 * l + i3 * i1 >> 16;
+        z2 = z2 * i1 - i3 * l >> 16;
         i3 = l4;
-        l4 = i4 * k - j2 * j >> 16;
-        j2 = i4 * j + j2 * k >> 16;
+        l4 = i4 * k - z2 * j >> 16;
+        z2 = i4 * j + z2 * k >> 16;
         i4 = l4;
-        if(j2 < 50)
+        if (z2 < 50) {
             return;
-        l4 = k3 * l + l2 * i1 >> 16;
-        k3 = k3 * i1 - l2 * l >> 16;
+        }
+        l4 = z3 * l + l2 * i1 >> 16;
+        z3 = z3 * i1 - l2 * l >> 16;
         l2 = l4;
-        l4 = j4 * k - k3 * j >> 16;
-        k3 = j4 * j + k3 * k >> 16;
+        l4 = j4 * k - z3 * j >> 16;
+        z3 = j4 * j + z3 * k >> 16;
         j4 = l4;
-        if(k3 < 50)
+        if (z3 < 50) {
             return;
-        l4 = j3 * l + l1 * i1 >> 16;
-        j3 = j3 * i1 - l1 * l >> 16;
+        }
+        l4 = z4 * l + l1 * i1 >> 16;
+        z4 = z4 * i1 - l1 * l >> 16;
         l1 = l4;
-        l4 = k4 * k - j3 * j >> 16;
-        j3 = k4 * j + j3 * k >> 16;
+        l4 = k4 * k - z4 * j >> 16;
+        z4 = k4 * j + z4 * k >> 16;
         k4 = l4;
-        if(j3 < 50)
+        if (z4 < 50) {
             return;
-        int i5 = Rasterizer.anInt1466 + (i2 << client.log_view_dist) / k2;
-        int j5 = Rasterizer.anInt1467 + (l3 << client.log_view_dist) / k2;
-        int k5 = Rasterizer.anInt1466 + (i3 << client.log_view_dist) / j2;
-        int l5 = Rasterizer.anInt1467 + (i4 << client.log_view_dist) / j2;
-        int i6 = Rasterizer.anInt1466 + (l2 << client.log_view_dist) / k3;
-        int j6 = Rasterizer.anInt1467 + (j4 << client.log_view_dist) / k3;
-        int k6 = Rasterizer.anInt1466 + (l1 << client.log_view_dist) / j3;
-        int l6 = Rasterizer.anInt1467 + (k4 << client.log_view_dist) / j3;
+        }
+        int x1 = Rasterizer.centerX + (i2 << client.log_view_dist) / z1;
+        int y1 = Rasterizer.centerY + (l3 << client.log_view_dist) / z1;
+        int x2 = Rasterizer.centerX + (i3 << client.log_view_dist) / z2;
+        int y2 = Rasterizer.centerY + (i4 << client.log_view_dist) / z2;
+        int x3 = Rasterizer.centerX + (l2 << client.log_view_dist) / z3;
+        int y3 = Rasterizer.centerY + (j4 << client.log_view_dist) / z3;
+        int x4 = Rasterizer.centerX + (l1 << client.log_view_dist) / z4;
+        int y4 = Rasterizer.centerY + (k4 << client.log_view_dist) / z4;
         Rasterizer.anInt1465 = 0;
-        if((i6 - k6) * (l5 - l6) - (j6 - l6) * (k5 - k6) > 0)
-        {
-            Rasterizer.aBoolean1462 = false;
-            if(i6 < 0 || k6 < 0 || k5 < 0 || i6 > DrawingArea.centerX || k6 > DrawingArea.centerX || k5 > DrawingArea.centerX)
-                Rasterizer.aBoolean1462 = true;
-            if(aBoolean467 && method318(anInt468, anInt469, j6, l6, l5, i6, k6, k5))
-            {
+        if ((x3 - x4) * (y2 - y4) - (y3 - y4) * (x2 - x4) > 0) {
+            Rasterizer.aBoolean1462 = x3 < 0 || x4 < 0 || x2 < 0 || x3 > DrawingArea.centerX || x4 > DrawingArea.centerX
+                    || x2 > DrawingArea.centerX;
+            if (aBoolean467 && method318(anInt468, anInt469, y3, y4, y2, x3, x4, x2)) {
                 anInt470 = j1;
                 anInt471 = k1;
             }
-            if(class43.anInt720 == -1) {
-                if(class43.anInt718 != 0xbc614e)
-                    Rasterizer.method374(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717);
-            } else
-            if(!aBoolean436)
-            {
-                if(class43.aBoolean721)
-                    Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
-                else
-                    Rasterizer.method378(j6, l6, l5, i6, k6, k5, class43.anInt718, class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, k3, j3, j2, class43.anInt720);
-            } else
-            {
+            if (class43.anInt720 == -1 || class43.anInt720 > 50) {
+                if (class43.anInt718 != 0xbc614e) {
+                    if (Configuration.hdTexturing && class43.anInt720 != -1) {
+                        if (class43.aBoolean721) {
+                            Rasterizer.drawMaterializedTriangle(y3, y4, y2, x3, x4, x2, class43.anInt718,
+                                    class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, z1, z2, z4,
+                                    class43.anInt720);
+                        } else {
+                            Rasterizer.drawMaterializedTriangle(y3, y4, y2, x3, x4, x2, class43.anInt718,
+                                    class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, z3, z4, z2,
+                                    class43.anInt720);
+                        }
+                    } else {
+                        Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, class43.anInt718, class43.anInt719,
+                                class43.anInt717);
+                    }
+                }
+            } else if (!lowMem) {
+                if (class43.aBoolean721) {
+                    Rasterizer.method378(y3, y4, y2, x3, x4, x2, class43.anInt718, class43.anInt719, class43.anInt717,
+                            i2, i3, l1, l3, i4, k4, z1, z2, z4, class43.anInt720);
+                } else {
+                    Rasterizer.method378(y3, y4, y2, x3, x4, x2, class43.anInt718, class43.anInt719, class43.anInt717,
+                            l2, l1, i3, j4, k4, i4, z3, z4, z2, class43.anInt720);
+                }
+            } else {
                 int i7 = anIntArray485[class43.anInt720];
-                Rasterizer.method374(j6, l6, l5, i6, k6, k5, method317(-361, i7, class43.anInt718), method317(-361, i7, class43.anInt719), method317(-361, i7, class43.anInt717));
+                Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, method317(i7, class43.anInt718),
+                        method317(i7, class43.anInt719), method317(i7, class43.anInt717));
+            }
+            if (Configuration.distanceFog) {
+                Rasterizer.drawFogTriangle(y3, y4, y2, x3, x4, x2, z3, z4, z2);
             }
         }
-        if((i5 - k5) * (l6 - l5) - (j5 - l5) * (k6 - k5) > 0)
-        {
-            Rasterizer.aBoolean1462 = false;
-            if(i5 < 0 || k5 < 0 || k6 < 0 || i5 > DrawingArea.centerX || k5 > DrawingArea.centerX || k6 > DrawingArea.centerX)
-                Rasterizer.aBoolean1462 = true;
-            if(aBoolean467 && method318(anInt468, anInt469, j5, l5, l6, i5, k5, k6))
-            {
+        if ((x1 - x2) * (y4 - y2) - (y1 - y2) * (x4 - x2) > 0) {
+            Rasterizer.aBoolean1462 = x1 < 0 || x2 < 0 || x4 < 0 || x1 > DrawingArea.centerX || x2 > DrawingArea.centerX
+                    || x4 > DrawingArea.centerX;
+            if (aBoolean467 && method318(anInt468, anInt469, y1, y2, y4, x1, x2, x4)) {
                 anInt470 = j1;
                 anInt471 = k1;
             }
-            if(class43.anInt720 == -1)
-            {
-                if(class43.anInt716 != 0xbc614e)
-                {
-                    Rasterizer.method374(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719);
-                    return;
+            if (class43.anInt720 == -1 || class43.anInt720 > 50) {
+                if (class43.anInt716 != 0xbc614e) {
+                    if (Configuration.hdTexturing && class43.anInt720 != -1) {
+                        Rasterizer.drawMaterializedTriangle(y1, y2, y4, x1, x2, x4, class43.anInt716, class43.anInt717,
+                                class43.anInt719, i2, i3, l1, l3, i4, k4, z1, z2, z4, class43.anInt720);
+                    } else {
+                        Rasterizer.drawGouraudTriangle(y1, y2, y4, x1, x2, x4, class43.anInt716, class43.anInt717,
+                                class43.anInt719);
+                    }
                 }
-            } else
-            {
-                if(!aBoolean436)
-                {
-                    Rasterizer.method378(j5, l5, l6, i5, k5, k6, class43.anInt716, class43.anInt717, class43.anInt719, i2, i3, l1, l3, i4, k4, k2, j2, j3, class43.anInt720);
-                    return;
+            } else {
+                if (!lowMem) {
+                    Rasterizer.method378(y1, y2, y4, x1, x2, x4, class43.anInt716, class43.anInt717, class43.anInt719,
+                            i2, i3, l1, l3, i4, k4, z1, z2, z4, class43.anInt720);
+                } else {
+                    int j7 = anIntArray485[class43.anInt720];
+                    Rasterizer.drawGouraudTriangle(y1, y2, y4, x1, x2, x4, method317(j7, class43.anInt716),
+                            method317(j7, class43.anInt717), method317(j7, class43.anInt719));
                 }
-                int j7 = anIntArray485[class43.anInt720];
-                Rasterizer.method374(j5, l5, l6, i5, k5, k6, method317(-361, j7, class43.anInt716), method317(-361, j7, class43.anInt717), method317(-361, j7, class43.anInt719));
+            }
+            if (Configuration.distanceFog) {
+                Rasterizer.drawFogTriangle(y1, y2, y4, x1, x2, x4, z1, z2, z4);
             }
         }
     }
 
-    public void method316(int i, byte byte0, int j, int k, Class40 class40, int l, int i1, 
-            int j1)
-    {
+    private void method316(int i, int j, int k, Class40 class40, int l, int i1, int j1) {
         int k1 = class40.anIntArray673.length;
-        if(byte0 != 99)
-            return;
-        for(int l1 = 0; l1 < k1; l1++)
-        {
+        for (int l1 = 0; l1 < k1; l1++) {
             int i2 = class40.anIntArray673[l1] - anInt455;
-            int k2 = class40.anIntArray674[l1] - anInt456;
-            int i3 = class40.anIntArray675[l1] - anInt457;
+            int k2 = class40.anIntArray674[l1] - cameraY;
+            int i3 = class40.anIntArray675[l1] - cameraZ;
             int k3 = i3 * k + i2 * j1 >> 16;
             i3 = i3 * j1 - i2 * k >> 16;
             i2 = k3;
             k3 = k2 * l - i3 * j >> 16;
             i3 = k2 * j + i3 * l >> 16;
             k2 = k3;
-            if(i3 < 50)
+            if (i3 < 50) {
                 return;
-            if(class40.anIntArray682 != null)
-            {
+            }
+            if (Configuration.hdTexturing || class40.anIntArray682 != null) {
                 Class40.anIntArray690[l1] = i2;
                 Class40.anIntArray691[l1] = k2;
                 Class40.anIntArray692[l1] = i3;
+            } else if (Configuration.distanceFog) {
+                Class40.anIntArray692[l1] = i3;
             }
-            Class40.anIntArray688[l1] = Rasterizer.anInt1466 + (i2 << client.log_view_dist) / i3;
-            Class40.anIntArray689[l1] = Rasterizer.anInt1467 + (k2 << client.log_view_dist) / i3;
+            Class40.anIntArray688[l1] = Rasterizer.centerX + (i2 << client.log_view_dist) / i3;
+            Class40.anIntArray689[l1] = Rasterizer.centerY + (k2 << client.log_view_dist) / i3;
         }
 
         Rasterizer.anInt1465 = 0;
         k1 = class40.anIntArray679.length;
-        for(int j2 = 0; j2 < k1; j2++)
-        {
+        for (int j2 = 0; j2 < k1; j2++) {
             int l2 = class40.anIntArray679[j2];
             int j3 = class40.anIntArray680[j2];
             int l3 = class40.anIntArray681[j2];
-            int i4 = Class40.anIntArray688[l2];
-            int j4 = Class40.anIntArray688[j3];
-            int k4 = Class40.anIntArray688[l3];
-            int l4 = Class40.anIntArray689[l2];
-            int i5 = Class40.anIntArray689[j3];
-            int j5 = Class40.anIntArray689[l3];
-            if((i4 - j4) * (j5 - i5) - (l4 - i5) * (k4 - j4) > 0)
-            {
-                Rasterizer.aBoolean1462 = false;
-                if(i4 < 0 || j4 < 0 || k4 < 0 || i4 > DrawingArea.centerX || j4 > DrawingArea.centerX || k4 > DrawingArea.centerX)
-                    Rasterizer.aBoolean1462 = true;
-                if(aBoolean467 && method318(anInt468, anInt469, l4, i5, j5, i4, j4, k4))
-                {
+            int x1 = Class40.anIntArray688[l2];
+            int x2 = Class40.anIntArray688[j3];
+            int x3 = Class40.anIntArray688[l3];
+            int y1 = Class40.anIntArray689[l2];
+            int y2 = Class40.anIntArray689[j3];
+            int y3 = Class40.anIntArray689[l3];
+            if ((x1 - x2) * (y3 - y2) - (y1 - y2) * (x3 - x2) > 0) {
+                Rasterizer.aBoolean1462 = x1 < 0 || x2 < 0 || x3 < 0 || x1 > DrawingArea.centerX
+                        || x2 > DrawingArea.centerX || x3 > DrawingArea.centerX;
+                if (aBoolean467 && method318(anInt468, anInt469, y1, y2, y3, x1, x2, x3)) {
                     anInt470 = i;
                     anInt471 = i1;
                 }
-                if(class40.anIntArray682 == null || class40.anIntArray682[j2] == -1)
-                {
-                    if(class40.anIntArray676[j2] != 0xbc614e)
-                        Rasterizer.method374(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2]);
-                } else
-                if(!aBoolean436)
-                {
-                    if(class40.aBoolean683)
-                        Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0], Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0], Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0], Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
-                    else
-                        Rasterizer.method378(l4, i5, j5, i4, j4, k4, class40.anIntArray676[j2], class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2], Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2], Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2], Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2]);
-                } else
-                {
+                if (class40.anIntArray682 == null || class40.anIntArray682[j2] == -1
+                        || class40.anIntArray682[j2] > 50) {
+                    if (class40.anIntArray676[j2] != 0xbc614e) {
+                        if (Configuration.hdTexturing && class40.anIntArray682 != null
+                                && class40.anIntArray682[j2] != -1) {
+                            if (class40.aBoolean683 || class40.anIntArray682[j2] == 505) {
+                                Rasterizer.drawMaterializedTriangle(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
+                                        class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
+                                        Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
+                                        Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
+                                        Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
+                            } else {
+                                Rasterizer.drawMaterializedTriangle(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
+                                        class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
+                                        Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
+                                        Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
+                                        Class40.anIntArray692[j3], Class40.anIntArray692[l3],
+                                        class40.anIntArray682[j2]);
+                            }
+                        } else {
+                            Rasterizer.drawGouraudTriangle(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
+                                    class40.anIntArray677[j2], class40.anIntArray678[j2]);
+                        }
+                    }
+                } else if (!lowMem) {
+                    if (/* true || */class40.aBoolean683) {
+                        Rasterizer.method378(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
+                                class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
+                                Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
+                                Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
+                                Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
+                    } else {
+                        Rasterizer.method378(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
+                                class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
+                                Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
+                                Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
+                                Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2]);
+                    }
+                } else {
                     int k5 = anIntArray485[class40.anIntArray682[j2]];
-                    Rasterizer.method374(l4, i5, j5, i4, j4, k4, method317(-361, k5, class40.anIntArray676[j2]), method317(-361, k5, class40.anIntArray677[j2]), method317(-361, k5, class40.anIntArray678[j2]));
+                    Rasterizer.drawGouraudTriangle(y1, y2, y3, x1, x2, x3, method317(k5, class40.anIntArray676[j2]),
+                            method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]));
+                }
+                if (Configuration.distanceFog) {
+                    Rasterizer.drawFogTriangle(y1, y2, y3, x1, x2, x3, Class40.anIntArray692[l2],
+                            Class40.anIntArray692[j3], Class40.anIntArray692[l3]);
                 }
             }
         }
 
     }
 
-    public int method317(int i, int j, int k)
+    public int method317(int j, int k)
     {
         k = 127 - k;
         k = (k * (j & 0x7f)) / 160;
-        if(i >= 0)
-            return anInt430;
         if(k < 2)
             k = 2;
         else
@@ -1963,10 +2005,10 @@ label0:
                     class47.anInt798 = 2;
                     j3 = -j3;
                 }
-                class47.anInt801 = (class47.anInt794 - anInt457 << 8) / j3;
-                class47.anInt802 = (class47.anInt795 - anInt457 << 8) / j3;
-                class47.anInt803 = (class47.anInt796 - anInt456 << 8) / j3;
-                class47.anInt804 = (class47.anInt797 - anInt456 << 8) / j3;
+                class47.anInt801 = (class47.anInt794 - cameraZ << 8) / j3;
+                class47.anInt802 = (class47.anInt795 - cameraZ << 8) / j3;
+                class47.anInt803 = (class47.anInt796 - cameraY << 8) / j3;
+                class47.anInt804 = (class47.anInt797 - cameraY << 8) / j3;
                 aClass47Array476[anInt475++] = class47;
                 continue;
             }
@@ -1990,7 +2032,7 @@ label0:
                     }
                 if(!flag1)
                     continue;
-                int k3 = anInt457 - class47.anInt794;
+                int k3 = cameraZ - class47.anInt794;
                 if(k3 > 32)
                 {
                     class47.anInt798 = 3;
@@ -2003,13 +2045,13 @@ label0:
                 }
                 class47.anInt799 = (class47.anInt792 - anInt455 << 8) / k3;
                 class47.anInt800 = (class47.anInt793 - anInt455 << 8) / k3;
-                class47.anInt803 = (class47.anInt796 - anInt456 << 8) / k3;
-                class47.anInt804 = (class47.anInt797 - anInt456 << 8) / k3;
+                class47.anInt803 = (class47.anInt796 - cameraY << 8) / k3;
+                class47.anInt804 = (class47.anInt797 - cameraY << 8) / k3;
                 aClass47Array476[anInt475++] = class47;
             } else
             if(class47.anInt791 == 4)
             {
-                int j1 = class47.anInt796 - anInt456;
+                int j1 = class47.anInt796 - cameraY;
                 if(j1 > 128)
                 {
                     int i2 = (class47.anInt789 - anInt454) + farZ;
@@ -2045,8 +2087,8 @@ label0:
                             class47.anInt798 = 5;
                             class47.anInt799 = (class47.anInt792 - anInt455 << 8) / j1;
                             class47.anInt800 = (class47.anInt793 - anInt455 << 8) / j1;
-                            class47.anInt801 = (class47.anInt794 - anInt457 << 8) / j1;
-                            class47.anInt802 = (class47.anInt795 - anInt457 << 8) / j1;
+                            class47.anInt801 = (class47.anInt794 - cameraZ << 8) / j1;
+                            class47.anInt802 = (class47.anInt795 - cameraZ << 8) / j1;
                             aClass47Array476[anInt475++] = class47;
                         }
                     }
@@ -2110,7 +2152,7 @@ label0:
             }
             if(l == 2)
             {
-                if(j1 < anInt457)
+                if(j1 < cameraZ)
                 {
                     if(!method324(i1, k1, j1 + 128))
                         return false;
@@ -2150,7 +2192,7 @@ label0:
             }
             if(l == 8)
             {
-                if(j1 > anInt457)
+                if(j1 > cameraZ)
                 {
                     if(!method324(i1, k1, j1))
                         return false;
@@ -2310,7 +2352,7 @@ label0:
     private static int anInt433 = -460;
     private boolean aBoolean434;
     private boolean aBoolean435;
-    public static boolean aBoolean436 = true;
+    public static boolean lowMem = true;
     int anInt437;
     int anInt438;
     int anInt439;
@@ -2330,8 +2372,8 @@ label0:
     static int anInt453;
     static int anInt454;
     static int anInt455;
-    static int anInt456;
-    static int anInt457;
+    static int cameraY;
+    static int cameraZ;
     static int anInt458;
     static int anInt459;
     static int anInt460;

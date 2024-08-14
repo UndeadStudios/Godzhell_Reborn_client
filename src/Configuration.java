@@ -20,4 +20,6 @@ public class Configuration {
     public static boolean Enable_JagGrab = true;
     public static boolean Dump_crcs = false;
     public static boolean smoothShading = true;
+    public static boolean hdTexturing = false;
+    public static boolean distanceFog = false;
 }

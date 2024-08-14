@@ -194,120 +194,116 @@ public class RSFont extends DrawingArea {
         }
     }
 
-    public void drawCenteredStringMoveY(String class100, int drawX, int drawY, int color,
-            int shadow, int i_54_) {
-        if (class100 != null) {
-            setColorAndShadow(color, shadow);
+
+    public void drawCenteredStringMoveY(String class100, int drawX, int drawY, int color, int shadow, int i_54_) {
+        if(class100 != null) {
+            this.setColorAndShadow(color, shadow);
             int[] yOffset = new int[class100.length()];
-            for (int index = 0; index < class100.length(); index++) {
-                yOffset[index] = (int) (Math.sin((double) index / 2.0 + (double) i_54_ / 5.0) * 5.0);
+
+            for(int index = 0; index < class100.length(); ++index) {
+                yOffset[index] = (int)(Math.sin((double)index / 2.0D + (double)i_54_ / 5.0D) * 5.0D);
             }
-            drawBaseStringMoveXY(class100, drawX - getTextWidth(class100) / 2, drawY, null,
-                                 yOffset);
+
+            this.drawBaseStringMoveXY(class100, drawX - this.getTextWidth(class100) / 2, drawY, (int[])null, yOffset);
         }
+
     }
+
 
     public void unpackChatImages(Sprite[] icons) {
         chatImages = icons;
     }
 
     public void drawBasicString(String string, int drawX, int drawY) {
-        drawY -= baseCharacterHeight;
-        string = handleOldSyntax(string);
+        drawY -= this.baseCharacterHeight;
         int startIndex = -1;
-        int i_70_ = -1;
-        for (int currentCharacter = 0; currentCharacter < string.length(); currentCharacter++) {
-            int character = string.charAt(currentCharacter);
-            if (character > 255) {
+        string = handleOldSyntax(string);
+        for(int currentCharacter = 0; currentCharacter < string.length(); ++currentCharacter) {
+            char character = string.charAt(currentCharacter);
+            if(character > 255) {
                 character = 32;
             }
-            if (character == 60) {
+
+            if(character == 60) {
                 startIndex = currentCharacter;
             } else {
-                if (character == 62 && startIndex != -1) {
-                    String effectString = string.substring(startIndex + 1, currentCharacter);
+                int height;
+                if(character == 62 && startIndex != -1) {
+                    String var121 = string.substring(startIndex + 1, currentCharacter);
                     startIndex = -1;
-                    if (effectString.equals(startEffect)) {
+                    if(var121.equals(startEffect)) {
                         character = 60;
-                    } else if (effectString.equals(endEffect)) {
+                    } else if(var121.equals(endEffect)) {
                         character = 62;
-                    } else if (effectString.equals(aRSString_4135)) {
+                    } else if(var121.equals(aRSString_4135)) {
                         character = 160;
-                    } else if (effectString.equals(aRSString_4162)) {
+                    } else if(var121.equals(aRSString_4162)) {
                         character = 173;
-                    } else if (effectString.equals(aRSString_4165)) {
+                    } else if(var121.equals(aRSString_4165)) {
                         character = 215;
-                    } else if (effectString.equals(aRSString_4147)) {
+                    } else if(var121.equals(aRSString_4147)) {
                         character = 128;
-                    } else if (effectString.equals(aRSString_4163)) {
+                    } else if(var121.equals(aRSString_4163)) {
                         character = 169;
-                    } else if (effectString.equals(aRSString_4169)) {
-                        character = 174;
                     } else {
-                        if (effectString.startsWith(startImage)) {
-                            try {
-                                int imageId = Integer.valueOf(effectString.substring(4));
-                                Sprite icon = chatImages[imageId];
-                                int iconModY = icon.anInt1445;
-                                if (transparency == 256) {
-                                   // icon.method346(drawX, (drawY + baseCharacterHeight - iconModY));
-                                } else {
-                                    //con.drawSprite(drawX,(drawY + baseCharacterHeight - iconModY), transparency);
+                        if(!var121.equals(aRSString_4169)) {
+                            if(var121.startsWith(startImage)) {
+                                try {
+                                    height = Integer.valueOf(var121.substring(4)).intValue();
+                                    Sprite var13 = this.chatImages[height];
+                                    int iconModY = var13.maxHeight;
+                                    var13.drawSprite(drawX, drawY + this.baseCharacterHeight - iconModY, transparency);
+                                    drawX += var13.maxWidth;
+                                } catch (Exception var11) {
+                                    ;
                                 }
-                                drawX += icon.anInt1444;
-                                i_70_ = -1;
-                            } catch (Exception exception) {
-                                /* empty */
+                            } else {
+                                this.setTextEffects(var121);
                             }
-                        } else {
-                            setTextEffects(effectString);
+                            continue;
                         }
-                        continue;
+
+                        character = 174;
                     }
                 }
-                if (startIndex == -1) {
-                    int width = characterWidths[character];
-                    int height = characterHeights[character];
-                    if (character != 32) {
-                        if (transparency == 256) {
-                            if (textShadowColor != -1) {
-                                drawCharacter(character,
-                                              drawX + characterDrawXOffsets[character] + 1,
-                                              drawY + characterDrawYOffsets[character] + 1,
-                                              width, height, textShadowColor, true);
+
+                if(startIndex == -1) {
+                    int var12 = this.characterWidths[character];
+                    height = this.characterHeights[character];
+                    if(character != 32) {
+                        if(transparency == 256) {
+                            if(textShadowColor != -1) {
+                                this.drawCharacter(character, drawX + this.characterDrawXOffsets[character] + 1, drawY + this.characterDrawYOffsets[character] + 1, var12, height, textShadowColor, true);
                             }
-                            drawCharacter(character, drawX + characterDrawXOffsets[character],
-                                          drawY + characterDrawYOffsets[character], width,
-                                          height, textColor, false);
+
+                            this.drawCharacter(character, drawX + this.characterDrawXOffsets[character], drawY + this.characterDrawYOffsets[character], var12, height, textColor, false);
                         } else {
-                            if (textShadowColor != -1) {
-                                drawTransparentCharacter(character,
-                                                         drawX + characterDrawXOffsets[character] + 1,
-                                                         drawY + characterDrawYOffsets[character] + 1,
-                                                         width, height, textShadowColor, transparency,
-                                                         true);
+                            if(textShadowColor != -1) {
+                                this.drawTransparentCharacter(character, drawX + this.characterDrawXOffsets[character] + 1, drawY + this.characterDrawYOffsets[character] + 1, var12, height, textShadowColor, transparency, true);
                             }
-                            drawTransparentCharacter(character, drawX + characterDrawXOffsets[character],
-                                                     drawY + characterDrawYOffsets[character], width,
-                                                     height, textColor, transparency, false);
+
+                            this.drawTransparentCharacter(character, drawX + this.characterDrawXOffsets[character], drawY + this.characterDrawYOffsets[character], var12, height, textColor, transparency, false);
                         }
-                    } else if (anInt4178 > 0) {
+                    } else if(anInt4178 > 0) {
                         anInt4175 += anInt4178;
                         drawX += anInt4175 >> 8;
-                        anInt4175 &= 0xff;
+                        anInt4175 &= 255;
                     }
-                    int lineWidth = characterScreenWidths[character];
-                    if (strikethroughColor != -1) {
-                        //rsClass30_Sub2_Sub1.drawHorizontalLine(drawX,drawY + (int) ((double) baseCharacterHeight * 0.69999999999999996D), lineWidth,strikethroughColor);
+
+                    int lineWidth = this.characterScreenWidths[character];
+                    if(strikethroughColor != -1) {
+                        rsDrawingArea.drawHorizontalLine(drawX, drawY + (int)((double)this.baseCharacterHeight * 0.7D), lineWidth, strikethroughColor);
                     }
-                    if (underlineColor != -1) {
-           // rsClass30_Sub2_Sub1.drawHorizontalLine(drawX,drawY +  baseCharacterHeight, lineWidth,underlineColor);
+
+                    if(underlineColor != -1) {
+                        rsDrawingArea.drawHorizontalLine(drawX, drawY + this.baseCharacterHeight, lineWidth, underlineColor);
                     }
+
                     drawX += lineWidth;
-                    i_70_ = character;
                 }
             }
         }
+
     }
 
     public void drawRAString(String string, int drawX, int drawY, int color,
@@ -318,179 +314,165 @@ public class RSFont extends DrawingArea {
         }
     }
 
-    public void drawBaseStringMoveXY(String string, int drawX, int drawY, int[] xModifier,
-            int[] yModifier) {
-        drawY -= baseCharacterHeight;
+
+    public void drawBaseStringMoveXY(String string, int drawX, int drawY, int[] xModifier, int[] yModifier) {
+        drawY -= this.baseCharacterHeight;
         int startIndex = -1;
-        int i_96_ = -1;
         int modifierOffset = 0;
-        for (int currentCharacter = 0; currentCharacter < string.length(); currentCharacter++) {
-            int character = string.charAt(currentCharacter);
-            if (character == 60) {
+
+        for(int currentCharacter = 0; currentCharacter < string.length(); ++currentCharacter) {
+            char character = string.charAt(currentCharacter);
+            if(character == 60) {
                 startIndex = currentCharacter;
             } else {
-                if (character == 62 && startIndex != -1) {
-                    String effectString = string.substring(startIndex + 1, currentCharacter);
+                int height;
+                int xOff;
+                int yOff;
+                if(character == 62 && startIndex != -1) {
+                    String var171 = string.substring(startIndex + 1, currentCharacter);
                     startIndex = -1;
-                    if (effectString.equals(startEffect)) {
+                    if(var171.equals(startEffect)) {
                         character = 60;
-                    } else if (effectString.equals(endEffect)) {
+                    } else if(var171.equals(endEffect)) {
                         character = 62;
-                    } else if (effectString.equals(aRSString_4135)) {
+                    } else if(var171.equals(aRSString_4135)) {
                         character = 160;
-                    } else if (effectString.equals(aRSString_4162)) {
+                    } else if(var171.equals(aRSString_4162)) {
                         character = 173;
-                    } else if (effectString.equals(aRSString_4165)) {
+                    } else if(var171.equals(aRSString_4165)) {
                         character = 215;
-                    } else if (effectString.equals(aRSString_4147)) {
+                    } else if(var171.equals(aRSString_4147)) {
                         character = 128;
-                    } else if (effectString.equals(aRSString_4163)) {
+                    } else if(var171.equals(aRSString_4163)) {
                         character = 169;
-                    } else if (effectString.equals(aRSString_4169)) {
-                        character = 174;
                     } else {
-                        if (effectString.startsWith(startImage)) {
-                            try {
-                                int xModI;
-                                if (xModifier != null) {
-                                    xModI = xModifier[modifierOffset];
-                                } else {
-                                    xModI = 0;
+                        if(!var171.equals(aRSString_4169)) {
+                            if(var171.startsWith(startImage)) {
+                                try {
+                                    if(xModifier != null) {
+                                        height = xModifier[modifierOffset];
+                                    } else {
+                                        height = 0;
+                                    }
+
+                                    if(yModifier != null) {
+                                        xOff = yModifier[modifierOffset];
+                                    } else {
+                                        xOff = 0;
+                                    }
+
+                                    ++modifierOffset;
+                                    yOff = Integer.valueOf(var171.substring(4)).intValue();
+                                    Sprite var18 = this.chatImages[yOff];
+                                    int iconOffsetY = var18.maxHeight;
+                                    var18.drawSprite(drawX + height, drawY + this.baseCharacterHeight - iconOffsetY + xOff);
+                                    drawX += var18.maxWidth;
+                                } catch (Exception var16) {
+                                    ;
                                 }
-                                int yMod;
-                                if (yModifier != null) {
-                                    yMod = yModifier[modifierOffset];
-                                } else {
-                                    yMod = 0;
-                                }
-                                modifierOffset++;
-                                int iconId = Integer.valueOf(effectString.substring(4));
-                                Sprite class92 = chatImages[iconId];
-                                int iconOffsetY = class92.anInt1445;
-                                if (transparency == 256) {
-                                   // class92.drawSprite(drawX + xModI,
-                                                      // (drawY + baseCharacterHeight - iconOffsetY + yMod));
-                                } else {
-                                   // class92.drawSprite(drawX + xModI,
-                                                                 // (drawY + baseCharacterHeight - iconOffsetY + yMod),
-                                                                 // transparency);
-                                }
-                                drawX += class92.anInt1444;
-                                i_96_ = -1;
-                            } catch (Exception exception) {
-                                /* empty */
+                            } else {
+                                this.setTextEffects(var171);
                             }
-                        } else {
-                            setTextEffects(effectString);
+                            continue;
                         }
-                        continue;
+
+                        character = 174;
                     }
                 }
-                if (startIndex == -1) {
-                    int width = characterWidths[character];
-                    int height = characterHeights[character];
-                    int xOff;
-                    if (xModifier != null) {
+
+                if(startIndex == -1) {
+                    int var17 = this.characterWidths[character];
+                    height = this.characterHeights[character];
+                    if(xModifier != null) {
                         xOff = xModifier[modifierOffset];
                     } else {
                         xOff = 0;
                     }
-                    int yOff;
-                    if (yModifier != null) {
+
+                    if(yModifier != null) {
                         yOff = yModifier[modifierOffset];
                     } else {
                         yOff = 0;
                     }
-                    modifierOffset++;
-                    if (character != 32) {
-                        if (transparency == 256) {
-                            if (textShadowColor != -1) {
-                                drawCharacter(character,
-                                              (drawX + characterDrawXOffsets[character] + 1 + xOff),
-                                              (drawY + characterDrawYOffsets[character] + 1 + yOff),
-                                              width, height, textShadowColor, true);
+
+                    ++modifierOffset;
+                    if(character != 32) {
+                        if(transparency == 256) {
+                            if(textShadowColor != -1) {
+                                this.drawCharacter(character, drawX + this.characterDrawXOffsets[character] + 1 + xOff, drawY + this.characterDrawYOffsets[character] + 1 + yOff, var17, height, textShadowColor, true);
                             }
-                            drawCharacter(character,
-                                          drawX + characterDrawXOffsets[character] + xOff,
-                                          drawY + characterDrawYOffsets[character] + yOff,
-                                          width, height, textColor, false);
+
+                            this.drawCharacter(character, drawX + this.characterDrawXOffsets[character] + xOff, drawY + this.characterDrawYOffsets[character] + yOff, var17, height, textColor, false);
                         } else {
-                            if (textShadowColor != -1) {
-                                drawTransparentCharacter(character,
-                                                         (drawX + characterDrawXOffsets[character] + 1 + xOff),
-                                                         (drawY + characterDrawYOffsets[character] + 1 + yOff),
-                                                         width, height, textShadowColor,
-                                                         transparency, true);
+                            if(textShadowColor != -1) {
+                                this.drawTransparentCharacter(character, drawX + this.characterDrawXOffsets[character] + 1 + xOff, drawY + this.characterDrawYOffsets[character] + 1 + yOff, var17, height, textShadowColor, transparency, true);
                             }
-                            drawTransparentCharacter(character,
-                                                     drawX + characterDrawXOffsets[character] + xOff,
-                                                     drawY + characterDrawYOffsets[character] + yOff,
-                                                     width, height, textColor, transparency,
-                                                     false);
+
+                            this.drawTransparentCharacter(character, drawX + this.characterDrawXOffsets[character] + xOff, drawY + this.characterDrawYOffsets[character] + yOff, var17, height, textColor, transparency, false);
                         }
-                    } else if (anInt4178 > 0) {
+                    } else if(anInt4178 > 0) {
                         anInt4175 += anInt4178;
                         drawX += anInt4175 >> 8;
-                        anInt4175 &= 0xff;
+                        anInt4175 &= 255;
                     }
-                    int i_109_ = characterScreenWidths[character];
-                    if (strikethroughColor != -1) {
-                       // rsClass30_Sub2_Sub1.drawHorizontalLine(drawX,
-                                                       //  drawY + (int) ((double) baseCharacterHeight * 0.7),
-                                                       //  i_109_, strikethroughColor);
+
+                    int i_109_ = this.characterScreenWidths[character];
+                    if(strikethroughColor != -1) {
+                        rsDrawingArea.drawHorizontalLine(drawX, drawY + (int)((double)this.baseCharacterHeight * 0.7D), i_109_, strikethroughColor);
                     }
-                    if (underlineColor != -1) {
-                      //  rsClass30_Sub2_Sub1.drawHorizontalLine(drawX, drawY + baseCharacterHeight, i_109_,
-                                                       //  underlineColor);
+
+                    if(underlineColor != -1) {
+                        rsDrawingArea.drawHorizontalLine(drawX, drawY + this.baseCharacterHeight, i_109_, underlineColor);
                     }
+
                     drawX += i_109_;
-                    i_96_ = character;
                 }
             }
         }
+
     }
 
+
     public void setTextEffects(String string) {
-        do {
-            try {
-                if (string.startsWith(startColor)) {
-                	String color = string.substring(4);
-                	textColor = color.length() < 6 ? Color.decode(color).getRGB() : Integer.parseInt(color, 16);
-                } else if (string.equals(endColor)) {
-                    textColor = defaultColor;
-                } else if (string.startsWith(startTransparency)) {
-                    transparency = Integer.valueOf(string.substring(6));
-                } else if (string.equals(endTransparency)) {
-                    transparency = defaultTransparency;
-                } else if (string.startsWith(startStrikethrough)) {
-                    strikethroughColor = Integer.valueOf(string.substring(4));
-                } else if (string.equals(defaultStrikethrough)) {
-                    strikethroughColor = 8388608;
-                } else if (string.equals(endStrikethrough)) {
-                    strikethroughColor = -1;
-                } else if (string.startsWith(startUnderline)) {
-                    underlineColor = Integer.valueOf(string.substring(2));
-                } else if (string.equals(startDefaultUnderline)) {
-                    underlineColor = 0;
-                } else if (string.equals(endUnderline)) {
-                    underlineColor = -1;
-                } else if (string.startsWith(startShadow)) {
-                    textShadowColor = Integer.valueOf(string.substring(5));
-                } else if (string.equals(startDefaultShadow)) {
-                    textShadowColor = 0;
-                } else if (string.equals(endShadow)) {
-                    textShadowColor = defaultShadow;
-                } else {
-                    if (!string.equals(lineBreak)) {
-                        break;
-                    }
-                    setDefaultTextEffectValues(defaultColor, defaultShadow, defaultTransparency);
-                }
-            } catch (Exception exception) {
-                break;
+        try {
+            String color;
+            if(string.startsWith(startColor)) {
+                color = string.substring(4);
+                textColor = color.length() < 6?Color.decode(color).getRGB():Integer.parseInt(color, 16);
+            } else if(string.equals(endColor)) {
+                textColor = defaultColor;
+            } else if(string.startsWith(startTransparency)) {
+                transparency = Integer.valueOf(string.substring(6)).intValue();
+            } else if(string.equals(endTransparency)) {
+                transparency = defaultTransparency;
+            } else if(string.startsWith(startStrikethrough)) {
+                color = string.substring(4);
+                strikethroughColor = color.length() < 6?Color.decode(color).getRGB():Integer.parseInt(color, 16);
+            } else if(string.equals(defaultStrikethrough)) {
+                strikethroughColor = 8388608;
+            } else if(string.equals(endStrikethrough)) {
+                strikethroughColor = -1;
+            } else if(string.startsWith(startUnderline)) {
+                color = string.substring(2);
+                underlineColor = color.length() < 6?Color.decode(color).getRGB():Integer.parseInt(color, 16);
+            } else if(string.equals(startDefaultUnderline)) {
+                underlineColor = 0;
+            } else if(string.equals(endUnderline)) {
+                underlineColor = -1;
+            } else if(string.startsWith(startShadow)) {
+                color = string.substring(5);
+                textShadowColor = color.length() < 6?Color.decode(color).getRGB():Integer.parseInt(color, 16);
+            } else if(string.equals(startDefaultShadow)) {
+                textShadowColor = 0;
+            } else if(string.equals(endShadow)) {
+                textShadowColor = defaultShadow;
+            } else if(string.equals(lineBreak)) {
+                this.setDefaultTextEffectValues(defaultColor, defaultShadow, defaultTransparency);
             }
-            break;
-        } while (false);
+        } catch (Exception var3) {
+            ;
+        }
+
     }
 
     public void setColorAndShadow(int color, int shadow) {
@@ -504,59 +486,63 @@ public class RSFont extends DrawingArea {
     }
 
     public int getTextWidth(String string) {
-        if (string == null) {
+        if(string == null) {
             return 0;
-        }
-        int startIndex = -1;
-        int i_126_ = -1;
-        int finalWidth = 0;
-        for (int currentCharacter = 0; currentCharacter < string.length(); currentCharacter++) {
-            int character = string.charAt(currentCharacter);
-            if (character > 255) {
-                character = 32;
-            }
-            if (character == 60) {
-                startIndex = currentCharacter;
-            } else {
-                if (character == 62 && startIndex != -1) {
-                    String effectString = string.substring(startIndex + 1, currentCharacter);
-                    startIndex = -1;
-                    if (effectString.equals(startEffect)) {
-                        character = 60;
-                    } else if (effectString.equals(endEffect)) {
-                        character = 62;
-                    } else if (effectString.equals(aRSString_4135)) {
-                        character = 160;
-                    } else if (effectString.equals(aRSString_4162)) {
-                        character = 173;
-                    } else if (effectString.equals(aRSString_4165)) {
-                        character = 215;
-                    } else if (effectString.equals(aRSString_4147)) {
-                        character = 128;
-                    } else if (effectString.equals(aRSString_4163)) {
-                        character = 169;
-                    } else if (effectString.equals(aRSString_4169)) {
-                        character = 174;
-                    } else {
-                        if (effectString.startsWith(startImage)) {
-                            try {//<img=
-                                int iconId = Integer.valueOf(effectString.substring(4));
-                                finalWidth += chatImages[iconId].anInt1444;
-                                i_126_ = -1;
-                            } catch (Exception exception) {
-                                /* empty */
+        } else {
+            int startIndex = -1;
+            int finalWidth = 0;
+
+            for(int currentCharacter = 0; currentCharacter < string.length(); ++currentCharacter) {
+                char character = string.charAt(currentCharacter);
+                if(character > 255) {
+                    character = 32;
+                }
+
+                if(character == 60) {
+                    startIndex = currentCharacter;
+                } else {
+                    if(character == 62 && startIndex != -1) {
+                        String effectString = string.substring(startIndex + 1, currentCharacter);
+                        startIndex = -1;
+                        if(effectString.equals(startEffect)) {
+                            character = 60;
+                        } else if(effectString.equals(endEffect)) {
+                            character = 62;
+                        } else if(effectString.equals(aRSString_4135)) {
+                            character = 160;
+                        } else if(effectString.equals(aRSString_4162)) {
+                            character = 173;
+                        } else if(effectString.equals(aRSString_4165)) {
+                            character = 215;
+                        } else if(effectString.equals(aRSString_4147)) {
+                            character = 128;
+                        } else if(effectString.equals(aRSString_4163)) {
+                            character = 169;
+                        } else {
+                            if(!effectString.equals(aRSString_4169)) {
+                                if(effectString.startsWith(startImage)) {
+                                    try {
+                                        int iconId = Integer.valueOf(effectString.substring(4)).intValue();
+                                        finalWidth += this.chatImages[iconId].maxWidth;
+                                    } catch (Exception var8) {
+                                        ;
+                                    }
+                                }
+                                continue;
                             }
+
+                            character = 174;
                         }
-                        continue;
+                    }
+
+                    if(startIndex == -1) {
+                        finalWidth += this.characterScreenWidths[character];
                     }
                 }
-                if (startIndex == -1) {
-                    finalWidth += characterScreenWidths[character];
-                    i_126_ = character;
-                }
             }
+
+            return finalWidth;
         }
-        return finalWidth;
     }
 
     public void drawBasicString(String string, int drawX, int drawY, int color,

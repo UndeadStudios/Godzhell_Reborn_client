@@ -3,11 +3,20 @@ import sign.signlink;
 final class Class40
 {
 
-    public Class40(int i, int j, int k, int l, int i1, int j1, int k1, 
+    public Class40(int i, int j, int k, int l, int overlaytex, int underlaytex, int j1, int k1,
             int l1, int i2, int j2, int k2, int l2, int i3, int j3, 
-            int k3, int l3, int i4, int j4, int k4, int l4)
+            int k3, int l3, int i4, int j4, int k4, int l4, boolean tex)
     {
+        color61 = l1;
+        color71 = i4;
+        color81 = j2;
+        color91 = k;
+        color62 = j;
+        color72 = l3;
+        color82 = j1;
+        color92 = k3;
         aBoolean683 = true;
+        textured = tex;
         if(i3 != l2 || i3 != l || i3 != k2)
             aBoolean683 = false;
         anInt684 = j3;
@@ -183,7 +192,7 @@ final class Class40
         anIntArray676 = new int[j7];
         anIntArray677 = new int[j7];
         anIntArray678 = new int[j7];
-        if(i1 != -1)
+        if(overlaytex != -1 || underlaytex != -1)
             anIntArray682 = new int[j7];
         int l7 = 0;
         for(int j8 = 0; j8 < j7; j8++)
@@ -208,14 +217,14 @@ final class Class40
                 anIntArray677[j8] = ai1[i10];
                 anIntArray678[j8] = ai1[k10];
                 if(anIntArray682 != null)
-                    anIntArray682[j8] = -1;
+                    anIntArray682[j8] = underlaytex;
             } else
             {
                 anIntArray676[j8] = ai2[k9];
                 anIntArray677[j8] = ai2[i10];
                 anIntArray678[j8] = ai2[k10];
                 if(anIntArray682 != null)
-                    anIntArray682[j8] = i1;
+                    anIntArray682[j8] = overlaytex;
             }
         }
 
@@ -341,5 +350,13 @@ final class Class40
             0, 1, 2, 5
         }
     };
-
+    public int color61;
+    public int color71;
+    public int color81;
+    public int color91;
+    public int color62;
+    public int color72;
+    public int color82;
+    public int color92;
+    public boolean textured;
 }

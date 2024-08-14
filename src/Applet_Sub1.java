@@ -316,8 +316,9 @@ public boolean mouseWheelDown;
         }
         if(gameFrame != null)
         {
-            i -= 4;
-            j -= 22;
+            Insets insets = gameFrame.getInsets();
+            i -= insets.left;//4
+            j -= insets.top;//22
         }
         anInt18 = 0;
         anInt23 = i;
@@ -351,8 +352,9 @@ public boolean mouseWheelDown;
         int j = mouseevent.getY();
         if(gameFrame != null)
         {
-            i -= 4;
-            j -= 22;
+            Insets insets = gameFrame.getInsets();
+            i -= insets.left;//4
+            j -= insets.top;//22
         }
 		if (mouseWheelDown) {
 			j = mouseWheelX - mouseevent.getX();
@@ -399,8 +401,9 @@ mouseWheelDown = false;
         int j = mouseevent.getY();
         if(gameFrame != null)
         {
-            i -= 4;
-            j -= 22;
+            Insets insets = gameFrame.getInsets();
+            i -= insets.left;//4
+            j -= insets.top;//22
         }
         anInt18 = 0;
         mouseX = i;

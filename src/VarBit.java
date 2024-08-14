@@ -20,14 +20,14 @@ public class VarBit
             if(cache[j] == null)
                 cache[j] = new VarBit();
             cache[j].readValues(stream);
-            System.out.println(""+ cache[j].anInt648+" "+ cache[j].anInt649);
+            //System.out.println(""+ cache[j].anInt648+" "+ cache[j].anInt649);
             if(cache[j].aBoolean651)
                 Class41.aClass41Array701[cache[j].anInt648].aBoolean713 = true;
         }
 
         if(stream.currentPosition != stream.buffer.length)
             System.out.println("varbit load mismatch");
-        dumpNpc();
+        //dumpNpc();
     }
     public static void dumpNpc() {
         for(int i = 0; i < anInt645; ++i) {

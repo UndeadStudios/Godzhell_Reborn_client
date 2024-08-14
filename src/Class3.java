@@ -8,9 +8,9 @@ final class Class3
     int anInt45;
     int anInt46;
     int anInt47;
-    Class30_Sub2_Sub4 aClass30_Sub2_Sub4_48;
-    Class30_Sub2_Sub4 aClass30_Sub2_Sub4_49;
-    Class30_Sub2_Sub4 aClass30_Sub2_Sub4_50;
+    Animable aAnimable_48;
+    Animable aAnimable_49;
+    Animable aAnimable_50;
     long anInt51;
     int anInt52;
 }

@@ -355,6 +355,9 @@ public class Widget
 	aFileArchive = fileArchive;
         clanChatTab(aclass30_sub2_sub1_sub4);
         clanChatSetup(aclass30_sub2_sub1_sub4);
+        slayerInterface.Unpack(aclass30_sub2_sub1_sub4);
+        slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
+        slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
         aClass12_238 = null;
         if(byte0 != -84);
     }
@@ -380,7 +383,52 @@ public class Widget
         widget.height = 334;
         return widget;
     }
-
+    public static void addTextButton(int i, String s, String tooltip, int k, boolean l, boolean m, RSFont[] RSFont, int j, int w) {
+        Widget rsinterface = addInterface(i);
+        rsinterface.parentID = i;
+        rsinterface.id = i;
+        rsinterface.type = 4;
+        rsinterface.atActionType = 1;
+        rsinterface.width = w;
+        rsinterface.height = 16;
+        rsinterface.contentType = 0;
+        rsinterface.opacity = 31;
+        rsinterface.hoverType = -1;
+        rsinterface.centerText = l;
+        rsinterface.textShadow = m;
+        rsinterface.textDrawingAreas = RSFont[j];
+        rsinterface.message = s;
+        rsinterface.aString228 = "";
+        rsinterface.anInt219 = 16750623;
+        rsinterface.textColor = 16750623;
+        rsinterface.tooltip = tooltip;
+    }
+    public static void setChildren(int total, Widget i) {
+        i.children = new int[total];
+        i.childX = new int[total];
+        i.childY = new int[total];
+    }
+    public static void addText(int id, String text, RSFont[] wid, int idx, int color) {
+        Widget Tab = addTabInterface(id);
+        Tab.id = id;
+        Tab.parentID = id;
+        Tab.type = 4;
+        Tab.atActionType = 0;
+        Tab.width = 174;
+        Tab.height = 11;
+        Tab.contentType = 0;
+        Tab.opacity = 0;
+        Tab.hoverType = -1;
+        Tab.centerText = false;
+        Tab.textShadow = true;
+        Tab.textDrawingAreas = wid[idx];
+        Tab.message = text;
+        Tab.aString228 = "";
+        Tab.textColor = color;
+        Tab.anInt219 = 0;
+        Tab.anInt216 = 0;
+        Tab.anInt239 = 0;
+    }
     public static void addText(int id, String text, RSFont[] tda, int idx, int color, boolean center, boolean shadow) {
         Widget tab = addTabInterface(id);
         tab.parentID = id;
@@ -735,38 +783,38 @@ public class Widget
         list.width = 174;
         list.scrollMax = 1405;
     }
-    private Class30_Sub2_Sub4_Sub6 method206(int i, int j)
+    private Model method206(int i, int j)
     {
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6 = (Class30_Sub2_Sub4_Sub6)aClass12_264.method222((i << 16) + j);
-        if(class30_sub2_sub4_sub6 != null)
+        Model model = (Model)aClass12_264.method222((i << 16) + j);
+        if(model != null)
         {
-            return class30_sub2_sub4_sub6;
+            return model;
         }
         if(i == 1)
         {
-            class30_sub2_sub4_sub6 = Class30_Sub2_Sub4_Sub6.method462(anInt213, j);
+            model = Model.method462(anInt213, j);
         }
         if(i == 2)
         {
-            class30_sub2_sub4_sub6 = Class5.method159(j).method160(true);
+            model = Class5.method159(j).method160(true);
         }
         if(i == 3)
         {
-            class30_sub2_sub4_sub6 = client.localPlayer.method453((byte)-41);
+            model = client.localPlayer.method453((byte)-41);
         }
         if(i == 4)
         {
-            class30_sub2_sub4_sub6 = Class8.method198(j).method202(50, true);
+            model = ItemDefinition.method198(j).method202(50, true);
         }
         if(i == 5)
         {
-            class30_sub2_sub4_sub6 = null;
+            model = null;
         }
-        if(class30_sub2_sub4_sub6 != null)
+        if(model != null)
         {
-            aClass12_264.method223(class30_sub2_sub4_sub6, (i << 16) + j, (byte)2);
+            aClass12_264.method223(model, (i << 16) + j, (byte)2);
         }
-        return class30_sub2_sub4_sub6;
+        return model;
     }
 
     private static Sprite method207(int i, boolean flag, FileArchive fileArchive, String s)
@@ -793,57 +841,57 @@ public class Widget
         return sprite;
     }
 
-    public static void method208(int i, boolean flag, int j, Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6)
+    public static void method208(int i, boolean flag, int j, Model model)
     {
         if(flag)
         {
             return;
         }
         aClass12_264.method224();
-        if(class30_sub2_sub4_sub6 != null && j != 4)
+        if(model != null && j != 4)
         {
-            aClass12_264.method223(class30_sub2_sub4_sub6, (j << 16) + i, (byte)2);
+            aClass12_264.method223(model, (j << 16) + i, (byte)2);
         }
     }
 
-    public Class30_Sub2_Sub4_Sub6 method209(int i, int j, int k, boolean flag)
+    public Model method209(int i, int j, int k, boolean flag)
     {
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6;
+        Model model;
         if(flag)
         {
-            class30_sub2_sub4_sub6 = method206(anInt255, anInt256);
+            model = method206(anInt255, anInt256);
         } else
         {
-            class30_sub2_sub4_sub6 = method206(anInt233, anInt234);
+            model = method206(anInt233, anInt234);
         }
-        if(class30_sub2_sub4_sub6 == null)
+        if(model == null)
         {
             return null;
         }
-        if(k == -1 && j == -1 && class30_sub2_sub4_sub6.anIntArray1640 == null)
+        if(k == -1 && j == -1 && model.anIntArray1640 == null)
         {
-            return class30_sub2_sub4_sub6;
+            return model;
         }
-        Class30_Sub2_Sub4_Sub6 class30_sub2_sub4_sub6_1 = new Class30_Sub2_Sub4_Sub6(9, true, Class36.method532(k, false) & Class36.method532(j, false), false, class30_sub2_sub4_sub6);
+        Model model_1 = new Model(9, true, Class36.method532(k, false) & Class36.method532(j, false), false, model);
         if(k != -1 || j != -1)
         {
-            class30_sub2_sub4_sub6_1.method469((byte)-71);
+            model_1.method469((byte)-71);
         }
         if(k != -1)
         {
-            class30_sub2_sub4_sub6_1.method470(k, 40542);
+            model_1.method470(k, 40542);
         }
         if(j != -1)
         {
-            class30_sub2_sub4_sub6_1.method470(j, 40542);
+            model_1.method470(j, 40542);
         }
-        class30_sub2_sub4_sub6_1.method479(64, 768, -50, -10, -50, true);
+        model_1.method479(64, 768, -50, -10, -50, true);
         if(i != 0)
         {
             throw new NullPointerException();
         } else
         {
-            return class30_sub2_sub4_sub6_1;
+            return model_1;
         }
     }
 
