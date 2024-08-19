@@ -798,7 +798,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 100;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -905,30 +905,25 @@ final class ItemDefinition {
             class8.name = "Zamorak godsword";//Name of the new item
             class8.description = "A terrifying, heavy sword.".getBytes();//examin info
         }
-        if (i == 13665)  // change this if you need to "item number"
-        {
+        if(i == 13665) {
             class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modifiedModelColors = new int[2];
-            class8.originalModelColors = new int[2];
-            class8.modifiedModelColors[0] = 43072;
-            class8.originalModelColors[0] = 925;
-            class8.modifiedModelColors[1] = 4550;
-            class8.originalModelColors[1] = 925;
-            class8.modelId = 14104; //Model ID
-            class8.spriteScale = 1330; //zoom increase will make it smaller
-            class8.spritePitch = 310; //model rotate up+down increase to move doen away from you
-            class8.spriteCameraRoll = 1800; //model rotate side ways increase to move right in circle
-            class8.spriteTranslateX = 0; // model offset increase to move to the right
-            class8.spriteTranslateY = 1; //model offset increase to move up
-            class8.primaryMaleModel = 14105;//male wearing
-            class8.primaryFemaleModel = 14105;//female wearing
-            class8.secondaryFemaleModel = 14106;//Female arms/sleeves
-            class8.secondaryMaleModel = 14106;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Dragon platebody";//Name of the new item
-            class8.description = "Provides excellent protection".getBytes();//examin info
+            class8.itemActions[1] = "Wield";
+            class8.modelId = '\uae20';
+            class8.spriteScale = 1360;
+            class8.spritePitch = 443;
+            class8.spriteCameraRoll = 2047;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -1;
+            class8.spriteTranslateY = 11;
+            class8.primaryMaleModel = '\u9d0f';
+            class8.primaryFemaleModel = '\u9deb';
+            class8.secondaryFemaleModel = -1;
+            class8.secondaryMaleModel = -1;
+            class8.stackable = false;
+            class8.name = "Dragon platebody";
+            class8.description = "Provides excellent protection".getBytes();
         }
+
         if (i == 15111) { //lava helm
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
@@ -1833,7 +1828,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear"; //this is the new option to equipt, can change to w/e u want
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;  //original color
+            class8.modifiedModelColors[0] = 944;  //original color
             class8.originalModelColors[0] = 36133; //changed color
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2316,7 +2311,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 6073;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2340,7 +2335,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 51136;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2364,7 +2359,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 25;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2388,7 +2383,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 950;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2412,7 +2407,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 43968;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2436,7 +2431,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 10394;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2460,7 +2455,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 7114;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2483,7 +2478,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 100;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2532,7 +2527,7 @@ final class ItemDefinition {
             class8.itemActions[2] = "die!";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 0;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -2818,7 +2813,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 22464;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -3149,27 +3144,26 @@ final class ItemDefinition {
             class8.description = "Its A fighter Torso".getBytes();//examin info
         }
 
-        if (i == 2904)  // change this if you need to "item number"
-        {
+        if(i == 11732) {
             class8.itemActions = new String[5];
-            class8.itemActions[1] = "Wield";//New option
-            class8.modelId = 4678; //Model ID
-            class8.spriteScale = 595;//Model Zoom
-            class8.spritePitch = 0;//Model Rotation
-            class8.spriteCameraRoll = 0;//model rotate side ways increase to move right in circle
-            class8.spriteCameraYaw = 0;//Unknown
-            class8.noteable = 0;//noteable
-            class8.spriteTranslateX = 0;// model offset increase to move to the right
-            class8.spriteTranslateY = 0;//model offset increase to move up
-            class8.primaryMaleModel = 4679;//male wearing
-            class8.primaryFemaleModel = 4680;//female wearing
-            class8.primaryMaleHeadPiece = 56;//Unknown
-            class8.primaryFemaleHeadPiece = 116;//Unknown
-            class8.secondaryFemaleModel = -1;//Female arms/sleeves
-            class8.secondaryMaleModel = -1;//male arms/sleeves
-            class8.stackable = false;//Stackable
-            class8.name = "Dragon Boots";//Name of the new item
-            class8.description = "A nice pair Of boots".getBytes();//examin info
+            class8.itemActions[1] = "Wear";
+            class8.modelId = 28138;
+            class8.spriteScale = 595;
+            class8.spritePitch = 96;
+            class8.spriteCameraRoll = 0;
+            class8.spriteCameraYaw = 0;
+            class8.noteable = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = -1;
+            class8.primaryMaleModel = 27738;
+            class8.primaryFemaleModel = 27754;
+            class8.primaryMaleHeadPiece = -1;
+            class8.primaryFemaleHeadPiece = -1;
+            class8.secondaryFemaleModel = -1;
+            class8.secondaryMaleModel = -1;
+            class8.stackable = false;
+            class8.name = "Dragon Boots";
+            class8.description = "A nice pair Of boots".getBytes();
         }
         if (i == 15350) {
             class8.itemActions = new String[5];
@@ -3933,7 +3927,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 32984;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7624,7 +7618,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 18105;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7647,7 +7641,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 45549;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7670,7 +7664,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 50971;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7693,7 +7687,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 60176;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7716,7 +7710,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 19213;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7739,7 +7733,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 3654;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7762,7 +7756,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 12904;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7785,7 +7779,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 618;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7808,7 +7802,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 46440;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7831,7 +7825,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 11378;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7854,7 +7848,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 36207;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7877,7 +7871,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 32562;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -7900,7 +7894,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 8245;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -8781,7 +8775,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 11200;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9805,7 +9799,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 21662;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9828,7 +9822,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 36133;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9851,7 +9845,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 43297;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9874,7 +9868,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 8;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9897,7 +9891,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 43072;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9920,7 +9914,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 33;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9943,7 +9937,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 5652;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -9966,7 +9960,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 926;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -10658,7 +10652,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 10394;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -10681,7 +10675,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 62928;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -10704,7 +10698,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 7114;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -10782,18 +10776,18 @@ final class ItemDefinition {
             class8.name = "Dungeoneering cape"; // Item Name
             class8.description = "A nice looking cape.".getBytes(); // Item Examine
         }
-        if (i == 15259) {
+        if(i == 15259) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
-            class8.modelId = 79229;
-            class8.spriteScale = 1316;
-            class8.spritePitch = 352;
-            class8.spriteCameraRoll = 269;
+            class8.modelId = '\u9e70';
+            class8.spriteScale = 1382;
+            class8.spritePitch = 364;
+            class8.spriteCameraRoll = 1158;
             class8.spriteCameraYaw = 0;
-            class8.spriteTranslateX = -3;
-            class8.spriteTranslateY = -7;
-            class8.primaryMaleModel = 73867;// wield
-            class8.primaryFemaleModel = 73867;
+            class8.spriteTranslateX = 8;
+            class8.spriteTranslateY = -12;
+            class8.primaryMaleModel = '\ubd56';
+            class8.primaryFemaleModel = '\ubd56';
             class8.secondaryMaleModel = -1;
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
@@ -12796,7 +12790,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 931;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -17361,7 +17355,7 @@ final class ItemDefinition {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
             class8.modelId = 93866;
-            class8.spriteScale = 528;
+            class8.spriteScale = 944;
             class8.spritePitch = 294;
             class8.spriteCameraRoll = 123;
             class8.spriteTranslateX = 0;
@@ -17559,7 +17553,7 @@ final class ItemDefinition {
             class8.name = "Blessed spirit shield";
             class8.description = "its an Blessed spirit shield.".getBytes();
         }
-        if (i == 1835) {
+        if(i == 16835) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[2];
@@ -17581,10 +17575,11 @@ final class ItemDefinition {
             class8.secondaryFemaleModel = -1;
             class8.primaryMaleHeadPiece = -1;
             class8.primaryFemaleHeadPiece = -1;
-            class8.name = "2008 H'ween boots";
+            class8.name = "2008 H\'ween boots";
             class8.description = "The 2008 Halloween event boots.".getBytes();
         }
-        if (i == 1297) {
+
+        if(i == 16836) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[2];
@@ -17603,10 +17598,11 @@ final class ItemDefinition {
             class8.primaryFemaleModel = 5025;
             class8.primaryMaleHeadPiece = -1;
             class8.primaryFemaleHeadPiece = -1;
-            class8.name = "2008 H'ween legs";
+            class8.name = "2008 H\'ween legs";
             class8.description = "The 2008 Halloween event platelegs.".getBytes();
         }
-        if (i == 15235) {
+
+        if(i == 16837) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[2];
@@ -17626,10 +17622,11 @@ final class ItemDefinition {
             class8.primaryFemaleModel = 8736;
             class8.primaryMaleHeadPiece = -1;
             class8.primaryFemaleHeadPiece = -1;
-            class8.name = "2008 H'ween plate";
+            class8.name = "2008 H\'ween plate";
             class8.description = "The 2008 Halloween event Platebody...".getBytes();
         }
-        if (i == 1573) {
+
+        if(i == 16838) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[2];
@@ -17648,10 +17645,11 @@ final class ItemDefinition {
             class8.primaryFemaleModel = 8750;
             class8.primaryMaleHeadPiece = -1;
             class8.primaryFemaleHeadPiece = -1;
-            class8.name = "2008 H'ween gloves";
+            class8.name = "2008 H\'ween gloves";
             class8.description = "2008 Halloween event gloves.".getBytes();
         }
-        if (i == 1801) {
+
+        if(i == 16839) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
@@ -17674,6 +17672,7 @@ final class ItemDefinition {
             class8.name = "2008 Mask";
             class8.description = "The 2008 Halloween event whip.".getBytes();
         }
+
         if (i == 13738) {
             class8.itemActions = new String[5];
             class8.itemActions[1] = "Wear";
@@ -19079,7 +19078,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 22443;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -24678,7 +24677,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 11058;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -24701,7 +24700,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 19763;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -24724,7 +24723,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 26419;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -24747,7 +24746,7 @@ final class ItemDefinition {
             class8.itemActions[1] = "Wear";
             class8.modifiedModelColors = new int[1];
             class8.originalModelColors = new int[1];
-            class8.modifiedModelColors[0] = 528;
+            class8.modifiedModelColors[0] = 944;
             class8.originalModelColors[0] = 38709;
             class8.modelId = 5412;
             class8.spriteScale = 840;
@@ -26195,6 +26194,352 @@ final class ItemDefinition {
             class8.anInt202 = 0;
         }
 
+        if(i == 8851) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{8852, 8853, 8854, 8855, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 8882) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{8883, 8884, 8885, 8886, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 8890) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 25, 100, 250, 1000, 10000, 0};
+            class8.stackIDs = new int[]{8891, 8892, 8893, 8894, 8895, 8896, 8897, 8898, 8899, 0};
+        }
+
+        if(i == 8951) {
+            class8.stackAmounts = new int[]{2, 3, 0, 0, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{8984, 8985, 0, 0, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9139) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9146, 9147, 9148, 9149, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9140) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9150, 9151, 9152, 9153, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9141) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9154, 9155, 9156, 9157, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9142) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9158, 9159, 9160, 9161, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9143) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9162, 9163, 9164, 9165, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9144) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9166, 9167, 9168, 9169, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9145) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9170, 9171, 9172, 9173, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9187) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9195, 9196, 9197, 9198, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9188) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9207, 9208, 9209, 9210, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9189) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9211, 9212, 9213, 9214, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9190) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9215, 9216, 9217, 9218, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9191) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9219, 9220, 9221, 9222, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9192) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9223, 9224, 9225, 9226, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9193) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9227, 9228, 9229, 9230, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9194) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9231, 9232, 9233, 9234, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9236) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9246, 9247, 9248, 9249, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9237) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9254, 9255, 9256, 9257, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9238) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9250, 9251, 9252, 9253, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9239) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9258, 9259, 9260, 9261, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9240) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9262, 9263, 9264, 9265, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9241) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9266, 9267, 9268, 9269, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9242) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9270, 9271, 9272, 9273, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9243) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9274, 9275, 9276, 9277, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9244) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9278, 9279, 9280, 9281, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9245) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9282, 9283, 9284, 9285, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9286) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9307, 9308, 9309, 9310, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9287) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9311, 9312, 9313, 9314, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9288) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9315, 9316, 9317, 9318, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9289) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9319, 9320, 9321, 9322, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9290) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9323, 9324, 9325, 9326, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9291) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9327, 9328, 9329, 9330, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9292) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9331, 9332, 9333, 9334, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9293) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9307, 9308, 9309, 9310, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9294) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9311, 9312, 9313, 9314, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9295) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9315, 9316, 9317, 9318, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9296) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9319, 9320, 9321, 9322, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9297) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9323, 9324, 9325, 9326, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9298) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9327, 9328, 9329, 9330, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9299) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9331, 9332, 9333, 9334, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9300) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9307, 9308, 9309, 9310, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9301) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9311, 9312, 9313, 9314, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9302) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9315, 9316, 9317, 9318, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9303) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9319, 9320, 9321, 9322, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9304) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9323, 9324, 9325, 9326, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9305) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9327, 9328, 9329, 9330, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9306) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9331, 9332, 9333, 9334, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9335) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9343, 9344, 9345, 9346, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9336) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9347, 9348, 9349, 9350, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9337) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9351, 9352, 9353, 9354, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9338) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9355, 9356, 9357, 9358, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9339) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9359, 9360, 9361, 9362, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9340) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9363, 9364, 9365, 9366, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9341) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9367, 9368, 9369, 9370, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9342) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9371, 9372, 9373, 9374, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9375) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9383, 9384, 9385, 9386, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9376) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9387, 9388, 9389, 9390, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9377) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9391, 9392, 9393, 9394, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9378) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9395, 9396, 9397, 9398, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9379) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9399, 9400, 9401, 9402, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9380) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9403, 9404, 9405, 9406, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9381) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9407, 9408, 9409, 9410, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 9382) {
+            class8.stackAmounts = new int[]{2, 3, 4, 5, 0, 0, 0, 0, 0, 0};
+            class8.stackIDs = new int[]{9411, 9412, 9413, 9414, 0, 0, 0, 0, 0, 0};
+        }
+
+        if(i == 11235) {
+            class8.modelId = '\uc6a2';
+            class8.primaryMaleModel = '\uc637';
+            class8.primaryFemaleModel = '\uc637';
+        }
+
+        if(i == 10887) {
+            class8.modelId = 68133;
+            class8.primaryMaleModel = 67787;
+            class8.primaryFemaleModel = 67787;
+        }
+
+        if(i == 10551) {
+            class8.modelId = '\ub00b';
+        }
+
 
         if(i == 15069) //ID
         {
@@ -26772,6 +27117,455 @@ final class ItemDefinition {
             class8.anInt202 = 0;
         }
 
+        if(i == 1333) {
+            class8.modelId = '\ubbea';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.primaryMaleModel = '\ubbed';
+            class8.primaryFemaleModel = '\ubbed';
+        }
+
+        if(i == 1291) {
+            class8.modelId = '\ubd43';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{4580, 4535, 4528, 4494, 4501, '\ub02c'};
+        }
+
+        if(i == 1293) {
+            class8.modelId = '\ubd43';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{103, 58, 51, 17, 24, 33};
+        }
+
+        if(i == 1295) {
+            class8.modelId = '\ubd43';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+        }
+
+        if(i == 1297) {
+            class8.modelId = '\ubd43';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{60, 15, 8, 1, 1, 1};
+        }
+
+        if(i == 1299) {
+            class8.modelId = '\ubd43';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{'\ua4f7', '\ua4ca', '\ua4c3', '\ua4a1', '\ua4a8', '\ua4b1'};
+        }
+
+        if(i == 1301) {
+            class8.modelId = '\ubd43';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{21739, 21694, 21687, 21653, 21660, 21669};
+        }
+
+        if(i == 1303) {
+            class8.modelId = '\ubbea';
+            class8.spriteScale = 1645;
+            class8.spritePitch = 1535;
+            class8.spriteCameraRoll = 1778;
+            class8.spriteCameraYaw = 108;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.primaryMaleModel = '\ubbed';
+            class8.primaryFemaleModel = '\ubbed';
+        }
+
+        if(i == 1305) {
+            class8.spriteScale = 1579;
+            class8.spritePitch = 459;
+            class8.spriteCameraRoll = 377;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 5;
+            class8.spriteTranslateY = -7;
+        }
+
+        if(i == 1307) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{4580, 4535, 4528, 4494, 4501, 4510};
+        }
+
+        if(i == 1309) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{103, 58, 51, 17, 24, 33};
+        }
+
+        if(i == 1311) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+        }
+
+        if(i == 1265) {
+            class8.spriteScale = 1382;
+            class8.spritePitch = 660;
+            class8.spriteCameraRoll = 997;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -6;
+            class8.spriteTranslateY = 1;
+            class8.modifiedModelColors = new int[]{61, 51, 76, 74, 60, 121, 99, 42, 41};
+            class8.originalModelColors = new int[]{5652, 5664, 5681, 5676, 5668, 5704, 5694, 5649, 5640};
+        }
+
+        if(i == 1267) {
+            class8.spriteScale = 1382;
+            class8.spritePitch = 660;
+            class8.spriteCameraRoll = 997;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -6;
+            class8.spriteTranslateY = 1;
+            class8.modifiedModelColors = new int[]{61, 51, 76, 74, 60, 121, 99, 42, 41};
+            class8.originalModelColors = new int[]{40, 30, 47, 42, 39, 52, 60, 21, 19};
+        }
+
+        if(i == 1269) {
+            class8.spriteScale = 1382;
+            class8.spritePitch = 660;
+            class8.spriteCameraRoll = 997;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -6;
+            class8.spriteTranslateY = 1;
+        }
+
+        if(i == 1271) {
+            class8.spriteScale = 1382;
+            class8.spritePitch = 660;
+            class8.spriteCameraRoll = 997;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -6;
+            class8.spriteTranslateY = 1;
+            class8.modifiedModelColors = new int[]{61, 51, 76, 74, 60, 121, 99, 42, 41};
+            class8.originalModelColors = new int[]{21662, 21655, 21685, 21669, 21664, 21719, 21707, 21648, 21644};
+        }
+
+        if(i == 1273) {
+            class8.spriteScale = 1382;
+            class8.spritePitch = 660;
+            class8.spriteCameraRoll = 997;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -6;
+            class8.spriteTranslateY = 1;
+            class8.modifiedModelColors = new int[]{61, 51, 76, 74, 60, 121, 99, 42, 41};
+            class8.originalModelColors = new int[]{'\ua921', '\ua91a', '\ua92e', '\ua927', '\ua91f', '\ua955', '\ua949', '\ua911', '\ua90b'};
+        }
+
+        if(i == 1275) {
+            class8.spriteScale = 1382;
+            class8.spritePitch = 660;
+            class8.spriteCameraRoll = 997;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -6;
+            class8.spriteTranslateY = 1;
+            class8.modifiedModelColors = new int[]{61, 51, 76, 74, 60, 121, 99, 42, 41};
+            class8.originalModelColors = new int[]{'\u8d25', '\u8d1c', '\u8d2d', '\u8d2b', '\u8d23', '\u8d55', '\u8d45', '\u8d13', '\u8d0e'};
+        }
+
+        if(i == 1313) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{60, 15, 8, 1, 1, 1};
+        }
+
+        if(i == 1315) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{'\ua4f7', '\ua4ca', '\ua4c3', '\ua4a1', '\ua4a8', '\ua4b1'};
+        }
+
+        if(i == 1317) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{21739, 21694, 21687, 21653, 21660, 21669};
+        }
+
+        if(i == 1319) {
+            class8.spriteScale = 1711;
+            class8.spritePitch = 354;
+            class8.spriteCameraRoll = 1513;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = 0;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{'\u8d25', '\u8d15', '\u8d7f', '\u8d2c', '\u8d1b', '\u8d21'};
+        }
+
+        if(i == 1321) {
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{4580, 4535, 4528, 4494, 4501, 4510};
+        }
+
+        if(i == 1323) {
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{103, 58, 51, 17, 24, 33};
+        }
+
+        if(i == 1325) {
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+        }
+
+        if(i == 1327) {
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{60, 15, 8, 1, 1, 1};
+        }
+
+        if(i == 1329) {
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{'\ua4f7', '\ua4ca', '\ua4c3', '\ua4a1', '\ua4a8', '\ua4b1'};
+        }
+
+        if(i == 1331) {
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+            class8.modifiedModelColors = new int[]{127, 82, 75, 41, 48, 57};
+            class8.originalModelColors = new int[]{21739, 21694, 21687, 21653, 21660, 21669};
+        }
+
+        if(i == 1333) {
+            class8.modelId = '\ubbe9';
+            class8.spriteScale = 1513;
+            class8.spritePitch = 525;
+            class8.spriteCameraRoll = 40;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 4;
+            class8.spriteTranslateY = -3;
+            class8.primaryMaleModel = '\ubbf0';
+            class8.primaryFemaleModel = '\ubbf0';
+        }
+
+        if(i == 1513) {
+            class8.modelId = 26902;
+        }
+
+        if(i == 542) {
+            class8.modelId = '\u84a0';
+            class8.spriteScale = 2100;
+            class8.spritePitch = 636;
+            class8.spriteCameraRoll = 0;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 0;
+            class8.spriteTranslateY = -3;
+            class8.primaryMaleModel = 16252;
+            class8.primaryFemaleModel = '\u84a6';
+        }
+
+        if(i == 544) {
+            class8.modelId = '\u849c';
+            class8.spriteScale = 1579;
+            class8.spritePitch = 512;
+            class8.spriteCameraRoll = 0;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -4;
+            class8.spriteTranslateY = 0;
+            class8.primaryMaleModel = 16253;
+            class8.primaryFemaleModel = '\u84a7';
+            class8.secondaryMaleModel = 16256;
+            class8.secondaryFemaleModel = '\u84a5';
+        }
+
+        if(i == 10828) {
+            class8.modelId = 21938;
+            class8.spriteScale = 984;
+            class8.spritePitch = 60;
+            class8.spriteCameraRoll = 204;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 3;
+            class8.spriteTranslateY = 1;
+            class8.primaryMaleModel = 21873;
+            class8.primaryFemaleModel = 21906;
+            class8.secondaryMaleModel = -1;
+            class8.secondaryFemaleModel = -1;
+            class8.primaryMaleHeadPiece = '\u9a5c';
+            class8.primaryFemaleHeadPiece = '\u975f';
+        }
+
+        if(i == 10564) {
+            class8.modelId = 20739;
+            class8.spriteScale = 1419;
+            class8.spritePitch = 557;
+            class8.spriteCameraRoll = 2038;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = 1;
+            class8.spriteTranslateY = 7;
+            class8.primaryMaleModel = 20736;
+            class8.primaryFemaleModel = 20738;
+            class8.secondaryMaleModel = 20735;
+            class8.secondaryFemaleModel = 20737;
+            class8.primaryMaleHeadPiece = -1;
+            class8.primaryFemaleHeadPiece = -1;
+        }
+
+        if(i == 9674) {
+            class8.modelId = 2378;
+            class8.spriteScale = 1250;
+            class8.spritePitch = 488;
+            class8.spriteCameraRoll = 0;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -1;
+            class8.spriteTranslateY = 0;
+            class8.primaryMaleModel = 3379;
+            class8.primaryFemaleModel = 3383;
+            class8.secondaryMaleModel = 164;
+            class8.secondaryFemaleModel = 344;
+            class8.primaryMaleHeadPiece = -1;
+            class8.primaryFemaleHeadPiece = -1;
+            class8.modifiedModelColors = new int[]{24, 61, 41};
+            class8.originalModelColors = new int[]{6067, 99, 82};
+        }
+
+        if(i == 11037) {
+            class8.modelId = 24142;
+            class8.spriteScale = 1503;
+            class8.spritePitch = 489;
+            class8.spriteCameraRoll = 1421;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -1;
+            class8.spriteTranslateY = 3;
+            class8.primaryMaleModel = 24052;
+            class8.primaryFemaleModel = 24052;
+            class8.secondaryMaleModel = -1;
+            class8.secondaryFemaleModel = -1;
+            class8.primaryMaleHeadPiece = -1;
+            class8.primaryFemaleHeadPiece = -1;
+        }
+
+        if(i == 2366) {
+            class8.modelId = '\u8735';
+            class8.spriteScale = 1740;
+            class8.spritePitch = 340;
+            class8.spriteCameraRoll = 204;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -5;
+            class8.spriteTranslateY = -12;
+            class8.primaryMaleModel = -1;
+            class8.primaryFemaleModel = -1;
+            class8.secondaryMaleModel = -1;
+            class8.secondaryFemaleModel = -1;
+            class8.primaryMaleHeadPiece = -1;
+            class8.primaryFemaleHeadPiece = -1;
+        }
+
+        if(i == 2368) {
+            class8.modelId = '\u8734';
+            class8.spriteScale = 1800;
+            class8.spritePitch = 392;
+            class8.spriteCameraRoll = 140;
+            class8.spriteCameraYaw = 0;
+            class8.spriteTranslateX = -13;
+            class8.spriteTranslateY = 0;
+            class8.primaryMaleModel = -1;
+            class8.primaryFemaleModel = -1;
+            class8.secondaryMaleModel = -1;
+            class8.secondaryFemaleModel = -1;
+            class8.primaryMaleHeadPiece = -1;
+            class8.primaryFemaleHeadPiece = -1;
+        }
+
+        if(i == 2631) {
+            class8.modelId = 2500;
+        }
 
         return class8;
     }

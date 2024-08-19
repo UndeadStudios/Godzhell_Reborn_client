@@ -22,4 +22,5 @@ public class Configuration {
     public static boolean smoothShading = true;
     public static boolean hdTexturing = false;
     public static boolean distanceFog = false;
+    public static boolean xp_merge = false;
 }

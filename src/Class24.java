@@ -59,7 +59,7 @@ public final class Class24
             return anInputStream419.read();
     }
 
-    public int method269()
+    public int available()
         throws IOException
     {
         if(aBoolean422)
@@ -174,7 +174,7 @@ public final class Class24
         System.out.println("ioerror:" + aBoolean428);
         try
         {
-            System.out.println("available:" + method269());
+            System.out.println("available:" + available());
             return;
         }
         catch(IOException _ex)

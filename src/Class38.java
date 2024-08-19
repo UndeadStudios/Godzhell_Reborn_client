@@ -1,153 +1,156 @@
-public class Class38
-{
+public class Class38 {
+    public static int anInt655;
+    public static Class38[] aClass38Array656;
+    public int bodyPartId = -1;
+    public int[] bodyModelIds;
+    public boolean notSelectable = false;
+    public int[] headModelIds = new int[]{-1, -1, -1, -1, -1, -1, -1, -1, -1, -1};
+    private int anInt654 = 9;
+    public int[] originalColors = new int[10];
+    public int[] modifiedColors = new int[10];
 
-    public static void method535(int i, FileArchive fileArchive)
-    {
+    public static void method535(int i, FileArchive fileArchive) {
         Stream stream = new Stream(fileArchive.method571("idk.dat"), 891);
         anInt655 = stream.readUnsignedShort();
-        if(aClass38Array656 == null)
+        if(aClass38Array656 == null) {
             aClass38Array656 = new Class38[anInt655];
-        for(int j = 0; j < anInt655; j++)
-        {
-            if(aClass38Array656[j] == null)
+        }
+
+        for(int j = 0; j < anInt655; ++j) {
+            if(aClass38Array656[j] == null) {
                 aClass38Array656[j] = new Class38();
+            }
+
             aClass38Array656[j].method536(true, stream);
-            aClass38Array656[j].anIntArray659[0] = 55232;
-            aClass38Array656[j].anIntArray660[0] = 6798;
+            aClass38Array656[j].originalColors[0] = '\ud7c0';
+            aClass38Array656[j].modifiedColors[0] = 6798;
+        }
+
+    }
+
+    public void method536(boolean flag, Stream stream) {
+        if(!flag) {
+            throw new NullPointerException();
+        } else {
+            while(true) {
+                while(true) {
+                    int i = stream.readUnsignedByte();
+                    if(i == 0) {
+                        return;
+                    }
+
+                    if(i == 1) {
+                        this.bodyPartId = stream.readUnsignedByte();
+                    } else if(i == 2) {
+                        int j = stream.readUnsignedByte();
+                        this.bodyModelIds = new int[j];
+
+                        for(int k = 0; k < j; ++k) {
+                            this.bodyModelIds[k] = stream.readUnsignedShort();
+                        }
+                    } else if(i == 3) {
+                        this.notSelectable = true;
+                    } else if(i >= 40 && i < 50) {
+                        this.originalColors[i - 40] = stream.readUnsignedShort();
+                    } else if(i >= 50 && i < 60) {
+                        this.modifiedColors[i - 50] = stream.readUnsignedShort();
+                    } else if(i >= 60 && i < 70) {
+                        this.headModelIds[i - 60] = stream.readUnsignedShort();
+                    } else {
+                        System.out.println("Error unrecognised config code: " + i);
+                    }
+                }
+            }
         }
     }
 
-    public void method536(boolean flag, Stream stream)
-    {
-        if(!flag)
-            throw new NullPointerException();
-        do
-        {
-            int i = stream.readUnsignedByte();
-            if(i == 0)
-                return;
-            if(i == 1)
-                anInt657 = stream.readUnsignedByte();
-            else
-            if(i == 2)
-            {
-                int j = stream.readUnsignedByte();
-                anIntArray658 = new int[j];
-                for(int k = 0; k < j; k++)
-                    anIntArray658[k] = stream.readUnsignedShort();
-
-            } else
-            if(i == 3)
-                aBoolean662 = true;
-            else
-            if(i >= 40 && i < 50)
-                anIntArray659[i - 40] = stream.readUnsignedShort();
-            else
-            if(i >= 50 && i < 60)
-                anIntArray660[i - 50] = stream.readUnsignedShort();
-            else
-            if(i >= 60 && i < 70)
-                anIntArray661[i - 60] = stream.readUnsignedShort();
-            else
-                System.out.println("Error unrecognised config code: " + i);
-        } while(true);
-    }
-
-    public boolean method537(byte byte0)
-    {
-        if(anIntArray658 == null)
+    public boolean method537(byte byte0) {
+        if(this.bodyModelIds == null) {
             return true;
-        boolean flag = true;
-        if(byte0 == 2)
-        {
-            byte0 = 0;
-        } else
-        {
-            for(int i = 1; i > 0; i++);
-        }
-        for(int j = 0; j < anIntArray658.length; j++)
-            if(!Model.method463(anIntArray658[j]))
-                flag = false;
+        } else {
+            boolean flag = true;
+            int j;
+            if(byte0 == 2) {
+                boolean var4 = false;
+            } else {
+                for(j = 1; j > 0; ++j) {
+                    ;
+                }
+            }
 
-        return flag;
+            for(j = 0; j < this.bodyModelIds.length; ++j) {
+                if(!Model.method463(this.bodyModelIds[j])) {
+                    flag = false;
+                }
+            }
+
+            return flag;
+        }
     }
 
-    public Model method538(boolean flag)
-    {
-        if(flag)
+    public Model method538(boolean flag) {
+        if(flag) {
             throw new NullPointerException();
-        if(anIntArray658 == null)
+        } else if(this.bodyModelIds == null) {
             return null;
-        Model aclass30_sub2_sub4_sub6[] = new Model[anIntArray658.length];
-        for(int i = 0; i < anIntArray658.length; i++)
-            aclass30_sub2_sub4_sub6[i] = Model.method462(anInt654, anIntArray658[i]);
+        } else {
+            Model[] aclass30_sub2_sub4_sub6 = new Model[this.bodyModelIds.length];
 
-        Model model;
-        if(aclass30_sub2_sub4_sub6.length == 1)
-            model = aclass30_sub2_sub4_sub6[0];
-        else
-            model = new Model(aclass30_sub2_sub4_sub6.length, aclass30_sub2_sub4_sub6, -38);
-        for(int j = 0; j < 6; j++)
-        {
-            if(anIntArray659[j] == 0)
-                break;
-            model.method476(anIntArray659[j], anIntArray660[j]);
+            for(int model = 0; model < this.bodyModelIds.length; ++model) {
+                aclass30_sub2_sub4_sub6[model] = Model.method462(this.anInt654, this.bodyModelIds[model]);
+            }
+
+            Model var5;
+            if(aclass30_sub2_sub4_sub6.length == 1) {
+                var5 = aclass30_sub2_sub4_sub6[0];
+            } else {
+                var5 = new Model(aclass30_sub2_sub4_sub6.length, aclass30_sub2_sub4_sub6, -38);
+            }
+
+            for(int j = 0; j < 9 && this.originalColors[j] != 0; ++j) {
+                var5.method476(this.originalColors[j], this.modifiedColors[j]);
+            }
+
+            return var5;
         }
-
-        return model;
     }
 
-    public boolean method539(boolean flag)
-    {
-        if(flag)
+    public boolean method539(boolean flag) {
+        if(flag) {
             throw new NullPointerException();
-        boolean flag1 = true;
-        for(int i = 0; i < 5; i++)
-            if(anIntArray661[i] != -1 && !Model.method463(anIntArray661[i]))
-                flag1 = false;
+        } else {
+            boolean flag1 = true;
 
-        return flag1;
-    }
+            for(int i = 0; i < 10; ++i) {
+                if(this.headModelIds[i] != -1 && !Model.method463(this.headModelIds[i])) {
+                    flag1 = false;
+                }
+            }
 
-    public Model method540(int i)
-    {
-        if(i != 0)
-            throw new NullPointerException();
-        Model aclass30_sub2_sub4_sub6[] = new Model[5];
-        int j = 0;
-        for(int k = 0; k < 5; k++)
-            if(anIntArray661[k] != -1)
-                aclass30_sub2_sub4_sub6[j++] = Model.method462(anInt654, anIntArray661[k]);
-
-        Model model = new Model(j, aclass30_sub2_sub4_sub6, -38);
-        for(int l = 0; l < 6; l++)
-        {
-            if(anIntArray659[l] == 0)
-                break;
-            model.method476(anIntArray659[l], anIntArray660[l]);
+            return flag1;
         }
-
-        return model;
     }
 
-    public Class38()
-    {
-        anInt654 = 9;
-        anInt657 = -1;
-        anIntArray659 = new int[6];
-        anIntArray660 = new int[6];
-        aBoolean662 = false;
-    }
+    public Model method540(int i) {
+        if(i != 0) {
+            throw new NullPointerException();
+        } else {
+            Model[] aclass30_sub2_sub4_sub6 = new Model[this.headModelIds.length];
+            int j = 0;
 
-    private int anInt654;
-    public static int anInt655;
-    public static Class38 aClass38Array656[];
-    public int anInt657;
-    public int anIntArray658[];
-    public int anIntArray659[];
-    public int anIntArray660[];
-    public int anIntArray661[] = {
-        -1, -1, -1, -1, -1
-    };
-    public boolean aBoolean662;
+            for(int model = 0; model < this.headModelIds.length; ++model) {
+                if(this.headModelIds[model] != -1) {
+                    aclass30_sub2_sub4_sub6[j++] = Model.method462(this.anInt654, this.headModelIds[model]);
+                }
+            }
+
+            Model var6 = new Model(j, aclass30_sub2_sub4_sub6, -38);
+
+            for(int l = 0; l < 9 && this.originalColors[l] != 0; ++l) {
+                var6.method476(this.originalColors[l], this.modifiedColors[l]);
+            }
+
+            return var6;
+        }
+    }
 }

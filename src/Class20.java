@@ -62,8 +62,8 @@ public class Class20
               String loopDelay = String.valueOf(aClass20Array351[j].anInt356);
               String animationFlowControl = Arrays.toString(aClass20Array351[j].anIntArray357);
               String oneSquareAnimation = String.valueOf(aClass20Array351[j].anInt359);
-              String forcedPriority = String.valueOf(aClass20Array351[j].anInt360);
-              String leftHandItem = String.valueOf(aClass20Array351[j].anInt361);
+              String forcedPriority = String.valueOf(aClass20Array351[j].leftHandItem);
+              String leftHandItem = String.valueOf(aClass20Array351[j].rightHandItem);
               String rightHandItem = String.valueOf(aClass20Array351[j].anInt362);
               String frameStep = String.valueOf(aClass20Array351[j].anInt363);
               String resetWhenWalk = String.valueOf(aClass20Array351[j].anInt364);
@@ -136,9 +136,9 @@ public class Class20
 			else if(i == 5)
 				anInt359 = stream.readUnsignedByte();
 			else if(i == 6)
-				anInt360 = stream.readUnsignedShort();
+                leftHandItem = stream.readUnsignedShort();
 			else if(i == 7)
-				anInt361 = stream.readUnsignedShort();
+                rightHandItem = stream.readUnsignedShort();
 			else if(i == 8)
 				anInt362 = stream.readUnsignedByte();
 			else if(i == 9)
@@ -182,8 +182,8 @@ public class Class20
         anInt356 = -1;
         aBoolean358 = false;
         anInt359 = 5;
-        anInt360 = -1;
-        anInt361 = -1;
+        leftHandItem = -1;
+        rightHandItem = -1;
         anInt362 = 99;
         anInt363 = -1;
         anInt364 = -1;
@@ -201,8 +201,8 @@ public class Class20
     public int anIntArray357[];
     public boolean aBoolean358;
     public int anInt359;
-    public int anInt360;
-    public int anInt361;
+    public int leftHandItem;
+    public int rightHandItem;
     public int anInt362;
     public int anInt363;
     public int anInt364;

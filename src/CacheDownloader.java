@@ -52,7 +52,7 @@ public class CacheDownloader {
 	 */
 	public enum FileType {
 		//CACHE(signlink.findcachedir(), "https://godzhell.net/cache/cache.zip", 8),
-		FILEDATA(signlink.findcachedir(), "https://godzhell.net/cache/filedata.zip", 7);
+		FILEDATA(signlink.findcachedir(), "https://godzhell.net/cache/filedata.zip", 8);
 		/**
 		 * The link to the file on the webserver
 		 */
