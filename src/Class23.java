@@ -24,8 +24,8 @@ public class Class23
         do {
 		anInt405 = stream.readUnsignedShort();
 		anInt406 = stream.readUnsignedShort();
-        if(Class20.aClass20Array351 != null && anInt406 != 65535 && anInt406 != -1)
-         aClass20_407 = Class20.aClass20Array351[anInt406];
+        if(AnimationDefinition.anims != null && anInt406 != 65535 && anInt406 != -1)
+         aClass20_407 = AnimationDefinition.anims[anInt406];
         anInt410 = stream.readUnsignedByte();
         anInt411 = stream.readUnsignedByte();
 		int j = stream.readUnsignedByte();
@@ -72,7 +72,7 @@ public class Class23
     public int anInt404;
     public int anInt405;
     public int anInt406;
-    public Class20 aClass20_407;
+    public AnimationDefinition aClass20_407;
     public int anIntArray408[];
     public int anIntArray409[];
     public int anInt410;

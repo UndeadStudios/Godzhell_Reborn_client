@@ -47,7 +47,7 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
     public boolean mouseWheelDown;
     public int mouseWheelX;
     public int mouseWheelY;
-    public int anInt19;
+    public int clickMode2;
     public int mouseX;
     public int mouseY;
     private int anInt33;
@@ -422,10 +422,10 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
             this.mouseWheelY = j;
         } else if(SwingUtilities.isRightMouseButton(mouseevent)) {
             this.anInt22 = 2;
-            this.anInt19 = 2;
+            this.clickMode2 = 2;
         } else if(SwingUtilities.isLeftMouseButton(mouseevent)) {
             this.anInt22 = 1;
-            this.anInt19 = 1;
+            this.clickMode2 = 1;
         }
     }
 
@@ -456,7 +456,7 @@ public class Applet_Sub1 extends Applet implements Runnable, MouseListener, Mous
 
     public final void mouseReleased(MouseEvent mouseevent) {
         this.anInt18 = 0;
-        this.anInt19 = 0;
+        this.clickMode2 = 0;
         this.mouseWheelDown = false;
     }
 

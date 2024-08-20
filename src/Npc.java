@@ -11,17 +11,17 @@ final class Npc extends Class30_Sub2_Sub4_Sub1
         {
             for(int j = 1; j > 0; j++);
         }
-        if(super.anInt1526 >= 0 && super.anInt1529 == 0)
+        if(super.primaryanim >= 0 && super.primaryanim_pause == 0)
         {
-            int k = Class20.aClass20Array351[super.anInt1526].anIntArray353[super.anInt1527];
+            int k = AnimationDefinition.anims[super.primaryanim].anIntArray353[super.primaryanim_frameindex];
             int i1 = -1;
             if(super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511)
-                i1 = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
-            return desc.method164(0, i1, k, Class20.aClass20Array351[super.anInt1526].anIntArray357);
+                i1 = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
+            return desc.method164(0, i1, k, AnimationDefinition.anims[super.primaryanim].anIntArray357);
         }
         int l = -1;
         if(super.anInt1517 >= 0)
-            l = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
+            l = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
         return desc.method164(0, -1, l, null);
     }
 

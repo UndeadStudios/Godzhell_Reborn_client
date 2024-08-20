@@ -27,6 +27,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.CRC32;
 import sign.signlink;
 
@@ -80,7 +82,9 @@ public class client extends Applet_Sub1 {
     private static boolean aBoolean1224 = true;
     private int menuActionRow;
     private int digits;
+    private int modifiableXValue = 1; // u dont care if it starts at 1? Can't see a real problem with it :P kk
     public static int TotalRead = 0;
+    private final Sprite[] inputSprites = new Sprite[7];
     private boolean aBoolean872;
     private int packet;
     private boolean aBoolean991;
@@ -135,7 +139,7 @@ public class client extends Applet_Sub1 {
     private int anInt974;
     private int spriteDrawX;
     private int spriteDrawY;
-    private int anInt899;
+    private int friendsCount;
     private boolean tabAreaAltered;
     private byte[] aByteArray912;
     private static int anInt854;
@@ -146,6 +150,9 @@ public class client extends Applet_Sub1 {
     private int yCameraCurve;
     private int xCameraCurve;
     private static int anInt846;
+    private Pattern pattern;
+
+    private Matcher matcher;
     private Class24 socketStream;
     private int anInt833;
     private int currentSong;
@@ -334,9 +341,9 @@ public class client extends Applet_Sub1 {
     private int[] anIntArray1073;
     private Sprite[] aSpriteArray1140;
     private Sprite minimapImage;
-    private String[] aStringArray1082;
-    private long[] aLongArray955;
-    private int[] anIntArray826;
+    private String[] friendsList;
+    private long[] friendsListAsLongs;
+    private int[] friendsNodeIDs;
     private String amountOrNameInput;
     static boolean fpsOn;
     static boolean clientData;
@@ -623,7 +630,108 @@ public class client extends Applet_Sub1 {
         this.pushMessage(" ", 80, x);
         System.out.println("Reached appearInChat for: " + x);
     }
+    private void drawInputField(Widget child, int xPosition, int yPosition, int width, int height) {
+        int clickX = super.saveClickX, clickY = super.saveClickY;
+        Sprite[] inputSprites = this.inputSprites;
+        int xModification = 0, yModification = 0;
+        for (int row = 0; row < width; row += 12) {
+            if (row + 12 > width)
+                row -= 12 - (width - row);
+            inputSprites[6].drawSprite(xModification <= 0 ? xPosition + row : xPosition + xModification, yPosition);
+            for (int collumn = 0; collumn < height; collumn += 12) {
+                if (collumn + 12 > height)
+                    collumn -= 12 - (height - collumn);
+                inputSprites[6].drawSprite(xPosition + row,
+                        yModification <= 0 ? yPosition + collumn : yPosition + yModification);
+            }
+        }
+        inputSprites[1].drawSprite(xPosition, yPosition);
+        inputSprites[0].drawSprite(xPosition, yPosition + height - 8);
+        inputSprites[2].drawSprite(xPosition + width - 4, yPosition);
+        inputSprites[3].drawSprite(xPosition + width - 4, yPosition + height - 8);
+        xModification = 0;
+        yModification = 0;
+        for (int top = 0; top < width; top += 8) {
+            if (top + 8 > width)
+                top -= 8 - (width - top);
+            inputSprites[5].drawSprite(xPosition + top, yPosition);
+            inputSprites[5].drawSprite(xPosition + top, yPosition + height - 1);
+        }
+        for (int bottom = 0; bottom < height; bottom += 8) {
+            if (bottom + 8 > height)
+                bottom -= 8 - (height - bottom);
+            inputSprites[4].drawSprite(xPosition, yPosition + bottom);
+            inputSprites[4].drawSprite(xPosition + width - 1, yPosition + bottom);
+        }
+        String message = child.message;
+        if (regularText.getTextWidth(message) > child.width - 10)
+            message = message.substring(message.length() - (child.width / 10) - 1);
+        if (child.displayAsterisks)
+            this.regularText.method389(false, true, (xPosition + 4), child.textColor,
+                    TextClass.method588(message, 0) +
+                            (((!child.isInFocus ? 0 : 1) & (loopCycle % 40 < 20 ? 1 : 0)) != 0 ? "|" : ""),
+                    (yPosition + (height / 2) + 6));
+        else
+            this.regularText.method389(false, true, (xPosition + 4), child.textColor,
+                    message +
+                            (((!child.isInFocus ? 0 : 1) & (loopCycle % 40 < 20 ? 1 : 0)) != 0 ? "|" : ""),
+                    (yPosition + (height / 2) + 6));
 
+
+        boolean clicked = false;
+        if (currentScreenMode != ScreenMode.RESIZABLE) {
+            int x = 516;
+            int y = 168;
+            clicked = clickX >= xPosition + x && clickX <= xPosition + x + child.width && clickY >= yPosition + y && clickY <= yPosition + y + child.height;
+        } else {
+            clicked = clickX >= xPosition && clickX <= xPosition + child.width && clickY >= yPosition && clickY <= yPosition + child.height;
+        }
+
+        if (clicked && !child.isInFocus && getInputFieldFocusOwner() != child) {
+            if ((super.clickMode2 == 1 && !menuOpen)) {
+                Widget.currentInputFieldId = child.id;
+                setInputFieldFocusOwner(child);
+                if (child.message != null && child.message.equals(child.defaultInputFieldText))
+                    child.message = "";
+                if (child.message == null)
+                    child.message = "";
+            }
+        }
+    }
+    public void setInputFieldFocusOwner(Widget owner) {
+        for (Widget rsi : Widget.interfaceCache)
+            if (rsi != null)
+                rsi.isInFocus = rsi == owner;
+    }
+
+    public Widget getInputFieldFocusOwner() {
+        for (Widget rsi : Widget.interfaceCache)
+            if (rsi != null)
+                if (rsi.isInFocus)
+                    return rsi;
+        return null;
+    }
+
+    public void resetInputFieldFocus() {
+        for (Widget rsi : Widget.interfaceCache)
+            if (rsi != null)
+                rsi.isInFocus = false;
+        Widget.currentInputFieldId = -1;
+    }
+
+    public boolean isFieldInFocus() {
+        if (openInterfaceID == -1 && invOverlayInterfaceID <= 0) {
+            return false;
+        }
+        for (Widget rsi : Widget.interfaceCache) {
+            if (rsi != null) {
+                if (rsi.type == 16 && rsi.isInFocus) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
     void sendPacket(int packet) {
         if(packet == 103) {
             this.stream.createFrame(103);
@@ -2744,7 +2852,20 @@ public class client extends Applet_Sub1 {
                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                             ++this.menuActionRow;
                         }
-
+                        if (class9_1.atActionType == 8 && !aBoolean1149 && k >= i2 && i1 >= j2 && k < i2 + class9_1.width
+                                && i1 < j2 + class9_1.height) {
+                            for (int s1 = 0; s1 < class9_1.tooltips.length; s1++) {
+								/*if (!Widget.interfaceCache[32007].isMouseoverTriggered) {
+									if (class9_1.id > 32016) {
+										continue;
+									}
+								}*/
+                                menuActionName[menuActionRow] = class9_1.tooltips[s1];
+                                menuActionID[menuActionRow] = 1700 + s1;
+                                menuActionCmd3[menuActionRow] = class9_1.id;
+                                menuActionRow++;
+                            }
+                        }
                         int var21;
                         if(k >= i2 && i1 >= j2 && k < i2 + (class9_1.type == 4?100:class9_1.width) && i1 < j2 + class9_1.height && class9_1.actions != null && (class9_1.type == 4 && class9_1.message.length() > 0 || class9_1.type == 5)) {
                             for(var21 = class9_1.actions.length - 1; var21 >= 0; --var21) {
@@ -2795,26 +2916,26 @@ public class client extends Applet_Sub1 {
                                                 }
                                             } else {
                                                 int j4;
-                                                if(class9_1.isInventoryInterface) {
-                                                    for(j4 = 4; j4 >= 3; --j4) {
-                                                        if(class8.itemActions != null && class8.itemActions[j4] != null) {
+                                                if (class9_1.isInventoryInterface) {
+                                                    for (j4 = 4; j4 >= 3; --j4) {
+                                                        if (class8.itemActions != null && class8.itemActions[j4] != null) {
                                                             this.menuActionName[this.menuActionRow] = class8.itemActions[j4] + " <col=ff9040>" + class8.name;
-                                                            if(j4 == 3) {
+                                                            if (j4 == 3) {
                                                                 this.menuActionID[this.menuActionRow] = 493;
                                                             }
 
-                                                            if(j4 == 4) {
+                                                            if (j4 == 4) {
                                                                 this.menuActionID[this.menuActionRow] = 847;
                                                             }
 
-                                                            this.menuActionCmd1[this.menuActionRow] = (long)class8.anInt157;
+                                                            this.menuActionCmd1[this.menuActionRow] = (long) class8.anInt157;
                                                             this.menuActionCmd2[this.menuActionRow] = var21;
                                                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                                                             ++this.menuActionRow;
-                                                        } else if(j4 == 4) {
+                                                        } else if (j4 == 4) {
                                                             this.menuActionName[this.menuActionRow] = "Drop <col=ff9040>" + class8.name;
                                                             this.menuActionID[this.menuActionRow] = 847;
-                                                            this.menuActionCmd1[this.menuActionRow] = (long)class8.anInt157;
+                                                            this.menuActionCmd1[this.menuActionRow] = (long) class8.anInt157;
                                                             this.menuActionCmd2[this.menuActionRow] = var21;
                                                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                                                             ++this.menuActionRow;
@@ -2822,68 +2943,89 @@ public class client extends Applet_Sub1 {
                                                     }
                                                 }
 
-                                                if(class9_1.usableItemInterface) {
+                                                if (class9_1.usableItemInterface) {
                                                     this.menuActionName[this.menuActionRow] = "Use <col=ff9040>" + class8.name;
                                                     this.menuActionID[this.menuActionRow] = 447;
-                                                    this.menuActionCmd1[this.menuActionRow] = (long)class8.anInt157;
+                                                    this.menuActionCmd1[this.menuActionRow] = (long) class8.anInt157;
                                                     this.menuActionCmd2[this.menuActionRow] = var21;
                                                     this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                                                     ++this.menuActionRow;
                                                 }
 
-                                                if(class9_1.isInventoryInterface && class8.itemActions != null) {
-                                                    for(j4 = 2; j4 >= 0; --j4) {
-                                                        if(class8.itemActions[j4] != null) {
+                                                if (class9_1.isInventoryInterface && class8.itemActions != null) {
+                                                    for (j4 = 2; j4 >= 0; --j4) {
+                                                        if (class8.itemActions[j4] != null) {
                                                             this.menuActionName[this.menuActionRow] = class8.itemActions[j4] + " <col=ff9040>" + class8.name;
-                                                            if(j4 == 0) {
+                                                            if (j4 == 0) {
                                                                 this.menuActionID[this.menuActionRow] = 74;
                                                             }
 
-                                                            if(j4 == 1) {
+                                                            if (j4 == 1) {
                                                                 this.menuActionID[this.menuActionRow] = 454;
                                                             }
 
-                                                            if(j4 == 2) {
+                                                            if (j4 == 2) {
                                                                 this.menuActionID[this.menuActionRow] = 539;
                                                             }
 
-                                                            this.menuActionCmd1[this.menuActionRow] = (long)class8.anInt157;
+                                                            this.menuActionCmd1[this.menuActionRow] = (long) class8.anInt157;
                                                             this.menuActionCmd2[this.menuActionRow] = var21;
                                                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                                                             ++this.menuActionRow;
                                                         }
                                                     }
                                                 }
-
-                                                if(class9_1.actions != null) {
-                                                    for(j4 = 5; j4 >= 0; --j4) {
-                                                        if(class9_1.actions[j4] != null) {
+                                                if (class9_1.id == 5382) {
+                                                    if (modifiableXValue > 0) {// so issue is when x = 0
+                                                        if (class9_1.actions.length < 9) {
+                                                            class9_1.actions = new String[]{
+                                                                    "Withdraw-1",
+                                                                    "Withdraw-5",
+                                                                    "Withdraw-10",
+                                                                    "Withdraw-All",
+                                                                    "Withdraw-X",
+                                                                    "Withdraw-" + modifiableXValue,
+                                                                    "Withdraw-All-but-1"
+                                                            };
+                                                        } else {
+                                                            class9_1.actions[5] = "Withdraw-" + modifiableXValue;
+                                                        }
+                                                    }
+                                                }
+                                                if (class9_1.actions != null) {
+                                                    for (j4 = 8; j4 >= 0; --j4) {
+                                                        if (j4 > class9_1.actions.length - 1)
+                                                            continue;
+                                                        if (class9_1.actions[j4] != null) {
                                                             this.menuActionName[this.menuActionRow] = class9_1.actions[j4] + " <col=ff9040>" + class8.name;
-                                                            if(j4 == 0) {
+                                                            if (j4 == 0) {
                                                                 this.menuActionID[this.menuActionRow] = 632;
                                                             }
 
-                                                            if(j4 == 1) {
+                                                            if (j4 == 1) {
                                                                 this.menuActionID[this.menuActionRow] = 78;
                                                             }
 
-                                                            if(j4 == 2) {
+                                                            if (j4 == 2) {
                                                                 this.menuActionID[this.menuActionRow] = 867;
                                                             }
 
-                                                            if(j4 == 3) {
+                                                            if (j4 == 3) {
                                                                 this.menuActionID[this.menuActionRow] = 431;
                                                             }
 
-                                                            if(j4 == 4) {
+                                                            if (j4 == 4) {
                                                                 this.menuActionID[this.menuActionRow] = 53;
                                                             }
 
-                                                            if(j4 == 5) {
+                                                            if (j4 == 5) {
                                                                 this.menuActionID[this.menuActionRow] = 300;
                                                             }
+                                                            if (j4 == 6) {
+                                                                menuActionID[menuActionRow] = 291;
+                                                            }
 
-                                                            this.menuActionCmd1[this.menuActionRow] = (long)class8.anInt157;
+                                                            this.menuActionCmd1[this.menuActionRow] = (long) class8.anInt157;
                                                             this.menuActionCmd2[this.menuActionRow] = var21;
                                                             this.menuActionCmd3[this.menuActionRow] = class9_1.id;
                                                             ++this.menuActionRow;
@@ -2891,17 +3033,26 @@ public class client extends Applet_Sub1 {
                                                     }
                                                 }
 
-                                                if(this.myPrivilege != 2 && this.myPrivilege != 9 && this.myPrivilege != 10 && this.myPrivilege != 4) {
-                                                    this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col>";
+                                                if (class9_1.isItemSearchComponent) {
+                                                    menuActionName[menuActionRow] = "Select @lre@" + class8.name;
+                                                    menuActionID[menuActionRow] = 1130;
+                                                    menuActionCmd1[menuActionRow] = class8.anInt157;
+                                                    menuActionCmd2[menuActionRow] = var21;
+                                                    menuActionCmd3[menuActionRow] = class9_1.id;
+                                                    menuActionRow++;
                                                 } else {
-                                                    this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col><col=65280>(</col><col=ffffff>" + class8.anInt157 + "</col><col=65280>)</col>";
-                                                }
+                                                    if (this.myPrivilege != 2 && this.myPrivilege != 9 && this.myPrivilege != 10 && this.myPrivilege != 4) {
+                                                        this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col>";
+                                                    } else {
+                                                        this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col><col=65280>(</col><col=ffffff>" + class8.anInt157 + "</col><col=65280>)</col>";
+                                                    }
 
-                                                this.menuActionID[this.menuActionRow] = 1125;
-                                                this.menuActionCmd1[this.menuActionRow] = (long)class8.anInt157;
-                                                this.menuActionCmd2[this.menuActionRow] = var21;
-                                                this.menuActionCmd3[this.menuActionRow] = class9_1.id;
-                                                ++this.menuActionRow;
+                                                    this.menuActionID[this.menuActionRow] = 1125;
+                                                    this.menuActionCmd1[this.menuActionRow] = (long) class8.anInt157;
+                                                    this.menuActionCmd2[this.menuActionRow] = var21;
+                                                    this.menuActionCmd3[this.menuActionRow] = class9_1.id;
+                                                    ++this.menuActionRow;
+                                                }
                                             }
                                         }
                                     }
@@ -3590,15 +3741,15 @@ public class client extends Applet_Sub1 {
     public final void method35(boolean flag, long l) {
         try {
             if(l != 0L) {
-                for(int runtimeexception = 0; runtimeexception < this.anInt899; ++runtimeexception) {
-                    if(this.aLongArray955[runtimeexception] == l) {
-                        --this.anInt899;
+                for(int runtimeexception = 0; runtimeexception < this.friendsCount; ++runtimeexception) {
+                    if(this.friendsListAsLongs[runtimeexception] == l) {
+                        --this.friendsCount;
                         this.tabAreaAltered = true;
 
-                        for(int j = runtimeexception; j < this.anInt899; ++j) {
-                            this.aStringArray1082[j] = this.aStringArray1082[j + 1];
-                            this.anIntArray826[j] = this.anIntArray826[j + 1];
-                            this.aLongArray955[j] = this.aLongArray955[j + 1];
+                        for(int j = runtimeexception; j < this.friendsCount; ++j) {
+                            this.friendsList[j] = this.friendsList[j + 1];
+                            this.friendsNodeIDs[j] = this.friendsNodeIDs[j + 1];
+                            this.friendsListAsLongs[j] = this.friendsListAsLongs[j + 1];
                         }
 
                         this.stream.createFrame(215);
@@ -4487,16 +4638,16 @@ public class client extends Applet_Sub1 {
     public final void method41(byte byte0, long l) {
         try {
             if(l != 0L) {
-                if(this.anInt899 >= 100 && this.anInt1046 != 1) {
+                if(this.friendsCount >= 100 && this.anInt1046 != 1) {
                     this.pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
-                } else if(this.anInt899 >= 200) {
+                } else if(this.friendsCount >= 200) {
                     this.pushMessage("Your friendlist is full. Max of 100 for free users, and 200 for members", 0, "");
                 } else {
                     String runtimeexception = TextClass.fixName(TextClass.nameForLong(l));
 
                     int j;
-                    for(j = 0; j < this.anInt899; ++j) {
-                        if(this.aLongArray955[j] == l) {
+                    for(j = 0; j < this.friendsCount; ++j) {
+                        if(this.friendsListAsLongs[j] == l) {
                             this.pushMessage(runtimeexception + " is already on your friend list", 0, "");
                             return;
                         }
@@ -4514,10 +4665,10 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(!runtimeexception.equals(localPlayer.name)) {
-                        this.aStringArray1082[this.anInt899] = runtimeexception;
-                        this.aLongArray955[this.anInt899] = l;
-                        this.anIntArray826[this.anInt899] = 0;
-                        ++this.anInt899;
+                        this.friendsList[this.friendsCount] = runtimeexception;
+                        this.friendsListAsLongs[this.friendsCount] = l;
+                        this.friendsNodeIDs[this.friendsCount] = 0;
+                        ++this.friendsCount;
                         this.tabAreaAltered = true;
                         this.stream.createFrame(188);
                         this.stream.method404(5, l);
@@ -5558,7 +5709,7 @@ public class client extends Applet_Sub1 {
                     this.aBoolean1242 = true;
                 }
 
-                if(super.anInt19 == 0) {
+                if(super.clickMode2 == 0) {
                     if(this.anInt1086 == 2) {
                         this.tabAreaAltered = true;
                     }
@@ -5655,7 +5806,7 @@ public class client extends Applet_Sub1 {
             this.method92(true);
             this.method78();
             this.processChatModeClick();
-            if(super.anInt19 == 1 || super.clickMode3 == 1) {
+            if(super.clickMode2 == 1 || super.clickMode3 == 1) {
                 ++this.anInt1213;
             }
 
@@ -6287,18 +6438,19 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method69(int i, boolean flag) {
-        if(i >= 0) {
-            if(this.inputDialogState != 0) {
+        if (i < 0)
+            return;
+            if(this.inputDialogState != 0 && inputDialogState != 3) {
                 this.inputDialogState = 0;
                 this.inputTaken = true;
             }
 
             int j = this.menuActionCmd2[i];
-            int k = this.menuActionCmd3[i];
+            int buttonPressed = this.menuActionCmd3[i];
             int l = this.menuActionID[i];
             int i1 = (int)this.menuActionCmd1[i];
             long keyLong = this.menuActionCmd1[i];
-            switch(k) {
+            switch(buttonPressed) {
                 case 19166:
                     if(currentScreenMode != client.ScreenMode.FIXED) {
                         currentScreenMode(client.ScreenMode.FIXED);
@@ -6454,6 +6606,42 @@ public class client extends Applet_Sub1 {
             }
 
             Npc var25;
+            if (l >= 1700 && l <= 1710) {
+                Widget button = Widget.get(buttonPressed);
+                if (button.buttonListener != null)
+                    button.buttonListener.accept(buttonPressed);
+                // Button Click Packet
+                if (button.newButtonClicking) {
+                    stream.createFrame(184);
+                    stream.writeWord(buttonPressed);
+                    //onRealButtonClick(buttonPressed);
+                } else {
+                    stream.createFrame(185);
+                    int offset = buttonPressed + (buttonPressed - 58030) * 10 + (l - 1700);
+                    stream.writeWord(offset);
+                }
+            }
+            if (l == 300) {
+                stream.createFrame(141);
+                stream.method432(-431,j);
+                stream.writeWord(buttonPressed);
+                stream.method432(-431,i1);
+                stream.writeDWord(modifiableXValue);
+            }
+            if (l == 291) {
+                stream.createFrame(140);
+                stream.writeWord(buttonPressed);
+                stream.method433(0,i1);
+                stream.method431(true,j);
+                atInventoryLoopCycle = 0;
+                atInventoryInterface = buttonPressed;
+                atInventoryIndex = j;
+                atInventoryInterfaceType = 2;
+                if (Widget.interfaceCache[buttonPressed].parentID == openInterfaceID)
+                    atInventoryInterfaceType = 1;
+                if (Widget.interfaceCache[buttonPressed].parentID == backDialogID)
+                    atInventoryInterfaceType = 3;
+            }
             if(l == 582) {
                 var25 = this.npcs[i1];
                 if(var25 != null) {
@@ -6472,9 +6660,9 @@ public class client extends Applet_Sub1 {
 
             boolean var16;
             if(l == 234) {
-                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                 if(!var16) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                 }
 
                 this.anInt914 = super.saveClickX;
@@ -6482,25 +6670,25 @@ public class client extends Applet_Sub1 {
                 this.crossType = 2;
                 this.anInt916 = 0;
                 this.stream.createFrame(236);
-                this.stream.method431(true, k + this.baseY);
+                this.stream.method431(true, buttonPressed + this.baseY);
                 this.stream.writeWord(i1);
                 this.stream.method431(true, j + this.baseX);
             }
 
-            if(l == 62 && this.method66(keyLong, k, j, -770)) {
+            if(l == 62 && this.method66(keyLong, buttonPressed, j, -770)) {
                 this.stream.createFrame(192);
                 this.stream.writeWord(this.anInt1284);
                 this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
-                this.stream.method433(0, k + this.baseY);
+                this.stream.method433(0, buttonPressed + this.baseY);
                 this.stream.method431(true, this.anInt1283);
                 this.stream.method433(0, j + this.baseX);
                 this.stream.writeWord(this.anInt1285);
             }
 
             if(l == 511) {
-                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                 if(!var16) {
-                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                    this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                 }
 
                 this.anInt914 = super.saveClickX;
@@ -6511,25 +6699,25 @@ public class client extends Applet_Sub1 {
                 this.stream.method431(true, this.anInt1284);
                 this.stream.method432(-431, this.anInt1285);
                 this.stream.writeWord(i1);
-                this.stream.method432(-431, k + this.baseY);
+                this.stream.method432(-431, buttonPressed + this.baseY);
                 this.stream.method433(0, this.anInt1283);
                 this.stream.writeWord(j + this.baseX);
             }
 
             if(l == 74) {
                 this.stream.createFrame(122);
-                this.stream.method433(0, k);
+                this.stream.method433(0, buttonPressed);
                 this.stream.method432(-431, j);
                 this.stream.method431(true, i1);
                 this.atInventoryLoopCycle = 0;
-                this.atInventoryInterface = k;
+                this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -6537,7 +6725,7 @@ public class client extends Applet_Sub1 {
             boolean class8_1;
             Widget var17;
             if(l == 315) {
-                var17 = Widget.interfaceCache[k];
+                var17 = Widget.interfaceCache[buttonPressed];
                 class8_1 = true;
                 if(var17.contentType > 0) {
                     class8_1 = this.method48(505, var17);
@@ -6549,7 +6737,7 @@ public class client extends Applet_Sub1 {
 
                 if(class8_1) {
                     this.stream.createFrame(185);
-                    this.stream.writeWord(k);
+                    this.stream.writeWord(buttonPressed);
                 }
             }
 
@@ -6603,7 +6791,7 @@ public class client extends Applet_Sub1 {
                 if(!this.menuOpen) {
                     this.aClass25_946.method312(false, super.saveClickY - 0, super.saveClickX - 0);
                 } else {
-                    this.aClass25_946.method312(false, k - 0, j - 0);
+                    this.aClass25_946.method312(false, buttonPressed - 0, j - 0);
                 }
             }
 
@@ -6615,33 +6803,33 @@ public class client extends Applet_Sub1 {
                     anInt924 = 0;
                 }
 
-                this.method66(keyLong, k, j, -770);
+                this.method66(keyLong, buttonPressed, j, -770);
                 this.stream.createFrame(228);
                 this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
-                this.stream.method432(-431, k + this.baseY);
+                this.stream.method432(-431, buttonPressed + this.baseY);
                 this.stream.writeWord(j + this.baseX);
             }
 
             if(l == 679 && !this.aBoolean1149) {
                 this.stream.createFrame(40);
-                this.stream.writeWord(k);
+                this.stream.writeWord(buttonPressed);
                 this.aBoolean1149 = true;
             }
 
             if(l == 431) {
                 this.stream.createFrame(129);
                 this.stream.method432(-431, j);
-                this.stream.writeWord(k);
+                this.stream.writeWord(buttonPressed);
                 this.stream.method432(-431, i1);
                 this.atInventoryLoopCycle = 0;
-                this.atInventoryInterface = k;
+                this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -6674,17 +6862,17 @@ public class client extends Applet_Sub1 {
             if(l == 53) {
                 this.stream.createFrame(135);
                 this.stream.method431(true, j);
-                this.stream.method432(-431, k);
+                this.stream.method432(-431, buttonPressed);
                 this.stream.method431(true, i1);
                 this.atInventoryLoopCycle = 0;
-                this.atInventoryInterface = k;
+                this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -6693,16 +6881,16 @@ public class client extends Applet_Sub1 {
                 this.stream.createFrame(16);
                 this.stream.method432(-431, i1);
                 this.stream.method433(0, j);
-                this.stream.method433(0, k);
+                this.stream.method433(0, buttonPressed);
                 this.atInventoryLoopCycle = 0;
-                this.atInventoryInterface = k;
+                this.atInventoryInterface = buttonPressed;
                 this.atInventoryIndex = j;
                 this.atInventoryInterfaceType = 2;
-                if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                     this.atInventoryInterfaceType = 1;
                 }
 
-                if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                     this.atInventoryInterfaceType = 3;
                 }
             }
@@ -6755,16 +6943,16 @@ public class client extends Applet_Sub1 {
                     this.stream.method433(0, i1);
                     this.stream.writeWord(this.anInt1284);
                     this.stream.method431(true, this.anInt1285);
-                    this.stream.writeWord(k);
+                    this.stream.writeWord(buttonPressed);
                     this.atInventoryLoopCycle = 0;
-                    this.atInventoryInterface = k;
+                    this.atInventoryInterface = buttonPressed;
                     this.atInventoryIndex = j;
                     this.atInventoryInterfaceType = 2;
-                    if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                    if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                         this.atInventoryInterfaceType = 1;
                     }
 
-                    if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                    if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                         this.atInventoryInterfaceType = 3;
                     }
                 }
@@ -6773,26 +6961,26 @@ public class client extends Applet_Sub1 {
                     System.out.println("Dropped Item: " + i1);
                     this.stream.createFrame(87);
                     this.stream.method432(-431, i1);
-                    this.stream.writeWord(k);
+                    this.stream.writeWord(buttonPressed);
                     this.stream.method432(-431, j);
                     this.atInventoryLoopCycle = 0;
-                    this.atInventoryInterface = k;
+                    this.atInventoryInterface = buttonPressed;
                     this.atInventoryIndex = j;
                     this.atInventoryInterfaceType = 2;
-                    if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                    if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                         this.atInventoryInterfaceType = 1;
                     }
 
-                    if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                    if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                         this.atInventoryInterfaceType = 3;
                     }
                 }
 
                 String var24;
                 if(l == 626) {
-                    var17 = Widget.interfaceCache[k];
+                    var17 = Widget.interfaceCache[buttonPressed];
                     this.anInt1136 = 1;
-                    this.anInt1137 = k;
+                    this.anInt1137 = buttonPressed;
                     this.anInt1138 = var17.spellUsableOn;
                     this.anInt1282 = 0;
                     this.tabAreaAltered = true;
@@ -6816,18 +7004,18 @@ public class client extends Applet_Sub1 {
                 } else {
                     if(l == 78) {
                         this.stream.createFrame(117);
-                        this.stream.writeWord(k);
+                        this.stream.writeWord(buttonPressed);
                         this.stream.writeWord(i1);
                         this.stream.method431(true, j);
                         this.atInventoryLoopCycle = 0;
-                        this.atInventoryInterface = k;
+                        this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -6853,9 +7041,9 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 213) {
-                        var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                        var16 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!var16) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -6863,43 +7051,43 @@ public class client extends Applet_Sub1 {
                         this.crossType = 2;
                         this.anInt916 = 0;
                         this.stream.createFrame(79);
-                        this.stream.method431(true, k + this.baseY);
+                        this.stream.method431(true, buttonPressed + this.baseY);
                         this.stream.writeWord(i1);
                         this.stream.method432(-431, j + this.baseX);
                     }
 
                     if(l == 632) {
                         this.stream.createFrame(145);
-                        this.stream.method432(-431, k);
+                        this.stream.method432(-431, buttonPressed);
                         this.stream.method432(-431, j);
                         this.stream.method432(-431, i1);
                         this.atInventoryLoopCycle = 0;
-                        this.atInventoryInterface = k;
+                        this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
 
                     if(l == 493) {
                         this.stream.createFrame(75);
-                        this.stream.method433(0, k);
+                        this.stream.method433(0, buttonPressed);
                         this.stream.method431(true, j);
                         this.stream.method432(-431, i1);
                         this.atInventoryLoopCycle = 0;
-                        this.atInventoryInterface = k;
+                        this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -6930,9 +7118,9 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 652) {
-                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!class8_1) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -6941,14 +7129,14 @@ public class client extends Applet_Sub1 {
                         this.anInt916 = 0;
                         this.stream.createFrame(156);
                         this.stream.method432(-431, j + this.baseX);
-                        this.stream.method431(true, k + this.baseY);
+                        this.stream.method431(true, buttonPressed + this.baseY);
                         this.stream.method433(0, i1);
                     }
 
                     if(l == 94) {
-                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!class8_1) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -6956,7 +7144,7 @@ public class client extends Applet_Sub1 {
                         this.crossType = 2;
                         this.anInt916 = 0;
                         this.stream.createFrame(181);
-                        this.stream.method431(true, k + this.baseY);
+                        this.stream.method431(true, buttonPressed + this.baseY);
                         this.stream.writeWord(i1);
                         this.stream.method431(true, j + this.baseX);
                         this.stream.method432(-431, this.anInt1137);
@@ -6966,9 +7154,9 @@ public class client extends Applet_Sub1 {
                     int var27;
                     if(l == 647) {
                         this.stream.createFrame(213);
-                        this.stream.writeWord(k);
+                        this.stream.writeWord(buttonPressed);
                         this.stream.writeWord(j);
-                        switch(k) {
+                        switch(buttonPressed) {
                             case 18144:
                             case 18145:
                             case 18146:
@@ -7160,15 +7348,15 @@ public class client extends Applet_Sub1 {
                         }
 
                         this.stream.createFrame(213);
-                        this.stream.writeWord(k);
+                        this.stream.writeWord(buttonPressed);
                         this.stream.writeWord(j);
                     }
 
                     Widget var26;
                     if(l == 646) {
                         this.stream.createFrame(185);
-                        this.stream.writeWord(k);
-                        var26 = Widget.interfaceCache[k];
+                        this.stream.writeWord(buttonPressed);
+                        var26 = Widget.interfaceCache[buttonPressed];
                         if(var26.valueIndexArray != null && var26.valueIndexArray[0][0] == 5) {
                             var23 = var26.valueIndexArray[0][1];
                             if(this.variousSettings[var23] != var26.anIntArray212[0]) {
@@ -7178,7 +7366,7 @@ public class client extends Applet_Sub1 {
                             }
                         }
 
-                        switch(k) {
+                        switch(buttonPressed) {
                             case 18129:
                                 if(Widget.interfaceCache[18135].message.toLowerCase().contains("join")) {
                                     this.inputTaken = true;
@@ -7294,10 +7482,10 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 900) {
-                        this.method66(keyLong, k, j, -770);
+                        this.method66(keyLong, buttonPressed, j, -770);
                         this.stream.createFrame(252);
                         this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
-                        this.stream.method431(true, k + this.baseY);
+                        this.stream.method431(true, buttonPressed + this.baseY);
                         this.stream.method432(-431, j + this.baseX);
                     }
 
@@ -7355,18 +7543,18 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    if(l == 956 && this.method66(keyLong, k, j, -770)) {
+                    if(l == 956 && this.method66(keyLong, buttonPressed, j, -770)) {
                         this.stream.createFrame(35);
                         this.stream.method431(true, j + this.baseX);
                         this.stream.method432(-431, this.anInt1137);
-                        this.stream.method432(-431, k + this.baseY);
+                        this.stream.method432(-431, buttonPressed + this.baseY);
                         this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
                     }
 
                     if(l == 567) {
-                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!class8_1) {
-                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                            this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
 
                         this.anInt914 = super.saveClickX;
@@ -7374,7 +7562,7 @@ public class client extends Applet_Sub1 {
                         this.crossType = 2;
                         this.anInt916 = 0;
                         this.stream.createFrame(23);
-                        this.stream.method431(true, k + this.baseY);
+                        this.stream.method431(true, buttonPressed + this.baseY);
                         this.stream.method431(true, i1);
                         this.stream.method431(true, j + this.baseX);
                     }
@@ -7391,18 +7579,18 @@ public class client extends Applet_Sub1 {
                         }
 
                         this.stream.createFrame(43);
-                        this.stream.method431(true, k);
+                        this.stream.method431(true, buttonPressed);
                         this.stream.method432(-431, i1);
                         this.stream.method432(-431, j);
                         this.atInventoryLoopCycle = 0;
-                        this.atInventoryInterface = k;
+                        this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7411,17 +7599,17 @@ public class client extends Applet_Sub1 {
                         this.stream.createFrame(237);
                         this.stream.writeWord(j);
                         this.stream.method432(-431, i1);
-                        this.stream.writeWord(k);
+                        this.stream.writeWord(buttonPressed);
                         this.stream.method432(-431, this.anInt1137);
                         this.atInventoryLoopCycle = 0;
-                        this.atInventoryInterface = k;
+                        this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7470,21 +7658,21 @@ public class client extends Applet_Sub1 {
                             long var36 = TextClass.longForName(var24.substring(var23 + 5).trim());
                             int var33 = -1;
 
-                            for(int i4 = 0; i4 < this.anInt899; ++i4) {
-                                if(this.aLongArray955[i4] == var36) {
+                            for(int i4 = 0; i4 < this.friendsCount; ++i4) {
+                                if(this.friendsListAsLongs[i4] == var36) {
                                     var33 = i4;
                                     break;
                                 }
                             }
 
-                            if(var33 != -1 && this.anIntArray826[var33] > 0) {
+                            if(var33 != -1 && this.friendsNodeIDs[var33] > 0) {
                                 this.inputTaken = true;
                                 this.inputDialogState = 0;
                                 this.messagePromptRaised = true;
                                 this.promptInput = "";
                                 this.friendsListAction = 3;
-                                this.aLong953 = this.aLongArray955[var33];
-                                this.aString1121 = "Enter message to send to " + this.aStringArray1082[var33];
+                                this.aLong953 = this.friendsListAsLongs[var33];
+                                this.aString1121 = "Enter message to send to " + this.friendsList[var33];
                             }
                         }
                     }
@@ -7493,16 +7681,16 @@ public class client extends Applet_Sub1 {
                         this.stream.createFrame(41);
                         this.stream.writeWord(i1);
                         this.stream.method432(-431, j);
-                        this.stream.method432(-431, k);
+                        this.stream.method432(-431, buttonPressed);
                         this.atInventoryLoopCycle = 0;
-                        this.atInventoryInterface = k;
+                        this.atInventoryInterface = buttonPressed;
                         this.atInventoryIndex = j;
                         this.atInventoryInterfaceType = 2;
-                        if(Widget.interfaceCache[k].parentID == openInterfaceID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == openInterfaceID) {
                             this.atInventoryInterfaceType = 1;
                         }
 
-                        if(Widget.interfaceCache[k].parentID == this.backDialogID) {
+                        if(Widget.interfaceCache[buttonPressed].parentID == this.backDialogID) {
                             this.atInventoryInterfaceType = 3;
                         }
                     }
@@ -7531,33 +7719,33 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 113) {
-                        this.method66(keyLong, k, j, -770);
+                        this.method66(keyLong, buttonPressed, j, -770);
                         this.stream.createFrame(70);
                         this.stream.method431(true, j + this.baseX);
-                        this.stream.writeWord(k + this.baseY);
+                        this.stream.writeWord(buttonPressed + this.baseY);
                         this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
                     }
 
                     if(l == 872) {
-                        this.method66(keyLong, k, j, -770);
+                        this.method66(keyLong, buttonPressed, j, -770);
                         this.stream.createFrame(234);
                         this.stream.method433(0, j + this.baseX);
                         this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
-                        this.stream.method433(0, k + this.baseY);
+                        this.stream.method433(0, buttonPressed + this.baseY);
                     }
 
                     if(l == 502) {
-                        this.method66(keyLong, k, j, -770);
+                        this.method66(keyLong, buttonPressed, j, -770);
                         this.stream.createFrame(132);
                         this.stream.method433(0, j + this.baseX);
                         this.stream.writeDWord(ObjectKey.getObjectId(keyLong));
-                        this.stream.method432(-431, k + this.baseY);
+                        this.stream.method432(-431, buttonPressed + this.baseY);
                     }
 
                     ItemDefinition var37;
                     if(l == 1125) {
                         var37 = ItemDefinition.method198(i1);
-                        Widget var32 = Widget.interfaceCache[k];
+                        Widget var32 = Widget.interfaceCache[buttonPressed];
                         if(var32 != null && var32.inventoryAmounts[j] >= 100000) {
                             var30 = var32.inventoryAmounts[j] + " x " + var37.name;
                         } else if(var37.description != null) {
@@ -7568,11 +7756,26 @@ public class client extends Applet_Sub1 {
 
                         this.pushMessage(var30, 0, "");
                     }
-
+                    if (l == 1126) {
+                        Widget class9_4 = Widget.interfaceCache[buttonPressed];
+                        if (class9_4 != null) {
+                            stream.createFrame(134);
+                            stream.writeDWord(i1);
+                            stream.writeDWord(class9_4.inventoryAmounts[j]);
+                        }
+                    }
+                    if (l == 1130) {
+                        Widget class9_4 = Widget.interfaceCache[buttonPressed];
+                        if (class9_4 != null) {
+                            class9_4.itemSearchSelectedId = class9_4.inventoryItemId[j];
+                            class9_4.itemSearchSelectedSlot = j;
+                            Widget.selectedItemInterfaceId = class9_4.id;
+                        }
+                    }
                     if(l == 169) {
                         this.stream.createFrame(185);
-                        this.stream.writeWord(k);
-                        var26 = Widget.interfaceCache[k];
+                        this.stream.writeWord(buttonPressed);
+                        var26 = Widget.interfaceCache[buttonPressed];
                         if(var26.valueIndexArray != null && var26.valueIndexArray[0][0] == 5) {
                             var23 = var26.valueIndexArray[0][1];
                             this.variousSettings[var23] = 1 - this.variousSettings[var23];
@@ -7584,7 +7787,7 @@ public class client extends Applet_Sub1 {
                     if(l == 447) {
                         this.anInt1282 = 1;
                         this.anInt1283 = j;
-                        this.anInt1284 = k;
+                        this.anInt1284 = buttonPressed;
                         this.anInt1285 = i1;
                         this.aString1286 = ItemDefinition.method198(i1).name;
                         this.anInt1136 = 0;
@@ -7603,9 +7806,9 @@ public class client extends Applet_Sub1 {
                         }
 
                         if(l == 244) {
-                            class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, k, localPlayer.anIntArray1500[0], false, j);
+                            class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                             if(!class8_1) {
-                                this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k, localPlayer.anIntArray1500[0], false, j);
+                                this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                             }
 
                             this.anInt914 = super.saveClickX;
@@ -7614,7 +7817,7 @@ public class client extends Applet_Sub1 {
                             this.anInt916 = 0;
                             this.stream.createFrame(253);
                             this.stream.method431(true, j + this.baseX);
-                            this.stream.method433(0, k + this.baseY);
+                            this.stream.method433(0, buttonPressed + this.baseY);
                             this.stream.method432(-431, i1);
                         }
 
@@ -7647,7 +7850,6 @@ public class client extends Applet_Sub1 {
                     this.stream.writeUnsignedByte(var22.index);
                 }
             }
-        }
     }
 
     public void sendString(int identifier, String text) {
@@ -7990,9 +8192,9 @@ public class client extends Applet_Sub1 {
         this.anIntArray1073 = null;
         this.aSpriteArray1140 = null;
         this.minimapImage = null;
-        this.aStringArray1082 = null;
-        this.aLongArray955 = null;
-        this.anIntArray826 = null;
+        this.friendsList = null;
+        this.friendsListAsLongs = null;
+        this.friendsNodeIDs = null;
         this.aRSImageProducer_1110 = null;
         this.aRSImageProducer_1111 = null;
         this.aRSImageProducer_1107 = null;
@@ -8010,7 +8212,7 @@ public class client extends Applet_Sub1 {
         Class38.aClass38Array656 = null;
         Widget.interfaceCache = null;
         Class27.aClass27Array507 = null;
-        Class20.aClass20Array351 = null;
+        AnimationDefinition.anims = null;
         Class23.aClass23Array403 = null;
         Class23.aClass12_415 = null;
         Class41.aClass41Array701 = null;
@@ -8057,7 +8259,52 @@ public class client extends Applet_Sub1 {
         this.stream.writeUnsignedByte(text.length() - 1);
         this.stream.writeString(text.substring(2));
     }
+    public void tabToReplyPm() {
+        String name = null;
 
+        for (int var6 = 0; var6 < 100; ++var6) {
+            if (this.chatMessages[var6] != null) {
+                int l = this.chatTypes[var6];
+                if (l == 3 || l == 7) {
+                    name = this.chatNames[var6];
+                    break;
+                }
+            }
+        }
+
+        if (name == null) {
+            this.pushMessage("You haven\'t received any messages to which you can reply.", 0, "");
+        } else {
+            if (name.startsWith("@cr")) {
+                name = name.substring(5);
+            }
+
+            long var61 = TextClass.longForName(name.trim());
+            int k3 = -1;
+
+            for (int i4 = 0; i4 < this.friendsCount; ++i4) {
+                if (this.friendsListAsLongs[i4] == var61) {
+                    k3 = i4;
+                    break;
+                }
+            }
+
+            if (k3 != -1) {
+                if (this.friendsNodeIDs[k3] > 0) {
+                    this.inputTaken = true;
+                    this.inputDialogState = 0;
+                    this.messagePromptRaised = true;
+                    this.promptInput = "";
+                    this.friendsListAction = 3;
+                    this.aLong953 = this.friendsListAsLongs[k3];
+                    this.aString1121 = "Enter message to send to " + this.friendsList[k3];
+                } else {
+                    this.pushMessage("That player is currently offline.", 0, "");
+                }
+            }
+        }
+
+    }
     public final void method73(int i) {
         i = 55 / i;
 
@@ -8097,7 +8344,7 @@ public class client extends Applet_Sub1 {
                             this.method41((byte)68, var16);
                         }
 
-                        if(this.friendsListAction == 2 && this.anInt899 > 0) {
+                        if(this.friendsListAction == 2 && this.friendsCount > 0) {
                             var16 = TextClass.longForName(this.promptInput);
                             this.method35(false, var16);
                         }
@@ -8169,6 +8416,9 @@ public class client extends Applet_Sub1 {
 
                             this.stream.createFrame(208);
                             this.stream.writeDWord(s);
+                            modifiableXValue = s;
+                            if (modifiableXValue < 0)
+                                modifiableXValue = 1;
                         }
 
                         this.inputDialogState = 0;
@@ -8195,360 +8445,442 @@ public class client extends Applet_Sub1 {
                         this.inputTaken = true;
                     }
                 } else if(this.backDialogID == -1) {
-                    if(j >= 32 && j <= 122 && this.inputString.length() < 80) {
-                        this.inputString = this.inputString + (char)j;
-                        this.inputTaken = true;
-                    }
-
-                    if(j == 8 && this.inputString.length() > 0) {
-                        this.inputString = this.inputString.substring(0, this.inputString.length() - 1);
-                        this.inputTaken = true;
-                    }
-
-                    if((j == 13 || j == 10) && this.inputString.length() > 0) {
-                        int var10;
-                        if(this.myPrivilege >= 2) {
-                            if(this.inputString.equals("::clientdrop")) {
-                                this.method68(-670);
-                            }
-
-                            if(this.inputString.equals("::lag")) {
-                                this.method72((byte)1);
-                            }
-
-                            if(this.inputString.equals("::prefetchmusic")) {
-                                for(s = 0; s < onDemandFetcher.method555(79, 2); ++s) {
-                                    onDemandFetcher.method563((byte)1, 2, s, (byte)8);
+                    if (this.isFieldInFocus()) {
+                        Widget rsi = this.getInputFieldFocusOwner();
+                        if (rsi == null) {
+                            return;
+                        }
+                        if (j >= 32 && j <= 122 && rsi.message.length() < rsi.characterLimit) {
+                            if (rsi.inputRegex.length() > 0) {
+                                pattern = Pattern.compile(rsi.inputRegex);
+                                matcher = pattern.matcher(Character.toString(((char) j)));
+                                if (matcher.matches()) {
+                                    rsi.message += (char) j;
+                                    inputTaken = true;
                                 }
+                            } else {
+                                rsi.message += (char) j;
+                                inputTaken = true;
                             }
-
-                            if(this.inputString.equals("::data")) {
-                                clientData = !clientData;
-                            }
-
-                            if(this.inputString.equals("::dumpitemimg")) {
-                                for(s = 0; s < 20000; ++s) {
-                                    Sprite j2 = ItemDefinition.method200(s, 1, 0, 9);
-                                    ItemDefinition i3 = ItemDefinition.method198(s);
-                                    if(j2 != null && i3.name != null) {
-                                        j2.dumpImage("directory/", "" + i3.name + (i3.certTemplateID != -1?" noted":""), j2, true);
-                                    }
-                                }
-                            }
-
-                            if(this.inputString.equals("::noclip")) {
-                                for(s = 0; s < 4; ++s) {
-                                    for(var10 = 1; var10 < 103; ++var10) {
-                                        for(int var11 = 1; var11 < 103; ++var11) {
-                                            this.collisionMaps[s].anIntArrayArray294[var10][var11] = 0;
+                        }
+                        if (j == 8 && rsi.message.length() > 0) {
+                            rsi.message = rsi.message.substring(0, rsi.message.length() - 1);
+                            if (rsi.inputFieldListener != null)
+                                rsi.inputFieldListener.accept(rsi.message);
+                            inputTaken = true;
+                        }
+                        if (rsi.isItemSearchComponent && rsi.message.length() > 2
+                                && rsi.defaultInputFieldText.equals("Name")) {
+                            Widget subcomponent = Widget.interfaceCache[rsi.id + 2];
+                            Widget scroll = Widget.interfaceCache[rsi.id + 4];
+                            Widget toggle = Widget.interfaceCache[rsi.id + 9];
+                            scroll.itemSearchSelectedId = 0;
+                            scroll.itemSearchSelectedSlot = -1;
+                            Widget.selectedItemInterfaceId = 0;
+                            rsi.itemSearchSelectedSlot = -1;
+                            rsi.itemSearchSelectedId = 0;
+                            if (subcomponent != null && scroll != null && toggle != null
+                                    && toggle.valueIndexArray != null) {
+                                ItemSearch itemSearch = new ItemSearch(rsi.message.toLowerCase(), 60, false);
+                                int[] results = itemSearch.getItemSearchResults();
+                                if (subcomponent != null) {
+                                    int position = 0;
+                                    int length = subcomponent.inventoryItemId.length;
+                                    subcomponent.inventoryItemId = new int[length];
+                                    subcomponent.inventoryAmounts = new int[subcomponent.inventoryItemId.length];
+                                    for (int result : results) {
+                                        if (result > 0) {
+                                            subcomponent.inventoryItemId[position] = result + 1;
+                                            subcomponent.inventoryAmounts[position] = 1;
+                                            position++;
                                         }
                                     }
                                 }
                             }
+                        } else if (rsi.updatesEveryInput && rsi.message.length() > 0 && j != 10 && j != 13) {
+                            SpawnContainer.get().update(rsi.message);
+                            if (rsi.inputFieldListener != null)
+                                rsi.inputFieldListener.accept(rsi.message);
+                            inputString = "";
+                            promptInput = "";
+                            if (rsi.inputFieldSendPacket) {
+                                stream.createFrame(142);
+                                stream.writeUnsignedByte(4 + rsi.message.length() + 1);
+                                stream.writeDWord(rsi.id);
+                                stream.writeString(rsi.message);
+                                return;
+                            }
+                        } else if ((j == 10 || j == 13) && rsi.message.length() > 0 && !rsi.updatesEveryInput) {
+                            inputString = "";
+                            promptInput = "";
+                            if (rsi.inputFieldListener != null)
+                                rsi.inputFieldListener.accept(rsi.message);
+                            inputString = "";
+                            if (rsi.inputFieldSendPacket) {
+                                stream.createFrame(142);
+                                stream.writeUnsignedByte(4 + rsi.message.length() + 1);
+                                stream.writeDWord(rsi.id);
+                                stream.writeString(rsi.message);
+                                return;
+                            }
+                        }
+                    } else {
+                        if (j >= 32 && j <= 122 && this.inputString.length() < 80) {
+                            this.inputString = this.inputString + (char) j;
+                            this.inputTaken = true;
                         }
 
-                        if(this.inputString.equals("::fpson")) {
-                            fpsOn = true;
+                        if (j == 8 && this.inputString.length() > 0) {
+                            this.inputString = this.inputString.substring(0, this.inputString.length() - 1);
+                            this.inputTaken = true;
                         }
+                        if (j == 9)
+                            tabToReplyPm();
+                        if ((j == 13 || j == 10) && this.inputString.length() > 0) {
+                            int var10;
+                            if (this.myPrivilege >= 2) {
+                                if (this.inputString.equals("::clientdrop")) {
+                                    this.method68(-670);
+                                }
 
-                        if(this.inputString.equals("::fpsoff")) {
-                            fpsOn = false;
-                        }
+                                if (this.inputString.equals("::lag")) {
+                                    this.method72((byte) 1);
+                                }
 
-                        if(this.inputString.equals("::hd")) {
-                            Configuration.hdTexturing = !Configuration.hdTexturing;
-                        }
-
-                        if(this.inputString.equals("::fog")) {
-                            Configuration.distanceFog = !Configuration.distanceFog;
-                        }
-
-                        if(this.inputString.equals("::optab") && currentScreenMode != client.ScreenMode.FIXED) {
-                            this.transparentTabArea = !this.transparentTabArea;
-                        }
-
-                        if(this.inputString.equals("::chat") && currentScreenMode != client.ScreenMode.FIXED) {
-                            changeChatArea = !changeChatArea;
-                        }
-
-                        if(this.inputString.equals("::tab") && currentScreenMode != client.ScreenMode.FIXED) {
-                            changeTabArea = !changeTabArea;
-                        }
-
-                        if(this.inputString.equals("::toggleroofs")) {
-                            this.roofsOff = !this.roofsOff;
-                        }
-
-                        if(this.inputString.equals("::fixed")) {
-                            currentScreenMode(client.ScreenMode.FIXED);
-                        }
-
-                        if(this.inputString.equals("::resize")) {
-                            currentScreenMode(client.ScreenMode.RESIZABLE);
-                        }
-
-                        if(this.inputString.equals("::fullscreen") && this.myPrivilege >= 2) {
-                            currentScreenMode(client.ScreenMode.FULLSCREEN);
-                        }
-
-                        if(this.inputString.startsWith("::drawdistance")) {
-                            try {
-                                s = Integer.parseInt(this.inputString.replace("::drawdistance ", ""));
-                                if(s > 150 || s < 30) {
-                                    this.pushMessage("Invalid draw distance value, input a value between 30 and 150.", 0, "");
-                                    if(s > 150) {
-                                        s = 150;
-                                    }
-
-                                    if(s < 30) {
-                                        s = 30;
+                                if (this.inputString.equals("::prefetchmusic")) {
+                                    for (s = 0; s < onDemandFetcher.method555(79, 2); ++s) {
+                                        onDemandFetcher.method563((byte) 1, 2, s, (byte) 8);
                                     }
                                 }
 
-                                Class25.farZ = s;
-                                this.pushMessage("Set view distance to " + s + "", 0, "");
-                            } catch (Exception var9) {
-                                var9.printStackTrace();
-                            }
-                        }
+                                if (this.inputString.equals("::data")) {
+                                    clientData = !clientData;
+                                }
 
-                        if(this.inputString.startsWith("/")) {
-                            this.inputString = "::" + this.inputString;
-                        }
+                                if (this.inputString.equals("::dumpitemimg")) {
+                                    for (s = 0; s < 20000; ++s) {
+                                        Sprite j2 = ItemDefinition.method200(s, 1, 0, 9);
+                                        ItemDefinition i3 = ItemDefinition.method198(s);
+                                        if (j2 != null && i3.name != null) {
+                                            j2.dumpImage("directory/", "" + i3.name + (i3.certTemplateID != -1 ? " noted" : ""), j2, true);
+                                        }
+                                    }
+                                }
 
-                        if(this.inputString.startsWith("::")) {
-                            this.stream.createFrame(103);
-                            this.stream.writeUnsignedByte(this.inputString.length() - 1);
-                            this.stream.writeString(this.inputString.substring(2));
-                        } else {
-                            String var14 = this.inputString.toLowerCase();
-                            if(var14.startsWith("@or1@")) {
-                                this.inputString = this.inputString.substring(5);
-                                this.pushMessage(this.inputString, 14, "");
-                                this.inputString = "";
-                                break;
-                            }
-
-                            if(var14.startsWith("@yel@")) {
-                                this.inputString = this.inputString.substring(5);
-                                this.pushMessage(this.inputString, 15, "");
-                                this.inputString = "";
-                                break;
+                                if (this.inputString.equals("::noclip")) {
+                                    for (s = 0; s < 4; ++s) {
+                                        for (var10 = 1; var10 < 103; ++var10) {
+                                            for (int var11 = 1; var11 < 103; ++var11) {
+                                                this.collisionMaps[s].anIntArrayArray294[var10][var11] = 0;
+                                            }
+                                        }
+                                    }
+                                }
                             }
 
-                            if(var14.startsWith("<col=ff0000>")) {
-                                this.inputString = this.inputString.substring(5);
-                                this.pushMessage(this.inputString, 16, "");
-                                this.inputString = "";
-                                break;
+                            if (this.inputString.equals("::fpson")) {
+                                fpsOn = true;
                             }
 
-                            if(var14.startsWith("<col=65280>")) {
-                                this.inputString = this.inputString.substring(5);
-                                this.pushMessage(this.inputString, 17, "");
-                                this.inputString = "";
-                                break;
+                            if (this.inputString.equals("::fpsoff")) {
+                                fpsOn = false;
                             }
 
-                            if(var14.startsWith("@pur@")) {
-                                this.inputString = this.inputString.substring(5);
-                                this.pushMessage(this.inputString, 20, "");
-                                this.inputString = "";
-                                break;
+                            if (this.inputString.equals("::hd")) {
+                                Configuration.hdTexturing = !Configuration.hdTexturing;
                             }
 
-                            if(var14.startsWith("@blu@")) {
-                                this.inputString = this.inputString.substring(5);
-                                this.pushMessage(this.inputString, 19, "");
-                                this.inputString = "";
-                                break;
+                            if (this.inputString.equals("::fog")) {
+                                Configuration.distanceFog = !Configuration.distanceFog;
                             }
 
-                            byte[] var12;
-                            if(var14.startsWith("add model")) {
+                            if (this.inputString.equals("::optab") && currentScreenMode != client.ScreenMode.FIXED) {
+                                this.transparentTabArea = !this.transparentTabArea;
+                            }
+
+                            if (this.inputString.equals("::chat") && currentScreenMode != client.ScreenMode.FIXED) {
+                                changeChatArea = !changeChatArea;
+                            }
+
+                            if (this.inputString.equals("::tab") && currentScreenMode != client.ScreenMode.FIXED) {
+                                changeTabArea = !changeTabArea;
+                            }
+
+                            if (this.inputString.equals("::toggleroofs")) {
+                                this.roofsOff = !this.roofsOff;
+                            }
+
+                            if (this.inputString.equals("::fixed")) {
+                                currentScreenMode(client.ScreenMode.FIXED);
+                            }
+
+                            if (this.inputString.equals("::resize")) {
+                                currentScreenMode(client.ScreenMode.RESIZABLE);
+                            }
+
+                            if (this.inputString.equals("::fullscreen") && this.myPrivilege >= 2) {
+                                currentScreenMode(client.ScreenMode.FULLSCREEN);
+                            }
+
+                            if (this.inputString.startsWith("::drawdistance")) {
                                 try {
-                                    var10 = Integer.parseInt(var14.substring(10));
-                                    var12 = this.GetModel(var10);
-                                    if(var12 != null && var12.length > 0) {
-                                        this.aClass14Array970[1].method234(var12.length, var12, (byte)2, var10);
-                                        this.pushMessage("Model: [" + var10 + "] added successfully!", 0, "");
-                                    } else {
-                                        this.pushMessage("Unable to find the model. " + var10, 0, "");
+                                    s = Integer.parseInt(this.inputString.replace("::drawdistance ", ""));
+                                    if (s > 150 || s < 30) {
+                                        this.pushMessage("Invalid draw distance value, input a value between 30 and 150.", 0, "");
+                                        if (s > 150) {
+                                            s = 150;
+                                        }
+
+                                        if (s < 30) {
+                                            s = 30;
+                                        }
                                     }
-                                } catch (Exception var8) {
-                                    this.pushMessage("Syntax - ::add model <path>", 0, "");
+
+                                    Class25.farZ = s;
+                                    this.pushMessage("Set view distance to " + s + "", 0, "");
+                                } catch (Exception var9) {
+                                    var9.printStackTrace();
                                 }
                             }
 
-                            if(var14.startsWith("add models")) {
-                                for(var10 = 0; var10 < '\u9c40'; ++var10) {
-                                    var12 = this.GetModel(var10);
-                                    if(var12 != null && var12.length > 0) {
-                                        this.aClass14Array970[1].method234(var12.length, var12, (byte)2, var10);
-                                        this.pushMessage("Model: [" + var10 + "] added successfully!", 0, "");
-                                    }
-                                }
+                            if (this.inputString.startsWith("/")) {
+                                this.inputString = "::" + this.inputString;
                             }
 
-                            if(var14.startsWith("dumpcfg")) {
-                                ItemDefinition.dumpCfg();
-                            }
-
-                            if(var14.startsWith("dumpitems")) {
-                                ItemDefinition.dumpItems();
-                            }
-
-                            if(var14.startsWith("dumpnpc")) {
-                                Class5.dumpNpcList();
-                            }
-
-                            if(var14.startsWith("dumpobj")) {
-                                Class46.dumpObjectcfg();
-                            }
-
-                            if(var14.startsWith("dump")) {
-                                ;
-                            }
-
-                            byte var13 = 0;
-                            byte var15 = 0;
-                            if(var14.startsWith("yellow:")) {
-                                var13 = 0;
-                                this.inputString = this.inputString.substring(7);
-                            } else if(var14.startsWith("red:")) {
-                                var13 = 1;
-                                this.inputString = this.inputString.substring(4);
-                            } else if(var14.startsWith("green:")) {
-                                var13 = 2;
-                                this.inputString = this.inputString.substring(6);
-                            } else if(var14.startsWith("cyan:")) {
-                                var13 = 3;
-                                this.inputString = this.inputString.substring(5);
-                            } else if(var14.startsWith("purple:")) {
-                                var13 = 4;
-                                this.inputString = this.inputString.substring(7);
-                            } else if(var14.startsWith("white:")) {
-                                var13 = 5;
-                                this.inputString = this.inputString.substring(6);
-                            } else if(var14.startsWith("flash1:")) {
-                                var13 = 6;
-                                this.inputString = this.inputString.substring(7);
-                            } else if(var14.startsWith("flash2:")) {
-                                var13 = 7;
-                                this.inputString = this.inputString.substring(7);
-                            } else if(var14.startsWith("flash3:")) {
-                                var13 = 8;
-                                this.inputString = this.inputString.substring(7);
-                            } else if(var14.startsWith("glow1:")) {
-                                var13 = 9;
-                                this.inputString = this.inputString.substring(6);
-                            } else if(var14.startsWith("glow2:")) {
-                                var13 = 10;
-                                this.inputString = this.inputString.substring(6);
-                            } else if(var14.startsWith("glow3:")) {
-                                var13 = 11;
-                                this.inputString = this.inputString.substring(6);
-                            }
-
-                            var14 = this.inputString.toLowerCase();
-                            if(var14.startsWith("wave:")) {
-                                var15 = 1;
-                                this.inputString = this.inputString.substring(5);
-                            } else if(var14.startsWith("wave2:")) {
-                                var15 = 2;
-                                this.inputString = this.inputString.substring(6);
-                            } else if(var14.startsWith("shake:")) {
-                                var15 = 3;
-                                this.inputString = this.inputString.substring(6);
-                            } else if(var14.startsWith("scroll:")) {
-                                var15 = 4;
-                                this.inputString = this.inputString.substring(7);
-                            } else if(var14.startsWith("slide:")) {
-                                var15 = 5;
-                                this.inputString = this.inputString.substring(6);
-                            }
-
-                            this.stream.createFrame(4);
-                            this.stream.writeUnsignedByte(0);
-                            int j3 = this.stream.currentPosition;
-                            this.stream.method425(301, var15);
-                            this.stream.method425(301, var13);
-                            this.aStream_834.currentPosition = 0;
-                            TextInput.method526(this.inputString, this.aBoolean1277, this.aStream_834);
-                            this.stream.method441(0, this.aByte1217, this.aStream_834.buffer, this.aStream_834.currentPosition);
-                            this.stream.method407(this.stream.currentPosition - j3, (byte)0);
-                            this.inputString = TextInput.processText(this.inputString, 0);
-                            this.inputString = Censor.method497(this.inputString, 0);
-                            localPlayer.aString1506 = this.inputString;
-                            localPlayer.anInt1513 = var13;
-                            localPlayer.anInt1531 = var15;
-                            localPlayer.textCycle = 150;
-                            if(this.myPrivilege == 1) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr1@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 2) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr2@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 3) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr3@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 4) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr4@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 5) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr5@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 6) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr6@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 7) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr7@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 8) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr8@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 9) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr9@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 10) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr10@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 11) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr11@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 12) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr12@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 13) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr13@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 14) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr14@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 15) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr15@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 16) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr16@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 17) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr17@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 18) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr18@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 19) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr19@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 20) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr20@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 21) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr21@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 22) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr22@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 23) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr23@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 24) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr24@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
-                            } else if(this.myPrivilege == 25) {
-                                this.pushMessage(localPlayer.aString1506, 1, "@cr25@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                            if (this.inputString.startsWith("::")) {
+                                this.stream.createFrame(103);
+                                this.stream.writeUnsignedByte(this.inputString.length() - 1);
+                                this.stream.writeString(this.inputString.substring(2));
                             } else {
-                                this.pushMessage(localPlayer.aString1506, 2, this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                String var14 = this.inputString.toLowerCase();
+                                if (var14.startsWith("@or1@")) {
+                                    this.inputString = this.inputString.substring(5);
+                                    this.pushMessage(this.inputString, 14, "");
+                                    this.inputString = "";
+                                    break;
+                                }
+
+                                if (var14.startsWith("@yel@")) {
+                                    this.inputString = this.inputString.substring(5);
+                                    this.pushMessage(this.inputString, 15, "");
+                                    this.inputString = "";
+                                    break;
+                                }
+
+                                if (var14.startsWith("<col=ff0000>")) {
+                                    this.inputString = this.inputString.substring(5);
+                                    this.pushMessage(this.inputString, 16, "");
+                                    this.inputString = "";
+                                    break;
+                                }
+
+                                if (var14.startsWith("<col=65280>")) {
+                                    this.inputString = this.inputString.substring(5);
+                                    this.pushMessage(this.inputString, 17, "");
+                                    this.inputString = "";
+                                    break;
+                                }
+
+                                if (var14.startsWith("@pur@")) {
+                                    this.inputString = this.inputString.substring(5);
+                                    this.pushMessage(this.inputString, 20, "");
+                                    this.inputString = "";
+                                    break;
+                                }
+
+                                if (var14.startsWith("@blu@")) {
+                                    this.inputString = this.inputString.substring(5);
+                                    this.pushMessage(this.inputString, 19, "");
+                                    this.inputString = "";
+                                    break;
+                                }
+
+                                byte[] var12;
+                                if (var14.startsWith("add model")) {
+                                    try {
+                                        var10 = Integer.parseInt(var14.substring(10));
+                                        var12 = this.GetModel(var10);
+                                        if (var12 != null && var12.length > 0) {
+                                            this.aClass14Array970[1].method234(var12.length, var12, (byte) 2, var10);
+                                            this.pushMessage("Model: [" + var10 + "] added successfully!", 0, "");
+                                        } else {
+                                            this.pushMessage("Unable to find the model. " + var10, 0, "");
+                                        }
+                                    } catch (Exception var8) {
+                                        this.pushMessage("Syntax - ::add model <path>", 0, "");
+                                    }
+                                }
+
+                                if (var14.startsWith("add models")) {
+                                    for (var10 = 0; var10 < '\u9c40'; ++var10) {
+                                        var12 = this.GetModel(var10);
+                                        if (var12 != null && var12.length > 0) {
+                                            this.aClass14Array970[1].method234(var12.length, var12, (byte) 2, var10);
+                                            this.pushMessage("Model: [" + var10 + "] added successfully!", 0, "");
+                                        }
+                                    }
+                                }
+
+                                if (var14.startsWith("dumpcfg")) {
+                                    ItemDefinition.dumpCfg();
+                                }
+
+                                if (var14.startsWith("dumpitems")) {
+                                    ItemDefinition.dumpItems();
+                                }
+
+                                if (var14.startsWith("dumpnpc")) {
+                                    Class5.dumpNpcList();
+                                }
+
+                                if (var14.startsWith("dumpobj")) {
+                                    Class46.dumpObjectcfg();
+                                }
+
+                                if (var14.startsWith("dump")) {
+                                    ;
+                                }
+
+                                byte var13 = 0;
+                                byte var15 = 0;
+                                if (var14.startsWith("yellow:")) {
+                                    var13 = 0;
+                                    this.inputString = this.inputString.substring(7);
+                                } else if (var14.startsWith("red:")) {
+                                    var13 = 1;
+                                    this.inputString = this.inputString.substring(4);
+                                } else if (var14.startsWith("green:")) {
+                                    var13 = 2;
+                                    this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("cyan:")) {
+                                    var13 = 3;
+                                    this.inputString = this.inputString.substring(5);
+                                } else if (var14.startsWith("purple:")) {
+                                    var13 = 4;
+                                    this.inputString = this.inputString.substring(7);
+                                } else if (var14.startsWith("white:")) {
+                                    var13 = 5;
+                                    this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("flash1:")) {
+                                    var13 = 6;
+                                    this.inputString = this.inputString.substring(7);
+                                } else if (var14.startsWith("flash2:")) {
+                                    var13 = 7;
+                                    this.inputString = this.inputString.substring(7);
+                                } else if (var14.startsWith("flash3:")) {
+                                    var13 = 8;
+                                    this.inputString = this.inputString.substring(7);
+                                } else if (var14.startsWith("glow1:")) {
+                                    var13 = 9;
+                                    this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("glow2:")) {
+                                    var13 = 10;
+                                    this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("glow3:")) {
+                                    var13 = 11;
+                                    this.inputString = this.inputString.substring(6);
+                                }
+
+                                var14 = this.inputString.toLowerCase();
+                                if (var14.startsWith("wave:")) {
+                                    var15 = 1;
+                                    this.inputString = this.inputString.substring(5);
+                                } else if (var14.startsWith("wave2:")) {
+                                    var15 = 2;
+                                    this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("shake:")) {
+                                    var15 = 3;
+                                    this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("scroll:")) {
+                                    var15 = 4;
+                                    this.inputString = this.inputString.substring(7);
+                                } else if (var14.startsWith("slide:")) {
+                                    var15 = 5;
+                                    this.inputString = this.inputString.substring(6);
+                                }
+
+                                this.stream.createFrame(4);
+                                this.stream.writeUnsignedByte(0);
+                                int j3 = this.stream.currentPosition;
+                                this.stream.method425(301, var15);
+                                this.stream.method425(301, var13);
+                                this.aStream_834.currentPosition = 0;
+                                TextInput.method526(this.inputString, this.aBoolean1277, this.aStream_834);
+                                this.stream.method441(0, this.aByte1217, this.aStream_834.buffer, this.aStream_834.currentPosition);
+                                this.stream.method407(this.stream.currentPosition - j3, (byte) 0);
+                                this.inputString = TextInput.processText(this.inputString, 0);
+                                this.inputString = Censor.method497(this.inputString, 0);
+                                localPlayer.aString1506 = this.inputString;
+                                localPlayer.anInt1513 = var13;
+                                localPlayer.anInt1531 = var15;
+                                localPlayer.textCycle = 150;
+                                if (this.myPrivilege == 1) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr1@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 2) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr2@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 3) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr3@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 4) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr4@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 5) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr5@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 6) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr6@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 7) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr7@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 8) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr8@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 9) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr9@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 10) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr10@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 11) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr11@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 12) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr12@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 13) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr13@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 14) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr14@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 15) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr15@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 16) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr16@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 17) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr17@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 18) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr18@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 19) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr19@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 20) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr20@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 21) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr21@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 22) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr22@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 23) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr23@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 24) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr24@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else if (this.myPrivilege == 25) {
+                                    this.pushMessage(localPlayer.aString1506, 1, "@cr25@" + this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                } else {
+                                    this.pushMessage(localPlayer.aString1506, 2, this.prefixRank(localPlayer.title) + localPlayer.name + this.suffixRank(localPlayer.title));
+                                }
+
+                                if (this.publicChatMode == 2) {
+                                    this.publicChatMode = 3;
+                                    this.aBoolean1233 = true;
+                                    this.stream.createFrame(95);
+                                    this.stream.writeUnsignedByte(this.publicChatMode);
+                                    this.stream.writeUnsignedByte(this.privateChatMode);
+                                    this.stream.writeUnsignedByte(this.tradeMode);
+                                }
                             }
 
-                            if(this.publicChatMode == 2) {
-                                this.publicChatMode = 3;
-                                this.aBoolean1233 = true;
-                                this.stream.createFrame(95);
-                                this.stream.writeUnsignedByte(this.publicChatMode);
-                                this.stream.writeUnsignedByte(this.privateChatMode);
-                                this.stream.writeUnsignedByte(this.tradeMode);
-                            }
+                            this.inputString = "";
+                            this.inputTaken = true;
                         }
-
-                        this.inputString = "";
-                        this.inputTaken = true;
                     }
                 }
             }
@@ -8786,7 +9118,7 @@ public class client extends Applet_Sub1 {
                 class9.message = "Please wait...";
                 class9.atActionType = 0;
             } else {
-                var10 = this.anInt899;
+                var10 = this.friendsCount;
                 if(this.anInt900 != 2) {
                     var10 = 0;
                 }
@@ -8801,12 +9133,12 @@ public class client extends Applet_Sub1 {
                     class9.message = "";
                     class9.atActionType = 0;
                 } else {
-                    class9.message = this.aStringArray1082[j];
+                    class9.message = this.friendsList[j];
                     class9.atActionType = 1;
                 }
             }
         } else if(j >= 101 && j <= 200 || j >= 801 && j <= 900) {
-            var10 = this.anInt899;
+            var10 = this.friendsCount;
             if(this.anInt900 != 2) {
                 var10 = 0;
             }
@@ -8821,9 +9153,9 @@ public class client extends Applet_Sub1 {
                 class9.message = "";
                 class9.atActionType = 0;
             } else {
-                if(this.anIntArray826[j] == 10) {
+                if(this.friendsNodeIDs[j] == 10) {
                     class9.message = "<col=65280>Online";
-                } else if(this.anIntArray826[j] == 1) {
+                } else if(this.friendsNodeIDs[j] == 1) {
                     class9.message = "@red@Offline";
                 } else {
                     class9.message = "@red@Offline";
@@ -8832,7 +9164,7 @@ public class client extends Applet_Sub1 {
                 class9.atActionType = 1;
             }
         } else if(j == 203) {
-            var10 = this.anInt899;
+            var10 = this.friendsCount;
             if(this.anInt900 != 2) {
                 var10 = 0;
             }
@@ -8908,7 +9240,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     characterDisplay.method469((byte)-71);
-                    characterDisplay.method470(Class20.aClass20Array351[localPlayer.anInt1511].anIntArray353[0], '\u9e5e');
+                    characterDisplay.method470(AnimationDefinition.anims[localPlayer.anInt1511].anIntArray353[0], '\u9e5e');
                     characterDisplay.method479(64, 850, -30, -50, -30, true);
                     class9.anInt233 = 5;
                     class9.mediaID = 0;
@@ -8935,7 +9267,7 @@ public class client extends Applet_Sub1 {
 
                         staticFrame = localPlayer.anInt1511;
                         characterDisplay.method469((byte)-71);
-                        characterDisplay.method470(Class20.aClass20Array351[staticFrame].anIntArray353[0], '\u9e5e');
+                        characterDisplay.method470(AnimationDefinition.anims[staticFrame].anIntArray353[0], '\u9e5e');
                         class9.anInt233 = 5;
                         class9.mediaID = 0;
                         Widget.method208(0, this.aBoolean994, 5, characterDisplay);
@@ -10163,7 +10495,7 @@ public class client extends Applet_Sub1 {
 
                 this.aClass19_1179 = new Class19(169);
                 this.anInt900 = 0;
-                this.anInt899 = 0;
+                this.friendsCount = 0;
                 this.dialogID = -1;
                 this.backDialogID = -1;
                 openInterfaceID = -1;
@@ -10632,25 +10964,25 @@ public class client extends Applet_Sub1 {
                 }
 
                 k2 = stream.readUnsignedByte();
-                if(l1 == npc.anInt1526 && l1 != -1) {
-                    int l2 = Class20.aClass20Array351[l1].anInt365;
+                if(l1 == npc.primaryanim && l1 != -1) {
+                    int l2 = AnimationDefinition.anims[l1].replayMode;
                     if(l2 == 1) {
-                        npc.anInt1527 = 0;
-                        npc.anInt1528 = 0;
-                        npc.anInt1529 = k2;
-                        npc.anInt1530 = 0;
+                        npc.primaryanim_frameindex = 0;
+                        npc.primaryanim_loops_remaining = 0;
+                        npc.primaryanim_pause = k2;
+                        npc.primaryanim_replaycount = 0;
                     }
 
                     if(l2 == 2) {
-                        npc.anInt1530 = 0;
+                        npc.primaryanim_replaycount = 0;
                     }
-                } else if(l1 == -1 || npc.anInt1526 == -1 || Class20.aClass20Array351[l1].anInt359 >= Class20.aClass20Array351[npc.anInt1526].anInt359) {
-                    npc.anInt1526 = l1;
-                    npc.anInt1527 = 0;
-                    npc.anInt1528 = 0;
-                    npc.anInt1529 = k2;
-                    npc.anInt1530 = 0;
-                    npc.anInt1542 = npc.anInt1525;
+                } else if(l1 == -1 || npc.primaryanim == -1 || AnimationDefinition.anims[l1].anInt359 >= AnimationDefinition.anims[npc.primaryanim].anInt359) {
+                    npc.primaryanim = l1;
+                    npc.primaryanim_frameindex = 0;
+                    npc.primaryanim_loops_remaining = 0;
+                    npc.primaryanim_pause = k2;
+                    npc.primaryanim_replaycount = 0;
+                    npc.anim_delay = npc.waypoint_count;
                 }
             }
 
@@ -11294,6 +11626,8 @@ public class client extends Applet_Sub1 {
                     for(sprite = 0; sprite < 70; ++sprite) {
                         this.gameframe[sprite] = new Sprite("Gameframe/gameframe " + sprite);
                     }
+                    for (int i = 0; i < inputSprites.length; i++)
+                        inputSprites[i] = new Sprite("Interfaces/Inputfield/SPRITE " + (i + 1));
 
                     for(sprite = 0; sprite <= 1; ++sprite) {
                         this.BlackMap[sprite] = new Sprite("BlackMap " + sprite);
@@ -11409,7 +11743,7 @@ public class client extends Applet_Sub1 {
                     Rasterizer.method372(0.8D);
                     Rasterizer.method367();
                     this.method13(90, (byte)4, "Unpacking config");
-                    Class20.method257(0, var33);
+                    AnimationDefinition.method257(0, var33);
                     Class46.method576(var33);
                     Class22.method260(0, var33);
                     OverLayFlo317.load(var33);
@@ -11734,7 +12068,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(class30_sub2_sub4_sub1.anInt1550 < 128 || class30_sub2_sub4_sub1.anInt1551 < 128 || class30_sub2_sub4_sub1.anInt1550 >= 13184 || class30_sub2_sub4_sub1.anInt1551 >= 13184) {
-            class30_sub2_sub4_sub1.anInt1526 = -1;
+            class30_sub2_sub4_sub1.primaryanim = -1;
             class30_sub2_sub4_sub1.anInt1520 = -1;
             class30_sub2_sub4_sub1.anInt1547 = 0;
             class30_sub2_sub4_sub1.anInt1548 = 0;
@@ -11744,7 +12078,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(class30_sub2_sub4_sub1 == localPlayer && (class30_sub2_sub4_sub1.anInt1550 < 1536 || class30_sub2_sub4_sub1.anInt1551 < 1536 || class30_sub2_sub4_sub1.anInt1550 >= 11776 || class30_sub2_sub4_sub1.anInt1551 >= 11776)) {
-            class30_sub2_sub4_sub1.anInt1526 = -1;
+            class30_sub2_sub4_sub1.primaryanim = -1;
             class30_sub2_sub4_sub1.anInt1520 = -1;
             class30_sub2_sub4_sub1.anInt1547 = 0;
             class30_sub2_sub4_sub1.anInt1548 = 0;
@@ -11798,7 +12132,7 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method98(Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1, byte byte0) {
-        if(class30_sub2_sub4_sub1.anInt1548 == loopCycle || class30_sub2_sub4_sub1.anInt1526 == -1 || class30_sub2_sub4_sub1.anInt1529 != 0 || class30_sub2_sub4_sub1.anInt1528 + 1 > Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526].method258(class30_sub2_sub4_sub1.anInt1527, (byte)-39)) {
+        if(class30_sub2_sub4_sub1.anInt1548 == loopCycle || class30_sub2_sub4_sub1.primaryanim == -1 || class30_sub2_sub4_sub1.primaryanim_pause != 0 || class30_sub2_sub4_sub1.primaryanim_loops_remaining + 1 > AnimationDefinition.anims[class30_sub2_sub4_sub1.primaryanim].method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39)) {
             int i = class30_sub2_sub4_sub1.anInt1548 - class30_sub2_sub4_sub1.anInt1547;
             int j = loopCycle - class30_sub2_sub4_sub1.anInt1547;
             int k = class30_sub2_sub4_sub1.anInt1543 * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
@@ -11835,17 +12169,17 @@ public class client extends Applet_Sub1 {
 
     public final void method99(byte byte0, Class30_Sub2_Sub4_Sub1 class30_sub2_sub4_sub1) {
         class30_sub2_sub4_sub1.anInt1517 = class30_sub2_sub4_sub1.anInt1511;
-        if(class30_sub2_sub4_sub1.anInt1525 == 0) {
+        if(class30_sub2_sub4_sub1.waypoint_count == 0) {
             class30_sub2_sub4_sub1.anInt1503 = 0;
         } else {
-            if(class30_sub2_sub4_sub1.anInt1526 != -1 && class30_sub2_sub4_sub1.anInt1529 == 0) {
-                Class20 i = Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526];
-                if(class30_sub2_sub4_sub1.anInt1542 > 0 && i.anInt363 == 0) {
+            if(class30_sub2_sub4_sub1.primaryanim != -1 && class30_sub2_sub4_sub1.primaryanim_pause == 0) {
+                AnimationDefinition i = AnimationDefinition.anims[class30_sub2_sub4_sub1.primaryanim];
+                if(class30_sub2_sub4_sub1.anim_delay > 0 && i.anInt363 == 0) {
                     ++class30_sub2_sub4_sub1.anInt1503;
                     return;
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1542 <= 0 && i.anInt364 == 0) {
+                if(class30_sub2_sub4_sub1.anim_delay <= 0 && i.anInt364 == 0) {
                     ++class30_sub2_sub4_sub1.anInt1503;
                     return;
                 }
@@ -11853,8 +12187,8 @@ public class client extends Applet_Sub1 {
 
             int var10 = class30_sub2_sub4_sub1.anInt1550;
             int j = class30_sub2_sub4_sub1.anInt1551;
-            int k = class30_sub2_sub4_sub1.anIntArray1500[class30_sub2_sub4_sub1.anInt1525 - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
-            int l = class30_sub2_sub4_sub1.anIntArray1501[class30_sub2_sub4_sub1.anInt1525 - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            int k = class30_sub2_sub4_sub1.anIntArray1500[class30_sub2_sub4_sub1.waypoint_count - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
+            int l = class30_sub2_sub4_sub1.anIntArray1501[class30_sub2_sub4_sub1.waypoint_count - 1] * 128 + class30_sub2_sub4_sub1.anInt1540 * 64;
             if(k - var10 <= 256 && k - var10 >= -256 && l - j <= 256 && l - j >= -256) {
                 if(var10 < k) {
                     if(j < l) {
@@ -11906,20 +12240,20 @@ public class client extends Applet_Sub1 {
                     k1 = 2;
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1525 > 2) {
+                if(class30_sub2_sub4_sub1.waypoint_count > 2) {
                     k1 = 6;
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1525 > 3) {
+                if(class30_sub2_sub4_sub1.waypoint_count > 3) {
                     k1 = 8;
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1503 > 0 && class30_sub2_sub4_sub1.anInt1525 > 1) {
+                if(class30_sub2_sub4_sub1.anInt1503 > 0 && class30_sub2_sub4_sub1.waypoint_count > 1) {
                     k1 = 8;
                     --class30_sub2_sub4_sub1.anInt1503;
                 }
 
-                if(class30_sub2_sub4_sub1.aBooleanArray1553[class30_sub2_sub4_sub1.anInt1525 - 1]) {
+                if(class30_sub2_sub4_sub1.aBooleanArray1553[class30_sub2_sub4_sub1.waypoint_count - 1]) {
                     k1 <<= 1;
                 }
 
@@ -11952,9 +12286,9 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(class30_sub2_sub4_sub1.anInt1550 == k && class30_sub2_sub4_sub1.anInt1551 == l) {
-                    --class30_sub2_sub4_sub1.anInt1525;
-                    if(class30_sub2_sub4_sub1.anInt1542 > 0) {
-                        --class30_sub2_sub4_sub1.anInt1542;
+                    --class30_sub2_sub4_sub1.waypoint_count;
+                    if(class30_sub2_sub4_sub1.anim_delay > 0) {
+                        --class30_sub2_sub4_sub1.anim_delay;
                     }
                 }
 
@@ -11997,7 +12331,7 @@ public class client extends Applet_Sub1 {
                     }
                 }
 
-                if((class30_sub2_sub4_sub1.face_x != 0 || class30_sub2_sub4_sub1.face_y != 0) && (class30_sub2_sub4_sub1.anInt1525 == 0 || class30_sub2_sub4_sub1.anInt1503 > 0)) {
+                if((class30_sub2_sub4_sub1.face_x != 0 || class30_sub2_sub4_sub1.face_y != 0) && (class30_sub2_sub4_sub1.waypoint_count == 0 || class30_sub2_sub4_sub1.anInt1503 > 0)) {
                     l1 = class30_sub2_sub4_sub1.anInt1550 - (class30_sub2_sub4_sub1.face_x - this.baseX - this.baseX) * 64;
                     j1 = class30_sub2_sub4_sub1.anInt1551 - (class30_sub2_sub4_sub1.face_y - this.baseY - this.baseY) * 64;
                     if(l1 != 0 || j1 != 0) {
@@ -12041,9 +12375,9 @@ public class client extends Applet_Sub1 {
         }
 
         class30_sub2_sub4_sub1.aBoolean1541 = false;
-        Class20 class20_3;
+        AnimationDefinition class20_3;
         if(class30_sub2_sub4_sub1.anInt1517 != -1) {
-            class20_3 = Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1517];
+            class20_3 = AnimationDefinition.anims[class30_sub2_sub4_sub1.anInt1517];
             ++class30_sub2_sub4_sub1.anInt1519;
             if(class30_sub2_sub4_sub1.anInt1518 < class20_3.anInt352 && class30_sub2_sub4_sub1.anInt1519 > class20_3.method258(class30_sub2_sub4_sub1.anInt1518, (byte)-39)) {
                 class30_sub2_sub4_sub1.anInt1519 = 1;
@@ -12074,40 +12408,40 @@ public class client extends Applet_Sub1 {
             }
         }
 
-        if(class30_sub2_sub4_sub1.anInt1526 != -1 && class30_sub2_sub4_sub1.anInt1529 <= 1) {
-            class20_3 = Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526];
-            if(class20_3.anInt363 == 1 && class30_sub2_sub4_sub1.anInt1542 > 0 && class30_sub2_sub4_sub1.anInt1547 <= loopCycle && class30_sub2_sub4_sub1.anInt1548 < loopCycle) {
-                class30_sub2_sub4_sub1.anInt1529 = 1;
+        if(class30_sub2_sub4_sub1.primaryanim != -1 && class30_sub2_sub4_sub1.primaryanim_pause <= 1) {
+            class20_3 = AnimationDefinition.anims[class30_sub2_sub4_sub1.primaryanim];
+            if(class20_3.anInt363 == 1 && class30_sub2_sub4_sub1.anim_delay > 0 && class30_sub2_sub4_sub1.anInt1547 <= loopCycle && class30_sub2_sub4_sub1.anInt1548 < loopCycle) {
+                class30_sub2_sub4_sub1.primaryanim_pause = 1;
                 return;
             }
         }
 
-        if(class30_sub2_sub4_sub1.anInt1526 != -1 && class30_sub2_sub4_sub1.anInt1529 == 0) {
-            class20_3 = Class20.aClass20Array351[class30_sub2_sub4_sub1.anInt1526];
-            ++class30_sub2_sub4_sub1.anInt1528;
+        if(class30_sub2_sub4_sub1.primaryanim != -1 && class30_sub2_sub4_sub1.primaryanim_pause == 0) {
+            class20_3 = AnimationDefinition.anims[class30_sub2_sub4_sub1.primaryanim];
+            ++class30_sub2_sub4_sub1.primaryanim_loops_remaining;
 
-            while(class30_sub2_sub4_sub1.anInt1527 < class20_3.anInt352 && class30_sub2_sub4_sub1.anInt1528 > class20_3.method258(class30_sub2_sub4_sub1.anInt1527, (byte)-39)) {
-                class30_sub2_sub4_sub1.anInt1528 -= class20_3.method258(class30_sub2_sub4_sub1.anInt1527, (byte)-39);
-                ++class30_sub2_sub4_sub1.anInt1527;
+            while(class30_sub2_sub4_sub1.primaryanim_frameindex < class20_3.anInt352 && class30_sub2_sub4_sub1.primaryanim_loops_remaining > class20_3.method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39)) {
+                class30_sub2_sub4_sub1.primaryanim_loops_remaining -= class20_3.method258(class30_sub2_sub4_sub1.primaryanim_frameindex, (byte)-39);
+                ++class30_sub2_sub4_sub1.primaryanim_frameindex;
             }
 
-            if(class30_sub2_sub4_sub1.anInt1527 >= class20_3.anInt352) {
-                class30_sub2_sub4_sub1.anInt1527 -= class20_3.anInt356;
-                ++class30_sub2_sub4_sub1.anInt1530;
-                if(class30_sub2_sub4_sub1.anInt1530 >= class20_3.anInt362) {
-                    class30_sub2_sub4_sub1.anInt1526 = -1;
+            if(class30_sub2_sub4_sub1.primaryanim_frameindex >= class20_3.anInt352) {
+                class30_sub2_sub4_sub1.primaryanim_frameindex -= class20_3.anInt356;
+                ++class30_sub2_sub4_sub1.primaryanim_replaycount;
+                if(class30_sub2_sub4_sub1.primaryanim_replaycount >= class20_3.anInt362) {
+                    class30_sub2_sub4_sub1.primaryanim = -1;
                 }
 
-                if(class30_sub2_sub4_sub1.anInt1527 < 0 || class30_sub2_sub4_sub1.anInt1527 >= class20_3.anInt352) {
-                    class30_sub2_sub4_sub1.anInt1526 = -1;
+                if(class30_sub2_sub4_sub1.primaryanim_frameindex < 0 || class30_sub2_sub4_sub1.primaryanim_frameindex >= class20_3.anInt352) {
+                    class30_sub2_sub4_sub1.primaryanim = -1;
                 }
             }
 
             class30_sub2_sub4_sub1.aBoolean1541 = class20_3.aBoolean358;
         }
 
-        if(class30_sub2_sub4_sub1.anInt1529 > 0) {
-            --class30_sub2_sub4_sub1.anInt1529;
+        if(class30_sub2_sub4_sub1.primaryanim_pause > 0) {
+            --class30_sub2_sub4_sub1.primaryanim_pause;
         }
 
     }
@@ -12248,17 +12582,17 @@ public class client extends Applet_Sub1 {
                 --i;
             }
 
-            this.menuActionName[this.menuActionRow] = "Remove <col=ffffff>" + this.aStringArray1082[i];
+            this.menuActionName[this.menuActionRow] = "Remove <col=ffffff>" + this.friendsList[i];
             this.menuActionID[this.menuActionRow] = 792;
             ++this.menuActionRow;
-            this.menuActionName[this.menuActionRow] = "Message <col=ffffff>" + this.aStringArray1082[i];
+            this.menuActionName[this.menuActionRow] = "Message <col=ffffff>" + this.friendsList[i];
             this.menuActionID[this.menuActionRow] = 639;
             ++this.menuActionRow;
             if(this.myPrivilege >= 2) {
-                this.menuActionName[this.menuActionRow] = "TeleToMe <col=ffffff>" + this.aStringArray1082[i];
+                this.menuActionName[this.menuActionRow] = "TeleToMe <col=ffffff>" + this.friendsList[i];
                 this.menuActionID[this.menuActionRow] = 638;
                 ++this.menuActionRow;
-                this.menuActionName[this.menuActionRow] = "TeleTo <col=ffffff>" + this.aStringArray1082[i];
+                this.menuActionName[this.menuActionRow] = "TeleTo <col=ffffff>" + this.friendsList[i];
                 this.menuActionID[this.menuActionRow] = 637;
                 ++this.menuActionRow;
             }
@@ -12305,11 +12639,11 @@ public class client extends Applet_Sub1 {
                 int i2 = class9.children.length;
 
                 for(int j2 = 0; j2 < i2; ++j2) {
-                    int k2 = class9.childX[j2] + k;
-                    int l2 = class9.childY[j2] + l - j;
+                    int _x = class9.childX[j2] + k;
+                    int _y = class9.childY[j2] + l - j;
                     Widget class9_1 = Widget.interfaceCache[class9.children[j2]];
-                    k2 += class9_1.anInt263;
-                    l2 += class9_1.anInt265;
+                    _x += class9_1.anInt263;
+                    _y += class9_1.anInt265;
                     if(class9_1.contentType > 0) {
                         this.method75(950, class9_1);
                     }
@@ -12323,9 +12657,9 @@ public class client extends Applet_Sub1 {
                             class9_1.scrollPosition = 0;
                         }
 
-                        this.drawInterface(class9_1.scrollPosition, k2, class9_1, l2);
+                        this.drawInterface(class9_1.scrollPosition, _x, class9_1, _y);
                         if(class9_1.scrollMax > class9_1.height) {
-                            this.drawScrollbar(class9_1.height, class9_1.scrollPosition, l2, k2 + class9_1.width, class9_1.scrollMax, false);
+                            this.drawScrollbar(class9_1.height, class9_1.scrollPosition, _y, _x + class9_1.width, class9_1.scrollMax, false);
                         }
                     } else if(class9_1.type != 1) {
                         int k4;
@@ -12341,8 +12675,8 @@ public class client extends Applet_Sub1 {
 
                             for(k4 = 0; k4 < class9_1.height; ++k4) {
                                 for(j5 = 0; j5 < class9_1.width; ++j5) {
-                                    i6 = k2 + j5 * (32 + class9_1.invSpritePadX);
-                                    var31 = l2 + k4 * (32 + class9_1.invSpritePadY);
+                                    i6 = _x + j5 * (32 + class9_1.invSpritePadX);
+                                    var31 = _y + k4 * (32 + class9_1.invSpritePadY);
                                     if(var25 < 20) {
                                         i6 += class9_1.spritesX[var25];
                                         var31 += class9_1.spritesY[var25];
@@ -12417,7 +12751,15 @@ public class client extends Applet_Sub1 {
                                                 } else {
                                                     class30_sub2_sub1_sub1_2.drawSprite(i6, var31);
                                                 }
-
+                                                if (class9_1.id == Widget.selectedItemInterfaceId
+                                                        && class9_1.itemSearchSelectedSlot > -1
+                                                        && class9_1.itemSearchSelectedSlot == var25) {
+                                                    for (int i = 32; i > 0; i--) {
+                                                        Rasterizer.method338(i6 + i9, i, 256 - Byte.MAX_VALUE, 0x395D84, i,
+                                                                var31 + var32, -17319);
+                                                    }
+                                                    Rasterizer.method338(i6 + i9, 32, 256, 0x395D84, 32, var31 + var32, -17319);
+                                                }
                                                 if(class30_sub2_sub1_sub1_2.maxWidth == 33 || class9_1.inventoryAmounts[var25] != 1) {
                                                     k10 = class9_1.inventoryAmounts[var25];
                                                     this.smallText.method385(0, method43(-33245, k10), var31 + 10 + i9, 822, i6 + 1 + var32);
@@ -12451,14 +12793,14 @@ public class client extends Applet_Sub1 {
 
                             if(class9_1.opacity == 0) {
                                 if(class9_1.aBoolean227) {
-                                    DrawingArea.drawPixels(class9_1.height, l2, k2, k4, class9_1.width);
+                                    DrawingArea.drawPixels(class9_1.height, _y, _x, k4, class9_1.width);
                                 } else {
-                                    DrawingArea.fillPixels(k2, class9_1.width, class9_1.height, k4, l2, true);
+                                    DrawingArea.fillPixels(_x, class9_1.width, class9_1.height, k4, _y, true);
                                 }
                             } else if(class9_1.aBoolean227) {
-                                DrawingArea.method335(k4, l2, class9_1.width, class9_1.height, 256 - (class9_1.opacity & 255), 0, k2);
+                                DrawingArea.method335(k4, _y, class9_1.width, class9_1.height, 256 - (class9_1.opacity & 255), 0, _x);
                             } else {
-                                DrawingArea.method338(l2, class9_1.height, 256 - (class9_1.opacity & 255), k4, class9_1.width, k2, -17319);
+                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.opacity & 255), k4, class9_1.width, _x, -17319);
                             }
                         } else {
                             RSFont class30_sub2_sub1_sub4_1;
@@ -12501,7 +12843,7 @@ public class client extends Applet_Sub1 {
                                     }
                                 }
 
-                                for(var31 = l2 + class30_sub2_sub1_sub4_1.baseCharacterHeight; var28.length() > 0; var31 += class30_sub2_sub1_sub4_1.baseCharacterHeight) {
+                                for(var31 = _y + class30_sub2_sub1_sub4_1.baseCharacterHeight; var28.length() > 0; var31 += class30_sub2_sub1_sub4_1.baseCharacterHeight) {
                                     if(var28.indexOf("%") != -1) {
                                         label372:
                                         while(true) {
@@ -12553,9 +12895,9 @@ public class client extends Applet_Sub1 {
                                     }
 
                                     if(class9_1.centerText) {
-                                        class30_sub2_sub1_sub4_1.drawCenteredString(var35, k2 + class9_1.width / 2, var31, i6, class9_1.textShadow?0:-1);
+                                        class30_sub2_sub1_sub4_1.drawCenteredString(var35, _x + class9_1.width / 2, var31, i6, class9_1.textShadow?0:-1);
                                     } else {
-                                        class30_sub2_sub1_sub4_1.drawBasicString(var35, k2, var31, i6, class9_1.textShadow?0:-1);
+                                        class30_sub2_sub1_sub4_1.drawBasicString(var35, _x, var31, i6, class9_1.textShadow?0:-1);
                                     }
                                 }
                             } else if(class9_1.type == 5) {
@@ -12567,13 +12909,13 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if(var26 != null) {
-                                    var26.drawSprite(k2, l2);
+                                    var26.drawSprite(_x, _y);
                                 }
                             } else if(class9_1.type == 6) {
                                 var25 = Rasterizer.centerX;
                                 k4 = Rasterizer.centerY;
-                                Rasterizer.centerX = k2 + class9_1.width / 2;
-                                Rasterizer.centerY = l2 + class9_1.height / 2;
+                                Rasterizer.centerX = _x + class9_1.width / 2;
+                                Rasterizer.centerY = _y + class9_1.height / 2;
                                 j5 = Rasterizer.anIntArray1470[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
                                 i6 = Rasterizer.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
                                 boolean var30 = this.method131(class9_1, false);
@@ -12587,7 +12929,7 @@ public class client extends Applet_Sub1 {
                                 if(var32 == -1) {
                                     var33 = class9_1.method209(0, -1, -1, var30);
                                 } else {
-                                    Class20 var34 = Class20.aClass20Array351[var32];
+                                    AnimationDefinition var34 = AnimationDefinition.anims[var32];
                                     var33 = class9_1.method209(0, var34.anIntArray354[class9_1.anInt246], var34.anIntArray353[class9_1.anInt246], var30);
                                 }
 
@@ -12610,8 +12952,8 @@ public class client extends Applet_Sub1 {
                                                 s2 = s2 + " x" + method14(class9_1.inventoryAmounts[k4], 0);
                                             }
 
-                                            i9 = k2 + i6 * (115 + class9_1.invSpritePadX);
-                                            k9 = l2 + j5 * (12 + class9_1.invSpritePadY);
+                                            i9 = _x + i6 * (115 + class9_1.invSpritePadX);
+                                            k9 = _y + j5 * (12 + class9_1.invSpritePadY);
                                             if(class9_1.centerText) {
                                                 class30_sub2_sub1_sub4_1.drawCenteredString(s2, i9 + class9_1.width / 2, k9, class9_1.textColor, class9_1.textShadow?0:-1);
                                             } else {
@@ -12621,6 +12963,36 @@ public class client extends Applet_Sub1 {
 
                                         ++k4;
                                     }
+                                }
+                            } else if (class9_1.type == 16) {
+                                drawInputField(class9_1, _x, _y, class9_1.width, class9_1.height);
+                            } else if (class9_1.type == 20) {
+                                int x = _x;
+                                int y = _y;
+
+                                // Set the scroll max based on the strings
+                                if (class9_1.scrollableContainerInterfaceId != 0) {
+                                    Widget container = Widget.get(class9_1.scrollableContainerInterfaceId);
+                                    int scrollMax = class9_1.invAutoScrollHeightOffset;
+                                    for (String string : class9_1.stringContainer)
+                                        scrollMax += class9_1.invSpritePadY;
+                                    if (scrollMax > container.height + 1) {
+                                        container.scrollMax = scrollMax;
+                                    } else {
+                                        container.scrollMax = container.height + 1;
+                                    }
+
+                                    container.scrollMax += container.stringContainerContainerExtraScroll;
+                                }
+
+                                // Draw the container
+                                for (String string : class9_1.stringContainer) {
+                                    if (class9_1.centerText) {
+                                        class9_1.font.drawCenteredString(string, x, y, class9_1.textColor, class9_1.textShadow ? 0 : -1);
+                                    } else {
+                                        class9_1.font.drawBasicString(string, x, y, class9_1.textColor, class9_1.textShadow ? 0 : -1);
+                                    }
+                                    y += class9_1.invSpritePadY;
                                 }
                             }
                         }
@@ -12723,25 +13095,25 @@ public class client extends Applet_Sub1 {
             }
 
             l2 = stream.readByteC(false);
-            if(l1 == player.anInt1526 && l1 != -1) {
-                stream_1 = Class20.aClass20Array351[l1].anInt365;
+            if(l1 == player.primaryanim && l1 != -1) {
+                stream_1 = AnimationDefinition.anims[l1].replayMode;
                 if(stream_1 == 1) {
-                    player.anInt1527 = 0;
-                    player.anInt1528 = 0;
-                    player.anInt1529 = l2;
-                    player.anInt1530 = 0;
+                    player.primaryanim_frameindex = 0;
+                    player.primaryanim_loops_remaining = 0;
+                    player.primaryanim_pause = l2;
+                    player.primaryanim_replaycount = 0;
                 }
 
                 if(stream_1 == 2) {
-                    player.anInt1530 = 0;
+                    player.primaryanim_replaycount = 0;
                 }
-            } else if(l1 == -1 || player.anInt1526 == -1 || Class20.aClass20Array351[l1].anInt359 >= Class20.aClass20Array351[player.anInt1526].anInt359) {
-                player.anInt1526 = l1;
-                player.anInt1527 = 0;
-                player.anInt1528 = 0;
-                player.anInt1529 = l2;
-                player.anInt1530 = 0;
-                player.anInt1542 = player.anInt1525;
+            } else if(l1 == -1 || player.primaryanim == -1 || AnimationDefinition.anims[l1].anInt359 >= AnimationDefinition.anims[player.primaryanim].anInt359) {
+                player.primaryanim = l1;
+                player.primaryanim_frameindex = 0;
+                player.primaryanim_loops_remaining = 0;
+                player.primaryanim_pause = l2;
+                player.primaryanim_replaycount = 0;
+                player.anim_delay = player.waypoint_count;
             }
         }
 
@@ -13049,8 +13421,8 @@ public class client extends Applet_Sub1 {
         if(s == null) {
             return false;
         } else {
-            for(int i = 0; i < this.anInt899; ++i) {
-                if(s.equalsIgnoreCase(this.aStringArray1082[i])) {
+            for(int i = 0; i < this.friendsCount; ++i) {
+                if(s.equalsIgnoreCase(this.friendsList[i])) {
                     return true;
                 }
             }
@@ -13276,8 +13648,8 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(i >= 4 && i <= 4) {
-                        for(k = 0; k < this.anInt899; ++k) {
-                            if(this.aLongArray955[k] == l) {
+                        for(k = 0; k < this.friendsCount; ++k) {
+                            if(this.friendsListAsLongs[k] == l) {
                                 this.pushMessage("Please remove " + runtimeexception + " from your friend list first", 0, "");
                                 return;
                             }
@@ -13507,7 +13879,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l != -1) {
-                        Class20 class20 = Class20.aClass20Array351[l];
+                        AnimationDefinition class20 = AnimationDefinition.anims[l];
 
                         for(class9_1.anInt208 += i; class9_1.anInt208 > class20.method258(class9_1.anInt246, (byte)-39); flag1 = true) {
                             class9_1.anInt208 -= class20.method258(class9_1.anInt246, (byte)-39) + 1;
@@ -14063,8 +14435,8 @@ public class client extends Applet_Sub1 {
 
                     long var22 = TextClass.longForName(var17.name);
 
-                    for(int flag2 = 0; flag2 < this.anInt899; ++flag2) {
-                        if(var22 == this.aLongArray955[flag2] && this.anIntArray826[flag2] != 0) {
+                    for(int flag2 = 0; flag2 < this.friendsCount; ++flag2) {
+                        if(var22 == this.friendsListAsLongs[flag2] && this.friendsNodeIDs[flag2] != 0) {
                             var21 = true;
                             break;
                         }
@@ -16295,13 +16667,13 @@ public class client extends Applet_Sub1 {
                 if(this.packet == 1) {
                     for(var23 = 0; var23 < this.aPlayerArray890.length; ++var23) {
                         if(this.aPlayerArray890[var23] != null) {
-                            this.aPlayerArray890[var23].anInt1526 = -1;
+                            this.aPlayerArray890[var23].primaryanim = -1;
                         }
                     }
 
                     for(var23 = 0; var23 < this.npcs.length; ++var23) {
                         if(this.npcs[var23] != null) {
-                            this.npcs[var23].anInt1526 = -1;
+                            this.npcs[var23].primaryanim = -1;
                         }
                     }
 
@@ -16315,10 +16687,10 @@ public class client extends Applet_Sub1 {
                     j20 = this.in.readUnsignedByte();
                     String var31 = TextClass.fixName(TextClass.nameForLong(var33));
 
-                    for(l25 = 0; l25 < this.anInt899; ++l25) {
-                        if(var33 == this.aLongArray955[l25]) {
-                            if(this.anIntArray826[l25] != j20) {
-                                this.anIntArray826[l25] = j20;
+                    for(l25 = 0; l25 < this.friendsCount; ++l25) {
+                        if(var33 == this.friendsListAsLongs[l25]) {
+                            if(this.friendsNodeIDs[l25] != j20) {
+                                this.friendsNodeIDs[l25] = j20;
                                 this.tabAreaAltered = true;
                                 if(j20 > 1) {
                                     this.pushMessage(var31 + " has logged in.", 5, "");
@@ -16334,11 +16706,11 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    if(var31 != null && this.anInt899 < 200) {
-                        this.aLongArray955[this.anInt899] = var33;
-                        this.aStringArray1082[this.anInt899] = var31;
-                        this.anIntArray826[this.anInt899] = j20;
-                        ++this.anInt899;
+                    if(var31 != null && this.friendsCount < 200) {
+                        this.friendsListAsLongs[this.friendsCount] = var33;
+                        this.friendsList[this.friendsCount] = var31;
+                        this.friendsNodeIDs[this.friendsCount] = j20;
+                        ++this.friendsCount;
                         this.tabAreaAltered = true;
                     }
 
@@ -16347,17 +16719,17 @@ public class client extends Applet_Sub1 {
                     while(!var34) {
                         var34 = true;
 
-                        for(j28 = 0; j28 < this.anInt899 - 1; ++j28) {
-                            if(this.anIntArray826[j28] != anInt957 && this.anIntArray826[j28 + 1] == anInt957 || this.anIntArray826[j28] == 0 && this.anIntArray826[j28 + 1] != 0) {
-                                i30 = this.anIntArray826[j28];
-                                this.anIntArray826[j28] = this.anIntArray826[j28 + 1];
-                                this.anIntArray826[j28 + 1] = i30;
-                                String s10 = this.aStringArray1082[j28];
-                                this.aStringArray1082[j28] = this.aStringArray1082[j28 + 1];
-                                this.aStringArray1082[j28 + 1] = s10;
-                                long l32 = this.aLongArray955[j28];
-                                this.aLongArray955[j28] = this.aLongArray955[j28 + 1];
-                                this.aLongArray955[j28 + 1] = l32;
+                        for(j28 = 0; j28 < this.friendsCount - 1; ++j28) {
+                            if(this.friendsNodeIDs[j28] != anInt957 && this.friendsNodeIDs[j28 + 1] == anInt957 || this.friendsNodeIDs[j28] == 0 && this.friendsNodeIDs[j28 + 1] != 0) {
+                                i30 = this.friendsNodeIDs[j28];
+                                this.friendsNodeIDs[j28] = this.friendsNodeIDs[j28 + 1];
+                                this.friendsNodeIDs[j28 + 1] = i30;
+                                String s10 = this.friendsList[j28];
+                                this.friendsList[j28] = this.friendsList[j28 + 1];
+                                this.friendsList[j28 + 1] = s10;
+                                long l32 = this.friendsListAsLongs[j28];
+                                this.friendsListAsLongs[j28] = this.friendsListAsLongs[j28 + 1];
+                                this.friendsListAsLongs[j28 + 1] = l32;
                                 this.tabAreaAltered = true;
                                 var34 = false;
                             }
@@ -17233,7 +17605,7 @@ public class client extends Applet_Sub1 {
         this.anInt1239 = 100;
         instance = this;
         this.anIntArrayArray825 = new int[104][104];
-        this.anIntArray826 = new int[200];
+        this.friendsNodeIDs = new int[200];
         this.aClass19ArrayArrayArray827 = new Class19[4][104][104];
         this.aBoolean830 = true;
         this.aBoolean831 = false;
@@ -17287,7 +17659,7 @@ public class client extends Applet_Sub1 {
         this.chatMessages = new String[500];
         this.sideIcons = new Sprite[15];
         this.aBoolean954 = true;
-        this.aLongArray955 = new long[200];
+        this.friendsListAsLongs = new long[200];
         this.currentSong = -1;
         this.aBoolean962 = false;
         this.spriteDrawX = -1;
@@ -17341,7 +17713,7 @@ public class client extends Applet_Sub1 {
         this.anIntArray1073 = new int[1000];
         this.aBoolean1080 = false;
         this.anInt1081 = -733;
-        this.aStringArray1082 = new String[200];
+        this.friendsList = new String[200];
         this.in = Stream.method396(1, 9);
         this.anIntArray1090 = new int[9];
         this.menuActionCmd2 = new int[500];

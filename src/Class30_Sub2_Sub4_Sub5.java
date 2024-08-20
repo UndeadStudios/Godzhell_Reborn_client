@@ -83,7 +83,7 @@ private Class46 method457() {
         anInt1606 = k1;
         if(l1 != -1)
         {
-            aClass20_1607 = Class20.aClass20Array351[l1];
+            aClass20_1607 = AnimationDefinition.anims[l1];
             anInt1599 = 0;
             anInt1608 = client.loopCycle;
             if(flag && aClass20_1607.anInt356 != -1)
@@ -107,7 +107,7 @@ private Class46 method457() {
     private int anInt1604;
     private int anInt1605;
     private int anInt1606;
-    private Class20 aClass20_1607;
+    private AnimationDefinition aClass20_1607;
     private int anInt1608;
     public static client aClient1609;
     private int anInt1610;

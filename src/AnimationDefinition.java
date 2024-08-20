@@ -4,31 +4,31 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Arrays;
 
-public class Class20
+public class AnimationDefinition
 {
 
     public static void method257(int i, FileArchive fileArchive)
     {
         Stream stream = new Stream(fileArchive.method571("seq.dat"));
         anInt350 = stream.readUnsignedShort();
-        if(aClass20Array351 == null)
-            aClass20Array351 = new Class20[anInt350];
+        if(anims == null)
+            anims = new AnimationDefinition[anInt350];
         for(int j = 0; j < anInt350; j++)
         {
-            if(aClass20Array351[j] == null)
-                aClass20Array351[j] = new Class20();
-            aClass20Array351[j].method259(stream);
+            if(anims[j] == null)
+                anims[j] = new AnimationDefinition();
+            anims[j].method259(stream);
         }
         if (Configuration.dumpAnimationData) {
             System.out.println("Dumping animation lengths..");
 
             try (BufferedWriter writer = new BufferedWriter(new FileWriter("./temp/animation_lengths.cfg"))) {
                 for (int j = 0; j < anInt350; j++) {
-                    if (aClass20Array351[j].anIntArray355 != null && aClass20Array351[j].anIntArray355.length > 0) {
+                    if (anims[j].anIntArray355 != null && anims[j].anIntArray355.length > 0) {
                         int sum = 0;
-                        for (int i2 = 0; i2 < aClass20Array351[j].anIntArray355.length; i2++) {
-                            if (aClass20Array351[j].anIntArray355[i2] < 100) {
-                                sum += aClass20Array351[j].anIntArray355[i2];
+                        for (int i2 = 0; i2 < anims[j].anIntArray355.length; i2++) {
+                            if (anims[j].anIntArray355[i2] < 100) {
+                                sum += anims[j].anIntArray355[i2];
                             }
                         }
                         writer.write(j + ":" + sum);
@@ -55,20 +55,20 @@ public class Class20
            BufferedWriter var21 = new BufferedWriter(new FileWriter(f));
 
            for(int j = 0; j < length; ++j) {
-              String frameCount = String.valueOf(aClass20Array351[j].anInt352);
-              String frameIDs = Arrays.toString(aClass20Array351[j].anIntArray353);
-              String frameIDs2 = Arrays.toString(aClass20Array351[j].anIntArray354);
-              String delays = Arrays.toString(aClass20Array351[j].anIntArray355);
-              String loopDelay = String.valueOf(aClass20Array351[j].anInt356);
-              String animationFlowControl = Arrays.toString(aClass20Array351[j].anIntArray357);
-              String oneSquareAnimation = String.valueOf(aClass20Array351[j].anInt359);
-              String forcedPriority = String.valueOf(aClass20Array351[j].leftHandItem);
-              String leftHandItem = String.valueOf(aClass20Array351[j].rightHandItem);
-              String rightHandItem = String.valueOf(aClass20Array351[j].anInt362);
-              String frameStep = String.valueOf(aClass20Array351[j].anInt363);
-              String resetWhenWalk = String.valueOf(aClass20Array351[j].anInt364);
-              String priority = String.valueOf(aClass20Array351[j].anInt365);
-              String delayType = String.valueOf(aClass20Array351[j].anInt366);
+              String frameCount = String.valueOf(anims[j].anInt352);
+              String frameIDs = Arrays.toString(anims[j].anIntArray353);
+              String frameIDs2 = Arrays.toString(anims[j].anIntArray354);
+              String delays = Arrays.toString(anims[j].anIntArray355);
+              String loopDelay = String.valueOf(anims[j].anInt356);
+              String animationFlowControl = Arrays.toString(anims[j].anIntArray357);
+              String oneSquareAnimation = String.valueOf(anims[j].anInt359);
+              String forcedPriority = String.valueOf(anims[j].leftHandItem);
+              String leftHandItem = String.valueOf(anims[j].rightHandItem);
+              String rightHandItem = String.valueOf(anims[j].anInt362);
+              String frameStep = String.valueOf(anims[j].anInt363);
+              String resetWhenWalk = String.valueOf(anims[j].anInt364);
+              String priority = String.valueOf(anims[j].replayMode);
+              String delayType = String.valueOf(anims[j].anInt366);
               String[] variables = new String[]{frameCount, frameIDs, frameIDs2, delays, loopDelay, animationFlowControl, oneSquareAnimation, forcedPriority, leftHandItem, rightHandItem, frameStep, resetWhenWalk, priority, delayType};
               var21.write("if (j == " + j + ") {\n");
 
@@ -146,7 +146,7 @@ public class Class20
 			else if(i == 10)
 				anInt364 = stream.readUnsignedByte();
 			else if(i == 11)
-				anInt365 = stream.readUnsignedByte();
+				replayMode = stream.readUnsignedByte();
 			else
                 System.out.println("Unrecognized seq.dat config code: "+i);
 		} while(true);
@@ -175,7 +175,7 @@ public class Class20
 			anInt364 = 0;
 		}
 	}
-    public Class20()
+    public AnimationDefinition()
     {
         anInt348 = 9;
         aBoolean349 = false;
@@ -187,12 +187,12 @@ public class Class20
         anInt362 = 99;
         anInt363 = -1;
         anInt364 = -1;
-        anInt365 = 2;
+        replayMode = 2;
     }
     private int anInt348;
     private boolean aBoolean349;
     public static int anInt350;
-    public static Class20 aClass20Array351[];
+    public static AnimationDefinition anims[];
     public int anInt352;
     public int anIntArray353[];
     public int anIntArray354[];
@@ -206,7 +206,7 @@ public class Class20
     public int anInt362;
     public int anInt363;
     public int anInt364;
-    public int anInt365;
+    public int replayMode;
     public int anInt366;
     public static int anInt367;
 }

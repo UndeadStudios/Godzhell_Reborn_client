@@ -1,10 +1,41 @@
+import com.google.common.base.Preconditions;
+
+import java.util.List;
+import java.util.function.Consumer;
+
 public class Widget {
     public int anInt208;
     public int scrollPosition;
     public int anInt246;
     public int anInt263;
     public int anInt265;
+    public boolean allowInvDraggingToOtherContainers;
+    public boolean smallInvSprites;
+    public boolean hideInvStackSizes;
+    public boolean forceInvStackSizes;
+    public boolean invAutoScrollHeight;
+    public int invAutoScrollHeightOffset;
+    public boolean updatesEveryInput;
+    public boolean inputFieldSendPacket = true;
+    public String defaultInputFieldText = "";
+    public int invAutoScrollInterfaceId;
+    public boolean displayAsterisks;
+    public boolean isItemSearchComponent;
+    public int itemSearchSelectedId, itemSearchSelectedSlot = -1;
+    public static int selectedItemInterfaceId = -1;
+    public int characterLimit;
+    public static int currentInputFieldId;
+    public String inputRegex = "";
+    public boolean isInFocus;
+
+    public String[] tooltips;
+
+    public Consumer<String> inputFieldListener;
+    public Consumer<Integer> buttonListener;
     public static final int SHOP_CONTAINER = 64016;
+    public static final int CLOSE_BUTTON_SMALL = 27302;
+    public static final int CLOSE_BUTTON_SMALL_HOVER = 27303;
+    public boolean newButtonClicking;
     private int anInt229 = 891;
     private static Class12 aClass12_238;
     public static Widget[] interfaceCache;
@@ -21,6 +52,10 @@ public class Widget {
     public int[] anIntArray245;
     public int[] anIntArray212;
     public int[][] valueIndexArray;
+    public int scrollableContainerInterfaceId;
+    public RSFont font;
+    public List<String> stringContainer;
+    public int stringContainerContainerExtraScroll = 0;
     public int scrollMax;
     public int anInt211;
     public int[] inventoryItemId;
@@ -102,6 +137,7 @@ public class Widget {
                     slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
                     slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
                     shopWidget(aclass30_sub2_sub1_sub4);
+                    SpawnContainer.get().load();
                     aClass12_238 = null;
                     if(byte0 != -84) {
                         ;
@@ -374,7 +410,140 @@ public class Widget {
         setBounds('\ufa10', 8, 8, 0, scroll);
         interfaceCache['\ufa10'].invAlwaysInfinity = false;
     }
+    public static Widget addFullScreenInterface(int id) {
+        Widget rsi = interfaceCache[id] = new Widget();
+        rsi.id = id;
+        rsi.parentID = id;
+        rsi.width = 765;
+        rsi.height = 503;
+        return rsi;
+    }
+    public static void addInputField(int identity, int characterLimit, int color, String text, int width, int height,
+                                     boolean asterisks, boolean updatesEveryInput, String regex, Consumer<String> inputFieldListener, boolean sendPacket) {
+        addInputField(identity, characterLimit, color, text, width, height, asterisks, updatesEveryInput, regex);
+        Widget rsInterface = get(identity);
+        rsInterface.inputFieldListener = inputFieldListener;
+        rsInterface.inputFieldSendPacket = sendPacket;
+    }
 
+    public static void addInputField(int identity, int characterLimit, int color, String text, int width, int height,
+                                     boolean asterisks, boolean updatesEveryInput, String regex) {
+        Widget field = addFullScreenInterface(identity);
+        field.id = identity;
+        field.type = 16;
+        field.atActionType = 8;
+        field.message = text;
+        field.width = width;
+        field.height = height;
+        field.characterLimit = characterLimit;
+        field.textColor = color;
+        field.displayAsterisks = asterisks;
+        field.tooltips = new String[] { "Clear", "Edit" };
+        field.defaultInputFieldText = text;
+        field.updatesEveryInput = updatesEveryInput;
+        field.inputRegex = regex;
+    }
+
+    public static void addInputField(int identity, int characterLimit, int color, String text, int width, int height,
+                                     boolean asterisks, boolean updatesEveryInput) {
+        Widget field = addFullScreenInterface(identity);
+        field.id = identity;
+        field.type = 16;
+        field.atActionType = 8;
+        field.message = text;
+        field.width = width;
+        field.height = height;
+        field.characterLimit = characterLimit;
+        field.textColor = color;
+        field.displayAsterisks = asterisks;
+        field.defaultInputFieldText = text;
+        field.tooltips = new String[] { "Clear", "Edit" };
+        field.updatesEveryInput = updatesEveryInput;
+    }
+
+    public static void addInputField(int identity, int characterLimit, int color, String text, int width, int height,
+                                     boolean asterisks) {
+        Widget field = addFullScreenInterface(identity);
+        field.id = identity;
+        field.type = 16;
+        field.atActionType = 8;
+        field.message = text;
+        field.width = width;
+        field.height = height;
+        field.characterLimit = characterLimit;
+        field.textColor = color;
+        field.displayAsterisks = asterisks;
+        field.defaultInputFieldText = text;
+        field.tooltips = new String[] { "Clear", "Edit" };
+    }
+
+    public static Widget addInterfaceContainer(int interfaceId, int width, int height, int scrollMax) {
+        Widget container = addInterface(interfaceId);
+        container.width = width;
+        container.height = height;
+        container.scrollMax = scrollMax;
+        return container;
+    }
+
+    public static void addItemContainerAutoScrollable(int childId, int width, int height, int invSpritePadX, int invSpritePadY, boolean addPlaceholderItems, int invAutoScrollInterfaceId, String...options) {
+        Widget inter = addItemContainer(childId, width, height, invSpritePadX, invSpritePadY, addPlaceholderItems, false, options);
+        inter.invAutoScrollHeight = true;
+        inter.invAutoScrollInterfaceId = invAutoScrollInterfaceId;
+    }
+
+    public static Widget addInventoryContainer(int childId, int width, int height, int invSpritePadX, int invSpritePadY, boolean addPlaceholderItems, String...options) {
+        Widget inter = addItemContainer(childId, width, height, invSpritePadX, invSpritePadY, addPlaceholderItems, false, options);
+        inter.deleteOnDrag2 = true;
+        return inter;
+    }
+
+    public static Widget addInventoryContainer(int childId, int width, int height, int invSpritePadX, int invSpritePadY, boolean addPlaceholderItems, boolean smallInvSprites, String...options) {
+        Widget inter = addItemContainer(childId, width, height, invSpritePadX, invSpritePadY, addPlaceholderItems, smallInvSprites, options);
+        inter.deleteOnDrag2 = true;
+        return inter;
+    }
+
+    public static Widget addItemContainer(int childId, int width, int height, int invSpritePadX,
+                                               int invSpritePadY, boolean addPlaceholderItems, String...options) {
+        Widget inter = addItemContainer(childId, width, height, invSpritePadX, invSpritePadY, addPlaceholderItems, false, options);
+        return inter;
+    }
+
+    public static Widget addItemContainer(int childId, int width, int height, int invSpritePadX,
+                                               int invSpritePadY, boolean addPlaceholderItems, boolean smallInvSprites, String...options) {
+        Widget rsi = addInterface(childId);
+        rsi.smallInvSprites = smallInvSprites;
+        rsi.hideInvStackSizes = false;
+        rsi.actions = new String[10];
+        rsi.spritesX = new int[width * height];
+        rsi.inventoryItemId = new int[width * height];
+        rsi.inventoryAmounts = new int[width * height];
+        rsi.spritesY = new int[width * height];
+        rsi.height = height;
+        rsi.width = width;
+        rsi.usableItemInterface = false;
+        rsi.isInventoryInterface = false;
+        rsi.type = 2;
+        rsi.id = childId;
+        rsi.invSpritePadX = invSpritePadX;
+        rsi.invSpritePadY = invSpritePadY;
+
+
+        System.arraycopy(options, 0, rsi.actions, 0, options.length);
+
+        if (addPlaceholderItems) {
+            for (int index = 0; index < rsi.inventoryItemId.length; index++) {
+                rsi.inventoryItemId[index] = 4152 + (index * 2);
+                rsi.inventoryAmounts[index] = index + 1;
+            }
+        }
+        return rsi;
+    }
+    public static Widget get(int interfaceId) {
+        Preconditions.checkArgument(interfaceId >= 0 && interfaceId < interfaceCache.length);
+        Preconditions.checkArgument(interfaceCache[interfaceId] != null);
+        return interfaceCache[interfaceId];
+    }
     public static void setBounds(int ID, int X, int Y, int frame, Widget RSinterface) {
         RSinterface.children[frame] = ID;
         RSinterface.childX[frame] = X;
@@ -628,6 +797,21 @@ public class Widget {
         tab.width = tab.disabledSprite.myWidth;
         tab.height = tab.enabledSprite.myHeight;
         tab.tooltip = tooltip;
+    }
+    public static Widget addSprite(int i, Sprite sprite) {
+        Widget rsinterface = interfaceCache[i] = new Widget();
+        rsinterface.id = i;
+        rsinterface.parentID = i;
+        rsinterface.type = 5;
+        rsinterface.atActionType = 0;
+        rsinterface.contentType = 0;
+        rsinterface.width = sprite.myWidth;
+        rsinterface.height = sprite.myHeight;
+        rsinterface.opacity = 0;
+        rsinterface.mOverInterToTrigger = 52;
+        rsinterface.disabledSprite = sprite;
+        rsinterface.enabledSprite = sprite;
+        return rsinterface;
     }
 
     public static void addSprite(int id, int spriteId, String spriteName) {

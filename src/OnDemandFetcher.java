@@ -48,12 +48,12 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    private boolean aBoolean1336 = true;
    private CRC32 aCRC32_1338 = new CRC32();
    private byte[] ioBuffer = new byte[500];
-   private byte[][] aByteArrayArray1342 = new byte[6][];
+   private byte[][] fileStatus = new byte[6][];
    private Class19 aClass19_1344 = new Class19(169);
    private Class19 aClass19_1358 = new Class19(169);
-   private byte[] aByteArray1359 = new byte[90000];
+   private byte[] gzipInputBuffer = new byte[90000];
    private Class2 aClass2_1361;
-   private int[][] anIntArrayArray1364;
+   private int[][] versions;
    private int[][] anIntArrayArray1365;
    private Class19 aClass19_1368;
    private Class19 aClass19_1370;
@@ -76,18 +76,26 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          int ioexception = this.inputStream.available();
          int i1;
          int k1;
-         if(this.expectedSize == 0 && ioexception >= 6) {
+         if(this.expectedSize == 0 && ioexception >= 8) {
             this.waiting = true;
 
             int abyte0;
-            for(abyte0 = 0; abyte0 < 6; abyte0 += this.inputStream.read(this.ioBuffer, abyte0, 6 - abyte0)) {
+            for(abyte0 = 0; abyte0 < 8; abyte0 += this.inputStream.read(this.ioBuffer, abyte0, 8 - abyte0)) {
                ;
             }
 
-            abyte0 = this.ioBuffer[0] & 255;
-            i1 = ((this.ioBuffer[1] & 255) << 8) + (this.ioBuffer[2] & 255);
-            k1 = ((this.ioBuffer[3] & 255) << 8) + (this.ioBuffer[4] & 255);
-            int i2 = this.ioBuffer[5] & 255;
+            abyte0 = this.ioBuffer[0] & 0xFF;
+
+            i1 = ((this.ioBuffer[1] & 0xFF) << 16) // i1 as a medium (3-byte integer)
+                    + ((this.ioBuffer[2] & 0xFF) << 8)
+                    + (this.ioBuffer[3] & 0xFF);
+
+            k1 = ((this.ioBuffer[4] & 0xFF) << 16) // k1 as a medium (3-byte integer)
+                    + ((this.ioBuffer[5] & 0xFF) << 8)
+                    + (this.ioBuffer[6] & 0xFF);
+
+            int i2 = this.ioBuffer[7] & 0xFF; // i2 remains as a byte
+            //System.out.println(": abyte0=" + abyte0 + ", i1=" + i1 + ", k1=" + k1 + ", i2=" + i2);
             this.current = null;
             OnDemandData onDemandData = (OnDemandData)this.requested.reverseGetFirst();
 
@@ -201,11 +209,11 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          abyte2 = fileArchive.method571(as[as1]);
          j1 = abyte2.length / 2;
          class30_sub2_sub2_2 = new Stream(abyte2, 891);
-         this.anIntArrayArray1364[as1] = new int[j1];
-         this.aByteArrayArray1342[as1] = new byte[j1];
+         this.versions[as1] = new int[j1];
+         this.fileStatus[as1] = new byte[j1];
 
          for(k2 = 0; k2 < j1; ++k2) {
-            this.anIntArrayArray1364[as1][k2] = class30_sub2_sub2_2.readUnsignedShort();
+            this.versions[as1][k2] = class30_sub2_sub2_2.readUnsignedShort();
          }
       }
 
@@ -224,7 +232,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
       }
 
       abyte2 = fileArchive.method571("model_index");
-      j1 = this.anIntArrayArray1364[0].length;
+      j1 = this.versions[0].length;
       this.aByteArray1372 = new byte[j1];
 
       for(var13 = 0; var13 < j1; ++var13) {
@@ -334,7 +342,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          this.aBoolean1355 = !this.aBoolean1355;
       }
 
-      return this.anIntArrayArray1364[j].length;
+      return this.versions[j].length;
    }
 
    private final void method556(int i, OnDemandData onDemandData) {
@@ -603,7 +611,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    }
 
    public final void method560(int var1, int var2, boolean var3) {
-      if(this.aClient1343.aClass14Array970[0] != null && this.anIntArrayArray1364[var2][var1] != 0 && this.aByteArrayArray1342[var2][var1] != 0 && this.anInt1332 != 0) {
+      if(this.aClient1343.aClass14Array970[0] != null && this.versions[var2][var1] != 0 && this.fileStatus[var2][var1] != 0 && this.anInt1332 != 0) {
          OnDemandData var4 = new OnDemandData();
          var4.dataType = var2;
          var4.ID = var1;
@@ -645,11 +653,11 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
                GZIPInputStream j = new GZIPInputStream(new ByteArrayInputStream(onDemandData.buffer));
 
                while(true) {
-                  if(var9 == this.aByteArray1359.length) {
+                  if(var9 == this.gzipInputBuffer.length) {
                      throw new RuntimeException("buffer overflow!");
                   }
 
-                  int k = j.read(this.aByteArray1359, var9, this.aByteArray1359.length - var9);
+                  int k = j.read(this.gzipInputBuffer, var9, this.gzipInputBuffer.length - var9);
                   if(k == -1) {
                      break;
                   }
@@ -663,7 +671,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
             onDemandData.buffer = new byte[var9];
 
             for(int var10 = 0; var10 < var9; ++var10) {
-               onDemandData.buffer[var10] = this.aByteArray1359[var10];
+               onDemandData.buffer[var10] = this.gzipInputBuffer[var10];
             }
 
             return onDemandData;
@@ -705,10 +713,10 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
       }
 
       if(this.aClient1343.aClass14Array970[0] != null) {
-         if(this.anIntArrayArray1364[i][j] != 0) {
+         if(this.versions[i][j] != 0) {
             byte[] abyte0 = this.aClient1343.aClass14Array970[i + 1].method233(j);
-            if(!this.crcMatches(this.anIntArrayArray1364[i][j], this.anIntArrayArray1365[i][j], abyte0)) {
-               this.aByteArrayArray1342[i][j] = byte0;
+            if(!this.crcMatches(this.versions[i][j], this.anIntArrayArray1365[i][j], abyte0)) {
+               this.fileStatus[i][j] = byte0;
                if(byte0 > this.anInt1332) {
                   this.anInt1332 = byte0;
                }
@@ -754,11 +762,11 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
                   break;
                }
 
-               if(this.aByteArrayArray1342[onDemandData_1.dataType][onDemandData_1.ID] != 0) {
+               if(this.fileStatus[onDemandData_1.dataType][onDemandData_1.ID] != 0) {
                   ++this.anInt1351;
                }
 
-               this.aByteArrayArray1342[onDemandData_1.dataType][onDemandData_1.ID] = 0;
+               this.fileStatus[onDemandData_1.dataType][onDemandData_1.ID] = 0;
                this.requested.insertHead(onDemandData_1);
                ++this.anInt1366;
                this.method556(8, onDemandData_1);
@@ -833,8 +841,8 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          }
 
          while(var10 != null) {
-            if(this.aByteArrayArray1342[var10.dataType][var10.ID] != 0) {
-               this.aByteArrayArray1342[var10.dataType][var10.ID] = 0;
+            if(this.fileStatus[var10.dataType][var10.ID] != 0) {
+               this.fileStatus[var10.dataType][var10.ID] = 0;
                this.requested.insertHead(var10);
                this.method556(8, var10);
                this.waiting = true;
@@ -856,7 +864,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          }
 
          for(int var11 = 0; var11 < 5; ++var11) {
-            byte[] abyte0 = this.aByteArrayArray1342[var11];
+            byte[] abyte0 = this.fileStatus[var11];
             int k = abyte0.length;
 
             for(int l = 0; l < k; ++l) {
@@ -897,7 +905,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
    public OnDemandFetcher() {
       this.aClass2_1361 = new Class2(anInt1345);
-      this.anIntArrayArray1364 = new int[6][];
+      this.versions = new int[6][];
       this.anIntArrayArray1365 = new int[6][];
       this.aClass19_1368 = new Class19(169);
       this.aClass19_1370 = new Class19(169);

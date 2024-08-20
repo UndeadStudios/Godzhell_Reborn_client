@@ -177,7 +177,7 @@ public final class Class14
                 int nextSector = 0;
                 if(overwrite)
                 {
-                    seekTo(dataFile, -660, firstSectorId * 520);
+                    seekTo(dataFile, -660, firstSectorId * DATA_SIZE);
                     int j2;
                     int l2;
                     for(j2 = 0; j2 < headerLength; j2 += l2)

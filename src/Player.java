@@ -142,7 +142,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
             for(i2 = 0; i2 < 5; ++i2) {
                 j1 = stream.readUnsignedShort();
-                if(client.anIntArrayArray1003.length < 1 || j1 < 0 || j1 >= client.anIntArrayArray1003[i2].length) {
+                if(j1 < 0 || j1 >= client.anIntArrayArray1003[i2].length) {
                     j1 = 0;
                 }
 
@@ -192,17 +192,17 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
 
             for(i2 = 0; i2 < 12; ++i2) {
                 this.aLong1718 <<= 4;
-                if(this.anIntArray1717[i2] >= 364) {
-                    this.aLong1718 += (long)(this.anIntArray1717[i2] - 364);
+                if(this.anIntArray1717[i2] >= 256) {
+                    this.aLong1718 += (long)(this.anIntArray1717[i2] - 256);
                 }
             }
 
-            if(this.anIntArray1717[0] >= 364) {
-                this.aLong1718 += (long)(this.anIntArray1717[0] - 364 >> 4);
+            if(this.anIntArray1717[0] >= 256) {
+                this.aLong1718 += (long)(this.anIntArray1717[0] - 256 >> 4);
             }
 
-            if(this.anIntArray1717[1] >= 364) {
-                this.aLong1718 += (long)(this.anIntArray1717[1] - 364 >> 8);
+            if(this.anIntArray1717[1] >= 256) {
+                this.aLong1718 += (long)(this.anIntArray1717[1] - 256 >> 8);
             }
 
             for(i2 = 0; i2 < 5; ++i2) {
@@ -218,10 +218,10 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
     public final Model method452(int i) {
         if(this.aClass5_1698 != null) {
             int var14 = -1;
-            if(super.anInt1526 >= 0 && super.anInt1529 == 0) {
-                var14 = Class20.aClass20Array351[super.anInt1526].anIntArray353[super.anInt1527];
+            if(super.primaryanim >= 0 && super.primaryanim_pause == 0) {
+                var14 = AnimationDefinition.anims[super.primaryanim].anIntArray353[super.primaryanim_frameindex];
             } else if(super.anInt1517 >= 0) {
-                var14 = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
+                var14 = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
             }
 
             Model model = this.aClass5_1698.method164(0, -1, var14, (int[])null);
@@ -232,11 +232,11 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
             int i1 = -1;
             int j1 = -1;
             int k1 = -1;
-            if(super.anInt1526 >= 0 && super.anInt1529 == 0) {
-                Class20 model_1 = Class20.aClass20Array351[super.anInt1526];
-                k = model_1.anIntArray353[super.anInt1527];
+            if(super.primaryanim >= 0 && super.primaryanim_pause == 0) {
+                AnimationDefinition model_1 = AnimationDefinition.anims[super.primaryanim];
+                k = model_1.anIntArray353[super.primaryanim_frameindex];
                 if(super.anInt1517 >= 0 && super.anInt1517 != super.anInt1511) {
-                    i1 = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
+                    i1 = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
                 }
 
                 if(model_1.leftHandItem >= 0) {
@@ -249,7 +249,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                     l += (long)(k1 - (this.anIntArray1717[3] << 16));
                 }
             } else if(super.anInt1517 >= 0) {
-                k = Class20.aClass20Array351[super.anInt1517].anIntArray353[super.anInt1518];
+                k = AnimationDefinition.anims[super.anInt1517].anIntArray353[super.anInt1518];
             }
 
             Model var15 = (Model)aClass12_1704.method222(l);
@@ -274,7 +274,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                         j3 = j1;
                     }
 
-                    if(j3 >= 364 && j3 < '\u8000' && !Class38.aClass38Array656[j3 - 364].method537((byte)2)) {
+                    if(j3 >= 256 && j3 < '\u8000' && !Class38.aClass38Array656[j3 - 256].method537((byte)2)) {
                         var16 = true;
                     }
 
@@ -309,8 +309,8 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                     }
 
                     Model class30_sub2_sub4_sub6_4;
-                    if(i3 >= 364 && i3 < '\u8000') {
-                        class30_sub2_sub4_sub6_4 = Class38.aClass38Array656[i3 - 364].method538(false);
+                    if(i3 >= 256 && i3 < '\u8000') {
+                        class30_sub2_sub4_sub6_4 = Class38.aClass38Array656[i3 - 256].method538(false);
                         if(class30_sub2_sub4_sub6_4 != null) {
                             var17[j2++] = class30_sub2_sub4_sub6_4;
                         }
@@ -347,7 +347,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 Model var18 = Model.aModel_1621;
                 var18.method464(7, var15, Class36.method532(k, false) & Class36.method532(i1, false));
                 if(k != -1 && i1 != -1) {
-                    var18.method471(-20491, Class20.aClass20Array351[super.anInt1526].anIntArray357, i1, k);
+                    var18.method471(-20491, AnimationDefinition.anims[super.primaryanim].anIntArray357, i1, k);
                 } else if(k != -1) {
                     var18.method470(k, '\u9e5e');
                 }
@@ -383,7 +383,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
             int k;
             for(int aclass30_sub2_sub4_sub6 = 0; aclass30_sub2_sub4_sub6 < 12; ++aclass30_sub2_sub4_sub6) {
                 k = this.anIntArray1717[aclass30_sub2_sub4_sub6];
-                if(k >= 364 && k < '\u8000' && !Class38.aClass38Array656[k - 364].method539(false)) {
+                if(k >= 256 && k < '\u8000' && !Class38.aClass38Array656[k - 256].method539(false)) {
                     flag = true;
                 }
 
@@ -402,8 +402,8 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                 for(int model = 0; model < 12; ++model) {
                     j1 = this.anIntArray1717[model];
                     Model class30_sub2_sub4_sub6_2;
-                    if(j1 >= 364 && j1 < '\u8000') {
-                        class30_sub2_sub4_sub6_2 = Class38.aClass38Array656[j1 - 364].method540(0);
+                    if(j1 >= 256 && j1 < '\u8000') {
+                        class30_sub2_sub4_sub6_2 = Class38.aClass38Array656[j1 - 256].method540(0);
                         if(class30_sub2_sub4_sub6_2 != null) {
                             var8[k++] = class30_sub2_sub4_sub6_2;
                         }

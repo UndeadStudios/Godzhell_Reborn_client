@@ -3,17 +3,17 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
 
     public final void method445(int i, int j, boolean flag, boolean flag1)
     {
-        if(anInt1526 != -1 && Class20.aClass20Array351[anInt1526].anInt364 == 1)
-            anInt1526 = -1;
+        if(primaryanim != -1 && AnimationDefinition.anims[primaryanim].anInt364 == 1)
+            primaryanim = -1;
         if(!flag)
         {
             int k = i - anIntArray1500[0];
             int l = j - anIntArray1501[0];
             if(k >= -8 && k <= 8 && l >= -8 && l <= 8)
             {
-                if(anInt1525 < 9)
-                    anInt1525++;
-                for(int i1 = anInt1525; i1 > 0; i1--)
+                if(waypoint_count < 9)
+                    waypoint_count++;
+                for(int i1 = waypoint_count; i1 > 0; i1--)
                 {
                     anIntArray1500[i1] = anIntArray1500[i1 - 1];
                     anIntArray1501[i1] = anIntArray1501[i1 - 1];
@@ -26,8 +26,8 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
                 return;
             }
         }
-        anInt1525 = 0;
-        anInt1542 = 0;
+        waypoint_count = 0;
+        anim_delay = 0;
         anInt1503 = 0;
         anIntArray1500[0] = i;
         anIntArray1501[0] = j;
@@ -43,8 +43,8 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
         {
             for(int i = 1; i > 0; i++);
         }
-        anInt1525 = 0;
-        anInt1542 = 0;
+        waypoint_count = 0;
+        anim_delay = 0;
     }
 
     public final void method447(int i, int j, int k, int l)
@@ -94,11 +94,11 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
             j++;
             k--;
         }
-        if(anInt1526 != -1 && Class20.aClass20Array351[anInt1526].anInt364 == 1)
-            anInt1526 = -1;
-        if(anInt1525 < 9)
-            anInt1525++;
-        for(int l = anInt1525; l > 0; l--)
+        if(primaryanim != -1 && AnimationDefinition.anims[primaryanim].anInt364 == 1)
+            primaryanim = -1;
+        if(waypoint_count < 9)
+            waypoint_count++;
+        for(int l = waypoint_count; l > 0; l--)
         {
             anIntArray1500[l] = anIntArray1500[l - 1];
             anIntArray1501[l] = anIntArray1501[l - 1];
@@ -143,7 +143,7 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
         anIntArray1516 = new int[4];
         anInt1517 = -1;
         anInt1520 = -1;
-        anInt1526 = -1;
+        primaryanim = -1;
         anInt1532 = -1000;
         textCycle = 100;
         anInt1536 = -895;
@@ -181,12 +181,12 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
     int anInt1522;
     int anInt1523;
     int anInt1524;
-    int anInt1525;
-    int anInt1526;
-    int anInt1527;
-    int anInt1528;
-    int anInt1529;
-    int anInt1530;
+    int waypoint_count;
+    int primaryanim;
+    int primaryanim_frameindex;
+    int primaryanim_loops_remaining;
+    int primaryanim_pause;
+    int primaryanim_replaycount;
     int anInt1531;
     int anInt1532;
     int anInt1533;
@@ -198,7 +198,7 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
     int face_y;
     int anInt1540;
     boolean aBoolean1541;
-    int anInt1542;
+    int anim_delay;
     int anInt1543;
     int anInt1544;
     int anInt1545;
