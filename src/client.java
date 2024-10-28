@@ -8,15 +8,7 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.awt.Desktop.Action;
-import java.io.BufferedInputStream;
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.EOFException;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.lang.reflect.Method;
 import java.math.BigInteger;
 import java.net.InetAddress;
@@ -27,9 +19,12 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.AbstractMap.SimpleEntry;
+import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.zip.CRC32;
+
+import com.google.common.base.Preconditions;
 import sign.signlink;
 
 public class client extends Applet_Sub1 {
@@ -629,6 +624,19 @@ public class client extends Applet_Sub1 {
     public void appearInChat(String x) {
         this.pushMessage(" ", 80, x);
         System.out.println("Reached appearInChat for: " + x);
+    }
+
+    private static String getErrorLogDirectory() {
+        return signlink.findcachedir() + Configuration.ERROR_LOG_DIRECTORY;
+    }
+
+    private static void enableExceptionLogging() throws IOException {
+        if (!new File(getErrorLogDirectory()).exists()) {
+            Preconditions.checkState(new File(getErrorLogDirectory()).mkdirs());
+        }
+
+        TeeOutputStream outputStream = new TeeOutputStream(System.err, new FileOutputStream(getErrorLogDirectory() + Configuration.ERROR_LOG_FILE, true));
+        System.setErr(new PrintStream(outputStream));
     }
     private void drawInputField(Widget child, int xPosition, int yPosition, int width, int height) {
         int clickX = super.saveClickX, clickY = super.saveClickY;
@@ -2104,6 +2112,11 @@ public class client extends Applet_Sub1 {
         try {
             anInt957 = 0;
             ondemand_offset = 0;
+            try {
+                enableExceptionLogging(); // Don't remove this!
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             method52(true);
             aBoolean959 = true;
             signlink.storeid = 32;
@@ -2216,7 +2229,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(i3 != -1) {
-                        this.method69(i3, false);
+                        this.doAction(i3, false);
                     }
 
                     this.menuOpen = false;
@@ -2262,7 +2275,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(j == 1 && this.menuActionRow > 0) {
-                    this.method69(this.menuActionRow - 1, false);
+                    this.doAction(this.menuActionRow - 1, false);
                 }
 
                 if(j == 2 && this.menuActionRow > 0) {
@@ -3044,7 +3057,7 @@ public class client extends Applet_Sub1 {
                                                     if (this.myPrivilege != 2 && this.myPrivilege != 9 && this.myPrivilege != 10 && this.myPrivilege != 4) {
                                                         this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col>";
                                                     } else {
-                                                        this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col><col=65280>(</col><col=ffffff>" + class8.anInt157 + "</col><col=65280>)</col>";
+                                                        this.menuActionName[this.menuActionRow] = "Examine <col=ff9040>" + class8.name + "</col><col=65280>(</col>ID:<col=ffffff>" + class8.anInt157 + "</col><col=65280>)</col>(Model:</col><col=ffffff>" + class8.modelId + "</col><col=65280>)";
                                                     }
 
                                                     this.menuActionID[this.menuActionRow] = 1125;
@@ -5008,7 +5021,20 @@ public class client extends Applet_Sub1 {
                 this.method45(0);
             }
 
-            if(j != 326) {
+            if(j == 326) {
+                this.stream.createFrame(101);
+                this.stream.writeWord(this.aBoolean1047?0:1);
+
+                for(l1 = 0; l1 < 7; ++l1) {
+                    this.stream.writeWord(this.anIntArray1065[l1]);
+                }
+
+                for(l1 = 0; l1 < 5; ++l1) {
+                    this.stream.writeWord(this.anIntArray990[l1]);
+                }
+
+                return true;
+            } else {
                 if(j == 620) {
                     this.canMute = !this.canMute;
                     if(this.myPrivilege >= 1) {
@@ -5031,19 +5057,6 @@ public class client extends Applet_Sub1 {
                 }
 
                 return false;
-            } else {
-                this.stream.createFrame(101);
-                this.stream.writeWord(this.aBoolean1047?0:1);
-
-                for(l1 = 0; l1 < 7; ++l1) {
-                    this.stream.writeWord(this.anIntArray1065[l1]);
-                }
-
-                for(l1 = 0; l1 < 5; ++l1) {
-                    this.stream.writeWord(this.anIntArray990[l1]);
-                }
-
-                return true;
             }
         }
     }
@@ -5347,6 +5360,11 @@ public class client extends Applet_Sub1 {
         try {
             anInt957 = 0;
             ondemand_offset = 0;
+            try {
+                enableExceptionLogging(); // Don't remove this!
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
             method52(false);
             aBoolean959 = true;
             signlink.storeid = 32;
@@ -5768,7 +5786,7 @@ public class client extends Applet_Sub1 {
                     } else if((this.anInt1253 == 1 || this.method17(9, this.menuActionRow - 1)) && this.menuActionRow > 2) {
                         this.method116(true);
                     } else if(this.menuActionRow > 0) {
-                        this.method69(this.menuActionRow - 1, false);
+                        this.doAction(this.menuActionRow - 1, false);
                     }
 
                     this.atInventoryLoopCycle = 10;
@@ -6437,7 +6455,7 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void method69(int i, boolean flag) {
+    public final void doAction(int i, boolean flag) {
         if (i < 0)
             return;
             if(this.inputDialogState != 0 && inputDialogState != 3) {
@@ -6722,17 +6740,11 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            boolean class8_1;
-            Widget var17;
             if(l == 315) {
-                var17 = Widget.interfaceCache[buttonPressed];
-                class8_1 = true;
+                Widget var17 = Widget.interfaceCache[buttonPressed];
+                boolean class8_1 = true;
                 if(var17.contentType > 0) {
                     class8_1 = this.method48(505, var17);
-                }
-
-                if(class8_1) {
-                    ;
                 }
 
                 if(class8_1) {
@@ -6978,7 +6990,7 @@ public class client extends Applet_Sub1 {
 
                 String var24;
                 if(l == 626) {
-                    var17 = Widget.interfaceCache[buttonPressed];
+                    Widget var17 = Widget.interfaceCache[buttonPressed];
                     this.anInt1136 = 1;
                     this.anInt1137 = buttonPressed;
                     this.anInt1138 = var17.spellUsableOn;
@@ -7118,7 +7130,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 652) {
-                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                        boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!class8_1) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
@@ -7134,7 +7146,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 94) {
-                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                       boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!class8_1) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
@@ -7473,7 +7485,7 @@ public class client extends Applet_Sub1 {
                                 if(var251.aByteArray89 != null) {
                                     var30 = new String(var251.aByteArray89);
                                 } else {
-                                    var30 = "It\'s a " + var251.aString65 + ".";
+                                    var30 = "It\'s a " + var251.name + ".";
                                 }
 
                                 this.pushMessage(var30, 0, "");
@@ -7552,7 +7564,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 567) {
-                        class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                        boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         if(!class8_1) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                         }
@@ -7806,7 +7818,7 @@ public class client extends Applet_Sub1 {
                         }
 
                         if(l == 244) {
-                            class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
+                            boolean class8_1 = this.doWalkTo(2, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                             if(!class8_1) {
                                 this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, buttonPressed, localPlayer.anIntArray1500[0], false, j);
                             }
@@ -7894,7 +7906,15 @@ public class client extends Applet_Sub1 {
         if(this.aBoolean880) {
             this.method136((byte)59);
         } else {
+            try {
             super.run();
+            } catch (OutOfMemoryError e) {
+                //ClientWindow.popupMessage("An error has occurred that caused the game to crash.",
+                //"Contact us in the Discord #support channel for help.");
+                Misc.dumpHeap(true);
+                e.printStackTrace();
+                throw e;
+            }
         }
     }
 
@@ -10331,7 +10351,13 @@ public class client extends Applet_Sub1 {
 
         }
     }
+    public static String getUserCountry() {
+        // Get the default locale for the system
+        Locale locale = Locale.getDefault();
 
+        // Retrieve the display country (e.g., "United States")
+        return locale.getDisplayCountry();
+    }
     public final int method83(boolean flag, int i, int j, int k) {
         if(!flag) {
             this.aClass19ArrayArrayArray827 = (Class19[][][])null;
@@ -10383,6 +10409,7 @@ public class client extends Applet_Sub1 {
                 this.stream.writeString(s1);
                 this.stream.writeString(this.macAddress);
                 this.stream.writeString(FingerPrint.getFingerprint());
+                stream.writeString(getUserCountry());
                 this.stream.doKeys(aBigInteger1032, aBigInteger856, (byte)0);
                 this.aStream_847.currentPosition = 0;
                 if(flag) {
@@ -11060,7 +11087,7 @@ public class client extends Applet_Sub1 {
 
             if(class5 != null) {
                 if(class5.aBoolean84) {
-                    String s = class5.aString65;
+                    String s = class5.name;
                     if(flag) {
                         aBoolean919 = !aBoolean919;
                     }
@@ -17410,12 +17437,12 @@ public class client extends Applet_Sub1 {
                     return true;
                 }
 
-                signlink.reporterror("T1 - " + this.packet + "," + this.packetSize + " - " + this.anInt842 + "," + this.anInt843);
+                signlink.reporterror("T1 - last packet received " + this.packet + ", packet length " + this.packetSize + ", previous packet " + this.anInt842 + ", third packet " + this.anInt843);
                 this.method44(true);
             } catch (IOException var21) {
                 this.method68(-670);
             } catch (Exception var22) {
-                s2 = "T2 - " + this.packet + "," + this.anInt842 + "," + this.anInt843 + " - " + this.packetSize + "," + (this.baseX + localPlayer.anIntArray1500[0]) + "," + (this.baseY + localPlayer.anIntArray1501[0]) + " - ";
+                s2 = "T2 - last packet received" + this.packet + ", previous packet " + this.anInt842 + ", third packet " + this.anInt843 + ", packet length " + this.packetSize + ", ABSX " + (this.baseX + localPlayer.anIntArray1500[0]) + ", ABSY" + (this.baseY + localPlayer.anIntArray1501[0]) + " - packet data ";
 
                 for(j15 = 0; j15 < this.packetSize && j15 < 50; ++j15) {
                     s2 = s2 + this.in.buffer[j15] + ",";

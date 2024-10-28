@@ -23,7 +23,7 @@ final class Class5
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 105;
-			class5.aString65 = "Pikachu";
+			class5.name = "Pikachu";
 			class5.anInt83 = -1;
 			class5.anIntArray94 = new int[1];
 			class5.anIntArray94[0] = 35223;
@@ -35,7 +35,7 @@ final class Class5
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 315;
-			class5.aString65 = "Charmander";
+			class5.name = "Charmander";
 			class5.anInt83 = -1;
 			class5.anIntArray94 = new int[1];
 			class5.anIntArray94[0] = 32345;
@@ -47,7 +47,7 @@ final class Class5
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 420;
-			class5.aString65 = "Thugbob";
+			class5.name = "Thugbob";
 			class5.anInt83 = -1;
 			class5.anIntArray94 = new int[1];
 			class5.anIntArray94[0] = 31123;
@@ -59,7 +59,7 @@ final class Class5
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
 			class5.anInt61 = 205;
-			class5.aString65 = "Homer";
+			class5.name = "Homer";
 			class5.anInt83 = -1;
 			class5.anIntArray94 = new int[1];
 			class5.anIntArray94[0] = 35229;
@@ -68,11 +68,11 @@ final class Class5
 						if(i == 7943) {
 			class5.aStringArray66 = new String[5];
 			class5.aStringArray66[1] = "Attack";
-			class5.aString65 = " King Green Dragon";
+			class5.name = " King Green Dragon";
  			class5.aByteArray89 = "wtf green kbd??".getBytes();
 		}
 				        if(i == 945) { // NPC ID, can be changed.
-						    class5.aString65 = "Ghreborn Guide"; // NPC name
+						    class5.name = "Ghreborn Guide"; // NPC name
 						    class5.aByteArray89 = "It's a Ghreborn guide.".getBytes(); // NPC description, you must leave the .getBytes() at the end or it will not work.
 				}
 return class5;
@@ -84,14 +84,14 @@ return class5;
 
 		         try {
 		            bw = new BufferedWriter(new FileWriter(signlink.findcachedir() + "/dumps/NpcList.txt", true));
-		            if(EntityDef.aString65 != null) {
+		            if(EntityDef.name != null) {
 		               bw.write("////////////////////////////////////////////");
 		               bw.newLine();
 		               bw.newLine();
 		               bw.newLine();
 		               bw.write("if(i == " + i + ") {//Npc ID");
 		               bw.newLine();
-		               bw.write("EntityDef.name = \"" + EntityDef.aString65 + "\";//Npc Name");
+		               bw.write("EntityDef.name = \"" + EntityDef.name + "\";//Npc Name");
 		               bw.newLine();
 		               bw.write("EntityDef.combatLevel = " + EntityDef.anInt61 + ";//Npc Combat");
 		               bw.newLine();
@@ -245,7 +245,7 @@ return class5;
 			IntStream.range(0, 100_000).forEach(id -> {
 				try {
 					Class5 definition = Class5.method159(id);
-					generator.add(definition.aString65, id);
+					generator.add(definition.name, id);
 				} catch (Exception e) {}
 			});
 			writer2.close();
@@ -258,8 +258,8 @@ return class5;
 	BufferedWriter bw = null;
 	try {
 	bw = new BufferedWriter(new FileWriter("Npccconfigs.txt", true));
-	if(class5.aString65!= null) {
-	bw.write("ID: "+i+"\t\tName: "+class5.aString65.replace(" ", "_")+", Combat: "+class5.anInt61+" walk anim: "+class5.anInt67+" stand anim: "+ class5.anInt77+" walking right anim: "+class5.anInt55+" walk left anim: "+class5.anInt83);
+	if(class5.name != null) {
+	bw.write("ID: "+i+"\t\tName: "+class5.name.replace(" ", "_")+", Combat: "+class5.anInt61+" walk anim: "+class5.anInt67+" stand anim: "+ class5.anInt77+" walking right anim: "+class5.anInt55+" walk left anim: "+class5.anInt83);
 	bw.newLine();
 	bw.flush();
 	bw.close();
@@ -274,8 +274,8 @@ return class5;
 	BufferedWriter bw = null;
 	try {
 	bw = new BufferedWriter(new FileWriter("npc.cfg", true));
-	if(class5.aString65!= null) {
-	bw.write("npc = "+i+"\t"+class5.aString65.replace(" ", "_")+"\t"+class5.anInt61+"\t0\t"+class5.aByte68+"");
+	if(class5.name != null) {
+	bw.write("npc = "+i+"\t"+class5.name.replace(" ", "_")+"\t"+class5.anInt61+"\t0\t"+class5.aByte68+"");
 	bw.newLine();
 	bw.flush();
 	bw.close();
@@ -370,7 +370,7 @@ return class5;
 
 			} else
 			if(i == 2)
-				aString65 = stream.readString();
+				name = stream.readString();
 			else
 			if(i == 3)
 				aByteArray89 = stream.method416((byte)30);
@@ -524,7 +524,7 @@ return class5;
     public static int anInt62;
     private int anInt63;
     private int anInt64;
-    public String aString65;
+    public String name;
     public String aStringArray66[];
     public int anInt67;
     public byte aByte68;

@@ -364,7 +364,8 @@ public class Model extends Animable {
 		else
 			readOldModel(modelId);
 		if (newmodel[modelId]) {
-			scale2(4);
+			method478(32,32, -1, 32);
+			method475(0, 6, -1, 0);
 	}
 }
 

@@ -52,6 +52,7 @@ final class Player extends Class30_Sub2_Sub4_Sub1 {
                             Model model_3 = new Model(9, true, Class36.method532(super.anInt1521, false), false, aclass30_sub2_sub4_sub6);
                             model_3.method475(0, -super.anInt1524, 16384, 0);
                             model_3.method469((byte)-71);
+                            model_3.method478(132, 132, -1,132);
                             model_3.method470(model_1.aClass20_407.anIntArray353[super.anInt1521], '\u9e5e');
                             model_3.anIntArrayArray1658 = (int[][])null;
                             model_3.anIntArrayArray1657 = (int[][])null;

@@ -260,6 +260,9 @@ final class ObjectManager {
 									if (textureId > 50) {
 									textureId = -1;
 								}
+									if(floorId == 113){
+										textureId = 25;
+									}
 									if(textureId >= 0) {
 										k23 = Rasterizer.method369(textureId);
 										j23 = -1;

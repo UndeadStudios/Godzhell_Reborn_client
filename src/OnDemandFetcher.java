@@ -51,7 +51,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    private byte[][] fileStatus = new byte[6][];
    private Class19 aClass19_1344 = new Class19(169);
    private Class19 aClass19_1358 = new Class19(169);
-   private byte[] gzipInputBuffer = new byte[90000];
+   private byte[] gzipInputBuffer = new byte[9999999];
    private Class2 aClass2_1361;
    private int[][] versions;
    private int[][] anIntArrayArray1365;

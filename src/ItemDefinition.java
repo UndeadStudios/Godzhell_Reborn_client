@@ -52,7 +52,7 @@ final class ItemDefinition {
     private int anInt167;
     private int spriteTranslateX;
     private final int anInt171;
-    private int modelId;
+    public int modelId;
     private int primaryMaleHeadPiece;
     private final int anInt177;
     private int anInt184;
@@ -523,7 +523,28 @@ final class ItemDefinition {
         }
 
     }
-
+    public static ItemDefinition copy(ItemDefinition itemDef, int newId, int copyingItemId, String newName, String...actions) {
+        ItemDefinition copyItemDef = method198(copyingItemId);
+        itemDef.method197();
+        itemDef.anInt157 = newId;
+        itemDef.name = newName;
+        itemDef.originalModelColors = copyItemDef.originalModelColors;
+        itemDef.modifiedModelColors = copyItemDef.modifiedModelColors;
+        itemDef.modelId = copyItemDef.modelId;
+        itemDef.primaryMaleModel = copyItemDef.primaryMaleModel;
+        itemDef.primaryFemaleModel = copyItemDef.primaryFemaleModel;
+        itemDef.spriteScale = copyItemDef.spriteScale;
+        itemDef.spritePitch = copyItemDef.spritePitch;
+        itemDef.spriteCameraRoll = copyItemDef.spriteCameraRoll;
+        itemDef.spriteTranslateX = copyItemDef.spriteTranslateX;
+        itemDef.spriteTranslateY = copyItemDef.spriteTranslateY;
+        itemDef.itemActions = copyItemDef.itemActions;
+        itemDef.itemActions = new String[5];
+        if (actions != null) {
+            System.arraycopy(actions, 0, itemDef.itemActions, 0, actions.length);
+        }
+        return itemDef;
+    }
     public static ItemDefinition method198(int i) {
         for (int j = 0; j < 10; j++)
             if (cache[j].anInt157 == i)
@@ -535,6 +556,30 @@ final class ItemDefinition {
         class8.anInt157 = i;
         class8.method197();
         class8.readValues(true, aStream_183);
+
+        switch(i){
+            case 13000:
+                copy(class8, 13_000, 6_542, "Resource box", "Open");
+                break;
+            case 13001:
+                copy(class8, 13_001, 6_542, "Resource box(medium)", "Open");
+                break;
+            case 13002:
+                copy(class8, 13_002, 6_542, "Resource box(large)", "Open");
+                break;
+            case 13003:
+                copy(class8, 13_003, 6_542, "Resource box(huge)", "Open");
+                break;
+            case 10814:
+                class8.modelId = 21948;
+                break;
+            case 10816:
+                class8.modelId = 2760;
+                break;
+            case 10818:
+                class8.modelId = 21949;
+                break;
+        }
         method198_2(i, class8);
         method198_3(i, class8);
         method198_4(i, class8);
