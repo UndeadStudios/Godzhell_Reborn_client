@@ -7,7 +7,7 @@ import java.io.IOException;
 public class VarBit
 {
 
-    public static void method533(int i, FileArchive fileArchive)
+    public static void load(int i, FileArchive fileArchive)
     {
         if(i != 0)
             anInt644 = 91;
@@ -22,7 +22,7 @@ public class VarBit
             cache[j].readValues(stream);
             //System.out.println(""+ cache[j].anInt648+" "+ cache[j].anInt649);
             if(cache[j].aBoolean651)
-                Class41.aClass41Array701[cache[j].anInt648].aBoolean713 = true;
+                VarpDefinition.aVarpDefinitionArray701[cache[j].anInt648].aBoolean713 = true;
         }
 
         if(stream.currentPosition != stream.buffer.length)

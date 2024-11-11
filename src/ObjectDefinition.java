@@ -1,7 +1,7 @@
 import java.io.*;
 import java.util.stream.IntStream;
 
-public final class Class46 {
+public final class ObjectDefinition {
 
 	private short[] default_texture_id, new_texture_id;
 	private byte[] aByteArray1422;
@@ -13,7 +13,7 @@ public final class Class46 {
 	private int bgsoundmin= 0;
 	private boolean render = false;
 	private int bgsoundmax = 0;
-	private boolean hasanimation = false;
+	boolean hasanimation = false;
 	private boolean mapSceneRotated = false;
 	private boolean aBoolean211 = false;
 	private boolean castshadow = true;
@@ -26,32 +26,32 @@ public final class Class46 {
 	private int cursor1Op = -1;
 	private int cursor1 = -1;
 
-	public static Class46 forID(int i) {
+	public static ObjectDefinition forID(int i) {
 		if (i > anIntArray755.length)
 			i = anIntArray755.length - 1;
 		for (int j = 0; j < 20; j++)
-			if (aClass46Array782[j].type == i)
-				return aClass46Array782[j];
+			if (aObjectDefinitionArray782[j].type == i)
+				return aObjectDefinitionArray782[j];
 		anInt771 = (anInt771 + 1) % 20;
-		Class46 class46 = aClass46Array782[anInt771];
+		ObjectDefinition objectDefinition = aObjectDefinitionArray782[anInt771];
 		try {
 			aStream_753.currentPosition = anIntArray755[i];
 		} catch(Exception e) {}
-		class46.type = i;
-		class46.method573();
-		class46.method582(false, aStream_753);
+		objectDefinition.type = i;
+		objectDefinition.method573();
+		objectDefinition.method582(false, aStream_753);
 
-        return class46;
+        return objectDefinition;
     }
 
 			public static void dumpObjectcfg() {
 	for(int i = 0; i < 45000; i++) {
-	Class46 class46 = forID(i);
+	ObjectDefinition objectDefinition = forID(i);
 	BufferedWriter bw = null;
 	try {
 	bw = new BufferedWriter(new FileWriter("object.cfg", true));
-	if(class46.aString739!= null) {
-	bw.write("ObjectId = "+i+"\t\t"+class46.aString739);
+	if(objectDefinition.aString739!= null) {
+	bw.write("ObjectId = "+i+"\t\t"+ objectDefinition.aString739);
 	bw.newLine();
 	bw.flush();
 	bw.close();
@@ -113,11 +113,11 @@ public final class Class46 {
 		aClass12_785 = null;
 		aClass12_780 = null;
 		anIntArray755 = null;
-		aClass46Array782 = null;
+		aObjectDefinitionArray782 = null;
 		aStream_753 = null;
 	}
 
-	public static void method576(FileArchive class30_sub2_sub2Loader) {
+	public static void load(FileArchive class30_sub2_sub2Loader) {
         aStream_753 = new Stream(class30_sub2_sub2Loader.method571("loc.dat"), 891);
         Stream stream = new Stream(class30_sub2_sub2Loader.method571("loc.idx"), 891);
 		int anInt756 = stream.readUnsignedShort();
@@ -128,16 +128,16 @@ public final class Class46 {
 			anIntArray755[j] = i;
 			i += stream.readUnsignedShort();
 		}
-		aClass46Array782 = new Class46[20];
+		aObjectDefinitionArray782 = new ObjectDefinition[20];
 		for (int k = 0; k < 20; k++)
-			aClass46Array782[k] = new Class46();
+			aObjectDefinitionArray782[k] = new ObjectDefinition();
 		if (Configuration.dumpDataLists) {
 
 			TempWriter writer2 = new TempWriter("Object_fields");
 			FieldGenerator generator = new FieldGenerator(writer2::writeLine);
 			IntStream.range(0, 100_000).forEach(id -> {
 				try {
-					Class46 definition = Class46.forID(id);
+					ObjectDefinition definition = ObjectDefinition.forID(id);
 					generator.add(definition.aString739, id);
 				} catch (Exception e) {}
 			});
@@ -194,7 +194,7 @@ public final class Class46 {
 		return flag1;
 	}
 
-	public Class46 method580(boolean lolz) {
+	public ObjectDefinition method580(boolean lolz) {
 		int i = -1;
 		if(anInt774 != -1)
 		{
@@ -366,6 +366,8 @@ public final class Class46 {
 					anInt781 = stream.readUnsignedShort();
 					if (anInt781 == 65535)
 						anInt781 = -1;
+				} else if (j == 27){
+				aBoolean757 = true;
 				} else if (j == 28)
 					anInt775 = stream.readUnsignedByte();
 				else if (j == 29)
@@ -517,7 +519,7 @@ public final class Class46 {
 			anInt760 = aBoolean767 ? 1 : 0;
 	}
 
-	public Class46() {
+	public ObjectDefinition() {
 		type = -1;
 	}
 
@@ -563,7 +565,7 @@ public final class Class46 {
 	public boolean aBoolean779;
 	public static Class12 aClass12_780 = new Class12(false, 30);
 	public int anInt781;
-	public static Class46[] aClass46Array782;
+	public static ObjectDefinition[] aObjectDefinitionArray782;
 	public int anInt783;
 	public int[] anIntArray784;
 	public static Class12 aClass12_785 = new Class12(false, 500);

@@ -1,19 +1,18 @@
-public class Class22
+public class FloorDefinition
 {
 
-    public static void method260(int i, FileArchive fileArchive)
+    public static void load(FileArchive fileArchive)
     {
-        if(i != 0)
-            anInt386 = 115;
+
         Stream stream = new Stream(fileArchive.method571("flo.dat"));
         anInt387 = stream.readUnsignedShort();
-        if(aClass22Array388 == null)
-            aClass22Array388 = new Class22[anInt387];
+        if(aFloorDefinitionArray388 == null)
+            aFloorDefinitionArray388 = new FloorDefinition[anInt387];
         for(int j = 0; j < anInt387; j++)
         {
-            if(aClass22Array388[j] == null)
-                aClass22Array388[j] = new Class22();
-            aClass22Array388[j].method261(true, stream);
+            if(aFloorDefinitionArray388[j] == null)
+                aFloorDefinitionArray388[j] = new FloorDefinition();
+            aFloorDefinitionArray388[j].method261(true, stream);
         }
 	System.out.println("530 Overlay Loaded: " + anInt387);
     }
@@ -158,7 +157,7 @@ public class Class22
         return l;
     }
 
-    public Class22()
+    public FloorDefinition()
     {
         aBoolean385 = true;
         anInt391 = -1;
@@ -169,7 +168,7 @@ public class Class22
     private boolean aBoolean385;
     private static int anInt386;
     public static int anInt387;
-    public static Class22 aClass22Array388[];
+    public static FloorDefinition aFloorDefinitionArray388[];
     public String aString389;
     public int anInt390;
     public int anInt391;

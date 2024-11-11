@@ -150,11 +150,11 @@ final class ObjectManager {
 					if(k9 >= 0 && k9 < anInt146) {
 						int l12 = aByteArrayArrayArray142[l][k9][i8] & 0xff;
 						if(l12 > 0) {
-							Class22 class22 = Class22.aClass22Array388[l12 - 1];
-							anIntArray124[i8] += class22.anInt397;
-							anIntArray125[i8] += class22.anInt395;
-							anIntArray126[i8] += class22.anInt396;
-							anIntArray127[i8] += class22.anInt398;
+							FloorDefinition floorDefinition = FloorDefinition.aFloorDefinitionArray388[l12 - 1];
+							anIntArray124[i8] += floorDefinition.anInt397;
+							anIntArray125[i8] += floorDefinition.anInt395;
+							anIntArray126[i8] += floorDefinition.anInt396;
+							anIntArray127[i8] += floorDefinition.anInt398;
 							anIntArray128[i8]++;
 						}
 					}
@@ -162,11 +162,11 @@ final class ObjectManager {
 					if(i13 >= 0 && i13 < anInt146) {
 						int i14 = aByteArrayArrayArray142[l][i13][i8] & 0xff;
 						if(i14 > 0) {
-							Class22 class22_1 = Class22.aClass22Array388[i14 - 1];
-							anIntArray124[i8] -= class22_1.anInt397;
-							anIntArray125[i8] -= class22_1.anInt395;
-							anIntArray126[i8] -= class22_1.anInt396;
-							anIntArray127[i8] -= class22_1.anInt398;
+							FloorDefinition floorDefinition_1 = FloorDefinition.aFloorDefinitionArray388[i14 - 1];
+							anIntArray124[i8] -= floorDefinition_1.anInt397;
+							anIntArray125[i8] -= floorDefinition_1.anInt395;
+							anIntArray126[i8] -= floorDefinition_1.anInt396;
+							anIntArray127[i8] -= floorDefinition_1.anInt398;
 							anIntArray128[i8]--;
 						}
 					}
@@ -522,8 +522,8 @@ final class ObjectManager {
 					break label0;
 				}
 				i += j;
-				Class46 class46 = Class46.forID(i);
-				class46.method574(onDemandFetcher, -235);
+				ObjectDefinition objectDefinition = ObjectDefinition.forID(i);
+				objectDefinition.method574(onDemandFetcher, -235);
 				do
 				{
 					int k = stream.readUShortSmart();
@@ -576,15 +576,15 @@ final class ObjectManager {
 		if(z < anInt145) {
 			anInt145 = z;
 		}
-		Class46 class46 = Class46.forID(id);
+		ObjectDefinition objectDefinition = ObjectDefinition.forID(id);
 		int size1;
 		int size2;
 		if (orientation == 1 || orientation == 3) {
-			size1 = class46.anInt761;//objectSizeY
-			size2 = class46.anInt744;//objectSizeX
+			size1 = objectDefinition.anInt761;//objectSizeY
+			size2 = objectDefinition.anInt744;//objectSizeX
 		} else {
-			size1 = class46.anInt744;
-			size2 = class46.anInt761;
+			size1 = objectDefinition.anInt744;
+			size2 = objectDefinition.anInt761;
 		}
 		int modX;
 		int modX1;
@@ -610,11 +610,14 @@ final class ObjectManager {
 		int j2 = anIntArrayArrayArray129[z][modX][modY1];
 		int k2 = k1 + l1 + i2 + j2 >> 2;
 		long key = (long) (orientation << 20 | type << 14 | (y << 7 | x) + 0x40000000);
-		if(!class46.hasactions) {
+		if(!objectDefinition.hasactions) {
 			key |= ~0x7fffffffffffffffL;
 		}
-		if(class46.anInt760 == 1) {
+		if(objectDefinition.anInt760 == 1) {
 			key |= 0x400000L;
+		}
+		if (objectDefinition.hasanimation) {
+			key |= 0x80000000L;
 		}
 		key |= (long) id << 32;
 		byte byte0 = (byte)((orientation << 6) + type);
@@ -622,27 +625,27 @@ final class ObjectManager {
 			return;
 		}
 		if(type == 22) {
-			if(aBoolean151 && !class46.hasactions && !class46.aBoolean736) {
+			if(aBoolean151 && !objectDefinition.hasactions && !objectDefinition.aBoolean736) {
 				return;
 			}
 			Object obj;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj = class46.method578(22, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj = objectDefinition.method578(22, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method280(z, k2, y, 68, ((Animable) (obj)), byte0, key, x);
-			if(class46.aBoolean767 && class46.hasactions && class11 != null) {
+			if(objectDefinition.aBoolean767 && objectDefinition.hasactions && class11 != null) {
 				class11.method213(y, 0, x);
 			}
 			return;
 		}
 		if(type == 10 || type == 11) {
 			Object obj1;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj1 = class46.method578(10, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj1 = objectDefinition.method578(10, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			if(obj1 != null) {
 				int i5 = 0;
@@ -652,18 +655,18 @@ final class ObjectManager {
 				int j4;
 				int l4;
 				if(orientation == 1 || orientation == 3) {
-					j4 = class46.anInt761;
-					l4 = class46.anInt744;
+					j4 = objectDefinition.anInt761;
+					l4 = objectDefinition.anInt744;
 				} else {
-					j4 = class46.anInt744;
-					l4 = class46.anInt761;
+					j4 = objectDefinition.anInt744;
+					l4 = objectDefinition.anInt761;
 				}
-				if(class25.method284(key, byte0, k2, l4, ((Animable) (obj1)), j4, z, i5, (byte)110, y, x) && class46.aBoolean779) {
+				if(class25.method284(key, byte0, k2, l4, ((Animable) (obj1)), j4, z, i5, (byte)110, y, x) && objectDefinition.aBoolean779) {
 					Model model;
 					if(obj1 instanceof Model) {
 						model = (Model)obj1;
 					} else {
-						model = class46.method578(10, orientation, k1, l1, i2, j2, -1);
+						model = objectDefinition.method578(10, orientation, k1, l1, i2, j2, -1);
 					}
 					if(model != null) {
 						for(int j5 = 0; j5 <= j4; j5++) {
@@ -682,88 +685,88 @@ final class ObjectManager {
 					}
 				}
 			}
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
 			}
 			return;
 		}
 		if(type >= 12) {
 			Object obj2;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj2 = class46.method578(type, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj2 = objectDefinition.method578(type, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method284(key, byte0, k2, 1, ((Animable) (obj2)), 1, z, 0, (byte)110, y, x);
 			if(type >= 12 && type <= 17 && type != 13 && z > 0) {
 				anIntArrayArrayArray135[z][x][y] |= 0x924;
 			}
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
 			}
 			return;
 		}
 		if(type == 0) {
 			Object obj3;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj3 = class46.method578(0, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj3 = objectDefinition.method578(0, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte0, x, null, k2, 0, z);
 			if(orientation == 0) {
-				if(class46.aBoolean779) {
+				if(objectDefinition.aBoolean779) {
 					aByteArrayArrayArray134[z][x][y] = 50;
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
 				}
-				if(class46.aBoolean764) {
+				if(objectDefinition.aBoolean764) {
 					anIntArrayArrayArray135[z][x][y] |= 0x249;
 				}
 			} else
 				if(orientation == 1) {
-				if(class46.aBoolean779) {
+				if(objectDefinition.aBoolean779) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
 					aByteArrayArrayArray134[z][x + 1][y + 1] = 50;
 				}
-				if(class46.aBoolean764) {
+				if(objectDefinition.aBoolean764) {
 					anIntArrayArrayArray135[z][x][y + 1] |= 0x492;
 				}
 				} else
 					if(orientation == 2) {
-				if(class46.aBoolean779) {
+				if(objectDefinition.aBoolean779) {
 					aByteArrayArrayArray134[z][x + 1][y] = 50;
 					aByteArrayArrayArray134[z][x + 1][y + 1] = 50;
 				}
-				if(class46.aBoolean764) {
+				if(objectDefinition.aBoolean764) {
 					anIntArrayArrayArray135[z][x + 1][y] |= 0x249;
 				}
 					} else
 						if(orientation == 3) {
-				if(class46.aBoolean779) {
+				if(objectDefinition.aBoolean779) {
 					aByteArrayArrayArray134[z][x][y] = 50;
 					aByteArrayArrayArray134[z][x + 1][y] = 50;
 				}
-				if(class46.aBoolean764) {
+				if(objectDefinition.aBoolean764) {
 					anIntArrayArrayArray135[z][x][y] |= 0x492;
 				}
 						}
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
-			if(class46.anInt775 != 16) {
-				class25.method290(y, 441, class46.anInt775, x, z);
+			if(objectDefinition.anInt775 != 16) {
+				class25.method290(y, 441, objectDefinition.anInt775, x, z);
 			}
 			return;
 		}
 		if(type == 1) {
 			Object obj4;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj4 = class46.method578(1, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj4 = objectDefinition.method578(1, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte0, x, null, k2, 0, z);
-			if(class46.aBoolean779) {
+			if(objectDefinition.aBoolean779) {
 				if(orientation == 0) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
 				} else
@@ -777,8 +780,8 @@ final class ObjectManager {
 					aByteArrayArrayArray134[z][x][y] = 50;
 							}
 			}
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
 		}
@@ -786,15 +789,15 @@ final class ObjectManager {
 			int i3 = orientation + 1 & 3;
 			Object obj11;
 			Object obj12;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj11 = class46.method578(2, 4 + orientation, k1, l1, i2, j2, -1);
-				obj12 = class46.method578(2, i3, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj11 = objectDefinition.method578(2, 4 + orientation, k1, l1, i2, j2, -1);
+				obj12 = objectDefinition.method578(2, i3, k1, l1, i2, j2, -1);
 			} else {
-				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
-				obj12 = new Class30_Sub2_Sub4_Sub5(id, i3, 2, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
+				obj12 = new Class30_Sub2_Sub4_Sub5(id, i3, 2, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte0, x, ((Animable) (obj12)), k2, anIntArray152[i3], z);
-			if(class46.aBoolean764) {
+			if(objectDefinition.aBoolean764) {
 				if(orientation == 0) {
 					anIntArrayArrayArray135[z][x][y] |= 0x249;
 					anIntArrayArrayArray135[z][x][y + 1] |= 0x492;
@@ -812,23 +815,23 @@ final class ObjectManager {
 					anIntArrayArrayArray135[z][x][y] |= 0x249;
 							}
 			}
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
-			if(class46.anInt775 != 16) {
-				class25.method290(y, 441, class46.anInt775, x, z);
+			if(objectDefinition.anInt775 != 16) {
+				class25.method290(y, 441, objectDefinition.anInt775, x, z);
 			}
 			return;
 		}
 		if(type == 3) {
 			Object obj5;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj5 = class46.method578(3, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj5 = objectDefinition.method578(3, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte0, x, null, k2, 0, z);
-			if(class46.aBoolean779) {
+			if(objectDefinition.aBoolean779) {
 				if(orientation == 0) {
 					aByteArrayArrayArray134[z][x][y + 1] = 50;
 				} else
@@ -842,25 +845,25 @@ final class ObjectManager {
 					aByteArrayArrayArray134[z][x][y] = 50;
 							}
 			}
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
 		}
 		if(type == 9) {
 			Object obj6;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj6 = class46.method578(type, orientation, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj6 = objectDefinition.method578(type, orientation, k1, l1, i2, j2, -1);
 			} else {
-				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method284(key, byte0, k2, 1, ((Animable) (obj6)), 1, z, 0, (byte)110, y, x);
-			if(class46.aBoolean767 && class11 != null) {
-				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
+			if(objectDefinition.aBoolean767 && class11 != null) {
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
 			}
 			return;
 		}
-		if(class46.aBoolean762) {
+		if(objectDefinition.aBoolean762) {
 			if(orientation == 1) {
 				int j3 = j2;
 				j2 = i2;
@@ -886,10 +889,10 @@ final class ObjectManager {
 		}
 		if(type == 4) {
 			Object obj7;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj7 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj7 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation * 512, -460, z, 0, k2, ((Animable) (obj7)), x, byte0, 0, anIntArray152[orientation]);
 			return;
@@ -898,43 +901,43 @@ final class ObjectManager {
 			int i4 = 16;
 			long k4 = class25.method300(z, x, y);
 			if(k4 > 0) {
-				i4 = Class46.forID(ObjectKey.getObjectId(k4)).anInt775;
+				i4 = ObjectDefinition.forID(ObjectKey.getObjectId(k4)).anInt775;
 			}
 			Object obj13;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj13 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj13 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation * 512, -460, z, anIntArray137[orientation] * i4, k2, ((Animable) (obj13)), x, byte0, anIntArray144[orientation] * i4, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 6) {
 			Object obj8;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj8 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj8 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj8)), x, byte0, 0, 256);
 			return;
 		}
 		if(type == 7) {
 			Object obj9;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj9 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj9 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj9)), x, byte0, 0, 512);
 			return;
 		}
 		if(type == 8) {
 			Object obj10;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj10 = class46.method578(4, 0, k1, l1, i2, j2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj10 = objectDefinition.method578(4, 0, k1, l1, i2, j2, -1);
 			} else {
-				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, class46.anInt781, true);
+				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, l1, (byte)7, i2, k1, j2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation, -460, z, 0, k2, ((Animable) (obj10)), x, byte0, 0, 768);
 		}
@@ -972,7 +975,7 @@ final class ObjectManager {
 	}
 
 	public static final boolean method178(int i, int j, int k) {
-		Class46 class46 = Class46.forID(i);
+		ObjectDefinition objectDefinition = ObjectDefinition.forID(i);
 		if(k != 8) {
 			for(int l = 1; l > 0; l++) { }
 		}
@@ -982,7 +985,7 @@ final class ObjectManager {
 		if(j >= 5 && j <= 8) {
 			j = 4;
 		}
-		return class46.method577(j, true);
+		return objectDefinition.method577(j, true);
 	}
 
 	public final void method179(int i, int j, Class11 aclass11[], int k, int l, int i1, byte abyte0[],
@@ -1145,9 +1148,9 @@ final class ObjectManager {
 					int l3 = k3 >> 2;
 					int i4 = k3 & 3;
 					if(j3 == i && i3 >= i1 && i3 < i1 + 8 && l2 >= k && l2 < k + 8) {
-						Class46 class46 = Class46.forID(l1);
-						int j4 = j + Class4.method157(j1, class46.anInt761, i3 & 7, (byte)113, l2 & 7, class46.anInt744);
-						int k4 = k1 + Class4.method158(-433, l2 & 7, class46.anInt761, j1, class46.anInt744, i3 & 7);
+						ObjectDefinition objectDefinition = ObjectDefinition.forID(l1);
+						int j4 = j + Class4.method157(j1, objectDefinition.anInt761, i3 & 7, (byte)113, l2 & 7, objectDefinition.anInt744);
+						int k4 = k1 + Class4.method158(-433, l2 & 7, objectDefinition.anInt761, j1, objectDefinition.anInt744, i3 & 7);
 						if(j4 > 0 && k4 > 0 && j4 < 103 && k4 < 103) {
 							int l4 = j3;
 							if((aByteArrayArrayArray149[1][j4][k4] & 2) == 2) {
@@ -1229,35 +1232,38 @@ final class ObjectManager {
 			anInt153 = -145;
 		}
 		int l2 = l1 + i2 + j2 + k2 >> 2;
-		Class46 class46 = Class46.forID(id);
+		ObjectDefinition objectDefinition = ObjectDefinition.forID(id);
 		long key = (long) (orientation << 20 | type << 14 | (y << 7 | x) + 0x40000000);
-		if(!class46.hasactions) {
+		if(!objectDefinition.hasactions) {
 			key |= ~0x7fffffffffffffffL;
 		}
-		if(class46.anInt760 == 1) {
+		if(objectDefinition.anInt760 == 1) {
 			key |= 0x400000L;
+		}
+		if (objectDefinition.hasanimation) {
+			key |= 0x80000000L;
 		}
 		key |= (long) id << 32;
 		byte byte1 = (byte)((orientation << 6) + type);
 		if(type == 22) {
 			Object obj;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj = class46.method578(22, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj = objectDefinition.method578(22, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj = new Class30_Sub2_Sub4_Sub5(id, orientation, 22, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method280(k1, l2, y, 68, ((Animable) (obj)), byte1, key, x);
-			if(class46.aBoolean767 && class46.hasactions) {
+			if(objectDefinition.aBoolean767 && objectDefinition.hasactions) {
 				class11.method213(y, 0, x);
 			}
 			return;
 		}
 		if(type == 10 || type == 11) {
 			Object obj1;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj1 = class46.method578(10, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj1 = objectDefinition.method578(10, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj1 = new Class30_Sub2_Sub4_Sub5(id, orientation, 10, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			if(obj1 != null) {
 				int j5 = 0;
@@ -1267,55 +1273,55 @@ final class ObjectManager {
 				int k4;
 				int i5;
 				if(orientation == 1 || orientation == 3) {
-					k4 = class46.anInt761;
-					i5 = class46.anInt744;
+					k4 = objectDefinition.anInt761;
+					i5 = objectDefinition.anInt744;
 				} else {
-					k4 = class46.anInt744;
-					i5 = class46.anInt761;
+					k4 = objectDefinition.anInt744;
+					i5 = objectDefinition.anInt761;
 				}
 				class25.method284(key, byte1, l2, i5, ((Animable) (obj1)), k4, k1, j5, (byte)110, y, x);
 			}
-			if(class46.aBoolean767) {
-				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
+			if(objectDefinition.aBoolean767) {
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
 			}
 			return;
 		}
 		if(type >= 12) {
 			Object obj2;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj2 = class46.method578(type, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj2 = objectDefinition.method578(type, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj2 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method284(key, byte1, l2, 1, ((Animable) (obj2)), 1, k1, 0, (byte)110, y, x);
-			if(class46.aBoolean767) {
-				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
+			if(objectDefinition.aBoolean767) {
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
 			}
 			return;
 		}
 		if(type == 0) {
 			Object obj3;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj3 = class46.method578(0, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj3 = objectDefinition.method578(0, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj3 = new Class30_Sub2_Sub4_Sub5(id, orientation, 0, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray152[orientation], ((Animable) (obj3)), true, key, y, byte1, x, null, l2, 0, k1);
-			if(class46.aBoolean767) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
 		}
 		if(type == 1) {
 			Object obj4;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj4 = class46.method578(1, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj4 = objectDefinition.method578(1, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj4 = new Class30_Sub2_Sub4_Sub5(id, orientation, 1, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray140[orientation], ((Animable) (obj4)), true, key, y, byte1, x, null, l2, 0, k1);
-			if(class46.aBoolean767) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
 		}
@@ -1323,46 +1329,46 @@ final class ObjectManager {
 			int j3 = orientation + 1 & 3;
 			Object obj11;
 			Object obj12;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj11 = class46.method578(2, 4 + orientation, l1, i2, j2, k2, -1);
-				obj12 = class46.method578(2, j3, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj11 = objectDefinition.method578(2, 4 + orientation, l1, i2, j2, k2, -1);
+				obj12 = objectDefinition.method578(2, j3, l1, i2, j2, k2, -1);
 			} else {
-				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
-				obj12 = new Class30_Sub2_Sub4_Sub5(id, j3, 2, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj11 = new Class30_Sub2_Sub4_Sub5(id, 4 + orientation, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
+				obj12 = new Class30_Sub2_Sub4_Sub5(id, j3, 2, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray152[orientation], ((Animable) (obj11)), true, key, y, byte1, x, ((Animable) (obj12)), l2, anIntArray152[j3], k1);
-			if(class46.aBoolean767) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
 		}
 		if(type == 3) {
 			Object obj5;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj5 = class46.method578(3, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj5 = objectDefinition.method578(3, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj5 = new Class30_Sub2_Sub4_Sub5(id, orientation, 3, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method282(anIntArray140[orientation], ((Animable) (obj5)), true, key, y, byte1, x, null, l2, 0, k1);
-			if(class46.aBoolean767) {
-				class11.method211(y, orientation, x, type, (byte)1, class46.aBoolean757);
+			if(objectDefinition.aBoolean767) {
+				class11.method211(y, orientation, x, type, (byte)1, objectDefinition.aBoolean757);
 			}
 			return;
 		}
 		if(type == 9) {
 			Object obj6;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj6 = class46.method578(type, orientation, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj6 = objectDefinition.method578(type, orientation, l1, i2, j2, k2, -1);
 			} else {
-				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj6 = new Class30_Sub2_Sub4_Sub5(id, orientation, type, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method284(key, byte1, l2, 1, ((Animable) (obj6)), 1, k1, 0, (byte)110, y, x);
-			if(class46.aBoolean767) {
-				class11.method212(class46.aBoolean757, anInt138, class46.anInt744, class46.anInt761, x, y, orientation);
+			if(objectDefinition.aBoolean767) {
+				class11.method212(objectDefinition.aBoolean757, anInt138, objectDefinition.anInt744, objectDefinition.anInt761, x, y, orientation);
 			}
 			return;
 		}
-		if(class46.aBoolean762) {
+		if(objectDefinition.aBoolean762) {
 			if(orientation == 1) {
 				int k3 = k2;
 				k2 = j2;
@@ -1388,10 +1394,10 @@ final class ObjectManager {
 		}
 		if(type == 4) {
 			Object obj7;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj7 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj7 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj7 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation * 512, -460, k1, 0, l2, ((Animable) (obj7)), x, byte1, 0, anIntArray152[orientation]);
 			return;
@@ -1400,43 +1406,43 @@ final class ObjectManager {
 			int j4 = 16;
 			long l4 = class25.method300(k1, x, y);
 			if(l4 > 0) {
-				j4 = Class46.forID(ObjectKey.getObjectId(l4)).anInt775;
+				j4 = ObjectDefinition.forID(ObjectKey.getObjectId(l4)).anInt775;
 			}
 			Object obj13;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj13 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj13 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj13 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation * 512, -460, k1, anIntArray137[orientation] * j4, l2, ((Animable) (obj13)), x, byte1, anIntArray144[orientation] * j4, anIntArray152[orientation]);
 			return;
 		}
 		if(type == 6) {
 			Object obj8;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj8 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj8 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj8 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj8)), x, byte1, 0, 256);
 			return;
 		}
 		if(type == 7) {
 			Object obj9;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj9 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj9 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj9 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj9)), x, byte1, 0, 512);
 			return;
 		}
 		if(type == 8) {
 			Object obj10;
-			if(class46.anInt781 == -1 && class46.childrenIDs == null) {
-				obj10 = class46.method578(4, 0, l1, i2, j2, k2, -1);
+			if(objectDefinition.anInt781 == -1 && objectDefinition.childrenIDs == null) {
+				obj10 = objectDefinition.method578(4, 0, l1, i2, j2, k2, -1);
 			} else {
-				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, class46.anInt781, true);
+				obj10 = new Class30_Sub2_Sub4_Sub5(id, 0, 4, i2, (byte)7, j2, l1, k2, objectDefinition.anInt781, true);
 			}
 			class25.method283(key, y, orientation, -460, k1, 0, l2, ((Animable) (obj10)), x, byte1, 0, 768);
 		}
@@ -1470,9 +1476,9 @@ final class ObjectManager {
 					int i_261_ = i_259_ + i;
 					int i_262_ = i_258_ + i_250_;
 					if (i_261_ > 0 && i_262_ > 0 && i_261_ < 103 && i_262_ < 103) {
-						Class46 class46 = Class46.forID(i_252_);
-						if (i_260_ != 22 || !aBoolean151 || class46.hasactions || class46.aBoolean736) {
-							bool &= class46.method579(true);
+						ObjectDefinition objectDefinition = ObjectDefinition.forID(i_252_);
+						if (i_260_ != 22 || !aBoolean151 || objectDefinition.hasactions || objectDefinition.aBoolean736) {
+							bool &= objectDefinition.method579(true);
 							bool_255_ = true;
 						}
 					}

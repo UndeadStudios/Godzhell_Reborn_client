@@ -1,5 +1,6 @@
 import java.awt.*;
 import java.awt.image.*;
+import java.util.Hashtable;
 
 public final class RSImageProducer
     implements ImageProducer, ImageObserver
@@ -9,9 +10,11 @@ public final class RSImageProducer
         this.anInt316 = i;
         this.anInt317 = j;
         this.anIntArray315 = new int[i * j];
-        this.aColorModel318 = new DirectColorModel(32, 0xff0000, 0xff00, 0xff);
-        this.bufferedImage = new BufferedImage(i, j, 1);
-        this.anIntArray315 = ((DataBufferInt)this.bufferedImage.getRaster().getDataBuffer()).getData();
+        DataBufferInt var4 = new DataBufferInt(anIntArray315, anIntArray315.length);
+        DirectColorModel var5 = new DirectColorModel(32, 16711680, 65280, 255);
+        WritableRaster var6 = Raster.createWritableRaster(var5.createCompatibleSampleModel(anInt316, anInt317), var4, null);
+        this.anImage320 = new BufferedImage(var5, var6, false, new Hashtable());
+
         this.initDrawingArea();
     }
     public void initDrawingArea()
@@ -24,7 +27,7 @@ public final class RSImageProducer
         method239();
         if(j != 23680)
             anInt313 = -169;
-        g.drawImage(bufferedImage, k, i, this);
+        g.drawImage(anImage320, k, i, this);
     }
 
     public synchronized void addConsumer(ImageConsumer imageconsumer)
@@ -82,6 +85,5 @@ public final class RSImageProducer
     public int anInt317;
     ColorModel aColorModel318;
     ImageConsumer anImageConsumer319;
-    private final BufferedImage bufferedImage;
     public Image anImage320;
 }

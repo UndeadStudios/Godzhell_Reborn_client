@@ -270,7 +270,82 @@ public final class Stream extends Class30_Sub2 {
         int var2 = this.buffer[this.currentPosition] & 255;
         return var2 < 128?this.readUnsignedByte():this.readUnsignedShort() - '\u8000';
     }
+    public int method802(int arg0) {
+        int i = 0;
+        try {
+            currentPosition++;
+            int i_17_ = 121 / ((arg0 - -28) / 41);
+            int i_18_ = 0;
+            int i_19_ = method818((byte) 66);
+            while (i_19_ == 32767) {
+                i_19_ = method818((byte) 61);
+                i_18_ += 32767;
+            }
+            i_18_ += i_19_;
+            i = i_18_;
+        } catch (RuntimeException runtimeexception) {
 
+        }
+        return i;
+    }
+    public int method818(byte arg0) {
+        try {
+            while_574_:
+            do {
+                do {
+                    int i;
+                    try {
+                        int i_22_ = 1 % ((arg0 - -28) / 54);
+                        currentPosition++;
+                        int i_23_ = 0xff & buffer[currentPosition];
+                        if (i_23_ >= 128)
+                            break;
+                        i = readUnsignedByte();
+                    } catch (RuntimeException runtimeexception) {
+                        break while_574_;
+                    }
+                    return i;
+                } while (false);
+                int i;
+                try {
+                    i = method784((byte) 114) + -32768;
+                } catch (RuntimeException runtimeexception) {
+                    break;
+                }
+                return i;
+            } while (false);
+        } catch (RuntimeException runtimeexception) {
+
+        }
+        return -1;
+    }
+    public int method784(byte arg0) {
+        int i = 0;
+        try {
+            currentPosition += 2;
+            currentPosition++;
+            i = ((0xff & buffer[currentPosition + -1])
+                    + (0xff00 & buffer[currentPosition - 2] << 8));
+        } catch (RuntimeException runtimeexception) {
+        }
+        return i;
+    }
+    public int method802() {
+        int i = 0;
+        try {
+            currentPosition++;
+            int i_18_ = 0;
+            int i_19_ = method818((byte) 66);
+            while (i_19_ == 32767) {
+                i_19_ = method818((byte) 61);
+                i_18_ += 32767;
+            }
+            i_18_ += i_19_;
+            i = i_18_;
+        } catch (RuntimeException runtimeexception) {
+        }
+        return i;
+    }
     public int method937(boolean bool) {
         ++this.currentPosition;
         int i = 0;
@@ -385,7 +460,7 @@ public final class Stream extends Class30_Sub2 {
 
     }
 
-    public void method418(int i) {
+    public void initBitAccess(int i) {
         this.anInt1407 = this.currentPosition * 8;
         if(i != this.anInt1392) {
             for(int j = 1; j > 0; ++j) {

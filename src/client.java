@@ -316,7 +316,7 @@ public class client extends Applet_Sub1 {
     private Background[] aBackgroundArray1060;
     private Sprite[] aSpriteArray1033;
     private int[][] anIntArrayArray929;
-    private Player[] aPlayerArray890;
+    private Player[] players;
     int[] anIntArray892;
     private int[] anIntArray894;
     private Stream[] aStreamArray895;
@@ -424,7 +424,7 @@ public class client extends Applet_Sub1 {
     private boolean worldHover;
     private boolean expCounterHover;
     private Socket aSocket832;
-    private volatile boolean aBoolean962;
+    private volatile boolean drawingFlames;
     private int anInt1058;
     private int anInt1208;
     private int anInt1118;
@@ -435,7 +435,7 @@ public class client extends Applet_Sub1 {
     public static int lftrit;
     public static int fwdbwd;
     private int xpCounter;
-    private boolean aBoolean1080;
+    private boolean loadingMap;
     private int anInt1167;
     private int anInt1154;
     private int anInt1120;
@@ -483,7 +483,7 @@ public class client extends Applet_Sub1 {
     private int anInt999;
     private int anInt1046;
     private int anInt884;
-    private int anInt1265;
+    private int renderCount;
     static boolean switching;
     static int step;
     public static int currentFogColor = 0;
@@ -540,7 +540,7 @@ public class client extends Applet_Sub1 {
     private int anInt877;
     private int anInt882;
     private int anInt888;
-    private int anInt889;
+    private int maxPlayerCount;
     private int anInt902;
     private byte aByte920;
     private int anInt921;
@@ -562,9 +562,9 @@ public class client extends Applet_Sub1 {
     private int[] anIntArray977;
     private int[] anIntArray978;
     private int[] anIntArray979;
-    private int[] anIntArray980;
+    private int[] overheadTextColour;
     private int[] anIntArray981;
-    private int[] anIntArray982;
+    private int[] overheadTextCycle;
     private String[] aStringArray983;
     private int[] anIntArray990;
     private boolean aBoolean994;
@@ -2526,7 +2526,7 @@ public class client extends Applet_Sub1 {
             ;
         }
 
-        Class46.aClass12_785.method224();
+        ObjectDefinition.aClass12_785.method224();
         loggedIn &= flag;
         if(super.gameFrame != null) {
             this.stream.createFrame(210);
@@ -2577,8 +2577,8 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method23(boolean flag) {
-        Class46.aClass12_785.method224();
-        Class46.aClass12_780.method224();
+        ObjectDefinition.aClass12_785.method224();
+        ObjectDefinition.aClass12_780.method224();
         Class5.aClass12_95.method224();
         ItemDefinition.aClass12_159.method224();
         ItemDefinition.aClass12_158.method224();
@@ -2643,7 +2643,7 @@ public class client extends Applet_Sub1 {
                 long i3 = this.aClass25_946.method303(this.anInt918, k2, l2);
                 if(i3 != 0L) {
                     int objId = ObjectKey.getObjectId(i3);
-                    int j3 = Class46.forID(objId).anInt746;
+                    int j3 = ObjectDefinition.forID(objId).anInt746;
                     if(j3 >= 0) {
                         int k3 = k2;
                         int l3 = l2;
@@ -2734,11 +2734,11 @@ public class client extends Applet_Sub1 {
                 int i1 = npc.anInt1551 >> 7;
                 if(l >= 0 && l < 104 && i1 >= 0 && i1 < 104) {
                     if(npc.anInt1540 == 1 && (npc.anInt1550 & 127) == 64 && (npc.anInt1551 & 127) == 64) {
-                        if(this.anIntArrayArray929[l][i1] == this.anInt1265) {
+                        if(this.anIntArrayArray929[l][i1] == this.renderCount) {
                             continue;
                         }
 
-                        this.anIntArrayArray929[l][i1] = this.anInt1265;
+                        this.anIntArrayArray929[l][i1] = this.renderCount;
                     }
 
                     if(!npc.desc.aBoolean84) {
@@ -3258,10 +3258,10 @@ public class client extends Applet_Sub1 {
 
     }
 
-    private final void method31(Stream stream, int i, int j) {
+    private void updateNPCs(Stream stream, int i) {
         this.anInt839 = 0;
         this.anInt893 = 0;
-        this.method139(stream, -45, i);
+        this.method139(stream);
         this.method46(i, stream, (byte)2);
         this.updateNpcState(i, stream, true);
 
@@ -3363,7 +3363,7 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method33(boolean flag, int i) {
-        int j = Class41.aClass41Array701[i].anInt709;
+        int j = VarpDefinition.aVarpDefinitionArray701[i].anInt709;
         if(j != 0) {
             int k = this.variousSettings[i];
             if(flag) {
@@ -3487,7 +3487,7 @@ public class client extends Applet_Sub1 {
             if(var2 == -1) {
                 var12 = localPlayer;
             } else if(var2 < this.anInt891) {
-                var12 = this.aPlayerArray890[this.anIntArray892[var2]];
+                var12 = this.players[this.anIntArray892[var2]];
             } else {
                 var12 = this.npcs[this.npcIndices[var2 - this.anInt891]];
             }
@@ -3553,9 +3553,9 @@ public class client extends Applet_Sub1 {
                         this.anIntArray978[this.anInt974] = this.boldText.anInt1497;
                         this.anIntArray976[this.anInt974] = this.spriteDrawX;
                         this.anIntArray977[this.anInt974] = this.spriteDrawY;
-                        this.anIntArray980[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).anInt1513;
+                        this.overheadTextColour[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).anInt1513;
                         this.anIntArray981[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).anInt1531;
-                        this.anIntArray982[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).textCycle;
+                        this.overheadTextCycle[this.anInt974] = ((Class30_Sub2_Sub4_Sub1)var12).textCycle;
                         this.aStringArray983[this.anInt974++] = ((Class30_Sub2_Sub4_Sub1)var12).aString1506;
                         if(this.anInt1249 == 0 && ((Class30_Sub2_Sub4_Sub1)var12).anInt1531 >= 1 && ((Class30_Sub2_Sub4_Sub1)var12).anInt1531 <= 3) {
                             this.anIntArray978[this.anInt974] += 10;
@@ -3648,89 +3648,97 @@ public class client extends Applet_Sub1 {
             this.spriteDrawY = this.anIntArray977[var2] = var14;
             String var17 = this.aStringArray983[var2];
             if(this.anInt1249 == 0) {
-                int var9 = 16776960;
-                if(this.anIntArray980[var2] < 6) {
-                    var9 = this.anIntArray965[this.anIntArray980[var2]];
+                int colour = 16776960;
+                if(this.overheadTextColour[var2] < 6) {
+                    colour = this.anIntArray965[this.overheadTextColour[var2]];
                 }
 
-                if(this.anIntArray980[var2] == 6) {
-                    var9 = this.anInt1265 % 20 >= 10?16776960:16711680;
+                if(this.overheadTextColour[var2] == 6) {
+                    colour = this.renderCount % 20 >= 10?16776960:16711680;
                 }
 
-                if(this.anIntArray980[var2] == 7) {
-                    var9 = this.anInt1265 % 20 >= 10?'\uffff':255;
+                if(this.overheadTextColour[var2] == 7) {
+                    colour = this.renderCount % 20 >= 10?'\uffff':255;
                 }
 
-                if(this.anIntArray980[var2] == 8) {
-                    var9 = this.anInt1265 % 20 >= 10?8454016:'\ub000';
+                if(this.overheadTextColour[var2] == 8) {
+                    colour = this.renderCount % 20 >= 10?8454016:'\ub000';
                 }
 
                 int var10;
-                if(this.anIntArray980[var2] == 9) {
-                    var10 = 150 - this.anIntArray982[var2];
+                if(this.overheadTextColour[var2] == 9) {
+                    var10 = 150 - this.overheadTextCycle[var2];
                     if(var10 < 50) {
-                        var9 = 16711680 + 1280 * var10;
+                        colour = 16711680 + 1280 * var10;
                     } else if(var10 < 100) {
-                        var9 = 16776960 - 327680 * (var10 - 50);
+                        colour = 16776960 - 327680 * (var10 - 50);
                     } else if(var10 < 150) {
-                        var9 = '\uff00' + 5 * (var10 - 100);
+                        colour = '\uff00' + 5 * (var10 - 100);
                     }
                 }
 
-                if(this.anIntArray980[var2] == 10) {
-                    var10 = 150 - this.anIntArray982[var2];
+                if(this.overheadTextColour[var2] == 10) {
+                    var10 = 150 - this.overheadTextCycle[var2];
                     if(var10 < 50) {
-                        var9 = 16711680 + 5 * var10;
+                        colour = 16711680 + 5 * var10;
                     } else if(var10 < 100) {
-                        var9 = 16711935 - 327680 * (var10 - 50);
+                        colour = 16711935 - 327680 * (var10 - 50);
                     } else if(var10 < 150) {
-                        var9 = 255 + 327680 * (var10 - 100) - 5 * (var10 - 100);
+                        colour = 255 + 327680 * (var10 - 100) - 5 * (var10 - 100);
                     }
                 }
 
-                if(this.anIntArray980[var2] == 11) {
-                    var10 = 150 - this.anIntArray982[var2];
+                if(this.overheadTextColour[var2] == 11) {
+                    var10 = 150 - this.overheadTextCycle[var2];
                     if(var10 < 50) {
-                        var9 = 16777215 - 327685 * var10;
+                        colour = 16777215 - 327685 * var10;
                     } else if(var10 < 100) {
-                        var9 = '\uff00' + 327685 * (var10 - 50);
+                        colour = '\uff00' + 327685 * (var10 - 50);
                     } else if(var10 < 150) {
-                        var9 = 16777215 - 327680 * (var10 - 100);
+                        colour = 16777215 - 327680 * (var10 - 100);
                     }
                 }
-
+                if (overheadTextColour[var2] == 12) {
+                    colour = 0x004BFF;
+                }
+                if (overheadTextColour[var2] == 13) {
+                    colour = 0x9D4674;
+                }
+                if (overheadTextColour[var2] == 14) {
+                    colour = renderCount % 20 >= 10 ? 0xFF00FF : 0x9900FF;
+                }
                 if(this.anIntArray981[var2] == 0) {
                     this.boldText.method381(0, var17, 23693, this.spriteDrawY + 1, this.spriteDrawX);
-                    this.boldText.method381(var9, var17, 23693, this.spriteDrawY, this.spriteDrawX);
+                    this.boldText.method381(colour, var17, 23693, this.spriteDrawY, this.spriteDrawX);
                 }
 
                 if(this.anIntArray981[var2] == 1) {
-                    this.boldText.method386(0, true, var17, this.spriteDrawX, this.anInt1265, this.spriteDrawY + 1);
-                    this.boldText.method386(var9, true, var17, this.spriteDrawX, this.anInt1265, this.spriteDrawY);
+                    this.boldText.method386(0, true, var17, this.spriteDrawX, this.renderCount, this.spriteDrawY + 1);
+                    this.boldText.method386(colour, true, var17, this.spriteDrawX, this.renderCount, this.spriteDrawY);
                 }
 
                 if(this.anIntArray981[var2] == 2) {
-                    this.boldText.method387(this.spriteDrawX, var17, this.anInt1265, this.spriteDrawY + 1, this.aByte1194, 0);
-                    this.boldText.method387(this.spriteDrawX, var17, this.anInt1265, this.spriteDrawY, this.aByte1194, var9);
+                    this.boldText.method387(this.spriteDrawX, var17, this.renderCount, this.spriteDrawY + 1, this.aByte1194, 0);
+                    this.boldText.method387(this.spriteDrawX, var17, this.renderCount, this.spriteDrawY, this.aByte1194, colour);
                 }
 
                 if(this.anIntArray981[var2] == 3) {
-                    this.boldText.method388(150 - this.anIntArray982[var2], var17, true, this.anInt1265, this.spriteDrawY + 1, this.spriteDrawX, 0);
-                    this.boldText.method388(150 - this.anIntArray982[var2], var17, true, this.anInt1265, this.spriteDrawY, this.spriteDrawX, var9);
+                    this.boldText.method388(150 - this.overheadTextCycle[var2], var17, true, this.renderCount, this.spriteDrawY + 1, this.spriteDrawX, 0);
+                    this.boldText.method388(150 - this.overheadTextCycle[var2], var17, true, this.renderCount, this.spriteDrawY, this.spriteDrawX, colour);
                 }
 
                 int var11;
                 if(this.anIntArray981[var2] == 4) {
                     var10 = this.boldText.method384(var17, true);
-                    var11 = (150 - this.anIntArray982[var2]) * (var10 + 100) / 150;
+                    var11 = (150 - this.overheadTextCycle[var2]) * (var10 + 100) / 150;
                     DrawingArea.setDrawingArea(334, this.spriteDrawX - 50, this.spriteDrawX + 50, 0);
                     this.boldText.method385(0, var17, this.spriteDrawY + 1, 822, this.spriteDrawX + 50 - var11);
-                    this.boldText.method385(var9, var17, this.spriteDrawY, 822, this.spriteDrawX + 50 - var11);
+                    this.boldText.method385(colour, var17, this.spriteDrawY, 822, this.spriteDrawX + 50 - var11);
                     DrawingArea.method332(4);
                 }
 
                 if(this.anIntArray981[var2] == 5) {
-                    var10 = 150 - this.anIntArray982[var2];
+                    var10 = 150 - this.overheadTextCycle[var2];
                     var11 = 0;
                     if(var10 < 25) {
                         var11 = var10 - 25;
@@ -3740,7 +3748,7 @@ public class client extends Applet_Sub1 {
 
                     DrawingArea.setDrawingArea(this.spriteDrawY + 5, 0, 512, this.spriteDrawY - this.boldText.anInt1497 - 1);
                     this.boldText.method381(0, var17, 23693, this.spriteDrawY + 1 + var11, this.spriteDrawX);
-                    this.boldText.method381(var9, var17, 23693, this.spriteDrawY + var11, this.spriteDrawX);
+                    this.boldText.method381(colour, var17, 23693, this.spriteDrawY + var11, this.spriteDrawX);
                     DrawingArea.method332(4);
                 }
             } else {
@@ -4476,12 +4484,12 @@ public class client extends Applet_Sub1 {
         int l;
         for(k = -1; k < this.anInt891; ++k) {
             if(k == -1) {
-                l = this.anInt889;
+                l = this.maxPlayerCount;
             } else {
                 l = this.anIntArray892[k];
             }
 
-            Player npc = this.aPlayerArray890[l];
+            Player npc = this.players[l];
             if(npc != null && npc.textCycle > 0) {
                 --npc.textCycle;
                 if(npc.textCycle == 0) {
@@ -4714,10 +4722,7 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    private static final String method43(int i, int j) {
-        if(i != -33245) {
-            anInt846 = -65;
-        }
+    private static final String intToKOrMil(int j) {
 
         return j < 100000?String.valueOf(j):(j < 10000000?j / 1000 + "K":j / 1000000 + "M");
     }
@@ -4818,7 +4823,7 @@ public class client extends Applet_Sub1 {
             npc.anInt1556 = npc.desc.anInt83;
             npc.anInt1557 = npc.desc.anInt55;
             npc.anInt1511 = npc.desc.anInt77;
-            npc.method445(localPlayer.anIntArray1500[0] + i1, localPlayer.anIntArray1501[0] + l, j1 == 1, false);
+            npc.setPos(localPlayer.anIntArray1500[0] + i1, localPlayer.anIntArray1501[0] + l, j1 == 1, false);
         }
 
         stream.method420(true);
@@ -4863,9 +4868,9 @@ public class client extends Applet_Sub1 {
             long i1;
             if(flag) {
                 player = localPlayer;
-                i1 = (long)this.anInt889 << 32;
+                i1 = (long)this.maxPlayerCount << 32;
             } else {
-                player = this.aPlayerArray890[this.anIntArray892[l]];
+                player = this.players[this.anIntArray892[l]];
                 i1 = (long)this.anIntArray892[l] << 32;
             }
 
@@ -4884,11 +4889,11 @@ public class client extends Applet_Sub1 {
                         this.aClass25_946.method286(60, this.anInt918, player.anInt1551, player, player.anInt1552, player.anInt1722, player.anInt1550, player.anInt1709, player.anInt1719, player.anInt1721, i1, player.anInt1720, (byte)35);
                     } else {
                         if((player.anInt1550 & 127) == 64 && (player.anInt1551 & 127) == 64) {
-                            if(this.anIntArrayArray929[j1][k1] == this.anInt1265) {
+                            if(this.anIntArrayArray929[j1][k1] == this.renderCount) {
                                 continue;
                             }
 
-                            this.anIntArrayArray929[j1][k1] = this.anInt1265;
+                            this.anIntArrayArray929[j1][k1] = this.renderCount;
                         }
 
                         player.anInt1709 = this.method42(this.anInt918, player.anInt1551, true, player.anInt1550);
@@ -5067,7 +5072,7 @@ public class client extends Applet_Sub1 {
 
             for(int j = 0; j < this.anInt893; ++j) {
                 int k = this.anIntArray894[j];
-                Player player = this.aPlayerArray890[k];
+                Player player = this.players[k];
                 int l = stream.readUnsignedByte();
                 if((l & 64) != 0) {
                     l += stream.readUnsignedByte() << 8;
@@ -5100,7 +5105,7 @@ public class client extends Applet_Sub1 {
                 int[] j4 = this.minimapImage.myPixels;
                 l4 = 24624 + l * 4 + (103 - i) * 512 * 4;
                 ai1 = ObjectKey.getObjectId(k1);
-                Class46 l5 = Class46.forID(ai1);
+                ObjectDefinition l5 = ObjectDefinition.forID(ai1);
                 if(l5.anInt758 != -1) {
                     try {
                         Background e1 = this.aBackgroundArray1060[l5.anInt758];
@@ -5181,7 +5186,7 @@ public class client extends Applet_Sub1 {
                 class46 = j2 >> 6 & 3;
                 e = j2 & 31;
                 i4 = ObjectKey.getObjectId(k1);
-                Class46 j41 = Class46.forID(i4);
+                ObjectDefinition j41 = ObjectDefinition.forID(i4);
                 int l51;
                 if(j41.anInt758 != -1) {
                     try {
@@ -5219,7 +5224,7 @@ public class client extends Applet_Sub1 {
             k1 = this.aClass25_946.method303(j1, l, i);
             if(k1 != 0L) {
                 j2 = ObjectKey.getObjectId(k1);
-                Class46 class461 = Class46.forID(j2);
+                ObjectDefinition class461 = ObjectDefinition.forID(j2);
                 if(class461.anInt758 != -1) {
                     try {
                         Background e2 = this.aBackgroundArray1060[class461.anInt758];
@@ -5353,7 +5358,7 @@ public class client extends Applet_Sub1 {
             aBoolean919 = !aBoolean919;
         }
 
-        Class46.aBoolean752 = false;
+        ObjectDefinition.aBoolean752 = false;
     }
 
     public static final void main(String[] args) {
@@ -5445,7 +5450,7 @@ public class client extends Applet_Sub1 {
 
                 if(!var8) {
                     return -3;
-                } else if(this.aBoolean1080) {
+                } else if(this.loadingMap) {
                     return -4;
                 } else {
                     this.anInt1023 = 2;
@@ -5482,7 +5487,7 @@ public class client extends Applet_Sub1 {
                         if(j1 == this.anInt884) {
                             player = localPlayer;
                         } else {
-                            player = this.aPlayerArray890[j1];
+                            player = this.players[j1];
                         }
 
                         if(player != null && player.anInt1550 >= 0 && player.anInt1550 < 13312 && player.anInt1551 >= 0 && player.anInt1551 < 13312) {
@@ -6243,18 +6248,18 @@ public class client extends Applet_Sub1 {
             if(k1 != 10 && k1 != 11 && k1 != 22) {
                 this.doWalkTo(2, l1, 0, -11308, k1 + 1, localPlayer.anIntArray1501[0], 0, 0, j, localPlayer.anIntArray1500[0], false, k);
             } else {
-                Class46 class46 = Class46.forID(i1);
+                ObjectDefinition objectDefinition = ObjectDefinition.forID(i1);
                 int i2;
                 int j2;
                 if(l1 != 0 && l1 != 2) {
-                    i2 = class46.anInt761;
-                    j2 = class46.anInt744;
+                    i2 = objectDefinition.anInt761;
+                    j2 = objectDefinition.anInt744;
                 } else {
-                    i2 = class46.anInt744;
-                    j2 = class46.anInt761;
+                    i2 = objectDefinition.anInt744;
+                    j2 = objectDefinition.anInt761;
                 }
 
-                int k2 = class46.anInt768;
+                int k2 = objectDefinition.anInt768;
                 if(l1 != 0) {
                     k2 = (k2 << l1 & 15) + (k2 >> 4 - l1);
                 }
@@ -6755,7 +6760,7 @@ public class client extends Applet_Sub1 {
 
             Player var18;
             if(l == 561) {
-                var18 = this.aPlayerArray890[i1];
+                var18 = this.players[i1];
                 if(var18 != null) {
                     this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var18.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var18.anIntArray1500[0]);
                     this.anInt914 = super.saveClickX;
@@ -6787,7 +6792,7 @@ public class client extends Applet_Sub1 {
             }
 
             if(l == 779) {
-                var18 = this.aPlayerArray890[i1];
+                var18 = this.players[i1];
                 if(var18 != null) {
                     this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var18.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var18.anIntArray1500[0]);
                     this.anInt914 = super.saveClickX;
@@ -6918,7 +6923,7 @@ public class client extends Applet_Sub1 {
                         boolean s10 = false;
 
                         for(int l4 = 0; l4 < this.anInt891; ++l4) {
-                            Player k3 = this.aPlayerArray890[this.anIntArray892[l4]];
+                            Player k3 = this.players[this.anIntArray892[l4]];
                             if(k3 != null && k3.name != null && k3.name.equalsIgnoreCase(var21)) {
                                 this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, k3.anIntArray1501[0], localPlayer.anIntArray1500[0], false, k3.anIntArray1500[0]);
                                 if(l == 484) {
@@ -7033,7 +7038,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 27) {
-                        var18 = this.aPlayerArray890[i1];
+                        var18 = this.players[i1];
                         if(var18 != null) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var18.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var18.anIntArray1500[0]);
                             this.anInt914 = super.saveClickX;
@@ -7516,7 +7521,7 @@ public class client extends Applet_Sub1 {
 
                     Player var34;
                     if(l == 365) {
-                        var34 = this.aPlayerArray890[i1];
+                        var34 = this.players[i1];
                         if(var34 != null) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
                             this.anInt914 = super.saveClickX;
@@ -7530,7 +7535,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 729) {
-                        var34 = this.aPlayerArray890[i1];
+                        var34 = this.players[i1];
                         if(var34 != null) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
                             this.anInt914 = super.saveClickX;
@@ -7543,7 +7548,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 577) {
-                        var34 = this.aPlayerArray890[i1];
+                        var34 = this.players[i1];
                         if(var34 != null) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
                             this.anInt914 = super.saveClickX;
@@ -7648,7 +7653,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     if(l == 491) {
-                        var34 = this.aPlayerArray890[i1];
+                        var34 = this.players[i1];
                         if(var34 != null) {
                             this.doWalkTo(2, 0, 1, -11308, 0, localPlayer.anIntArray1501[0], 1, 0, var34.anIntArray1501[0], localPlayer.anIntArray1500[0], false, var34.anIntArray1500[0]);
                             this.anInt914 = super.saveClickX;
@@ -7807,7 +7812,7 @@ public class client extends Applet_Sub1 {
                     } else {
                         if(l == 1226) {
                             var19 = ObjectKey.getObjectId(keyLong);
-                            Class46 var35 = Class46.forID(var19);
+                            ObjectDefinition var35 = ObjectDefinition.forID(var19);
                             if(var35.aByteArray777 != null) {
                                 var30 = new String(var35.aByteArray777);
                             } else {
@@ -7918,7 +7923,7 @@ public class client extends Applet_Sub1 {
         }
     }
 
-    public final void build3dScreenMenu(int i) {
+    public final void build3dScreenMenu() {
         if(this.anInt1282 == 0 && this.anInt1136 == 0) {
             this.menuActionName[this.menuActionRow] = "Walk Here";
             this.menuActionID[this.menuActionRow] = 516;
@@ -7939,7 +7944,7 @@ public class client extends Applet_Sub1 {
                 j = l.longValue();
                 int class30_sub2_sub4_sub2;
                 if(k1 == 2 && this.aClass25_946.method304(this.anInt918, i1, j1, l.longValue()) >= 0) {
-                    Class46 class19 = Class46.forID(l1);
+                    ObjectDefinition class19 = ObjectDefinition.forID(l1);
                     if(class19.childrenIDs != null) {
                         class19 = class19.method580(true);
                     }
@@ -8000,7 +8005,7 @@ public class client extends Applet_Sub1 {
                         if(this.myPrivilege != 2 && this.myPrivilege != 10 && this.myPrivilege != 9 && this.myPrivilege != 4) {
                             this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class19.aString739 + "</col>";
                         } else {
-                            this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class19.aString739 + "</col><col=255>(</col><col=FFFFFF>" + class19.type + "</col><col=255>)</col>";
+                            this.menuActionName[this.menuActionRow] = "Examine <col=65535>" + class19.aString739 + "</col><col=255>(ID: </col><col=FFFFFF>" + class19.type + "</col><col=255>)</col><col=255>(Animation:</col><col=FFFFFF>" + class19.anInt781 + "</col><col=255>)</col>";
                         }
 
                         this.menuActionID[this.menuActionRow] = 1226;
@@ -8024,7 +8029,7 @@ public class client extends Applet_Sub1 {
                         }
 
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.anInt891; ++class30_sub2_sub4_sub2) {
-                            var17 = this.aPlayerArray890[this.anIntArray892[class30_sub2_sub4_sub2]];
+                            var17 = this.players[this.anIntArray892[class30_sub2_sub4_sub2]];
                             if(var17 != null && var17.anInt1550 == var14.anInt1550 && var17.anInt1551 == var14.anInt1551) {
                                 this.method88(i1, this.anIntArray892[class30_sub2_sub4_sub2], var17, false, j1);
                             }
@@ -8035,7 +8040,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(k1 == 0) {
-                    Player var15 = this.aPlayerArray890[l1];
+                    Player var15 = this.players[l1];
                     if((var15.anInt1550 & 127) == 64 && (var15.anInt1551 & 127) == 64) {
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.npcCount; ++class30_sub2_sub4_sub2) {
                             class8 = this.npcs[this.npcIndices[class30_sub2_sub4_sub2]];
@@ -8045,7 +8050,7 @@ public class client extends Applet_Sub1 {
                         }
 
                         for(class30_sub2_sub4_sub2 = 0; class30_sub2_sub4_sub2 < this.anInt891; ++class30_sub2_sub4_sub2) {
-                            var17 = this.aPlayerArray890[this.anIntArray892[class30_sub2_sub4_sub2]];
+                            var17 = this.players[this.anIntArray892[class30_sub2_sub4_sub2]];
                             if(var17 != null && var17 != var15 && var17.anInt1550 == var15.anInt1550 && var17.anInt1551 == var15.anInt1551) {
                                 this.method88(i1, this.anIntArray892[class30_sub2_sub4_sub2], var17, false, j1);
                             }
@@ -8106,9 +8111,6 @@ public class client extends Applet_Sub1 {
             }
         }
 
-        if(i != '\u837c') {
-            this.packet = this.in.readUnsignedByte();
-        }
 
     }
 
@@ -8137,8 +8139,8 @@ public class client extends Applet_Sub1 {
         this.aStream_847 = null;
         this.in = null;
         this.mapCoordinates = null;
-        this.terrainData = (byte[][])null;
-        this.mapData = (byte[][])null;
+        this.terrainData = null;
+        this.mapData = null;
         this.terrainIndices = null;
         this.objectIndices = null;
         this.anIntArrayArrayArray1214 = (int[][][])null;
@@ -8190,7 +8192,7 @@ public class client extends Applet_Sub1 {
         this.aBackgroundArray1060 = null;
         this.aSpriteArray1033 = null;
         this.anIntArrayArray929 = (int[][])null;
-        this.aPlayerArray890 = null;
+        this.players = null;
         this.anIntArray892 = null;
         this.anIntArray894 = null;
         this.aStreamArray895 = null;
@@ -8224,18 +8226,18 @@ public class client extends Applet_Sub1 {
         this.aRSImageProducer_1113 = null;
         this.aRSImageProducer_1114 = null;
         this.aRSImageProducer_1115 = null;
-        this.method118(3);
-        Class46.method575(-501);
+        this.nullLoader();
+        ObjectDefinition.method575(-501);
         Class5.method163(-501);
         ItemDefinition.method191(-501);
-        Class22.aClass22Array388 = null;
+        FloorDefinition.aFloorDefinitionArray388 = null;
         Class38.aClass38Array656 = null;
         Widget.interfaceCache = null;
         Class27.aClass27Array507 = null;
         AnimationDefinition.anims = null;
         Class23.aClass23Array403 = null;
         Class23.aClass12_415 = null;
-        Class41.aClass41Array701 = null;
+        VarpDefinition.aVarpDefinitionArray701 = null;
         super.aRSImageProducer_13 = null;
         Player.aClass12_1704 = null;
         Rasterizer.nullLoader();
@@ -8754,7 +8756,7 @@ public class client extends Applet_Sub1 {
                                 }
 
                                 if (var14.startsWith("dumpobj")) {
-                                    Class46.dumpObjectcfg();
+                                    ObjectDefinition.dumpObjectcfg();
                                 }
 
                                 if (var14.startsWith("dump")) {
@@ -8799,8 +8801,16 @@ public class client extends Applet_Sub1 {
                                 } else if (var14.startsWith("glow3:")) {
                                     var13 = 11;
                                     this.inputString = this.inputString.substring(6);
+                                } else if (var14.startsWith("blue:")) {
+                                    var13 = 12;
+                                    this.inputString = this.inputString.substring(5);
+                                } else if (var14.startsWith("pink:")) {
+                                    var13 = 13;
+                                    this.inputString = this.inputString.substring(5);
+                                } else if (var14.startsWith("flash4:")) {
+                                    var13 = 14;
+                                    this.inputString = this.inputString.substring(7);
                                 }
-
                                 var14 = this.inputString.toLowerCase();
                                 if (var14.startsWith("wave:")) {
                                     var15 = 1;
@@ -9985,7 +9995,7 @@ public class client extends Applet_Sub1 {
 
     public final void resetImageProducers2(int i) {
         if(aRSImageProducer_1166 == null) {
-            this.method118(3);
+            this.nullLoader();
             super.aRSImageProducer_13 = null;
             this.aRSImageProducer_1107 = null;
             this.aRSImageProducer_1108 = null;
@@ -10261,14 +10271,14 @@ public class client extends Applet_Sub1 {
                     if(openInterfaceID != -1) {
                         this.buildInterfaceMenu(4, 13037, Widget.interfaceCache[openInterfaceID], super.mouseX, 4, super.mouseY, 0);
                     } else {
-                        this.build3dScreenMenu('\u837c');
+                        this.build3dScreenMenu();
                     }
                 }
             } else if(currentScreenMode != client.ScreenMode.FIXED && this.getMousePositions()) {
                 if(super.mouseX > currentGameWidth / 2 - 356 && super.mouseY > currentGameHeight / 2 - 230 && super.mouseX < currentGameWidth / 2 + 356 && super.mouseY < currentGameHeight / 2 + 230 && openInterfaceID != -1) {
                     this.buildInterfaceMenu(currentGameWidth / 2 - 356, 13037, Widget.interfaceCache[openInterfaceID], super.mouseX, currentGameHeight / 2 - 230, super.mouseY, 0);
                 } else {
-                    this.build3dScreenMenu('\u837c');
+                    this.build3dScreenMenu();
                 }
             }
 
@@ -10500,7 +10510,7 @@ public class client extends Applet_Sub1 {
                 this.npcCount = 0;
 
                 for(var17 = 0; var17 < this.anInt888; ++var17) {
-                    this.aPlayerArray890[var17] = null;
+                    this.players[var17] = null;
                     this.aStreamArray895[var17] = null;
                 }
 
@@ -10508,7 +10518,7 @@ public class client extends Applet_Sub1 {
                     this.npcs[var17] = null;
                 }
 
-                localPlayer = this.aPlayerArray890[this.anInt889] = new Player();
+                localPlayer = this.players[this.maxPlayerCount] = new Player();
                 this.aClass19_1013.method256();
                 this.aClass19_1056.method256();
 
@@ -11770,16 +11780,16 @@ public class client extends Applet_Sub1 {
                     Rasterizer.method372(0.8D);
                     Rasterizer.method367();
                     this.method13(90, (byte)4, "Unpacking config");
-                    AnimationDefinition.method257(0, var33);
-                    Class46.method576(var33);
-                    Class22.method260(0, var33);
+                    AnimationDefinition.load(var33);
+                    ObjectDefinition.load(var33);
+                    FloorDefinition.load(var33);
                     OverLayFlo317.load(var33);
-                    ItemDefinition.method193(var33);
+                    ItemDefinition.load(var33);
                     Class5.method162(var33);
-                    Class38.method535(0, var33);
+                    Class38.load(var33);
                     Class23.method264(0, var33);
-                    Class41.method546(0, var33);
-                    VarBit.method533(0, var33);
+                    VarpDefinition.load(var33);
+                    VarBit.load(0, var33);
                     ItemDefinition.aBoolean182 = aBoolean959;
                     if(!lowMemory) {
                         this.method13(92, (byte)4, "Unpacking sounds");
@@ -11854,7 +11864,7 @@ public class client extends Applet_Sub1 {
                     this.aMouseDetection_879 = new MouseDetection(this);
                     this.method12(this.aMouseDetection_879, 10);
                     Class30_Sub2_Sub4_Sub5.aClient1609 = this;
-                    Class46.clientInstance = this;
+                    ObjectDefinition.clientInstance = this;
                     Class5.aClient82 = this;
                 }
             } catch (Exception var32) {
@@ -11876,21 +11886,21 @@ public class client extends Applet_Sub1 {
         int l;
         int i1;
         int j1;
-        for(; stream.anInt1407 + 10 < i * 8; player.method445(localPlayer.anIntArray1500[0] + j1, localPlayer.anIntArray1501[0] + i1, l == 1, false)) {
+        for(; stream.anInt1407 + 10 < i * 8; player.setPos(localPlayer.anIntArray1500[0] + j1, localPlayer.anIntArray1501[0] + i1, l == 1, false)) {
             int j = stream.readBits(11);
             if(j == 2047) {
                 break;
             }
 
-            if(this.aPlayerArray890[j] == null) {
-                this.aPlayerArray890[j] = new Player();
+            if(this.players[j] == null) {
+                this.players[j] = new Player();
                 if(this.aStreamArray895[j] != null) {
-                    this.aPlayerArray890[j].method451(0, this.aStreamArray895[j]);
+                    this.players[j].method451(0, this.aStreamArray895[j]);
                 }
             }
 
             this.anIntArray892[this.anInt891++] = j;
-            player = this.aPlayerArray890[j];
+            player = this.players[j];
             player.anInt1537 = loopCycle;
             int k = stream.readBits(1);
             if(k == 1) {
@@ -12345,10 +12355,10 @@ public class client extends Applet_Sub1 {
                 if(class30_sub2_sub4_sub1.anInt1502 >= '\u8000') {
                     l1 = class30_sub2_sub4_sub1.anInt1502 - '\u8000';
                     if(l1 == this.anInt884) {
-                        l1 = this.anInt889;
+                        l1 = this.maxPlayerCount;
                     }
 
-                    Player j11 = this.aPlayerArray890[l1];
+                    Player j11 = this.players[l1];
                     if(j11 != null) {
                         l1 = class30_sub2_sub4_sub1.anInt1550 - j11.anInt1550;
                         int i2 = class30_sub2_sub4_sub1.anInt1551 - j11.anInt1551;
@@ -12789,9 +12799,9 @@ public class client extends Applet_Sub1 {
                                                 }
                                                 if(class30_sub2_sub1_sub1_2.maxWidth == 33 || class9_1.inventoryAmounts[var25] != 1) {
                                                     k10 = class9_1.inventoryAmounts[var25];
-                                                    this.smallText.method385(0, method43(-33245, k10), var31 + 10 + i9, 822, i6 + 1 + var32);
-                                                    this.smallText.method385('\uff80', method43(-33245, k10), var31 + 9 + i9, 822, i6 + var32);
-                                                    this.smallText.method385('\uff80', method43(-33245, k10), var31 + 9 + i9, 822, i6 + var32);
+                                                    this.smallText.method385(0, intToKOrMil(k10), var31 + 10 + i9, 822, i6 + 1 + var32);
+                                                    this.smallText.method385('\uff80', intToKOrMil(k10), var31 + 9 + i9, 822, i6 + var32);
+                                                    this.smallText.method385('\uff80', intToKOrMil(k10), var31 + 9 + i9, 822, i6 + var32);
                                                 }
                                             }
                                         }
@@ -13700,12 +13710,12 @@ public class client extends Applet_Sub1 {
             for(int i = -1; i < this.anInt891; ++i) {
                 int j;
                 if(i == -1) {
-                    j = this.anInt889;
+                    j = this.maxPlayerCount;
                 } else {
                     j = this.anIntArray892[i];
                 }
 
-                Player player = this.aPlayerArray890[j];
+                Player player = this.players[j];
                 if(player != null) {
                     this.method96('\ub78c', 1, player);
                 }
@@ -13795,66 +13805,52 @@ public class client extends Applet_Sub1 {
 
     }
 
-    private final void method117(Stream stream, int i, byte byte0) {
-        stream.method418(this.anInt1118);
-        if(byte0 == 5) {
-            boolean byte01 = false;
-        } else {
-            this.packet = stream.readUnsignedByte();
-        }
-
+    private void update_self_player(Stream stream) {
+        stream.initBitAccess(this.anInt1118);
         int j = stream.readBits(1);
-        if(j != 0) {
+        if (j == 0)
+            return;
             int k = stream.readBits(2);
             if(k == 0) {
-                this.anIntArray894[this.anInt893++] = this.anInt889;
-            } else {
-                int j1;
-                int i2;
-                if(k == 1) {
-                    j1 = stream.readBits(3);
-                    localPlayer.method448(false, (byte)20, j1);
-                    i2 = stream.readBits(1);
-                    if(i2 == 1) {
-                        this.anIntArray894[this.anInt893++] = this.anInt889;
-                    }
+                this.anIntArray894[this.anInt893++] = this.maxPlayerCount;
+                return;
+            }
+             if(k == 1) {
+                 int j1 = stream.readBits(3);
+                 localPlayer.moveInDir(false, (byte)20, j1);
+                 int i2 = stream.readBits(1);
+                 if(i2 == 1)
+                    this.anIntArray894[this.anInt893++] = this.maxPlayerCount;
+                    return;
+                }
 
-                } else {
-                    int k2;
                     if(k == 2) {
-                        j1 = stream.readBits(3);
-                        localPlayer.method448(true, (byte)20, j1);
-                        i2 = stream.readBits(3);
-                        localPlayer.method448(true, (byte)20, i2);
-                        k2 = stream.readBits(1);
-                        if(k2 == 1) {
-                            this.anIntArray894[this.anInt893++] = this.anInt889;
-                        }
-
-                    } else {
+                        int j1 = stream.readBits(3);
+                        localPlayer.moveInDir(true, (byte)20, j1);
+                        int i2 = stream.readBits(3);
+                        localPlayer.moveInDir(true, (byte)20, i2);
+                        int k2 = stream.readBits(1);
+                        if(k2 == 1)
+                            this.anIntArray894[this.anInt893++] = this.maxPlayerCount;
+                        return;
+                    }
                         if(k == 3) {
                             this.anInt918 = stream.readBits(2);
-                            j1 = stream.readBits(1);
-                            i2 = stream.readBits(1);
-                            if(i2 == 1) {
-                                this.anIntArray894[this.anInt893++] = this.anInt889;
-                            }
-
-                            k2 = stream.readBits(7);
+                            int j1 = stream.readBits(1);
+                            int i2 = stream.readBits(1);
+                            if(i2 == 1)
+                                this.anIntArray894[this.anInt893++] = this.maxPlayerCount;
+                            int k2 = stream.readBits(7);
                             int l2 = stream.readBits(7);
-                            localPlayer.method445(l2, k2, j1 == 1, false);
+                            localPlayer.setPos(l2, k2, j1 == 1, false);
                         }
 
-                    }
-                }
-            }
-        }
     }
 
-    public final void method118(int i) {
+    public void nullLoader() {
         this.aBoolean831 = false;
 
-        while(this.aBoolean962) {
+        while(this.drawingFlames) {
             this.aBoolean831 = false;
 
             try {
@@ -13877,9 +13873,6 @@ public class client extends Applet_Sub1 {
         this.anIntArray829 = null;
         this.aSprite_1201 = null;
         this.aSprite_1202 = null;
-        if(i < 3 || i > 3) {
-            this.aClass19ArrayArrayArray827 = (Class19[][][])null;
-        }
 
     }
 
@@ -14439,7 +14432,7 @@ public class client extends Applet_Sub1 {
             }
 
             for(j2 = 0; j2 < this.anInt891; ++j2) {
-                Player var17 = this.aPlayerArray890[this.anIntArray892[j2]];
+                Player var17 = this.players[this.anIntArray892[j2]];
                 if(var17 != null && var17.method449(aBoolean1224)) {
                     k4 = var17.anInt1550 / 32 - localPlayer.anInt1550 / 32;
                     l3 = var17.anInt1551 / 32 - localPlayer.anInt1551 / 32;
@@ -14500,8 +14493,8 @@ public class client extends Applet_Sub1 {
                     this.method81(this.aSprite_871, -760, l4, j2);
                 }
 
-                if(this.hintType == 10 && this.anInt933 >= 0 && this.anInt933 < this.aPlayerArray890.length) {
-                    Player var20 = this.aPlayerArray890[this.anInt933];
+                if(this.hintType == 10 && this.anInt933 >= 0 && this.anInt933 < this.players.length) {
+                    Player var20 = this.players[this.anInt933];
                     if(var20 != null) {
                         l4 = var20.anInt1550 / 32 - localPlayer.anInt1550 / 32;
                         k4 = var20.anInt1551 / 32 - localPlayer.anInt1551 / 32;
@@ -14945,7 +14938,7 @@ public class client extends Applet_Sub1 {
 
             for(l = 0; l < j; ++l) {
                 int i1 = this.anIntArray892[l];
-                Player player = this.aPlayerArray890[i1];
+                Player player = this.players[i1];
                 int j1 = stream.readBits(1);
                 if(j1 == 0) {
                     this.anIntArray892[this.anInt891++] = i1;
@@ -14963,7 +14956,7 @@ public class client extends Applet_Sub1 {
                             this.anIntArray892[this.anInt891++] = i1;
                             player.anInt1537 = loopCycle;
                             i2 = stream.readBits(3);
-                            player.method448(false, (byte)20, i2);
+                            player.moveInDir(false, (byte)20, i2);
                             k2 = stream.readBits(1);
                             if(k2 == 1) {
                                 this.anIntArray894[this.anInt893++] = i1;
@@ -14972,9 +14965,9 @@ public class client extends Applet_Sub1 {
                             this.anIntArray892[this.anInt891++] = i1;
                             player.anInt1537 = loopCycle;
                             i2 = stream.readBits(3);
-                            player.method448(true, (byte)20, i2);
+                            player.moveInDir(true, (byte)20, i2);
                             k2 = stream.readBits(3);
-                            player.method448(true, (byte)20, k2);
+                            player.moveInDir(true, (byte)20, k2);
                             int l2 = stream.readBits(1);
                             if(l2 == 1) {
                                 this.anIntArray894[this.anInt893++] = i1;
@@ -15087,7 +15080,7 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method136(byte byte0) {
-        this.aBoolean962 = true;
+        this.drawingFlames = true;
         if(byte0 != 59) {
             this.anInt1058 = -186;
         }
@@ -15123,7 +15116,7 @@ public class client extends Applet_Sub1 {
             ;
         }
 
-        this.aBoolean962 = false;
+        this.drawingFlames = false;
     }
 
     public final void method10(byte byte0) {
@@ -15306,26 +15299,26 @@ public class client extends Applet_Sub1 {
                             if(j11 == this.anInt884) {
                                 player = localPlayer;
                             } else {
-                                player = this.aPlayerArray890[j11];
+                                player = this.players[j11];
                             }
 
                             if(player != null) {
-                                Class46 class46 = Class46.forID(class30_sub2_sub4_sub4);
+                                ObjectDefinition objectDefinition = ObjectDefinition.forID(class30_sub2_sub4_sub4);
                                 int i22 = this.anIntArrayArrayArray1214[this.anInt918][l5][k8];
                                 int j22 = this.anIntArrayArrayArray1214[this.anInt918][l5 + 1][k8];
                                 int k22 = this.anIntArrayArrayArray1214[this.anInt918][l5 + 1][k8 + 1];
                                 int l22 = this.anIntArrayArrayArray1214[this.anInt918][l5][k8 + 1];
-                                Model model = class46.method578(k19, j20, i22, j22, k22, l22, -1);
+                                Model model = objectDefinition.method578(k19, j20, i22, j22, k22, l22, -1);
                                 if(model != null) {
                                     this.method130(404, i18 + 1, -1, 0, i21, k8, 0, this.anInt918, l5, l15 + 1);
                                     player.anInt1707 = l15 + loopCycle;
                                     player.anInt1708 = i18 + loopCycle;
                                     player.aModel_1714 = model;
-                                    int i23 = class46.anInt744;
-                                    int j23 = class46.anInt761;
+                                    int i23 = objectDefinition.anInt744;
+                                    int j23 = objectDefinition.anInt761;
                                     if(j20 == 1 || j20 == 3) {
-                                        i23 = class46.anInt761;
-                                        j23 = class46.anInt744;
+                                        i23 = objectDefinition.anInt761;
+                                        j23 = objectDefinition.anInt744;
                                     }
 
                                     player.anInt1711 = l5 * 128 + i23 * 64;
@@ -15453,16 +15446,13 @@ public class client extends Applet_Sub1 {
         Rasterizer.lowMem = true;
         lowMemory = true;
         ObjectManager.aBoolean151 = true;
-        Class46.aBoolean752 = true;
+        ObjectDefinition.aBoolean752 = true;
     }
 
-    private final void method139(Stream stream, int i, int j) {
-        if(i >= 0) {
-            this.anInt1118 = -7;
-        }
+    private void method139(Stream stream) {
 
         try {
-            stream.method418(this.anInt1118);
+            stream.initBitAccess(this.anInt1118);
             int e = stream.readBits(8);
             int i1;
             if(e < this.npcCount) {
@@ -15498,7 +15488,7 @@ public class client extends Applet_Sub1 {
                             this.npcIndices[this.npcCount++] = j1;
                             npc.anInt1537 = loopCycle;
                             j2 = stream.readBits(3);
-                            npc.method448(false, (byte)20, j2);
+                            npc.moveInDir(false, (byte)20, j2);
                             l2 = stream.readBits(1);
                             if(l2 == 1) {
                                 this.anIntArray894[this.anInt893++] = j1;
@@ -15507,9 +15497,9 @@ public class client extends Applet_Sub1 {
                             this.npcIndices[this.npcCount++] = j1;
                             npc.anInt1537 = loopCycle;
                             j2 = stream.readBits(3);
-                            npc.method448(true, (byte)20, j2);
+                            npc.moveInDir(true, (byte)20, j2);
                             l2 = stream.readBits(3);
-                            npc.method448(true, (byte)20, l2);
+                            npc.moveInDir(true, (byte)20, l2);
                             int i3 = stream.readBits(1);
                             if(i3 == 1) {
                                 this.anIntArray894[this.anInt893++] = j1;
@@ -15702,12 +15692,12 @@ public class client extends Applet_Sub1 {
                 int j2 = ObjectKey.getObjectId(i2);
                 int k2 = j3 & 31;
                 int l2 = j3 >> 6;
-                Class46 class46_2;
+                ObjectDefinition objectDefinition_2;
                 if(j1 == 0) {
                     this.aClass25_946.method291(i1, j, i, (byte)-119);
-                    class46_2 = Class46.forID(j2);
-                    if(class46_2.aBoolean767) {
-                        this.collisionMaps[j].method215(l2, k2, class46_2.aBoolean757, true, i1, i);
+                    objectDefinition_2 = ObjectDefinition.forID(j2);
+                    if(objectDefinition_2.aBoolean767) {
+                        this.collisionMaps[j].method215(l2, k2, objectDefinition_2.aBoolean757, true, i1, i);
                     }
                 }
 
@@ -15717,20 +15707,20 @@ public class client extends Applet_Sub1 {
 
                 if(j1 == 2) {
                     this.aClass25_946.method293(j, -978, i1, i);
-                    class46_2 = Class46.forID(j2);
-                    if(i1 + class46_2.anInt744 > 103 || i + class46_2.anInt744 > 103 || i1 + class46_2.anInt761 > 103 || i + class46_2.anInt761 > 103) {
+                    objectDefinition_2 = ObjectDefinition.forID(j2);
+                    if(i1 + objectDefinition_2.anInt744 > 103 || i + objectDefinition_2.anInt744 > 103 || i1 + objectDefinition_2.anInt761 > 103 || i + objectDefinition_2.anInt761 > 103) {
                         return;
                     }
 
-                    if(class46_2.aBoolean767) {
-                        this.collisionMaps[j].method216(l2, class46_2.anInt744, i1, i, (byte)6, class46_2.anInt761, class46_2.aBoolean757);
+                    if(objectDefinition_2.aBoolean767) {
+                        this.collisionMaps[j].method216(l2, objectDefinition_2.anInt744, i1, i, (byte)6, objectDefinition_2.anInt761, objectDefinition_2.aBoolean757);
                     }
                 }
 
                 if(j1 == 3) {
                     this.aClass25_946.method294((byte)9, j, i, i1);
-                    class46_2 = Class46.forID(j2);
-                    if(class46_2.aBoolean767 && class46_2.hasactions) {
+                    objectDefinition_2 = ObjectDefinition.forID(j2);
+                    if(objectDefinition_2.aBoolean767 && objectDefinition_2.hasactions) {
                         this.collisionMaps[j].method218(360, i, i1);
                     }
                 }
@@ -15748,14 +15738,10 @@ public class client extends Applet_Sub1 {
 
     }
 
-    private final void method143(int i, Stream stream, int j) {
+    private void updatePlayers(int i, Stream stream) {
         this.anInt839 = 0;
-        if(j != 9759) {
-            this.packet = stream.readUnsignedShort();
-        }
-
         this.anInt893 = 0;
-        this.method117(stream, i, (byte)5);
+        this.update_self_player(stream);
         this.method134((byte)2, i, stream);
         this.method91(stream, i, (byte)8);
         this.method49(i, (byte)2, stream);
@@ -15763,13 +15749,13 @@ public class client extends Applet_Sub1 {
         int i1;
         for(i1 = 0; i1 < this.anInt839; ++i1) {
             int l = this.anIntArray840[i1];
-            if(this.aPlayerArray890[l].anInt1537 != loopCycle) {
-                this.aPlayerArray890[l] = null;
+            if(this.players[l].anInt1537 != loopCycle) {
+                this.players[l] = null;
             }
         }
 
         for(i1 = 0; i1 < this.anInt891; ++i1) {
-            if(this.aPlayerArray890[this.anIntArray892[i1]] == null) {
+            if(this.players[this.anIntArray892[i1]] == null) {
                 signlink.reporterror(this.myUsername + " null entry in pl list - pos:" + i1 + " size:" + this.anInt891);
                 throw new RuntimeException("eek");
             }
@@ -16006,8 +15992,8 @@ public class client extends Applet_Sub1 {
                 this.anInt842 = this.anInt841;
                 this.anInt841 = this.packet;
                 if(this.packet == 81) {
-                    this.method143(this.packetSize, this.in, 9759);
-                    this.aBoolean1080 = false;
+                    this.updatePlayers(this.packetSize, this.in);
+                    this.loadingMap = false;
                     this.packet = -1;
                     return true;
                 }
@@ -16269,7 +16255,7 @@ public class client extends Applet_Sub1 {
 
                     if(this.packet == 241) {
                         j15 = this.in.readUShortA(true);
-                        this.in.method418(this.anInt1118);
+                        this.in.initBitAccess(this.anInt1118);
                         j20 = 0;
 
                         while(true) {
@@ -16461,7 +16447,7 @@ public class client extends Applet_Sub1 {
                     }
 
                     for(l25 = 0; l25 < this.anInt888; ++l25) {
-                        Player var50 = this.aPlayerArray890[l25];
+                        Player var50 = this.players[l25];
                         if(var50 != null) {
                             for(i30 = 0; i30 < 10; ++i30) {
                                 var50.anIntArray1500[i30] -= j20;
@@ -16473,7 +16459,7 @@ public class client extends Applet_Sub1 {
                         }
                     }
 
-                    this.aBoolean1080 = true;
+                    this.loadingMap = true;
                     byte var47 = 0;
                     byte var51 = 104;
                     byte var41 = 1;
@@ -16692,9 +16678,9 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(this.packet == 1) {
-                    for(var23 = 0; var23 < this.aPlayerArray890.length; ++var23) {
-                        if(this.aPlayerArray890[var23] != null) {
-                            this.aPlayerArray890[var23].primaryanim = -1;
+                    for(var23 = 0; var23 < this.players.length; ++var23) {
+                        if(this.players[var23] != null) {
+                            this.players[var23].primaryanim = -1;
                         }
                     }
 
@@ -17249,7 +17235,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(this.packet == 65) {
-                    this.method31(this.in, this.packetSize, 973);
+                    this.updateNPCs(this.in, this.packetSize);
                     this.packet = -1;
                     return true;
                 }
@@ -17465,7 +17451,7 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method146(byte byte0) {
-        ++this.anInt1265;
+        ++this.renderCount;
         this.method47(0, true);
         this.method26(true, this.anInt882);
         this.method47(0, false);
@@ -17661,8 +17647,8 @@ public class client extends Applet_Sub1 {
         this.menuOpen = false;
         this.inputString = "";
         this.anInt888 = 2048;
-        this.anInt889 = 2047;
-        this.aPlayerArray890 = new Player[this.anInt888];
+        this.maxPlayerCount = 2047;
+        this.players = new Player[this.anInt888];
         this.anIntArray892 = new int[this.anInt888];
         this.anIntArray894 = new int[this.anInt888];
         this.aStreamArray895 = new Stream[this.anInt888];
@@ -17688,7 +17674,7 @@ public class client extends Applet_Sub1 {
         this.aBoolean954 = true;
         this.friendsListAsLongs = new long[200];
         this.currentSong = -1;
-        this.aBoolean962 = false;
+        this.drawingFlames = false;
         this.spriteDrawX = -1;
         this.spriteDrawY = -1;
         this.anIntArray968 = new int[33];
@@ -17702,9 +17688,9 @@ public class client extends Applet_Sub1 {
         this.anIntArray977 = new int[this.anInt975];
         this.anIntArray978 = new int[this.anInt975];
         this.anIntArray979 = new int[this.anInt975];
-        this.anIntArray980 = new int[this.anInt975];
+        this.overheadTextColour = new int[this.anInt975];
         this.anIntArray981 = new int[this.anInt975];
-        this.anIntArray982 = new int[this.anInt975];
+        this.overheadTextCycle = new int[this.anInt975];
         this.aStringArray983 = new String[this.anInt975];
         this.anInt985 = -1;
         this.aSpriteArray987 = new Sprite[30];
@@ -17738,7 +17724,7 @@ public class client extends Applet_Sub1 {
         this.anIntArray1065 = new int[7];
         this.anIntArray1072 = new int[1000];
         this.anIntArray1073 = new int[1000];
-        this.aBoolean1080 = false;
+        this.loadingMap = false;
         this.anInt1081 = -733;
         this.friendsList = new String[200];
         this.in = Stream.method396(1, 9);

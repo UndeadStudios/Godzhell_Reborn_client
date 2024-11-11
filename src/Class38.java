@@ -9,7 +9,7 @@ public class Class38 {
     public int[] originalColors = new int[10];
     public int[] modifiedColors = new int[10];
 
-    public static void method535(int i, FileArchive fileArchive) {
+    public static void load(FileArchive fileArchive) {
         Stream stream = new Stream(fileArchive.method571("idk.dat"), 891);
         anInt655 = stream.readUnsignedShort();
         if(aClass38Array656 == null) {

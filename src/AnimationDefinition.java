@@ -7,7 +7,7 @@ import java.util.Arrays;
 public class AnimationDefinition
 {
 
-    public static void method257(int i, FileArchive fileArchive)
+    public static void load(FileArchive fileArchive)
     {
         Stream stream = new Stream(fileArchive.method571("seq.dat"));
         anInt350 = stream.readUnsignedShort();
@@ -40,10 +40,6 @@ public class AnimationDefinition
             }
         }
 
-        if(i != 0)
-        {
-            for(int k = 1; k > 0; k++);
-        }
     }
     public static void dumpValues(int length) {
         System.out.println("Dumping Animations..");

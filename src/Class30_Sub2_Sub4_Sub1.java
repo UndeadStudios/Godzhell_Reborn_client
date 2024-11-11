@@ -1,7 +1,7 @@
 class Class30_Sub2_Sub4_Sub1 extends Animable
 {
 
-    public final void method445(int i, int j, boolean flag, boolean flag1)
+    public final void setPos(int i, int j, boolean flag, boolean flag1)
     {
         if(primaryanim != -1 && AnimationDefinition.anims[primaryanim].anInt364 == 1)
             primaryanim = -1;
@@ -62,7 +62,7 @@ class Class30_Sub2_Sub4_Sub1 extends Animable
             aBoolean1508 = !aBoolean1508;
     }
 
-    public final void method448(boolean flag, byte byte0, int i)
+    public final void moveInDir(boolean flag, byte byte0, int i)
     {
         int j = anIntArray1500[0];
         int k = anIntArray1501[0];

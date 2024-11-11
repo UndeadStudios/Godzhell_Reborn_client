@@ -1,24 +1,22 @@
-public class Class41
+public class VarpDefinition
 {
 
-    public static void method546(int i, FileArchive fileArchive)
+    public static void load(FileArchive fileArchive)
     {
         Stream stream = new Stream(fileArchive.method571("varp.dat"), 891);
         anInt702 = 0;
         anInt700 = stream.readUnsignedShort();
-        if(aClass41Array701 == null)
-            aClass41Array701 = new Class41[anInt700];
+        if(aVarpDefinitionArray701 == null)
+            aVarpDefinitionArray701 = new VarpDefinition[anInt700];
         if(anIntArray703 == null)
             anIntArray703 = new int[anInt700];
         for(int j = 0; j < anInt700; j++)
         {
-            if(aClass41Array701[j] == null)
-                aClass41Array701[j] = new Class41();
-            aClass41Array701[j].method547(stream, false, j);
+            if(aVarpDefinitionArray701[j] == null)
+                aVarpDefinitionArray701[j] = new VarpDefinition();
+            aVarpDefinitionArray701[j].method547(stream, false, j);
         }
 
-        if(i != 0)
-            aBoolean698 = !aBoolean698;
         if(stream.currentPosition != stream.buffer.length)
             System.out.println("varptype load mismatch");
     }
@@ -76,7 +74,7 @@ public class Class41
         } while(true);
     }
 
-    public Class41()
+    public VarpDefinition()
     {
         anInt699 = -32357;
         aBoolean707 = false;
@@ -89,7 +87,7 @@ public class Class41
     private static boolean aBoolean698 = true;
     private int anInt699;
     public static int anInt700;
-    public static Class41 aClass41Array701[];
+    public static VarpDefinition aVarpDefinitionArray701[];
     public static int anInt702;
     public static int anIntArray703[];
     public String aString704;

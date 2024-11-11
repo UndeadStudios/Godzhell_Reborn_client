@@ -228,6 +228,7 @@ public final class Sprite extends DrawingArea {
          this.myPixels = new int[this.myWidth * this.myHeight];
          PixelGrabber pixelgrabber = new PixelGrabber(exception, 0, 0, this.myWidth, this.myHeight, this.myPixels, 0, this.myWidth);
          pixelgrabber.grabPixels();
+         this.setTransparency(255, 0, 255);
       } catch (Exception var6) {
          var6.printStackTrace();
       }
@@ -286,6 +287,7 @@ public final class Sprite extends DrawingArea {
          this.myPixels = new int[this.myWidth * this.myHeight];
          PixelGrabber pixelgrabber = new PixelGrabber(exception, 0, 0, this.myWidth, this.myHeight, this.myPixels, 0, this.myWidth);
          pixelgrabber.grabPixels();
+         this.setTransparency(255, 0, 255);
       } catch (Exception var6) {
          System.out.println("Error converting jpg");
       }
@@ -716,6 +718,7 @@ public final class Sprite extends DrawingArea {
       if(k1 > 0 && j1 > 0) {
          this.method349(DrawingArea.pixels, this.myPixels, 0, i1, l, k1, j1, l1, i2);
       }
+
    }
 
    private void method349(int[] ai, int[] ai1, int i, int j, int k, int l, int i1, int j1, int k1) {

@@ -27,22 +27,22 @@ public class Class30_Sub2_Sub4_Sub5 extends Animable
             if(aClass20_1607 != null)
                 j = aClass20_1607.anIntArray353[anInt1599];
         }
-        Class46 class46;
+        ObjectDefinition objectDefinition;
         if(anIntArray1600 != null)
-            class46 = method457();
+            objectDefinition = method457();
         else
-            class46 = Class46.forID(anInt1610);
-        if(class46 == null)
+            objectDefinition = ObjectDefinition.forID(anInt1610);
+        if(objectDefinition == null)
         {
             return null;
         } else
         {
-            Model model = class46.method578(anInt1611, anInt1612, anInt1603, anInt1604, anInt1605, anInt1606, j);
+            Model model = objectDefinition.method578(anInt1611, anInt1612, anInt1603, anInt1604, anInt1605, anInt1606, j);
             return model;
         }
     }
 
-private Class46 method457() {
+private ObjectDefinition method457() {
 		int i = -1;
 		if(anInt1601 != -1) {
 			try {
@@ -63,7 +63,7 @@ private Class46 method457() {
     } else
         var = anIntArray1600[anIntArray1600.length - 1];
 
-    return var != -1 ? Class46.forID(var) : null;
+    return var != -1 ? ObjectDefinition.forID(var) : null;
 	}
 
     public Class30_Sub2_Sub4_Sub5(int i, int j, int k, int l, byte byte0, int i1, int j1, 
@@ -92,10 +92,10 @@ private Class46 method457() {
                 anInt1608 -= (int)(Math.random() * (double)aClass20_1607.method258(anInt1599, (byte)-39));
             }
         }
-        Class46 class46 = Class46.forID(anInt1610);
-        anInt1601 = class46.anInt774;
-        anInt1602 = class46.anInt749;
-        anIntArray1600 = class46.childrenIDs;
+        ObjectDefinition objectDefinition = ObjectDefinition.forID(anInt1610);
+        anInt1601 = objectDefinition.anInt774;
+        anInt1602 = objectDefinition.anInt749;
+        anIntArray1600 = objectDefinition.childrenIDs;
     }
 
     private byte aByte1598;

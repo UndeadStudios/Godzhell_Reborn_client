@@ -492,7 +492,7 @@ final class ItemDefinition {
         }
     }
 
-    public static void method193(FileArchive fileArchive) {
+    public static void load(FileArchive fileArchive) {
         aStream_183 = new Stream(fileArchive.method571("obj.dat"), 891);
         Stream stream = new Stream(fileArchive.method571("obj.idx"), 891);
         anInt203 = stream.readUnsignedShort();
