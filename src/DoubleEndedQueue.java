@@ -1,7 +1,7 @@
-public final class Class19
+public final class DoubleEndedQueue
 {
 
-    public Class19(int i)
+    public DoubleEndedQueue(int i)
     {
         aBoolean344 = false;
         anInt345 = -77;

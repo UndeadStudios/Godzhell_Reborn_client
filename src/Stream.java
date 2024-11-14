@@ -29,9 +29,9 @@ public final class Stream extends Class30_Sub2 {
     private static final BigInteger RSA_MODULUS = new BigInteger("129054814732918521522820496413796482564146106440479997463524816763080780831995631078504790292317658383472514719172206718041945316394359609923527595131308647792229034016245090408424074669977492602693984712211573066192823392981891207916047022843940335910271752018248983400185186778063159281890985050648461506327");
     private static final BigInteger RSA_EXPONENT = new BigInteger("65537");
     private static final int[] anIntArray1409 = new int[]{0, 1, 3, 7, 15, 31, 63, 127, 255, 511, 1023, 2047, 4095, 8191, 16383, 32767, '\uffff', 131071, 262143, 524287, 1048575, 2097151, 4194303, 8388607, 16777215, 33554431, 67108863, 134217727, 268435455, 536870911, 1073741823, Integer.MAX_VALUE, -1};
-    private static Class19 aClass19_1414 = new Class19(169);
-    private static Class19 aClass19_1415 = new Class19(169);
-    private static Class19 aClass19_1416 = new Class19(169);
+    private static DoubleEndedQueue aDoubleEndedQueue_1414 = new DoubleEndedQueue(169);
+    private static DoubleEndedQueue aDoubleEndedQueue_1415 = new DoubleEndedQueue(169);
+    private static DoubleEndedQueue aDoubleEndedQueue_1416 = new DoubleEndedQueue(169);
     private static char[] aCharArray1417 = new char[]{'\u0041', '\u0042', '\u0043', '\u0044', '\u0045', '\u0046', '\u0047', '\u0048', '\u0049', '\u004a', '\u004b', '\u004c', '\u004d', '\u004e', '\u004f', '\u0050', '\u0051', '\u0052', '\u0053', '\u0054', '\u0055', '\u0056', '\u0057', '\u0058', '\u0059', '\u005a', '\u0061', '\u0062', '\u0063', '\u0064', '\u0065', '\u0066', '\u0067', '\u0068', '\u0069', '\u006a', '\u006b', '\u006c', '\u006d', '\u006e', '\u006f', '\u0070', '\u0071', '\u0072', '\u0073', '\u0074', '\u0075', '\u0076', '\u0077', '\u0078', '\u0079', '\u007a', '\u0030', '\u0031', '\u0032', '\u0033', '\u0034', '\u0035', '\u0036', '\u0037', '\u0038', '\u0039', '\u002b', '\u002f'};
     private static int[] anIntArray1408 = new int[256];
 

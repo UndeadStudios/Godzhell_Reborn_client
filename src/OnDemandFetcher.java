@@ -44,19 +44,19 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
    private int anInt1366;
    private int anInt1367;
    private int anInt1351;
-   private Class19 requested = new Class19(169);
+   private DoubleEndedQueue requested = new DoubleEndedQueue(169);
    private boolean aBoolean1336 = true;
    private CRC32 aCRC32_1338 = new CRC32();
    private byte[] ioBuffer = new byte[500];
    private byte[][] fileStatus = new byte[6][];
-   private Class19 aClass19_1344 = new Class19(169);
-   private Class19 aClass19_1358 = new Class19(169);
+   private DoubleEndedQueue aDoubleEndedQueue_1344 = new DoubleEndedQueue(169);
+   private DoubleEndedQueue aDoubleEndedQueue_1358 = new DoubleEndedQueue(169);
    private byte[] gzipInputBuffer = new byte[9999999];
    private Class2 aClass2_1361;
    private int[][] versions;
    private int[][] anIntArrayArray1365;
-   private Class19 aClass19_1368;
-   private Class19 aClass19_1370;
+   private DoubleEndedQueue aDoubleEndedQueue_1368;
+   private DoubleEndedQueue aDoubleEndedQueue_1370;
 
    private boolean crcMatches(int type, int id, byte[] data) {
       if(data != null && data.length >= 2) {
@@ -107,9 +107,9 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
                         signlink.reporterror("Rej: " + abyte0 + "," + i1);
                         this.current.buffer = null;
                         if(this.current.incomplete) {
-                           Class19 onDemandData1 = this.aClass19_1358;
-                           synchronized(this.aClass19_1358) {
-                              this.aClass19_1358.insertHead(this.current);
+                           DoubleEndedQueue onDemandData1 = this.aDoubleEndedQueue_1358;
+                           synchronized(this.aDoubleEndedQueue_1358) {
+                              this.aDoubleEndedQueue_1358.insertHead(this.current);
                            }
                         } else {
                            this.current.unlink();
@@ -171,9 +171,9 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
                }
 
                if(this.current.incomplete) {
-                  Class19 k11 = this.aClass19_1358;
-                  synchronized(this.aClass19_1358) {
-                     this.aClass19_1358.insertHead(this.current);
+                  DoubleEndedQueue k11 = this.aDoubleEndedQueue_1358;
+                  synchronized(this.aDoubleEndedQueue_1358) {
+                     this.aDoubleEndedQueue_1358.insertHead(this.current);
                   }
                } else {
                   this.current.unlink();
@@ -437,9 +437,9 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          onDemandData_1.dataType = i;
          onDemandData_1.ID = j;
          onDemandData_1.incomplete = true;
-         Class19 var5 = this.aClass19_1370;
-         synchronized(this.aClass19_1370) {
-            this.aClass19_1370.insertHead(onDemandData_1);
+         DoubleEndedQueue var5 = this.aDoubleEndedQueue_1370;
+         synchronized(this.aDoubleEndedQueue_1370) {
+            this.aDoubleEndedQueue_1370.insertHead(onDemandData_1);
          }
 
          this.aClass2_1361.method150(onDemandData_1);
@@ -620,20 +620,20 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          }
 
          var4.incomplete = false;
-         Class19 var5 = this.aClass19_1344;
-         Class19 var6 = this.aClass19_1344;
-         synchronized(this.aClass19_1344) {
-            this.aClass19_1344.insertHead(var4);
+         DoubleEndedQueue var5 = this.aDoubleEndedQueue_1344;
+         DoubleEndedQueue var6 = this.aDoubleEndedQueue_1344;
+         synchronized(this.aDoubleEndedQueue_1344) {
+            this.aDoubleEndedQueue_1344.insertHead(var4);
          }
       }
 
    }
 
    public final OnDemandData method561() {
-      Class19 i = this.aClass19_1358;
+      DoubleEndedQueue i = this.aDoubleEndedQueue_1358;
       OnDemandData onDemandData;
-      synchronized(this.aClass19_1358) {
-         onDemandData = (OnDemandData)this.aClass19_1358.method251();
+      synchronized(this.aDoubleEndedQueue_1358) {
+         onDemandData = (OnDemandData)this.aDoubleEndedQueue_1358.method251();
       }
 
       if(onDemandData == null) {
@@ -757,7 +757,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
 
          while(this.anInt1366 < 10) {
             try {
-               onDemandData_1 = (OnDemandData)this.aClass19_1368.method251();
+               onDemandData_1 = (OnDemandData)this.aDoubleEndedQueue_1368.method251();
                if(onDemandData_1 == null) {
                   break;
                }
@@ -786,18 +786,18 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
          }
       }
 
-      Class19 var5 = this.aClass19_1344;
-      synchronized(this.aClass19_1344) {
-         this.aClass19_1344.method256();
+      DoubleEndedQueue var5 = this.aDoubleEndedQueue_1344;
+      synchronized(this.aDoubleEndedQueue_1344) {
+         this.aDoubleEndedQueue_1344.method256();
       }
    }
 
    private final void method567(boolean flag) {
       if(flag) {
-         Class19 abyte0 = this.aClass19_1370;
+         DoubleEndedQueue abyte0 = this.aDoubleEndedQueue_1370;
          OnDemandData onDemandData;
-         synchronized(this.aClass19_1370) {
-            onDemandData = (OnDemandData)this.aClass19_1370.method251();
+         synchronized(this.aDoubleEndedQueue_1370) {
+            onDemandData = (OnDemandData)this.aDoubleEndedQueue_1370.method251();
          }
 
          while(onDemandData != null) {
@@ -807,19 +807,19 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
                abyte01 = this.aClient1343.aClass14Array970[onDemandData.dataType + 1].method233(onDemandData.ID);
             }
 
-            Class19 var4 = this.aClass19_1370;
-            synchronized(this.aClass19_1370) {
+            DoubleEndedQueue var4 = this.aDoubleEndedQueue_1370;
+            synchronized(this.aDoubleEndedQueue_1370) {
                if(abyte01 == null) {
-                  this.aClass19_1368.insertHead(onDemandData);
+                  this.aDoubleEndedQueue_1368.insertHead(onDemandData);
                } else {
                   onDemandData.buffer = abyte01;
-                  Class19 var5 = this.aClass19_1358;
-                  synchronized(this.aClass19_1358) {
-                     this.aClass19_1358.insertHead(onDemandData);
+                  DoubleEndedQueue var5 = this.aDoubleEndedQueue_1358;
+                  synchronized(this.aDoubleEndedQueue_1358) {
+                     this.aDoubleEndedQueue_1358.insertHead(onDemandData);
                   }
                }
 
-               onDemandData = (OnDemandData)this.aClass19_1370.method251();
+               onDemandData = (OnDemandData)this.aDoubleEndedQueue_1370.method251();
             }
          }
 
@@ -834,10 +834,10 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
       }
 
       while(this.anInt1366 == 0 && this.anInt1367 < 10 && this.anInt1332 != 0) {
-         Class19 j = this.aClass19_1344;
+         DoubleEndedQueue j = this.aDoubleEndedQueue_1344;
          OnDemandData var10;
-         synchronized(this.aClass19_1344) {
-            var10 = (OnDemandData)this.aClass19_1344.method251();
+         synchronized(this.aDoubleEndedQueue_1344) {
+            var10 = (OnDemandData)this.aDoubleEndedQueue_1344.method251();
          }
 
          while(var10 != null) {
@@ -857,9 +857,9 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
                }
             }
 
-            j = this.aClass19_1344;
-            synchronized(this.aClass19_1344) {
-               var10 = (OnDemandData)this.aClass19_1344.method251();
+            j = this.aDoubleEndedQueue_1344;
+            synchronized(this.aDoubleEndedQueue_1344) {
+               var10 = (OnDemandData)this.aDoubleEndedQueue_1344.method251();
             }
          }
 
@@ -907,7 +907,7 @@ public class OnDemandFetcher extends OnDemandFetcherParent implements Runnable {
       this.aClass2_1361 = new Class2(anInt1345);
       this.versions = new int[6][];
       this.anIntArrayArray1365 = new int[6][];
-      this.aClass19_1368 = new Class19(169);
-      this.aClass19_1370 = new Class19(169);
+      this.aDoubleEndedQueue_1368 = new DoubleEndedQueue(169);
+      this.aDoubleEndedQueue_1370 = new DoubleEndedQueue(169);
    }
 }

@@ -1,8 +1,8 @@
 
-public final class Class28
+public final class InteractiveObject
 {
 
-    public Class28()
+    public InteractiveObject()
     {
     }
 

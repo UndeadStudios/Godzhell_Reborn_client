@@ -104,7 +104,7 @@ public class client extends Applet_Sub1 {
     private static int anInt1097;
     private static int anInt1051;
     private int anInt1071;
-    private Class19[][][] aClass19ArrayArrayArray827;
+    private DoubleEndedQueue[][][] aDoubleEndedQueueArrayArrayArray827;
     private int anInt886;
     private int anInt1066;
     private int anInt1067;
@@ -323,9 +323,9 @@ public class client extends Applet_Sub1 {
     int[] anIntArray840;
     private Npc[] npcs;
     int[] npcIndices;
-    private Class19 aClass19_1179;
-    private Class19 aClass19_1013;
-    private Class19 aClass19_1056;
+    private DoubleEndedQueue aDoubleEndedQueue_1179;
+    private DoubleEndedQueue aDoubleEndedQueue_1013;
+    private DoubleEndedQueue aDoubleEndedQueue_1056;
     private int[] menuActionCmd2;
     private int[] menuActionCmd3;
     private int[] menuActionID;
@@ -2352,8 +2352,8 @@ public class client extends Applet_Sub1 {
         int var17;
         try {
             this.anInt985 = -1;
-            this.aClass19_1056.method256();
-            this.aClass19_1013.method256();
+            this.aDoubleEndedQueue_1056.method256();
+            this.aDoubleEndedQueue_1013.method256();
             this.loadNewObjects();
             Rasterizer.method366();
             this.method23(false);
@@ -2684,8 +2684,8 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method25(int i, int j) {
-        Class19 class19 = this.aClass19ArrayArrayArray827[this.anInt918][i][j];
-        if(class19 == null) {
+        DoubleEndedQueue doubleEndedQueue = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][i][j];
+        if(doubleEndedQueue == null) {
             this.aClass25_946.method295(this.anInt918, i, j);
         } else {
             int k = -99999999;
@@ -2693,7 +2693,7 @@ public class client extends Applet_Sub1 {
 
             Class30_Sub2_Sub4_Sub2 obj1;
             int i1;
-            for(obj1 = (Class30_Sub2_Sub4_Sub2)class19.reverseGetFirst(); obj1 != null; obj1 = (Class30_Sub2_Sub4_Sub2)class19.reverseGetNext(false)) {
+            for(obj1 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetFirst(); obj1 != null; obj1 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetNext(false)) {
                 ItemDefinition obj2 = ItemDefinition.method198(obj1.anInt1558);
                 i1 = obj2.value;
                 if(obj2.stackable) {
@@ -2706,11 +2706,11 @@ public class client extends Applet_Sub1 {
                 }
             }
 
-            class19.method250(-493, (Class30)((Class30)obj));
+            doubleEndedQueue.method250(-493, (Class30)((Class30)obj));
             obj1 = null;
             Class30_Sub2_Sub4_Sub2 obj21 = null;
 
-            for(Class30_Sub2_Sub4_Sub2 i11 = (Class30_Sub2_Sub4_Sub2)class19.reverseGetFirst(); i11 != null; i11 = (Class30_Sub2_Sub4_Sub2)class19.reverseGetNext(false)) {
+            for(Class30_Sub2_Sub4_Sub2 i11 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetFirst(); i11 != null; i11 = (Class30_Sub2_Sub4_Sub2) doubleEndedQueue.reverseGetNext(false)) {
                 if(i11.anInt1558 != ((Class30_Sub2_Sub4_Sub2)((Class30_Sub2_Sub4_Sub2)obj)).anInt1558 && obj1 == null) {
                     obj1 = i11;
                 }
@@ -2789,7 +2789,7 @@ public class client extends Applet_Sub1 {
             if(k >= i && i1 >= l && k <= i + class9.width && i1 <= l + class9.height) {
                 int k1 = class9.children.length;
                 if(j != 13037) {
-                    this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+                    this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
                 }
 
                 for(int l1 = 0; l1 < k1; ++l1) {
@@ -5471,7 +5471,7 @@ public class client extends Applet_Sub1 {
             this.method6();
         }
 
-        for(Class30_Sub2_Sub4_Sub4 class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)this.aClass19_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)this.aClass19_1013.reverseGetNext(false)) {
+        for(Class30_Sub2_Sub4_Sub4 class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)this.aDoubleEndedQueue_1013.reverseGetFirst(); class30_sub2_sub4_sub4 != null; class30_sub2_sub4_sub4 = (Class30_Sub2_Sub4_Sub4)this.aDoubleEndedQueue_1013.reverseGetNext(false)) {
             if(class30_sub2_sub4_sub4.anInt1597 == this.anInt918 && loopCycle <= class30_sub2_sub4_sub4.anInt1572) {
                 if(loopCycle >= class30_sub2_sub4_sub4.anInt1571) {
                     if(class30_sub2_sub4_sub4.anInt1590 > 0) {
@@ -5800,9 +5800,9 @@ public class client extends Applet_Sub1 {
             }
 
             int var9;
-            if(Class25.anInt470 != -1) {
-                var9 = Class25.anInt470;
-                int var10 = Class25.anInt471;
+            if(Class25.clickedTileX != -1) {
+                var9 = Class25.clickedTileX;
+                int var10 = Class25.clickedTileY;
                 boolean var11 = false;
                 if(this.myPrivilege >= 2 && controlIsDown) {
                     this.teleport(this.baseX + var9, this.baseY + var10);
@@ -5810,7 +5810,7 @@ public class client extends Applet_Sub1 {
                     var11 = this.doWalkTo(0, 0, 0, -11308, 0, localPlayer.anIntArray1501[0], 0, 0, var10, localPlayer.anIntArray1500[0], true, var9);
                 }
 
-                Class25.anInt470 = -1;
+                Class25.clickedTileX = -1;
                 if(var11) {
                     this.anInt914 = super.saveClickX;
                     this.anInt915 = super.saveClickY;
@@ -5855,7 +5855,7 @@ public class client extends Applet_Sub1 {
 
             ++this.anInt988;
             if(i >= 0) {
-                this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+                this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
             }
 
             if(this.anInt988 > 500) {
@@ -6095,7 +6095,7 @@ public class client extends Applet_Sub1 {
     }
 
     private final void method63(int i) {
-        Class30_Sub1 class30_sub1 = (Class30_Sub1)this.aClass19_1179.reverseGetFirst();
+        Class30_Sub1 class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst();
 
         while(i >= 0) {
             for(int j = 1; j > 0; ++j) {
@@ -6103,7 +6103,7 @@ public class client extends Applet_Sub1 {
             }
         }
 
-        for(; class30_sub1 != null; class30_sub1 = (Class30_Sub1)this.aClass19_1179.reverseGetNext(false)) {
+        for(; class30_sub1 != null; class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
             if(class30_sub1.anInt1294 == -1) {
                 class30_sub1.anInt1302 = 0;
                 this.method89(false, class30_sub1);
@@ -6134,7 +6134,7 @@ public class client extends Applet_Sub1 {
             DrawingArea.setAllPixelsToZero();
             this.aRSImageProducer_1112 = new RSImageProducer(202, 238);
             if(i < 0 || i > 0) {
-                this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+                this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
             }
 
             DrawingArea.setAllPixelsToZero();
@@ -8061,7 +8061,7 @@ public class client extends Applet_Sub1 {
                 }
 
                 if(k1 == 3) {
-                    Class19 var16 = this.aClass19ArrayArrayArray827[this.anInt918][i1][j1];
+                    DoubleEndedQueue var16 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][i1][j1];
                     if(var16 != null) {
                         for(Class30_Sub2_Sub4_Sub2 var19 = (Class30_Sub2_Sub4_Sub2)var16.method253(5); var19 != null; var19 = (Class30_Sub2_Sub4_Sub2)var16.method255(8)) {
                             ItemDefinition var18 = ItemDefinition.method198(var19.anInt1558);
@@ -8199,11 +8199,11 @@ public class client extends Applet_Sub1 {
         this.anIntArray840 = null;
         this.npcs = null;
         this.npcIndices = null;
-        this.aClass19ArrayArrayArray827 = (Class19[][][])null;
-        this.aClass19_1179 = null;
+        this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
+        this.aDoubleEndedQueue_1179 = null;
         i = 55 / i;
-        this.aClass19_1013 = null;
-        this.aClass19_1056 = null;
+        this.aDoubleEndedQueue_1013 = null;
+        this.aDoubleEndedQueue_1056 = null;
         this.menuActionCmd2 = null;
         this.menuActionCmd3 = null;
         this.menuActionID = null;
@@ -10370,7 +10370,7 @@ public class client extends Applet_Sub1 {
     }
     public final int method83(boolean flag, int i, int j, int k) {
         if(!flag) {
-            this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+            this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
         }
 
         int l = 256 - k;
@@ -10519,18 +10519,18 @@ public class client extends Applet_Sub1 {
                 }
 
                 localPlayer = this.players[this.maxPlayerCount] = new Player();
-                this.aClass19_1013.method256();
-                this.aClass19_1056.method256();
+                this.aDoubleEndedQueue_1013.method256();
+                this.aDoubleEndedQueue_1056.method256();
 
                 for(var17 = 0; var17 < 4; ++var17) {
                     for(i3 = 0; i3 < 104; ++i3) {
                         for(int k3 = 0; k3 < 104; ++k3) {
-                            this.aClass19ArrayArrayArray827[var17][i3][k3] = null;
+                            this.aDoubleEndedQueueArrayArrayArray827[var17][i3][k3] = null;
                         }
                     }
                 }
 
-                this.aClass19_1179 = new Class19(169);
+                this.aDoubleEndedQueue_1179 = new DoubleEndedQueue(169);
                 this.anInt900 = 0;
                 this.friendsCount = 0;
                 this.dialogID = -1;
@@ -11439,7 +11439,7 @@ public class client extends Applet_Sub1 {
                 FileArchive fileArchive_5 = this.method67(8, "sound effects", "sounds", this.anIntArray1090[8], (byte)-41, 55);
                 this.aByteArrayArrayArray1258 = new byte[4][104][104];
                 this.anIntArrayArrayArray1214 = new int[4][105][105];
-                this.aClass25_946 = new Class25(104, (byte)43, 104, this.anIntArrayArrayArray1214, 4);
+                this.aClass25_946 = new Class25(104, 104, this.anIntArrayArrayArray1214, 4);
 
                 for(int fileArchive_6 = 0; fileArchive_6 < 4; ++fileArchive_6) {
                     this.collisionMaps[fileArchive_6] = new Class11(104, 104, true);
@@ -12646,9 +12646,9 @@ public class client extends Applet_Sub1 {
     }
 
     public final void method104(boolean flag) {
-        Class30_Sub2_Sub4_Sub3 class30_sub2_sub4_sub3 = (Class30_Sub2_Sub4_Sub3)this.aClass19_1056.reverseGetFirst();
+        Class30_Sub2_Sub4_Sub3 class30_sub2_sub4_sub3 = (Class30_Sub2_Sub4_Sub3)this.aDoubleEndedQueue_1056.reverseGetFirst();
 
-        for(loggedIn &= flag; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Class30_Sub2_Sub4_Sub3)this.aClass19_1056.reverseGetNext(false)) {
+        for(loggedIn &= flag; class30_sub2_sub4_sub3 != null; class30_sub2_sub4_sub3 = (Class30_Sub2_Sub4_Sub3)this.aDoubleEndedQueue_1056.reverseGetNext(false)) {
             if(class30_sub2_sub4_sub3.anInt1560 == this.anInt918 && !class30_sub2_sub4_sub3.aBoolean1567) {
                 if(loopCycle >= class30_sub2_sub4_sub3.anInt1564) {
                     class30_sub2_sub4_sub3.method454(this.anInt945, true);
@@ -13092,7 +13092,7 @@ public class client extends Applet_Sub1 {
 
     private final void method107(int i, int j, Stream stream, byte byte0, Player player) {
         if(byte0 != 25) {
-            this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+            this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
         }
 
         if((i & 1024) != 0) {
@@ -13732,7 +13732,7 @@ public class client extends Applet_Sub1 {
         }
 
         if(this.anInt1023 == 2) {
-            for(Class30_Sub1 class30_sub1 = (Class30_Sub1)this.aClass19_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1)this.aClass19_1179.reverseGetNext(false)) {
+            for(Class30_Sub1 class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); class30_sub1 != null; class30_sub1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
                 if(class30_sub1.anInt1294 > 0) {
                     --class30_sub1.anInt1294;
                 }
@@ -14078,7 +14078,7 @@ public class client extends Applet_Sub1 {
         if(byte0 == 0) {
             boolean byte01 = false;
         } else {
-            this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+            this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
         }
 
         signlink.setVolume(i);
@@ -14406,7 +14406,7 @@ public class client extends Applet_Sub1 {
             int flag1;
             for(j2 = 0; j2 < 104; ++j2) {
                 for(l4 = 0; l4 < 104; ++l4) {
-                    Class19 var16 = this.aClass19ArrayArrayArray827[this.anInt918][j2][l4];
+                    DoubleEndedQueue var16 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][j2][l4];
                     if(var16 != null) {
                         l3 = j2 * 4 + 2 - localPlayer.anInt1550 / 32;
                         flag1 = l4 * 4 + 2 - localPlayer.anInt1551 / 32;
@@ -14735,7 +14735,7 @@ public class client extends Applet_Sub1 {
     private final void method130(int i, int j, int k, int l, int i1, int j1, int k1, int l1, int i2, int j2) {
         Class30_Sub1 class30_sub1 = null;
 
-        for(Class30_Sub1 class30_sub1_1 = (Class30_Sub1)this.aClass19_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1)this.aClass19_1179.reverseGetNext(false)) {
+        for(Class30_Sub1 class30_sub1_1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); class30_sub1_1 != null; class30_sub1_1 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
             if(class30_sub1_1.anInt1295 == l1 && class30_sub1_1.anInt1297 == i2 && class30_sub1_1.anInt1298 == j1 && class30_sub1_1.anInt1296 == i1) {
                 class30_sub1 = class30_sub1_1;
                 break;
@@ -14749,7 +14749,7 @@ public class client extends Applet_Sub1 {
             class30_sub1.anInt1297 = i2;
             class30_sub1.anInt1298 = j1;
             this.method89(false, class30_sub1);
-            this.aClass19_1179.insertHead(class30_sub1);
+            this.aDoubleEndedQueue_1179.insertHead(class30_sub1);
         }
 
         class30_sub1.anInt1291 = k;
@@ -15143,7 +15143,7 @@ public class client extends Applet_Sub1 {
             k13 = stream.readUnsignedShort();
             l15 = stream.readUnsignedShort();
             if(l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104) {
-                Class19 var35 = this.aClass19ArrayArrayArray827[this.anInt918][l5][k8];
+                DoubleEndedQueue var35 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][l5][k8];
                 if(var35 != null) {
                     for(Class30_Sub2_Sub4_Sub2 var32 = (Class30_Sub2_Sub4_Sub2)var35.reverseGetFirst(); var32 != null; var32 = (Class30_Sub2_Sub4_Sub2)var35.reverseGetNext(false)) {
                         if(var32.anInt1558 == (j11 & 32767) && var32.anInt1559 == k13) {
@@ -15185,11 +15185,11 @@ public class client extends Applet_Sub1 {
                     Class30_Sub2_Sub4_Sub2 var34 = new Class30_Sub2_Sub4_Sub2();
                     var34.anInt1558 = i3;
                     var34.anInt1559 = l15;
-                    if(this.aClass19ArrayArrayArray827[this.anInt918][k8][j11] == null) {
-                        this.aClass19ArrayArrayArray827[this.anInt918][k8][j11] = new Class19(169);
+                    if(this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][k8][j11] == null) {
+                        this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][k8][j11] = new DoubleEndedQueue(169);
                     }
 
-                    this.aClass19ArrayArrayArray827[this.anInt918][k8][j11].insertHead(var34);
+                    this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][k8][j11].insertHead(var34);
                     this.method25(k8, j11);
                 }
 
@@ -15201,7 +15201,7 @@ public class client extends Applet_Sub1 {
                     k8 = this.anInt1269 + (i3 & 7);
                     j11 = stream.readUnsignedShort();
                     if(l5 >= 0 && k8 >= 0 && l5 < 104 && k8 < 104) {
-                        Class19 var33 = this.aClass19ArrayArrayArray827[this.anInt918][l5][k8];
+                        DoubleEndedQueue var33 = this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][l5][k8];
                         if(var33 != null) {
                             for(var30 = (Class30_Sub2_Sub4_Sub2)var33.reverseGetFirst(); var30 != null; var30 = (Class30_Sub2_Sub4_Sub2)var33.reverseGetNext(false)) {
                                 if(var30.anInt1558 == (j11 & 32767)) {
@@ -15211,7 +15211,7 @@ public class client extends Applet_Sub1 {
                             }
 
                             if(var33.reverseGetFirst() == null) {
-                                this.aClass19ArrayArrayArray827[this.anInt918][l5][k8] = null;
+                                this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][l5][k8] = null;
                             }
 
                             this.method25(l5, k8);
@@ -15260,7 +15260,7 @@ public class client extends Applet_Sub1 {
                             }
 
                             if(i17 == 2) {
-                                Class28 var40 = this.aClass25_946.method298(l5, k8, (byte)4, this.anInt918);
+                                InteractiveObject var40 = this.aClass25_946.method298(l5, k8, (byte)4, this.anInt918);
                                 if(k13 == 11) {
                                     k13 = 10;
                                 }
@@ -15273,7 +15273,7 @@ public class client extends Applet_Sub1 {
                             if(i17 == 3) {
                                 Class49 var41 = this.aClass25_946.method299(k8, l5, this.anInt918, 0);
                                 if(var41 != null) {
-                                    var41.aAnimable_814 = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var41.anInt815), l15, 22, k19, (byte)7, j20, l18, i21, i18, false);
+                                    var41.renderable = new Class30_Sub2_Sub4_Sub5(ObjectKey.getObjectId(var41.anInt815), l15, 22, k19, (byte)7, j20, l18, i21, i18, false);
                                 }
                             }
                         }
@@ -15369,7 +15369,7 @@ public class client extends Applet_Sub1 {
                                 l5 = l5 * 128 + 64;
                                 k8 = k8 * 128 + 64;
                                 Class30_Sub2_Sub4_Sub3 var31 = new Class30_Sub2_Sub4_Sub3(this.anInt918, loopCycle, 6, l15, j11, this.method42(this.anInt918, k8, true, l5) - k13, k8, l5);
-                                this.aClass19_1056.insertHead(var31);
+                                this.aDoubleEndedQueue_1056.insertHead(var31);
                             }
 
                         } else if(j == 44) {
@@ -15382,11 +15382,11 @@ public class client extends Applet_Sub1 {
                                 var30 = new Class30_Sub2_Sub4_Sub2();
                                 var30.anInt1558 = i3;
                                 var30.anInt1559 = l5;
-                                if(this.aClass19ArrayArrayArray827[this.anInt918][j11][k13] == null) {
-                                    this.aClass19ArrayArrayArray827[this.anInt918][j11][k13] = new Class19(169);
+                                if(this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][j11][k13] == null) {
+                                    this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][j11][k13] = new DoubleEndedQueue(169);
                                 }
 
-                                this.aClass19ArrayArrayArray827[this.anInt918][j11][k13].insertHead(var30);
+                                this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][j11][k13].insertHead(var30);
                                 this.method25(j11, k13);
                             }
 
@@ -15424,7 +15424,7 @@ public class client extends Applet_Sub1 {
                                     k13 = k13 * 128 + 64;
                                     Class30_Sub2_Sub4_Sub4 var38 = new Class30_Sub2_Sub4_Sub4(i21, l18, '\ub723', k19 + loopCycle, j20 + loopCycle, var36, this.anInt918, this.method42(this.anInt918, k8, true, l5) - i18, k8, l5, l15, i17);
                                     var38.method455(k19 + loopCycle, k13, this.method42(this.anInt918, k13, true, j11) - l18, j11, (byte)-83);
-                                    this.aClass19_1013.insertHead(var38);
+                                    this.aDoubleEndedQueue_1013.insertHead(var38);
                                 }
                             }
 
@@ -15518,7 +15518,7 @@ public class client extends Applet_Sub1 {
 
     public final void method140(boolean flag) {
         if(!flag) {
-            this.aClass19ArrayArrayArray827 = (Class19[][][])null;
+            this.aDoubleEndedQueueArrayArrayArray827 = (DoubleEndedQueue[][][])null;
         }
 
         int k;
@@ -16053,14 +16053,14 @@ public class client extends Applet_Sub1 {
 
                     for(var23 = this.anInt1268; var23 < this.anInt1268 + 8; ++var23) {
                         for(j15 = this.anInt1269; j15 < this.anInt1269 + 8; ++j15) {
-                            if(this.aClass19ArrayArrayArray827[this.anInt918][var23][j15] != null) {
-                                this.aClass19ArrayArrayArray827[this.anInt918][var23][j15] = null;
+                            if(this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][var23][j15] != null) {
+                                this.aDoubleEndedQueueArrayArrayArray827[this.anInt918][var23][j15] = null;
                                 this.method25(var23, j15);
                             }
                         }
                     }
 
-                    for(Class30_Sub1 var48 = (Class30_Sub1)this.aClass19_1179.reverseGetFirst(); var48 != null; var48 = (Class30_Sub1)this.aClass19_1179.reverseGetNext(false)) {
+                    for(Class30_Sub1 var48 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); var48 != null; var48 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
                         if(var48.anInt1297 >= this.anInt1268 && var48.anInt1297 < this.anInt1268 + 8 && var48.anInt1298 >= this.anInt1269 && var48.anInt1298 < this.anInt1269 + 8 && var48.anInt1295 == this.anInt918) {
                             var48.anInt1294 = 0;
                         }
@@ -16485,15 +16485,15 @@ public class client extends Applet_Sub1 {
 
                             for(int k34 = 0; k34 < 4; ++k34) {
                                 if(i34 >= 0 && j34 >= 0 && i34 < 104 && j34 < 104) {
-                                    this.aClass19ArrayArrayArray827[k34][class30_sub1_1][l33] = this.aClass19ArrayArrayArray827[k34][i34][j34];
+                                    this.aDoubleEndedQueueArrayArrayArray827[k34][class30_sub1_1][l33] = this.aDoubleEndedQueueArrayArrayArray827[k34][i34][j34];
                                 } else {
-                                    this.aClass19ArrayArrayArray827[k34][class30_sub1_1][l33] = null;
+                                    this.aDoubleEndedQueueArrayArrayArray827[k34][class30_sub1_1][l33] = null;
                                 }
                             }
                         }
                     }
 
-                    for(Class30_Sub1 var46 = (Class30_Sub1)this.aClass19_1179.reverseGetFirst(); var46 != null; var46 = (Class30_Sub1)this.aClass19_1179.reverseGetNext(false)) {
+                    for(Class30_Sub1 var46 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetFirst(); var46 != null; var46 = (Class30_Sub1)this.aDoubleEndedQueue_1179.reverseGetNext(false)) {
                         var46.anInt1297 -= j20;
                         var46.anInt1298 -= i23;
                         if(var46.anInt1297 < 0 || var46.anInt1298 < 0 || var46.anInt1297 >= 104 || var46.anInt1298 >= 104) {
@@ -17619,7 +17619,7 @@ public class client extends Applet_Sub1 {
         instance = this;
         this.anIntArrayArray825 = new int[104][104];
         this.friendsNodeIDs = new int[200];
-        this.aClass19ArrayArrayArray827 = new Class19[4][104][104];
+        this.aDoubleEndedQueueArrayArrayArray827 = new DoubleEndedQueue[4][104][104];
         this.aBoolean830 = true;
         this.aBoolean831 = false;
         this.aStream_834 = new Stream(new byte[5000], 891);
@@ -17700,7 +17700,7 @@ public class client extends Applet_Sub1 {
         this.anInt1002 = 12233612;
         this.amountOrNameInput = "";
         this.aByte1012 = 24;
-        this.aClass19_1013 = new Class19(169);
+        this.aDoubleEndedQueue_1013 = new DoubleEndedQueue(169);
         this.aBoolean1017 = false;
         this.openWalkableInterface = -1;
         this.anIntArray1030 = new int[5];
@@ -17714,7 +17714,7 @@ public class client extends Applet_Sub1 {
         this.anInt1050 = 111;
         this.anIntArray1052 = new int[151];
         this.anInt1054 = -1;
-        this.aClass19_1056 = new Class19(169);
+        this.aDoubleEndedQueue_1056 = new DoubleEndedQueue(169);
         this.anIntArray1057 = new int[33];
         this.anInt1058 = 24869;
         this.aClass9_1059 = new Widget();
@@ -17766,7 +17766,7 @@ public class client extends Applet_Sub1 {
         port = 29432;
         this.aBoolean1176 = false;
         this.reportAbuseInterfaceID = -1;
-        this.aClass19_1179 = new Class19(169);
+        this.aDoubleEndedQueue_1179 = new DoubleEndedQueue(169);
         this.anInt1184 = 128;
         this.invOverlayInterfaceID = -1;
         this.stream = Stream.method396(1, 9);

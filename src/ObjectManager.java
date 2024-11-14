@@ -395,7 +395,7 @@ final class ObjectManager {
 										char c1 = '\360';
 										int k14 = anIntArrayArrayArray129[k8][i4][k4] - c1;
 										int l15 = anIntArrayArrayArray129[i7][i4][k4];
-										Class25.method277(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, anInt150, k4 * 128, 1);
+										Class25.createCullingCluster(l2, i4 * 128, l15, i4 * 128, l5 * 128 + 128, k14, anInt150, k4 * 128, 1);
 										for(int l16 = i7; l16 <= k8; l16++) {
 											for(int l17 = k4; l17 <= l5; l17++) {
 												anIntArrayArrayArray135[l16][i4][l17] &= ~i2;
@@ -437,7 +437,7 @@ final class ObjectManager {
 										char c2 = '\360';
 										int l14 = anIntArrayArrayArray129[l8][l4][k3] - c2;
 										int i16 = anIntArrayArrayArray129[j7][l4][k3];
-										Class25.method277(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, anInt150, k3 * 128, 2);
+										Class25.createCullingCluster(l2, l4 * 128, i16, i6 * 128 + 128, k3 * 128, l14, anInt150, k3 * 128, 2);
 										for(int i17 = j7; i17 <= l8; i17++) {
 											for(int i18 = l4; i18 <= i6; i18++) {
 												anIntArrayArrayArray135[i17][i18][k3] &= ~j2;
@@ -476,7 +476,7 @@ final class ObjectManager {
 
 									if(((j6 - i5) + 1) * ((i9 - k7) + 1) >= 4) {
 										int j12 = anIntArrayArrayArray129[i3][i5][k7];
-										Class25.method277(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, anInt150, k7 * 128, 4);
+										Class25.createCullingCluster(l2, i5 * 128, j12, j6 * 128 + 128, i9 * 128 + 128, j12, anInt150, k7 * 128, 4);
 										for(int k13 = i5; k13 <= j6; k13++) {
 											for(int i15 = k7; i15 <= i9; i15++) {
 												anIntArrayArrayArray135[i3][k13][i15] &= ~k2;
