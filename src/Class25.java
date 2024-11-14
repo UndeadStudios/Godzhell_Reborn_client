@@ -800,44 +800,44 @@ public class Class25
 
     }
 
-    private void mergeNormals(Model model, Model model_1, int i, int j, int k, boolean flag)
+    private void mergeNormals(Model model, Model model_1, int posX, int posY, int posZ, boolean flag)
     {
         anInt488++;
-        int l = 0;
-        int ai[] = model_1.anIntArray1627;
-        int i1 = model_1.anInt1626;
-        for(int j1 = 0; j1 < model.anInt1626; j1++)
+        int count = 0;
+        int[] vertices = model_1.verticesX;
+        int vertexCount = model_1.vertexCount;
+        for(int vertex = 0; vertex < model.vertexCount; vertex++)
         {
-            Class33 class33 = ((Animable) (model)).vertexNormals[j1];
-            Class33 class33_1 = model.aClass33Array1660[j1];
-            if(class33_1.anInt605 != 0)
+            VertexNormal vertexNormal = model.vertexNormals[vertex];
+            VertexNormal offsetVertexNormal  = model.vertexNormalOffset[vertex];
+            if(offsetVertexNormal .magnitude != 0)
             {
-                int i2 = model.anIntArray1628[j1] - j;
-                if(i2 <= model_1.anInt1651)
+                int y = model.verticesY[vertex] - posY;
+                if(y <= model_1.maxY)
                 {
-                    int j2 = model.anIntArray1627[j1] - i;
-                    if(j2 >= model_1.anInt1646 && j2 <= model_1.anInt1647)
+                    int x = model.verticesX[vertex] - posX;
+                    if(x >= model_1.minX && x <= model_1.maxX)
                     {
-                        int k2 = model.anIntArray1629[j1] - k;
-                        if(k2 >= model_1.anInt1649 && k2 <= model_1.anInt1648)
+                        int z = model.verticesZ[vertex] - posZ;
+                        if(z >= model_1.minZ && z <= model_1.maxZ)
                         {
-                            for(int l2 = 0; l2 < i1; l2++)
+                            for(int v = 0; v < vertexCount; v++)
                             {
-                                Class33 class33_2 = ((Animable) (model_1)).vertexNormals[l2];
-                                Class33 class33_3 = model_1.aClass33Array1660[l2];
-                                if(j2 == ai[l2] && k2 == model_1.anIntArray1629[l2] && i2 == model_1.anIntArray1628[l2] && class33_3.anInt605 != 0)
+                                VertexNormal vertexNormal2 = model_1.vertexNormals[v];
+                                VertexNormal offsetVertexNormal2 = model_1.vertexNormalOffset[v];
+                                if(x == vertices[v] && z == model_1.verticesZ[v] && y == model_1.verticesY[v] && offsetVertexNormal2.magnitude != 0)
                                 {
-                                    class33.anInt602 += class33_3.anInt602;
-                                    class33.anInt603 += class33_3.anInt603;
-                                    class33.anInt604 += class33_3.anInt604;
-                                    class33.anInt605 += class33_3.anInt605;
-                                    class33_2.anInt602 += class33_1.anInt602;
-                                    class33_2.anInt603 += class33_1.anInt603;
-                                    class33_2.anInt604 += class33_1.anInt604;
-                                    class33_2.anInt605 += class33_1.anInt605;
-                                    l++;
-                                    anIntArray486[j1] = anInt488;
-                                    anIntArray487[l2] = anInt488;
+                                    vertexNormal.x += offsetVertexNormal2.x;
+                                    vertexNormal.y += offsetVertexNormal2.y;
+                                    vertexNormal.z += offsetVertexNormal2.z;
+                                    vertexNormal.magnitude += offsetVertexNormal2.magnitude;
+                                    vertexNormal2.x += offsetVertexNormal .x;
+                                    vertexNormal2.y += offsetVertexNormal .y;
+                                    vertexNormal2.z += offsetVertexNormal .z;
+                                    vertexNormal2.magnitude += offsetVertexNormal .magnitude;
+                                    count++;
+                                    anIntArray486[vertex] = anInt488;
+                                    anIntArray487[v] = anInt488;
                                 }
                             }
 
@@ -847,8 +847,9 @@ public class Class25
             }
         }
 
-        if(l < 3 || !flag)
+        if(count < 3 || !flag) {
             return;
+        }
         for(int k1 = 0; k1 < model.anInt1630; k1++)
             if(anIntArray486[model.anIntArray1631[k1]] == anInt488 && anIntArray486[model.anIntArray1632[k1]] == anInt488 && anIntArray486[model.anIntArray1633[k1]] == anInt488)
                 model.anIntArray1637[k1] = -1;
@@ -1977,18 +1978,18 @@ label0:
                 int j3 = cameraPosX - cullingCluster.worldStartX;
                 if(j3 > 32)
                 {
-                    cullingCluster.anInt798 = 1;
+                    cullingCluster.tileDistanceEnum = 1;
                 } else
                 {
                     if(j3 >= -32)
                         continue;
-                    cullingCluster.anInt798 = 2;
+                    cullingCluster.tileDistanceEnum = 2;
                     j3 = -j3;
                 }
-                cullingCluster.anInt801 = (cullingCluster.worldStartY - cameraPosY << 8) / j3;
-                cullingCluster.anInt802 = (cullingCluster.worldEndY - cameraPosY << 8) / j3;
-                cullingCluster.anInt803 = (cullingCluster.worldEndZ - cameraPosZ << 8) / j3;
-                cullingCluster.anInt804 = (cullingCluster.worldStartZ - cameraPosZ << 8) / j3;
+                cullingCluster.worldDistanceFromCameraStartY = (cullingCluster.worldStartY - cameraPosY << 8) / j3;
+                cullingCluster.worldDistanceFromCameraEndY = (cullingCluster.worldEndY - cameraPosY << 8) / j3;
+                cullingCluster.worldDistanceFromCameraStartZ = (cullingCluster.worldEndZ - cameraPosZ << 8) / j3;
+                cullingCluster.worldDistanceFromCameraEndZ = (cullingCluster.worldStartZ - cameraPosZ << 8) / j3;
                 processedCullingClusters[processedCullingClustersPointer++] = cullingCluster;
                 continue;
             }
@@ -2015,18 +2016,18 @@ label0:
                 int k3 = cameraPosY - cullingCluster.worldStartY;
                 if(k3 > 32)
                 {
-                    cullingCluster.anInt798 = 3;
+                    cullingCluster.tileDistanceEnum = 3;
                 } else
                 {
                     if(k3 >= -32)
                         continue;
-                    cullingCluster.anInt798 = 4;
+                    cullingCluster.tileDistanceEnum = 4;
                     k3 = -k3;
                 }
-                cullingCluster.anInt799 = (cullingCluster.worldStartX - cameraPosX << 8) / k3;
-                cullingCluster.anInt800 = (cullingCluster.worldEndX - cameraPosX << 8) / k3;
-                cullingCluster.anInt803 = (cullingCluster.worldEndZ - cameraPosZ << 8) / k3;
-                cullingCluster.anInt804 = (cullingCluster.worldStartZ - cameraPosZ << 8) / k3;
+                cullingCluster.worldDistanceFromCameraStartX = (cullingCluster.worldStartX - cameraPosX << 8) / k3;
+                cullingCluster.worldDistanceFromCameraEndX = (cullingCluster.worldEndX - cameraPosX << 8) / k3;
+                cullingCluster.worldDistanceFromCameraStartZ = (cullingCluster.worldEndZ - cameraPosZ << 8) / k3;
+                cullingCluster.worldDistanceFromCameraEndZ = (cullingCluster.worldStartZ - cameraPosZ << 8) / k3;
                 processedCullingClusters[processedCullingClustersPointer++] = cullingCluster;
             } else
             if(cullingCluster.searchMask == 4)
@@ -2064,11 +2065,11 @@ label0:
 
                         if(flag2)
                         {
-                            cullingCluster.anInt798 = 5;
-                            cullingCluster.anInt799 = (cullingCluster.worldStartX - cameraPosX << 8) / j1;
-                            cullingCluster.anInt800 = (cullingCluster.worldEndX - cameraPosX << 8) / j1;
-                            cullingCluster.anInt801 = (cullingCluster.worldStartY - cameraPosY << 8) / j1;
-                            cullingCluster.anInt802 = (cullingCluster.worldEndY - cameraPosY << 8) / j1;
+                            cullingCluster.tileDistanceEnum = 5;
+                            cullingCluster.worldDistanceFromCameraStartX = (cullingCluster.worldStartX - cameraPosX << 8) / j1;
+                            cullingCluster.worldDistanceFromCameraEndX = (cullingCluster.worldEndX - cameraPosX << 8) / j1;
+                            cullingCluster.worldDistanceFromCameraStartY = (cullingCluster.worldStartY - cameraPosY << 8) / j1;
+                            cullingCluster.worldDistanceFromCameraEndY = (cullingCluster.worldEndY - cameraPosY << 8) / j1;
                             processedCullingClusters[processedCullingClustersPointer++] = cullingCluster;
                         }
                     }
@@ -2255,67 +2256,67 @@ label0:
         for(int l = 0; l < processedCullingClustersPointer; l++)
         {
             CullingCluster cullingCluster = processedCullingClusters[l];
-            if(cullingCluster.anInt798 == 1)
+            if(cullingCluster.tileDistanceEnum == 1)
             {
                 int i1 = cullingCluster.worldStartX - i;
                 if(i1 > 0)
                 {
-                    int j2 = cullingCluster.worldStartY + (cullingCluster.anInt801 * i1 >> 8);
-                    int k3 = cullingCluster.worldEndY + (cullingCluster.anInt802 * i1 >> 8);
-                    int l4 = cullingCluster.worldEndZ + (cullingCluster.anInt803 * i1 >> 8);
-                    int i6 = cullingCluster.worldStartZ + (cullingCluster.anInt804 * i1 >> 8);
+                    int j2 = cullingCluster.worldStartY + (cullingCluster.worldDistanceFromCameraStartY * i1 >> 8);
+                    int k3 = cullingCluster.worldEndY + (cullingCluster.worldDistanceFromCameraEndY * i1 >> 8);
+                    int l4 = cullingCluster.worldEndZ + (cullingCluster.worldDistanceFromCameraStartZ * i1 >> 8);
+                    int i6 = cullingCluster.worldStartZ + (cullingCluster.worldDistanceFromCameraEndZ * i1 >> 8);
                     if(k >= j2 && k <= k3 && j >= l4 && j <= i6)
                         return true;
                 }
             } else
-            if(cullingCluster.anInt798 == 2)
+            if(cullingCluster.tileDistanceEnum == 2)
             {
                 int j1 = i - cullingCluster.worldStartX;
                 if(j1 > 0)
                 {
-                    int k2 = cullingCluster.worldStartY + (cullingCluster.anInt801 * j1 >> 8);
-                    int l3 = cullingCluster.worldEndY + (cullingCluster.anInt802 * j1 >> 8);
-                    int i5 = cullingCluster.worldEndZ + (cullingCluster.anInt803 * j1 >> 8);
-                    int j6 = cullingCluster.worldStartZ + (cullingCluster.anInt804 * j1 >> 8);
+                    int k2 = cullingCluster.worldStartY + (cullingCluster.worldDistanceFromCameraStartY * j1 >> 8);
+                    int l3 = cullingCluster.worldEndY + (cullingCluster.worldDistanceFromCameraEndY * j1 >> 8);
+                    int i5 = cullingCluster.worldEndZ + (cullingCluster.worldDistanceFromCameraStartZ * j1 >> 8);
+                    int j6 = cullingCluster.worldStartZ + (cullingCluster.worldDistanceFromCameraEndZ * j1 >> 8);
                     if(k >= k2 && k <= l3 && j >= i5 && j <= j6)
                         return true;
                 }
             } else
-            if(cullingCluster.anInt798 == 3)
+            if(cullingCluster.tileDistanceEnum == 3)
             {
                 int k1 = cullingCluster.worldStartY - k;
                 if(k1 > 0)
                 {
-                    int l2 = cullingCluster.worldStartX + (cullingCluster.anInt799 * k1 >> 8);
-                    int i4 = cullingCluster.worldEndX + (cullingCluster.anInt800 * k1 >> 8);
-                    int j5 = cullingCluster.worldEndZ + (cullingCluster.anInt803 * k1 >> 8);
-                    int k6 = cullingCluster.worldStartZ + (cullingCluster.anInt804 * k1 >> 8);
+                    int l2 = cullingCluster.worldStartX + (cullingCluster.worldDistanceFromCameraStartX * k1 >> 8);
+                    int i4 = cullingCluster.worldEndX + (cullingCluster.worldDistanceFromCameraEndX * k1 >> 8);
+                    int j5 = cullingCluster.worldEndZ + (cullingCluster.worldDistanceFromCameraStartZ * k1 >> 8);
+                    int k6 = cullingCluster.worldStartZ + (cullingCluster.worldDistanceFromCameraEndZ * k1 >> 8);
                     if(i >= l2 && i <= i4 && j >= j5 && j <= k6)
                         return true;
                 }
             } else
-            if(cullingCluster.anInt798 == 4)
+            if(cullingCluster.tileDistanceEnum == 4)
             {
                 int l1 = k - cullingCluster.worldStartY;
                 if(l1 > 0)
                 {
-                    int i3 = cullingCluster.worldStartX + (cullingCluster.anInt799 * l1 >> 8);
-                    int j4 = cullingCluster.worldEndX + (cullingCluster.anInt800 * l1 >> 8);
-                    int k5 = cullingCluster.worldEndZ + (cullingCluster.anInt803 * l1 >> 8);
-                    int l6 = cullingCluster.worldStartZ + (cullingCluster.anInt804 * l1 >> 8);
+                    int i3 = cullingCluster.worldStartX + (cullingCluster.worldDistanceFromCameraStartX * l1 >> 8);
+                    int j4 = cullingCluster.worldEndX + (cullingCluster.worldDistanceFromCameraEndX * l1 >> 8);
+                    int k5 = cullingCluster.worldEndZ + (cullingCluster.worldDistanceFromCameraStartZ * l1 >> 8);
+                    int l6 = cullingCluster.worldStartZ + (cullingCluster.worldDistanceFromCameraEndZ * l1 >> 8);
                     if(i >= i3 && i <= j4 && j >= k5 && j <= l6)
                         return true;
                 }
             } else
-            if(cullingCluster.anInt798 == 5)
+            if(cullingCluster.tileDistanceEnum == 5)
             {
                 int i2 = j - cullingCluster.worldEndZ;
                 if(i2 > 0)
                 {
-                    int j3 = cullingCluster.worldStartX + (cullingCluster.anInt799 * i2 >> 8);
-                    int k4 = cullingCluster.worldEndX + (cullingCluster.anInt800 * i2 >> 8);
-                    int l5 = cullingCluster.worldStartY + (cullingCluster.anInt801 * i2 >> 8);
-                    int i7 = cullingCluster.worldEndY + (cullingCluster.anInt802 * i2 >> 8);
+                    int j3 = cullingCluster.worldStartX + (cullingCluster.worldDistanceFromCameraStartX * i2 >> 8);
+                    int k4 = cullingCluster.worldEndX + (cullingCluster.worldDistanceFromCameraEndX * i2 >> 8);
+                    int l5 = cullingCluster.worldStartY + (cullingCluster.worldDistanceFromCameraStartY * i2 >> 8);
+                    int i7 = cullingCluster.worldEndY + (cullingCluster.worldDistanceFromCameraEndY * i2 >> 8);
                     if(i >= j3 && i <= k4 && k >= l5 && k <= i7)
                         return true;
                 }

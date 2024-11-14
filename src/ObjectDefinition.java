@@ -172,13 +172,13 @@ public final class ObjectDefinition {
 			model = new Model(aBoolean762, -819, aBoolean769, model);
 		if (aBoolean762) {
 			int l1 = (k + l + i1 + j1) / 4;
-			for (int i2 = 0; i2 < model.anInt1626; i2++) {
-				int j2 = model.anIntArray1627[i2];
-				int k2 = model.anIntArray1629[i2];
+			for (int i2 = 0; i2 < model.vertexCount; i2++) {
+				int j2 = model.verticesX[i2];
+				int k2 = model.verticesZ[i2];
 				int l2 = k + ((l - k) * (j2 + 64)) / 128;
 				int i3 = j1 + ((i1 - j1) * (j2 + 64)) / 128;
 				int j3 = l2 + ((i3 - l2) * (k2 + 64)) / 128;
-				model.anIntArray1628[i2] += j3 - l1;
+				model.verticesY[i2] += j3 - l1;
 			}
 			model.method467(false);
 		}

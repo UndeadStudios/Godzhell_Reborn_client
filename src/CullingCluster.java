@@ -1,8 +1,7 @@
 final class CullingCluster
 {
 
-    CullingCluster()
-    {
+    CullingCluster() {
     }
 
     int tileStartX;
@@ -16,11 +15,11 @@ final class CullingCluster
     int worldEndY;
     int worldEndZ;
     int worldStartZ;
-    int anInt798;
-    int anInt799;
-    int anInt800;
-    int anInt801;
-    int anInt802;
-    int anInt803;
-    int anInt804;
+    int tileDistanceEnum;
+    int worldDistanceFromCameraStartX;
+    int worldDistanceFromCameraEndX;
+    int worldDistanceFromCameraStartY;
+    int worldDistanceFromCameraEndY;
+    int worldDistanceFromCameraStartZ;
+    int worldDistanceFromCameraEndZ;
 }

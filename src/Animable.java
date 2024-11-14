@@ -26,7 +26,7 @@ public class Animable extends Class30_Sub2
     }
 
     private int anInt1424;
-    Class33 vertexNormals[];
+    VertexNormal vertexNormals[];
     public int anInt1426;
     public static boolean aBoolean1427;
 }

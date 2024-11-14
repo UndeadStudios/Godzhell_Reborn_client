@@ -346,11 +346,11 @@ public class Model extends Animable {
 				anIntArray1638[i12] = i2;
 		}
 		anIntArray1640 = triangleColours2;
-		anInt1626 = numVertices;
+		vertexCount = numVertices;
 		anInt1630 = numTriangles;
-		anIntArray1627 = vertexX;
-		anIntArray1628 = vertexY;
-		anIntArray1629 = vertexZ;
+		verticesX = vertexX;
+		verticesY = vertexY;
+		verticesZ = vertexZ;
 		anIntArray1631 = facePoint1;
 		anIntArray1632 = facePoint2;
 		anIntArray1633 = facePoint3;
@@ -370,10 +370,10 @@ public class Model extends Animable {
 }
 
 	public void scale2(int i) {
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] = anIntArray1627[i1] / i;
-			anIntArray1628[i1] = anIntArray1628[i1] / i;
-			anIntArray1629[i1] = anIntArray1629[i1] / i;
+		for (int i1 = 0; i1 < vertexCount; i1++) {
+			verticesX[i1] = verticesX[i1] / i;
+			verticesY[i1] = verticesY[i1] / i;
+			verticesZ[i1] = verticesZ[i1] / i;
 		}
 if(anIntArray1638 != null) {
     for(int j = 0; j < anIntArray1638.length; j++)
@@ -753,11 +753,11 @@ if(anIntArray1638 != null) {
 				anIntArray1638[i12] = i2;
 		}
 		anIntArray1640 = triangleColours2;
-		anInt1626 = numVertices;
+		vertexCount = numVertices;
 		anInt1630 = numTriangles;
-		anIntArray1627 = vertexX;
-		anIntArray1628 = vertexY;
-		anIntArray1629 = vertexZ;
+		verticesX = vertexX;
+		verticesY = vertexY;
+		verticesZ = vertexZ;
 		anIntArray1631 = facePoint1;
 		anIntArray1632 = facePoint2;
 		anIntArray1633 = facePoint3;
@@ -773,12 +773,12 @@ if(anIntArray1638 != null) {
 		aBoolean1659 = false;
 		anInt1620++;
 		Class21 class21 = aClass21Array1661[i];
-		anInt1626 = class21.anInt369;
+		vertexCount = class21.anInt369;
 		anInt1630 = class21.anInt370;
 		anInt1642 = class21.anInt371;
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
+		verticesX = new int[vertexCount];
+		verticesY = new int[vertexCount];
+		verticesZ = new int[vertexCount];
 		anIntArray1631 = new int[anInt1630];
 		anIntArray1632 = new int[anInt1630];
 		while (j >= 0)
@@ -788,7 +788,7 @@ if(anIntArray1638 != null) {
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
 		if (class21.anInt376 >= 0)
-			anIntArray1655 = new int[anInt1626];
+			anIntArray1655 = new int[vertexCount];
 		if (class21.anInt380 >= 0)
 			anIntArray1637 = new int[anInt1630];
 		if (class21.anInt381 >= 0)
@@ -813,7 +813,7 @@ if(anIntArray1638 != null) {
 		int k = 0;
 		int l = 0;
 		int i1 = 0;
-		for (int j1 = 0; j1 < anInt1626; j1++) {
+		for (int j1 = 0; j1 < vertexCount; j1++) {
 			int k1 = stream.readUnsignedByte();
 			int i2 = 0;
 			if ((k1 & 1) != 0)
@@ -824,12 +824,12 @@ if(anIntArray1638 != null) {
 			int i3 = 0;
 			if ((k1 & 4) != 0)
 				i3 = stream_3.method421();
-			anIntArray1627[j1] = k + i2;
-			anIntArray1628[j1] = l + k2;
-			anIntArray1629[j1] = i1 + i3;
-			k = anIntArray1627[j1];
-			l = anIntArray1628[j1];
-			i1 = anIntArray1629[j1];
+			verticesX[j1] = k + i2;
+			verticesY[j1] = l + k2;
+			verticesZ[j1] = i1 + i3;
+			k = verticesX[j1];
+			l = verticesY[j1];
+			i1 = verticesZ[j1];
 			if (anIntArray1655 != null)
 				anIntArray1655[j1] = stream_4.readUnsignedByte();
 		}
@@ -1035,14 +1035,14 @@ if(anIntArray1638 != null) {
 		boolean flag1 = false;
 		boolean flag2 = false;
 		boolean flag3 = false;
-		anInt1626 = 0;
+		vertexCount = 0;
 		anInt1630 = 0;
 		anInt1642 = 0;
 		anInt1641 = -1;
 		for (int k = 0; k < i; k++) {
 			Model model = amodel[k];
 			if (model != null) {
-				anInt1626 += model.anInt1626;
+				vertexCount += model.vertexCount;
 				anInt1630 += model.anInt1630;
 				anInt1642 += model.anInt1642;
 				flag |= model.anIntArray1637 != null;
@@ -1059,10 +1059,10 @@ if(anIntArray1638 != null) {
 			}
 		}
 
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
-		anIntArray1655 = new int[anInt1626];
+		verticesX = new int[vertexCount];
+		verticesY = new int[vertexCount];
+		verticesZ = new int[vertexCount];
+		anIntArray1655 = new int[vertexCount];
 		anIntArray1631 = new int[anInt1630];
 		anIntArray1632 = new int[anInt1630];
 		anIntArray1633 = new int[anInt1630];
@@ -1078,7 +1078,7 @@ if(anIntArray1638 != null) {
 		if (flag3)
 			anIntArray1656 = new int[anInt1630];
 		anIntArray1640 = new int[anInt1630];
-		anInt1626 = 0;
+		vertexCount = 0;
 		anInt1630 = 0;
 		anInt1642 = 0;
 		int l = 0;
@@ -1147,14 +1147,14 @@ if(anIntArray1638 != null) {
 		boolean flag2 = false;
 		boolean flag3 = false;
 		boolean flag4 = false;
-		anInt1626 = 0;
+		vertexCount = 0;
 		anInt1630 = 0;
 		anInt1642 = 0;
 		anInt1641 = -1;
 		for (int k = 0; k < i; k++) {
 			Model model = amodel[k];
 			if (model != null) {
-				anInt1626 += model.anInt1626;
+				vertexCount += model.vertexCount;
 				anInt1630 += model.anInt1630;
 				anInt1642 += model.anInt1642;
 				flag1 |= model.anIntArray1637 != null;
@@ -1171,9 +1171,9 @@ if(anIntArray1638 != null) {
 			}
 		}
 
-		anIntArray1627 = new int[anInt1626];
-		anIntArray1628 = new int[anInt1626];
-		anIntArray1629 = new int[anInt1626];
+		verticesX = new int[vertexCount];
+		verticesY = new int[vertexCount];
+		verticesZ = new int[vertexCount];
 		anIntArray1631 = new int[anInt1630];
 		anIntArray1632 = new int[anInt1630];
 		anIntArray1633 = new int[anInt1630];
@@ -1191,19 +1191,19 @@ if(anIntArray1638 != null) {
 			anIntArray1639 = new int[anInt1630];
 		if (flag4)
 			anIntArray1640 = new int[anInt1630];
-		anInt1626 = 0;
+		vertexCount = 0;
 		anInt1630 = 0;
 		anInt1642 = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < i; j1++) {
 			Model model_1 = amodel[j1];
 			if (model_1 != null) {
-				int k1 = anInt1626;
-				for (int l1 = 0; l1 < model_1.anInt1626; l1++) {
-					anIntArray1627[anInt1626] = model_1.anIntArray1627[l1];
-					anIntArray1628[anInt1626] = model_1.anIntArray1628[l1];
-					anIntArray1629[anInt1626] = model_1.anIntArray1629[l1];
-					anInt1626++;
+				int k1 = vertexCount;
+				for (int l1 = 0; l1 < model_1.vertexCount; l1++) {
+					verticesX[vertexCount] = model_1.verticesX[l1];
+					verticesY[vertexCount] = model_1.verticesY[l1];
+					verticesZ[vertexCount] = model_1.verticesZ[l1];
+					vertexCount++;
 				}
 
 				for (int i2 = 0; i2 < model_1.anInt1630; i2++) {
@@ -1260,21 +1260,21 @@ if(anIntArray1638 != null) {
 		aBoolean1618 = true;
 		aBoolean1659 = false;
 		anInt1620++;
-		anInt1626 = model.anInt1626;
+		vertexCount = model.vertexCount;
 		anInt1630 = model.anInt1630;
 		anInt1642 = model.anInt1642;
 		if (flag2) {
-			anIntArray1627 = model.anIntArray1627;
-			anIntArray1628 = model.anIntArray1628;
-			anIntArray1629 = model.anIntArray1629;
+			verticesX = model.verticesX;
+			verticesY = model.verticesY;
+			verticesZ = model.verticesZ;
 		} else {
-			anIntArray1627 = new int[anInt1626];
-			anIntArray1628 = new int[anInt1626];
-			anIntArray1629 = new int[anInt1626];
-			for (int j = 0; j < anInt1626; j++) {
-				anIntArray1627[j] = model.anIntArray1627[j];
-				anIntArray1628[j] = model.anIntArray1628[j];
-				anIntArray1629[j] = model.anIntArray1629[j];
+			verticesX = new int[vertexCount];
+			verticesY = new int[vertexCount];
+			verticesZ = new int[vertexCount];
+			for (int j = 0; j < vertexCount; j++) {
+				verticesX[j] = model.verticesX[j];
+				verticesY[j] = model.verticesY[j];
+				verticesZ[j] = model.verticesZ[j];
 			}
 
 		}
@@ -1321,16 +1321,16 @@ if(anIntArray1638 != null) {
 		aBoolean1618 = true;
 		aBoolean1659 = false;
 		anInt1620++;
-		anInt1626 = model.anInt1626;
+		vertexCount = model.vertexCount;
 		anInt1630 = model.anInt1630;
 		anInt1642 = model.anInt1642;
 		if (flag) {
-			anIntArray1628 = new int[anInt1626];
-			for (int j = 0; j < anInt1626; j++)
-				anIntArray1628[j] = model.anIntArray1628[j];
+			verticesY = new int[vertexCount];
+			for (int j = 0; j < vertexCount; j++)
+				verticesY[j] = model.verticesY[j];
 
 		} else {
-			anIntArray1628 = model.anIntArray1628;
+			verticesY = model.verticesY;
 		}
 		if (flag1) {
 			anIntArray1634 = new int[anInt1630];
@@ -1352,25 +1352,25 @@ if(anIntArray1638 != null) {
 					anIntArray1637[i1] = model.anIntArray1637[i1];
 
 			}
-			super.vertexNormals = new Class33[anInt1626];
-			for (int j1 = 0; j1 < anInt1626; j1++) {
-				Class33 class33 = super.vertexNormals[j1] = new Class33();
-				Class33 class33_1 = model.vertexNormals[j1];
-				class33.anInt602 = class33_1.anInt602;
-				class33.anInt603 = class33_1.anInt603;
-				class33.anInt604 = class33_1.anInt604;
-				class33.anInt605 = class33_1.anInt605;
+			super.vertexNormals = new VertexNormal[vertexCount];
+			for (int j1 = 0; j1 < vertexCount; j1++) {
+				VertexNormal class33 = super.vertexNormals[j1] = new VertexNormal();
+				VertexNormal class33_1 = model.vertexNormals[j1];
+				class33.x = class33_1.x;
+				class33.y = class33_1.y;
+				class33.z = class33_1.z;
+				class33.magnitude = class33_1.magnitude;
 			}
 
-			aClass33Array1660 = model.aClass33Array1660;
+			vertexNormalOffset = model.vertexNormalOffset;
 		} else {
 			anIntArray1634 = model.anIntArray1634;
 			anIntArray1635 = model.anIntArray1635;
 			anIntArray1636 = model.anIntArray1636;
 			anIntArray1637 = model.anIntArray1637;
 		}
-		anIntArray1627 = model.anIntArray1627;
-		anIntArray1629 = model.anIntArray1629;
+		verticesX = model.verticesX;
+		verticesZ = model.verticesZ;
 		anIntArray1640 = model.anIntArray1640;
 		anIntArray1639 = model.anIntArray1639;
 		anIntArray1638 = model.anIntArray1638;
@@ -1385,28 +1385,28 @@ if(anIntArray1638 != null) {
 		anInt1650 = model.anInt1650;
 		anInt1653 = model.anInt1653;
 		anInt1652 = model.anInt1652;
-		anInt1646 = model.anInt1646;
-		anInt1648 = model.anInt1648;
-		anInt1649 = model.anInt1649;
-		anInt1647 = model.anInt1647;
+		minX = model.minX;
+		maxZ = model.maxZ;
+		minZ = model.minZ;
+		maxX = model.maxX;
 	}
 
 	public void method464(int i, Model model, boolean flag) {
-		anInt1626 = model.anInt1626;
+		vertexCount = model.vertexCount;
 		anInt1630 = model.anInt1630;
 		anInt1642 = model.anInt1642;
-		if (anIntArray1622.length < anInt1626) {
-			anIntArray1622 = new int[anInt1626 + 10000];
-			anIntArray1623 = new int[anInt1626 + 10000];
-			anIntArray1624 = new int[anInt1626 + 10000];
+		if (anIntArray1622.length < vertexCount) {
+			anIntArray1622 = new int[vertexCount + 10000];
+			anIntArray1623 = new int[vertexCount + 10000];
+			anIntArray1624 = new int[vertexCount + 10000];
 		}
-		anIntArray1627 = anIntArray1622;
-		anIntArray1628 = anIntArray1623;
-		anIntArray1629 = anIntArray1624;
-		for (int k = 0; k < anInt1626; k++) {
-			anIntArray1627[k] = model.anIntArray1627[k];
-			anIntArray1628[k] = model.anIntArray1628[k];
-			anIntArray1629[k] = model.anIntArray1629[k];
+		verticesX = anIntArray1622;
+		verticesY = anIntArray1623;
+		verticesZ = anIntArray1624;
+		for (int k = 0; k < vertexCount; k++) {
+			verticesX[k] = model.verticesX[k];
+			verticesY[k] = model.verticesY[k];
+			verticesZ[k] = model.verticesZ[k];
 		}
 
 		if (flag) {
@@ -1444,24 +1444,24 @@ if(anIntArray1638 != null) {
 
 	private final int method465(Model model, int i) {
 		int j = -1;
-		int k = model.anIntArray1627[i];
-		int l = model.anIntArray1628[i];
-		int i1 = model.anIntArray1629[i];
-		for (int j1 = 0; j1 < anInt1626; j1++) {
-			if (k != anIntArray1627[j1] || l != anIntArray1628[j1]
-			                                                   || i1 != anIntArray1629[j1])
+		int k = model.verticesX[i];
+		int l = model.verticesY[i];
+		int i1 = model.verticesZ[i];
+		for (int j1 = 0; j1 < vertexCount; j1++) {
+			if (k != verticesX[j1] || l != verticesY[j1]
+			                                                   || i1 != verticesZ[j1])
 				continue;
 			j = j1;
 			break;
 		}
 
 		if (j == -1) {
-			anIntArray1627[anInt1626] = k;
-			anIntArray1628[anInt1626] = l;
-			anIntArray1629[anInt1626] = i1;
+			verticesX[vertexCount] = k;
+			verticesY[vertexCount] = l;
+			verticesZ[vertexCount] = i1;
 			if (model.anIntArray1655 != null)
-				anIntArray1655[anInt1626] = model.anIntArray1655[i];
-			j = anInt1626++;
+				anIntArray1655[vertexCount] = model.anIntArray1655[i];
+			j = vertexCount++;
 		}
 		return j;
 	}
@@ -1469,15 +1469,15 @@ if(anIntArray1638 != null) {
 	public void method466(boolean flag) {
 		super.anInt1426 = 0;
 		anInt1650 = 0;
-		anInt1651 = 0;
-		for (int i = 0; i < anInt1626; i++) {
-			int j = anIntArray1627[i];
-			int k = anIntArray1628[i];
-			int l = anIntArray1629[i];
+		maxY = 0;
+		for (int i = 0; i < vertexCount; i++) {
+			int j = verticesX[i];
+			int k = verticesY[i];
+			int l = verticesZ[i];
 			if (-k > super.anInt1426)
 				super.anInt1426 = -k;
-			if (k > anInt1651)
-				anInt1651 = k;
+			if (k > maxY)
+				maxY = k;
 			int i1 = j * j + l * l;
 			if (i1 > anInt1650)
 				anInt1650 = i1;
@@ -1486,52 +1486,52 @@ if(anIntArray1638 != null) {
 		anInt1653 = (int) (Math.sqrt(anInt1650 * anInt1650 + super.anInt1426
 				* super.anInt1426) + 0.98999999999999999D);
 		anInt1652 = anInt1653
-		+ (int) (Math.sqrt(anInt1650 * anInt1650 + anInt1651
-				* anInt1651) + 0.98999999999999999D);
+		+ (int) (Math.sqrt(anInt1650 * anInt1650 + maxY
+				* maxY) + 0.98999999999999999D);
 	}
 
 	public void method467(boolean flag) {
 		super.anInt1426 = 0;
-		anInt1651 = 0;
-		for (int i = 0; i < anInt1626; i++) {
-			int j = anIntArray1628[i];
+		maxY = 0;
+		for (int i = 0; i < vertexCount; i++) {
+			int j = verticesY[i];
 			if (-j > super.anInt1426)
 				super.anInt1426 = -j;
-			if (j > anInt1651)
-				anInt1651 = j;
+			if (j > maxY)
+				maxY = j;
 		}
 
 		anInt1653 = (int) (Math.sqrt(anInt1650 * anInt1650 + super.anInt1426
 				* super.anInt1426) + 0.98999999999999999D);
 		anInt1652 = anInt1653
-		+ (int) (Math.sqrt(anInt1650 * anInt1650 + anInt1651
-				* anInt1651) + 0.98999999999999999D);
+		+ (int) (Math.sqrt(anInt1650 * anInt1650 + maxY
+				* maxY) + 0.98999999999999999D);
 	}
 
 	public void method468(int i) {
 		super.anInt1426 = 0;
 		anInt1650 = 0;
-		anInt1651 = 0;
-		anInt1646 = 0xf423f;
-		anInt1647 = 0xfff0bdc1;
-		anInt1648 = 0xfffe7961;
-		anInt1649 = 0x1869f;
-		for (int j = 0; j < anInt1626; j++) {
-			int k = anIntArray1627[j];
-			int l = anIntArray1628[j];
-			int i1 = anIntArray1629[j];
-			if (k < anInt1646)
-				anInt1646 = k;
-			if (k > anInt1647)
-				anInt1647 = k;
-			if (i1 < anInt1649)
-				anInt1649 = i1;
-			if (i1 > anInt1648)
-				anInt1648 = i1;
+		maxY = 0;
+		minX = 0xf423f;
+		maxX = 0xfff0bdc1;
+		maxZ = 0xfffe7961;
+		minZ = 0x1869f;
+		for (int j = 0; j < vertexCount; j++) {
+			int k = verticesX[j];
+			int l = verticesY[j];
+			int i1 = verticesZ[j];
+			if (k < minX)
+				minX = k;
+			if (k > maxX)
+				maxX = k;
+			if (i1 < minZ)
+				minZ = i1;
+			if (i1 > maxZ)
+				maxZ = i1;
 			if (-l > super.anInt1426)
 				super.anInt1426 = -l;
-			if (l > anInt1651)
-				anInt1651 = l;
+			if (l > maxY)
+				maxY = l;
 			int j1 = k * k + i1 * i1;
 			if (j1 > anInt1650)
 				anInt1650 = j1;
@@ -1544,8 +1544,8 @@ if(anIntArray1638 != null) {
 			return;
 		} else {
 			anInt1652 = anInt1653
-			+ (int) Math.sqrt(anInt1650 * anInt1650 + anInt1651
-					* anInt1651);
+			+ (int) Math.sqrt(anInt1650 * anInt1650 + maxY
+					* maxY);
 			return;
 		}
 	}
@@ -1554,7 +1554,7 @@ if(anIntArray1638 != null) {
 		if (anIntArray1655 != null) {
 			int ai[] = new int[256];
 			int j = 0;
-			for (int l = 0; l < anInt1626; l++) {
+			for (int l = 0; l < vertexCount; l++) {
 				int j1 = anIntArray1655[l];
 				ai[j1]++;
 				if (j1 > j)
@@ -1567,7 +1567,7 @@ if(anIntArray1638 != null) {
 				ai[k1] = 0;
 			}
 
-			for (int j2 = 0; j2 < anInt1626; j2++) {
+			for (int j2 = 0; j2 < vertexCount; j2++) {
 				int l2 = anIntArray1655[j2];
 				anIntArrayArray1657[l2][ai[l2]++] = j2;
 			}
@@ -1685,9 +1685,9 @@ if(anIntArray1638 != null) {
 					int ai5[] = anIntArrayArray1657[l3];
 					for (int i5 = 0; i5 < ai5.length; i5++) {
 						int j6 = ai5[i5];
-						anInt1681 += anIntArray1627[j6];
-						anInt1682 += anIntArray1628[j6];
-						anInt1683 += anIntArray1629[j6];
+						anInt1681 += verticesX[j6];
+						anInt1682 += verticesY[j6];
+						anInt1683 += verticesZ[j6];
 						j1++;
 					}
 
@@ -1713,9 +1713,9 @@ if(anIntArray1638 != null) {
 					int ai1[] = anIntArrayArray1657[l2];
 					for (int i4 = 0; i4 < ai1.length; i4++) {
 						int j5 = ai1[i4];
-						anIntArray1627[j5] += j;
-						anIntArray1628[j5] += k;
-						anIntArray1629[j5] += l;
+						verticesX[j5] += j;
+						verticesY[j5] += k;
+						verticesZ[j5] += l;
 					}
 
 				}
@@ -1730,37 +1730,37 @@ if(anIntArray1638 != null) {
 					int ai2[] = anIntArrayArray1657[i3];
 					for (int j4 = 0; j4 < ai2.length; j4++) {
 						int k5 = ai2[j4];
-						anIntArray1627[k5] -= anInt1681;
-						anIntArray1628[k5] -= anInt1682;
-						anIntArray1629[k5] -= anInt1683;
+						verticesX[k5] -= anInt1681;
+						verticesY[k5] -= anInt1682;
+						verticesZ[k5] -= anInt1683;
 						int k6 = (j & 0xff) * 8;
 						int l6 = (k & 0xff) * 8;
 						int i7 = (l & 0xff) * 8;
 						if (i7 != 0) {
 							int j7 = anIntArray1689[i7];
 							int i8 = anIntArray1690[i7];
-							int l8 = anIntArray1628[k5] * j7 + anIntArray1627[k5] * i8 >> 16;
-					anIntArray1628[k5] = anIntArray1628[k5] * i8
-					- anIntArray1627[k5] * j7 >> 16;
-			anIntArray1627[k5] = l8;
+							int l8 = verticesY[k5] * j7 + verticesX[k5] * i8 >> 16;
+					verticesY[k5] = verticesY[k5] * i8
+					- verticesX[k5] * j7 >> 16;
+			verticesX[k5] = l8;
 						}
 						if (k6 != 0) {
 							int k7 = anIntArray1689[k6];
 							int j8 = anIntArray1690[k6];
-							int i9 = anIntArray1628[k5] * j8 - anIntArray1629[k5] * k7 >> 16;
-							anIntArray1629[k5] = anIntArray1628[k5] * k7 + anIntArray1629[k5] * j8 >> 16;
-							anIntArray1628[k5] = i9;
+							int i9 = verticesY[k5] * j8 - verticesZ[k5] * k7 >> 16;
+							verticesZ[k5] = verticesY[k5] * k7 + verticesZ[k5] * j8 >> 16;
+							verticesY[k5] = i9;
 						}
 						if (l6 != 0) {
 							int l7 = anIntArray1689[l6];
 							int k8 = anIntArray1690[l6];
-							int j9 = anIntArray1629[k5] * l7 + anIntArray1627[k5] * k8 >> 16;
-							anIntArray1629[k5] = anIntArray1629[k5] * k8 - anIntArray1627[k5] * l7 >> 16;
-							anIntArray1627[k5] = j9;
+							int j9 = verticesZ[k5] * l7 + verticesX[k5] * k8 >> 16;
+							verticesZ[k5] = verticesZ[k5] * k8 - verticesX[k5] * l7 >> 16;
+							verticesX[k5] = j9;
 						}
-						anIntArray1627[k5] += anInt1681;
-						anIntArray1628[k5] += anInt1682;
-						anIntArray1629[k5] += anInt1683;
+						verticesX[k5] += anInt1681;
+						verticesY[k5] += anInt1682;
+						verticesZ[k5] += anInt1683;
 					}
 
 				}
@@ -1774,15 +1774,15 @@ if(anIntArray1638 != null) {
 					int ai3[] = anIntArrayArray1657[j3];
 					for (int k4 = 0; k4 < ai3.length; k4++) {
 						int l5 = ai3[k4];
-						anIntArray1627[l5] -= anInt1681;
-						anIntArray1628[l5] -= anInt1682;
-						anIntArray1629[l5] -= anInt1683;
-						anIntArray1627[l5] = (anIntArray1627[l5] * j) / 128;
-						anIntArray1628[l5] = (anIntArray1628[l5] * k) / 128;
-						anIntArray1629[l5] = (anIntArray1629[l5] * l) / 128;
-						anIntArray1627[l5] += anInt1681;
-						anIntArray1628[l5] += anInt1682;
-						anIntArray1629[l5] += anInt1683;
+						verticesX[l5] -= anInt1681;
+						verticesY[l5] -= anInt1682;
+						verticesZ[l5] -= anInt1683;
+						verticesX[l5] = (verticesX[l5] * j) / 128;
+						verticesY[l5] = (verticesY[l5] * k) / 128;
+						verticesZ[l5] = (verticesZ[l5] * l) / 128;
+						verticesX[l5] += anInt1681;
+						verticesY[l5] += anInt1682;
+						verticesZ[l5] += anInt1683;
 					}
 				}
 			}
@@ -1807,28 +1807,28 @@ if(anIntArray1638 != null) {
 	}
 
 	public void method473(int i) {
-		for (int j = 0; j < anInt1626; j++) {
-			int k = anIntArray1627[j];
-			anIntArray1627[j] = anIntArray1629[j];
-			anIntArray1629[j] = -k;
+		for (int j = 0; j < vertexCount; j++) {
+			int k = verticesX[j];
+			verticesX[j] = verticesZ[j];
+			verticesZ[j] = -k;
 		}
 	}
 
 	public void method474(int i, int j) {
 		int k = anIntArray1689[i];
 		int l = anIntArray1690[i];
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			int j1 = anIntArray1628[i1] * l - anIntArray1629[i1] * k >> 16;
-			anIntArray1629[i1] = anIntArray1628[i1] * k + anIntArray1629[i1] * l >> 16;
-			anIntArray1628[i1] = j1;
+		for (int i1 = 0; i1 < vertexCount; i1++) {
+			int j1 = verticesY[i1] * l - verticesZ[i1] * k >> 16;
+			verticesZ[i1] = verticesY[i1] * k + verticesZ[i1] * l >> 16;
+			verticesY[i1] = j1;
 		}
 	}
 
 	public void method475(int i, int j, int k, int l) {
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] += i;
-			anIntArray1628[i1] += j;
-			anIntArray1629[i1] += l;
+		for (int i1 = 0; i1 < vertexCount; i1++) {
+			verticesX[i1] += i;
+			verticesY[i1] += j;
+			verticesZ[i1] += l;
 		}
 	}
 
@@ -1839,8 +1839,8 @@ if(anIntArray1638 != null) {
 	}
 
 	public void method477(int i) {
-		for (int j = 0; j < anInt1626; j++)
-			anIntArray1629[j] = -anIntArray1629[j];
+		for (int j = 0; j < vertexCount; j++)
+			verticesZ[j] = -verticesZ[j];
 		for (int k = 0; k < anInt1630; k++) {
 			int l = anIntArray1631[k];
 			anIntArray1631[k] = anIntArray1633[k];
@@ -1849,10 +1849,10 @@ if(anIntArray1638 != null) {
 	}
 
 	public void method478(int i, int j, int k, int l) {
-		for (int i1 = 0; i1 < anInt1626; i1++) {
-			anIntArray1627[i1] = (anIntArray1627[i1] * i) / 128;
-			anIntArray1628[i1] = (anIntArray1628[i1] * l) / 128;
-			anIntArray1629[i1] = (anIntArray1629[i1] * j) / 128;
+		for (int i1 = 0; i1 < vertexCount; i1++) {
+			verticesX[i1] = (verticesX[i1] * i) / 128;
+			verticesY[i1] = (verticesY[i1] * l) / 128;
+			verticesZ[i1] = (verticesZ[i1] * j) / 128;
 		}
 
 	}
@@ -1866,9 +1866,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			anIntArray1636 = new int[anInt1630];
 		}
 		if (super.vertexNormals == null) {
-			super.vertexNormals = new Class33[anInt1626];
-			for (int l1 = 0; l1 < anInt1626; l1++)
-				super.vertexNormals[l1] = new Class33();
+			super.vertexNormals = new VertexNormal[vertexCount];
+			for (int l1 = 0; l1 < vertexCount; l1++)
+				super.vertexNormals[l1] = new VertexNormal();
 
 		}
 		for (int i2 = 0; i2 < anInt1630; i2++) {
@@ -1882,12 +1882,12 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			int j2 = anIntArray1631[i2];
 			int l2 = anIntArray1632[i2];
 			int i3 = anIntArray1633[i2];
-			int j3 = anIntArray1627[l2] - anIntArray1627[j2];
-			int k3 = anIntArray1628[l2] - anIntArray1628[j2];
-			int l3 = anIntArray1629[l2] - anIntArray1629[j2];
-			int i4 = anIntArray1627[i3] - anIntArray1627[j2];
-			int j4 = anIntArray1628[i3] - anIntArray1628[j2];
-			int k4 = anIntArray1629[i3] - anIntArray1629[j2];
+			int j3 = verticesX[l2] - verticesX[j2];
+			int k3 = verticesY[l2] - verticesY[j2];
+			int l3 = verticesZ[l2] - verticesZ[j2];
+			int i4 = verticesX[i3] - verticesX[j2];
+			int j4 = verticesY[i3] - verticesY[j2];
+			int k4 = verticesZ[i3] - verticesZ[j2];
 			int l4 = k3 * k4 - j4 * l3;
 			int i5 = l3 * i4 - k4 * j3;
 			int j5;
@@ -1906,21 +1906,21 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 
 			if (anIntArray1637 == null || (anIntArray1637[i2] & 1) == 0) {
 
-				Class33 class33_2 = super.vertexNormals[j2];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
+				VertexNormal class33_2 = super.vertexNormals[j2];
+				class33_2.x += l4;
+				class33_2.y += i5;
+				class33_2.z += j5;
+				class33_2.magnitude++;
 				class33_2 = super.vertexNormals[l2];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
+				class33_2.x += l4;
+				class33_2.y += i5;
+				class33_2.z += j5;
+				class33_2.magnitude++;
 				class33_2 = super.vertexNormals[i3];
-				class33_2.anInt602 += l4;
-				class33_2.anInt603 += i5;
-				class33_2.anInt604 += j5;
-				class33_2.anInt605++;
+				class33_2.x += l4;
+				class33_2.y += i5;
+				class33_2.z += j5;
+				class33_2.magnitude++;
 
 			} else {
 
@@ -1934,14 +1934,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		if (flag) {
 			method480(i, k1, k, l, i1);
 		} else {
-			aClass33Array1660 = new Class33[anInt1626];
-			for (int k2 = 0; k2 < anInt1626; k2++) {
-				Class33 class33 = super.vertexNormals[k2];
-				Class33 class33_1 = aClass33Array1660[k2] = new Class33();
-				class33_1.anInt602 = class33.anInt602;
-				class33_1.anInt603 = class33.anInt603;
-				class33_1.anInt604 = class33.anInt604;
-				class33_1.anInt605 = class33.anInt605;
+			vertexNormalOffset = new VertexNormal[vertexCount];
+			for (int k2 = 0; k2 < vertexCount; k2++) {
+				VertexNormal class33 = super.vertexNormals[k2];
+				VertexNormal class33_1 = vertexNormalOffset[k2] = new VertexNormal();
+				class33_1.x = class33.x;
+				class33_1.y = class33.y;
+				class33_1.z = class33.z;
+				class33_1.magnitude = class33.magnitude;
 			}
 
 		}
@@ -1967,47 +1967,47 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			int j2 = anIntArray1633[j1];
 			if (anIntArray1637 == null) {
 				int i3 = anIntArray1640[j1];
-				Class33 class33 = super.vertexNormals[k1];
+				VertexNormal class33 = super.vertexNormals[k1];
 				int k2 = i
-				+ (k * class33.anInt602 + l * class33.anInt603 + i1
-						* class33.anInt604) / (j * class33.anInt605);
+				+ (k * class33.x + l * class33.y + i1
+						* class33.z) / (j * class33.magnitude);
 				anIntArray1634[j1] = method481(i3, k2, 0);
 				class33 = super.vertexNormals[i2];
 				k2 = i
-				+ (k * class33.anInt602 + l * class33.anInt603 + i1
-						* class33.anInt604) / (j * class33.anInt605);
+				+ (k * class33.x + l * class33.y + i1
+						* class33.z) / (j * class33.magnitude);
 				anIntArray1635[j1] = method481(i3, k2, 0);
 				class33 = super.vertexNormals[j2];
 				k2 = i
-				+ (k * class33.anInt602 + l * class33.anInt603 + i1
-						* class33.anInt604) / (j * class33.anInt605);
+				+ (k * class33.x + l * class33.y + i1
+						* class33.z) / (j * class33.magnitude);
 				anIntArray1636[j1] = method481(i3, k2, 0);
 			} else if ((anIntArray1637[j1] & 1) == 0) {
 				int j3 = anIntArray1640[j1];
 				int k3 = anIntArray1637[j1];
-				Class33 class33_1 = super.vertexNormals[k1];
+				VertexNormal class33_1 = super.vertexNormals[k1];
 				int l2 = i
-				+ (k * class33_1.anInt602 + l * class33_1.anInt603 + i1
-						* class33_1.anInt604)
-						/ (j * class33_1.anInt605);
+				+ (k * class33_1.x + l * class33_1.y + i1
+						* class33_1.z)
+						/ (j * class33_1.magnitude);
 				anIntArray1634[j1] = method481(j3, l2, k3);
 				class33_1 = super.vertexNormals[i2];
 				l2 = i
-				+ (k * class33_1.anInt602 + l * class33_1.anInt603 + i1
-						* class33_1.anInt604)
-						/ (j * class33_1.anInt605);
+				+ (k * class33_1.x + l * class33_1.y + i1
+						* class33_1.z)
+						/ (j * class33_1.magnitude);
 				anIntArray1635[j1] = method481(j3, l2, k3);
 				class33_1 = super.vertexNormals[j2];
 				l2 = i
-				+ (k * class33_1.anInt602 + l * class33_1.anInt603 + i1
-						* class33_1.anInt604)
-						/ (j * class33_1.anInt605);
+				+ (k * class33_1.x + l * class33_1.y + i1
+						* class33_1.z)
+						/ (j * class33_1.magnitude);
 				anIntArray1636[j1] = method481(j3, l2, k3);
 			}
 		}
 
 		super.vertexNormals = null;
-		aClass33Array1660 = null;
+		vertexNormalOffset = null;
 		anIntArray1655 = null;
 		anIntArray1656 = null;
 		if (anIntArray1637 != null) {
@@ -2052,10 +2052,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int l3 = anIntArray1689[l];
 		int i4 = anIntArray1690[l];
 		int j4 = j1 * l3 + k1 * i4 >> 16;
-			for (int k4 = 0; k4 < anInt1626; k4++) {
-				int l4 = anIntArray1627[k4];
-				int i5 = anIntArray1628[k4];
-				int j5 = anIntArray1629[k4];
+			for (int k4 = 0; k4 < vertexCount; k4++) {
+				int l4 = verticesX[k4];
+				int i5 = verticesY[k4];
+				int j5 = verticesZ[k4];
 				if (k != 0) {
 					int k5 = i5 * j3 + l4 * k3 >> 16;
 			i5 = i5 * k3 - l4 * j3 >> 16;
@@ -2205,10 +2205,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					l6 = anIntArray1689[i];
 					i7 = anIntArray1690[i];
 				}
-				for (int j7 = 0; j7 < anInt1626; j7++) {
-					int k7 = anIntArray1627[j7];
-					int l7 = anIntArray1628[j7];
-					int i8 = anIntArray1629[j7];
+				for (int j7 = 0; j7 < vertexCount; j7++) {
+					int k7 = verticesX[j7];
+					int l7 = verticesY[j7];
+					int i8 = verticesZ[j7];
 					if (i != 0) {
 						int j8 = i8 * l6 + k7 * i7 >> 16;
 				i8 = i8 * i7 - k7 * l6 >> 16;
@@ -2763,10 +2763,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	private static int anIntArray1623[] = new int[2000];
 	private static int anIntArray1624[] = new int[2000];
 	private static int anIntArray1625[] = new int[2000];
-	public int anInt1626;
-	public int anIntArray1627[];
-	public int anIntArray1628[];
-	public int anIntArray1629[];
+	public int vertexCount;
+	public int verticesX[];
+	public int verticesY[];
+	public int verticesZ[];
 	public int anInt1630;
 	public int anIntArray1631[];
 	public int anIntArray1632[];
@@ -2783,12 +2783,12 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public int anIntArray1643[];
 	public int anIntArray1644[];
 	public int anIntArray1645[];
-	public int anInt1646;
-	public int anInt1647;
-	public int anInt1648;
-	public int anInt1649;
+	public int minX;
+	public int maxX;
+	public int maxZ;
+	public int minZ;
 	public int anInt1650;
-	public int anInt1651;
+	public int maxY;
 	public int anInt1652;
 	public int anInt1653;
 	public int anInt1654;
@@ -2797,7 +2797,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public int anIntArrayArray1657[][];
 	public int anIntArrayArray1658[][];
 	public boolean aBoolean1659;
-	Class33 aClass33Array1660[];
+	VertexNormal vertexNormalOffset[];
 	static Class21 aClass21Array1661[];
 	static OnDemandFetcherParent aOnDemandFetcherParent_1662;
 	static boolean aBooleanArray1663[] = new boolean[16000];
