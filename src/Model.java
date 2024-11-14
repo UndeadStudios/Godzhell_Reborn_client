@@ -143,14 +143,14 @@ public class Model extends Animable {
 		int[] facePoint2 = new int[numTriangles];
 		int[] facePoint3 = new int[numTriangles];
 		anIntArray1655 = new int[numVertices];
-		anIntArray1637 = new int[numTriangles];
+		triangleDrawType = new int[numTriangles];
 		anIntArray1638 = new int[numTriangles];
 		anIntArray1639 = new int[numTriangles];
 		anIntArray1656 = new int[numTriangles];
 		if (i3 == 1)
 			anIntArray1655 = new int[numVertices];
 		if (bool)
-			anIntArray1637 = new int[numTriangles];
+			triangleDrawType = new int[numTriangles];
 		if (i2 == 255)
 			anIntArray1638 = new int[numTriangles];
 		else
@@ -223,10 +223,10 @@ public class Model extends Animable {
 		for (int i12 = 0; i12 < numTriangles; i12++) {
 			triangleColours2[i12] =  nc1.readUnsignedShort();
 			if (l1 == 1) {
-				anIntArray1637[i12] = nc2.readSignedByte();
-				if (anIntArray1637[i12] == 2)
+				triangleDrawType[i12] = nc2.readSignedByte();
+				if (triangleDrawType[i12] == 2)
 					triangleColours2[i12] =  65535;
-				anIntArray1637[i12] = 0;
+				triangleDrawType[i12] = 0;
 			}
 			if (i2 == 255) {
 				anIntArray1638[i12] = nc3.readSignedByte();
@@ -347,13 +347,13 @@ public class Model extends Animable {
 		}
 		anIntArray1640 = triangleColours2;
 		vertexCount = numVertices;
-		anInt1630 = numTriangles;
+		triangleCount = numTriangles;
 		verticesX = vertexX;
 		verticesY = vertexY;
 		verticesZ = vertexZ;
-		anIntArray1631 = facePoint1;
-		anIntArray1632 = facePoint2;
-		anIntArray1633 = facePoint3;
+		triangleX = facePoint1;
+		triangleY = facePoint2;
+		triangleZ = facePoint3;
 		convertTexturesTo317(D, texTrianglesPoint1, texTrianglesPoint2, texTrianglesPoint3, false, x);
 	}
 
@@ -523,14 +523,14 @@ if(anIntArray1638 != null) {
 		int[] facePoint2 = new int[numTriangles];
 		int[] facePoint3 = new int[numTriangles];
 		anIntArray1655 = new int[numVertices];
-		anIntArray1637 = new int[numTriangles];
+		triangleDrawType = new int[numTriangles];
 		anIntArray1638 = new int[numTriangles];
 		anIntArray1639 = new int[numTriangles];
 		anIntArray1656 = new int[numTriangles];
 		if (i3 == 1)
 			anIntArray1655 = new int[numVertices];
 		if (bool)
-			anIntArray1637 = new int[numTriangles];
+			triangleDrawType = new int[numTriangles];
 		if (i2 == 255)
 			anIntArray1638 = new int[numTriangles];
 		else
@@ -603,10 +603,10 @@ if(anIntArray1638 != null) {
 		for (int i12 = 0; i12 < numTriangles; i12++) {
 			triangleColours2[i12] = nc1.readUnsignedShort();
 			if (l1 == 1) {
-				anIntArray1637[i12] = nc2.readSignedByte();
-				if (anIntArray1637[i12] == 2)
+				triangleDrawType[i12] = nc2.readSignedByte();
+				if (triangleDrawType[i12] == 2)
 					triangleColours2[i12] = 65535;
-				anIntArray1637[i12] = 0;
+				triangleDrawType[i12] = 0;
 			}
 			if (i2 == 255) {
 				anIntArray1638[i12] = nc3.readSignedByte();
@@ -754,13 +754,13 @@ if(anIntArray1638 != null) {
 		}
 		anIntArray1640 = triangleColours2;
 		vertexCount = numVertices;
-		anInt1630 = numTriangles;
+		triangleCount = numTriangles;
 		verticesX = vertexX;
 		verticesY = vertexY;
 		verticesZ = vertexZ;
-		anIntArray1631 = facePoint1;
-		anIntArray1632 = facePoint2;
-		anIntArray1633 = facePoint3;
+		triangleX = facePoint1;
+		triangleY = facePoint2;
+		triangleZ = facePoint3;
 	}
 
 	private void readOldModel(int i) {
@@ -774,32 +774,32 @@ if(anIntArray1638 != null) {
 		anInt1620++;
 		Class21 class21 = aClass21Array1661[i];
 		vertexCount = class21.anInt369;
-		anInt1630 = class21.anInt370;
+		triangleCount = class21.anInt370;
 		anInt1642 = class21.anInt371;
 		verticesX = new int[vertexCount];
 		verticesY = new int[vertexCount];
 		verticesZ = new int[vertexCount];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
+		triangleX = new int[triangleCount];
+		triangleY = new int[triangleCount];
 		while (j >= 0)
 			aBoolean1618 = !aBoolean1618;
-		anIntArray1633 = new int[anInt1630];
+		triangleZ = new int[triangleCount];
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
 		if (class21.anInt376 >= 0)
 			anIntArray1655 = new int[vertexCount];
 		if (class21.anInt380 >= 0)
-			anIntArray1637 = new int[anInt1630];
+			triangleDrawType = new int[triangleCount];
 		if (class21.anInt381 >= 0)
-			anIntArray1638 = new int[anInt1630];
+			anIntArray1638 = new int[triangleCount];
 		else
 			anInt1641 = -class21.anInt381 - 1;
 		if (class21.anInt382 >= 0)
-			anIntArray1639 = new int[anInt1630];
+			anIntArray1639 = new int[triangleCount];
 		if (class21.anInt383 >= 0)
-			anIntArray1656 = new int[anInt1630];
-		anIntArray1640 = new int[anInt1630];
+			anIntArray1656 = new int[triangleCount];
+		anIntArray1640 = new int[triangleCount];
 		Stream stream = new Stream(class21.aByteArray368);
 		stream.currentPosition = class21.anInt372;
 		Stream stream_1 = new Stream(class21.aByteArray368);
@@ -838,10 +838,10 @@ if(anIntArray1638 != null) {
 		stream_2.currentPosition = class21.anInt381;
 		stream_3.currentPosition = class21.anInt382;
 		stream_4.currentPosition = class21.anInt383;
-		for (int l1 = 0; l1 < anInt1630; l1++) {
+		for (int l1 = 0; l1 < triangleCount; l1++) {
 			anIntArray1640[l1] =  stream.readUnsignedShort();
-			if (anIntArray1637 != null)
-				anIntArray1637[l1] = stream_1.readUnsignedByte();
+			if (triangleDrawType != null)
+				triangleDrawType[l1] = stream_1.readUnsignedByte();
 			if (anIntArray1638 != null)
 				anIntArray1638[l1] = stream_2.readUnsignedByte();
 			if (anIntArray1639 != null) {
@@ -856,7 +856,7 @@ if(anIntArray1638 != null) {
 		int l2 = 0;
 		int j3 = 0;
 		int k3 = 0;
-		for (int l3 = 0; l3 < anInt1630; l3++) {
+		for (int l3 = 0; l3 < triangleCount; l3++) {
 			int i4 = stream_1.readUnsignedByte();
 			if (i4 == 1) {
 				j2 = stream.method421() + k3;
@@ -865,27 +865,27 @@ if(anIntArray1638 != null) {
 				k3 = l2;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				anIntArray1631[l3] = j2;
-				anIntArray1632[l3] = l2;
-				anIntArray1633[l3] = j3;
+				triangleX[l3] = j2;
+				triangleY[l3] = l2;
+				triangleZ[l3] = j3;
 			}
 			if (i4 == 2) {
 				j2 = j2;
 				l2 = j3;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				anIntArray1631[l3] = j2;
-				anIntArray1632[l3] = l2;
-				anIntArray1633[l3] = j3;
+				triangleX[l3] = j2;
+				triangleY[l3] = l2;
+				triangleZ[l3] = j3;
 			}
 			if (i4 == 3) {
 				j2 = j3;
 				l2 = l2;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				anIntArray1631[l3] = j2;
-				anIntArray1632[l3] = l2;
-				anIntArray1633[l3] = j3;
+				triangleX[l3] = j2;
+				triangleY[l3] = l2;
+				triangleZ[l3] = j3;
 			}
 			if (i4 == 4) {
 				int k4 = j2;
@@ -893,9 +893,9 @@ if(anIntArray1638 != null) {
 				l2 = k4;
 				j3 = stream.method421() + k3;
 				k3 = j3;
-				anIntArray1631[l3] = j2;
-				anIntArray1632[l3] = l2;
-				anIntArray1633[l3] = j3;
+				triangleX[l3] = j2;
+				triangleY[l3] = l2;
+				triangleZ[l3] = j3;
 			}
 		}
 		stream.currentPosition = class21.anInt384;
@@ -1036,16 +1036,16 @@ if(anIntArray1638 != null) {
 		boolean flag2 = false;
 		boolean flag3 = false;
 		vertexCount = 0;
-		anInt1630 = 0;
+		triangleCount = 0;
 		anInt1642 = 0;
 		anInt1641 = -1;
 		for (int k = 0; k < i; k++) {
 			Model model = amodel[k];
 			if (model != null) {
 				vertexCount += model.vertexCount;
-				anInt1630 += model.anInt1630;
+				triangleCount += model.triangleCount;
 				anInt1642 += model.anInt1642;
-				flag |= model.anIntArray1637 != null;
+				flag |= model.triangleDrawType != null;
 				if (model.anIntArray1638 != null) {
 					flag1 = true;
 				} else {
@@ -1063,59 +1063,59 @@ if(anIntArray1638 != null) {
 		verticesY = new int[vertexCount];
 		verticesZ = new int[vertexCount];
 		anIntArray1655 = new int[vertexCount];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
+		triangleX = new int[triangleCount];
+		triangleY = new int[triangleCount];
+		triangleZ = new int[triangleCount];
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
 		if (flag)
-			anIntArray1637 = new int[anInt1630];
+			triangleDrawType = new int[triangleCount];
 		if (flag1)
-			anIntArray1638 = new int[anInt1630];
+			anIntArray1638 = new int[triangleCount];
 		if (flag2)
-			anIntArray1639 = new int[anInt1630];
+			anIntArray1639 = new int[triangleCount];
 		if (flag3)
-			anIntArray1656 = new int[anInt1630];
-		anIntArray1640 = new int[anInt1630];
+			anIntArray1656 = new int[triangleCount];
+		anIntArray1640 = new int[triangleCount];
 		vertexCount = 0;
-		anInt1630 = 0;
+		triangleCount = 0;
 		anInt1642 = 0;
 		int l = 0;
 		for (int i1 = 0; i1 < i; i1++) {
 			Model model_1 = amodel[i1];
 			if (model_1 != null) {
-				for (int j1 = 0; j1 < model_1.anInt1630; j1++) {
+				for (int j1 = 0; j1 < model_1.triangleCount; j1++) {
 					if (flag)
-						if (model_1.anIntArray1637 == null) {
-							anIntArray1637[anInt1630] = 0;
+						if (model_1.triangleDrawType == null) {
+							triangleDrawType[triangleCount] = 0;
 						} else {
-							int k1 = model_1.anIntArray1637[j1];
+							int k1 = model_1.triangleDrawType[j1];
 							if ((k1 & 2) == 2)
 								k1 += l << 2;
-							anIntArray1637[anInt1630] = k1;
+							triangleDrawType[triangleCount] = k1;
 						}
 					if (flag1)
 						if (model_1.anIntArray1638 == null)
-							anIntArray1638[anInt1630] = model_1.anInt1641;
+							anIntArray1638[triangleCount] = model_1.anInt1641;
 						else
-							anIntArray1638[anInt1630] = model_1.anIntArray1638[j1];
+							anIntArray1638[triangleCount] = model_1.anIntArray1638[j1];
 					if (flag2)
 						if (model_1.anIntArray1639 == null)
-							anIntArray1639[anInt1630] = 0;
+							anIntArray1639[triangleCount] = 0;
 						else
-							anIntArray1639[anInt1630] = model_1.anIntArray1639[j1];
+							anIntArray1639[triangleCount] = model_1.anIntArray1639[j1];
 
 					if (flag3 && model_1.anIntArray1656 != null)
-						anIntArray1656[anInt1630] = model_1.anIntArray1656[j1];
-					anIntArray1640[anInt1630] = model_1.anIntArray1640[j1];
-					anIntArray1631[anInt1630] = method465(model_1,
-							model_1.anIntArray1631[j1]);
-					anIntArray1632[anInt1630] = method465(model_1,
-							model_1.anIntArray1632[j1]);
-					anIntArray1633[anInt1630] = method465(model_1,
-							model_1.anIntArray1633[j1]);
-					anInt1630++;
+						anIntArray1656[triangleCount] = model_1.anIntArray1656[j1];
+					anIntArray1640[triangleCount] = model_1.anIntArray1640[j1];
+					triangleX[triangleCount] = method465(model_1,
+							model_1.triangleX[j1]);
+					triangleY[triangleCount] = method465(model_1,
+							model_1.triangleY[j1]);
+					triangleZ[triangleCount] = method465(model_1,
+							model_1.triangleZ[j1]);
+					triangleCount++;
 				}
 
 				for (int l1 = 0; l1 < model_1.anInt1642; l1++) {
@@ -1148,16 +1148,16 @@ if(anIntArray1638 != null) {
 		boolean flag3 = false;
 		boolean flag4 = false;
 		vertexCount = 0;
-		anInt1630 = 0;
+		triangleCount = 0;
 		anInt1642 = 0;
 		anInt1641 = -1;
 		for (int k = 0; k < i; k++) {
 			Model model = amodel[k];
 			if (model != null) {
 				vertexCount += model.vertexCount;
-				anInt1630 += model.anInt1630;
+				triangleCount += model.triangleCount;
 				anInt1642 += model.anInt1642;
-				flag1 |= model.anIntArray1637 != null;
+				flag1 |= model.triangleDrawType != null;
 				if (model.anIntArray1638 != null) {
 					flag2 = true;
 				} else {
@@ -1174,25 +1174,25 @@ if(anIntArray1638 != null) {
 		verticesX = new int[vertexCount];
 		verticesY = new int[vertexCount];
 		verticesZ = new int[vertexCount];
-		anIntArray1631 = new int[anInt1630];
-		anIntArray1632 = new int[anInt1630];
-		anIntArray1633 = new int[anInt1630];
-		anIntArray1634 = new int[anInt1630];
-		anIntArray1635 = new int[anInt1630];
-		anIntArray1636 = new int[anInt1630];
+		triangleX = new int[triangleCount];
+		triangleY = new int[triangleCount];
+		triangleZ = new int[triangleCount];
+		anIntArray1634 = new int[triangleCount];
+		anIntArray1635 = new int[triangleCount];
+		anIntArray1636 = new int[triangleCount];
 		anIntArray1643 = new int[anInt1642];
 		anIntArray1644 = new int[anInt1642];
 		anIntArray1645 = new int[anInt1642];
 		if (flag1)
-			anIntArray1637 = new int[anInt1630];
+			triangleDrawType = new int[triangleCount];
 		if (flag2)
-			anIntArray1638 = new int[anInt1630];
+			anIntArray1638 = new int[triangleCount];
 		if (flag3)
-			anIntArray1639 = new int[anInt1630];
+			anIntArray1639 = new int[triangleCount];
 		if (flag4)
-			anIntArray1640 = new int[anInt1630];
+			anIntArray1640 = new int[triangleCount];
 		vertexCount = 0;
-		anInt1630 = 0;
+		triangleCount = 0;
 		anInt1642 = 0;
 		int i1 = 0;
 		for (int j1 = 0; j1 < i; j1++) {
@@ -1206,36 +1206,36 @@ if(anIntArray1638 != null) {
 					vertexCount++;
 				}
 
-				for (int i2 = 0; i2 < model_1.anInt1630; i2++) {
-					anIntArray1631[anInt1630] = model_1.anIntArray1631[i2] + k1;
-					anIntArray1632[anInt1630] = model_1.anIntArray1632[i2] + k1;
-					anIntArray1633[anInt1630] = model_1.anIntArray1633[i2] + k1;
-					anIntArray1634[anInt1630] = model_1.anIntArray1634[i2];
-					anIntArray1635[anInt1630] = model_1.anIntArray1635[i2];
-					anIntArray1636[anInt1630] = model_1.anIntArray1636[i2];
+				for (int i2 = 0; i2 < model_1.triangleCount; i2++) {
+					triangleX[triangleCount] = model_1.triangleX[i2] + k1;
+					triangleY[triangleCount] = model_1.triangleY[i2] + k1;
+					triangleZ[triangleCount] = model_1.triangleZ[i2] + k1;
+					anIntArray1634[triangleCount] = model_1.anIntArray1634[i2];
+					anIntArray1635[triangleCount] = model_1.anIntArray1635[i2];
+					anIntArray1636[triangleCount] = model_1.anIntArray1636[i2];
 					if (flag1)
-						if (model_1.anIntArray1637 == null) {
-							anIntArray1637[anInt1630] = 0;
+						if (model_1.triangleDrawType == null) {
+							triangleDrawType[triangleCount] = 0;
 						} else {
-							int j2 = model_1.anIntArray1637[i2];
+							int j2 = model_1.triangleDrawType[i2];
 							if ((j2 & 2) == 2)
 								j2 += i1 << 2;
-							anIntArray1637[anInt1630] = j2;
+							triangleDrawType[triangleCount] = j2;
 						}
 					if (flag2)
 						if (model_1.anIntArray1638 == null)
-							anIntArray1638[anInt1630] = model_1.anInt1641;
+							anIntArray1638[triangleCount] = model_1.anInt1641;
 						else
-							anIntArray1638[anInt1630] = model_1.anIntArray1638[i2];
+							anIntArray1638[triangleCount] = model_1.anIntArray1638[i2];
 					if (flag3)
 						if (model_1.anIntArray1639 == null)
-							anIntArray1639[anInt1630] = 0;
+							anIntArray1639[triangleCount] = 0;
 						else
-							anIntArray1639[anInt1630] = model_1.anIntArray1639[i2];
+							anIntArray1639[triangleCount] = model_1.anIntArray1639[i2];
 					if (flag4 && model_1.anIntArray1640 != null)
-						anIntArray1640[anInt1630] = model_1.anIntArray1640[i2];
+						anIntArray1640[triangleCount] = model_1.anIntArray1640[i2];
 
-					anInt1630++;
+					triangleCount++;
 				}
 
 				for (int k2 = 0; k2 < model_1.anInt1642; k2++) {
@@ -1261,7 +1261,7 @@ if(anIntArray1638 != null) {
 		aBoolean1659 = false;
 		anInt1620++;
 		vertexCount = model.vertexCount;
-		anInt1630 = model.anInt1630;
+		triangleCount = model.triangleCount;
 		anInt1642 = model.anInt1642;
 		if (flag2) {
 			verticesX = model.verticesX;
@@ -1281,31 +1281,31 @@ if(anIntArray1638 != null) {
 		if (flag) {
 			anIntArray1640 = model.anIntArray1640;
 		} else {
-			anIntArray1640 = new int[anInt1630];
-			for (int k = 0; k < anInt1630; k++)
+			anIntArray1640 = new int[triangleCount];
+			for (int k = 0; k < triangleCount; k++)
 				anIntArray1640[k] = model.anIntArray1640[k];
 
 		}
 		if (flag1) {
 			anIntArray1639 = model.anIntArray1639;
 		} else {
-			anIntArray1639 = new int[anInt1630];
+			anIntArray1639 = new int[triangleCount];
 			if (model.anIntArray1639 == null) {
-				for (int l = 0; l < anInt1630; l++)
+				for (int l = 0; l < triangleCount; l++)
 					anIntArray1639[l] = 0;
 
 			} else {
-				for (int i1 = 0; i1 < anInt1630; i1++)
+				for (int i1 = 0; i1 < triangleCount; i1++)
 					anIntArray1639[i1] = model.anIntArray1639[i1];
 
 			}
 		}
 		anIntArray1655 = model.anIntArray1655;
 		anIntArray1656 = model.anIntArray1656;
-		anIntArray1637 = model.anIntArray1637;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
+		triangleDrawType = model.triangleDrawType;
+		triangleX = model.triangleX;
+		triangleY = model.triangleY;
+		triangleZ = model.triangleZ;
 		anIntArray1638 = model.anIntArray1638;
 		anInt1641 = model.anInt1641;
 		anIntArray1643 = model.anIntArray1643;
@@ -1322,7 +1322,7 @@ if(anIntArray1638 != null) {
 		aBoolean1659 = false;
 		anInt1620++;
 		vertexCount = model.vertexCount;
-		anInt1630 = model.anInt1630;
+		triangleCount = model.triangleCount;
 		anInt1642 = model.anInt1642;
 		if (flag) {
 			verticesY = new int[vertexCount];
@@ -1333,23 +1333,23 @@ if(anIntArray1638 != null) {
 			verticesY = model.verticesY;
 		}
 		if (flag1) {
-			anIntArray1634 = new int[anInt1630];
-			anIntArray1635 = new int[anInt1630];
-			anIntArray1636 = new int[anInt1630];
-			for (int k = 0; k < anInt1630; k++) {
+			anIntArray1634 = new int[triangleCount];
+			anIntArray1635 = new int[triangleCount];
+			anIntArray1636 = new int[triangleCount];
+			for (int k = 0; k < triangleCount; k++) {
 				anIntArray1634[k] = model.anIntArray1634[k];
 				anIntArray1635[k] = model.anIntArray1635[k];
 				anIntArray1636[k] = model.anIntArray1636[k];
 			}
 
-			anIntArray1637 = new int[anInt1630];
-			if (model.anIntArray1637 == null) {
-				for (int l = 0; l < anInt1630; l++)
-					anIntArray1637[l] = 0;
+			triangleDrawType = new int[triangleCount];
+			if (model.triangleDrawType == null) {
+				for (int l = 0; l < triangleCount; l++)
+					triangleDrawType[l] = 0;
 
 			} else {
-				for (int i1 = 0; i1 < anInt1630; i1++)
-					anIntArray1637[i1] = model.anIntArray1637[i1];
+				for (int i1 = 0; i1 < triangleCount; i1++)
+					triangleDrawType[i1] = model.triangleDrawType[i1];
 
 			}
 			super.vertexNormals = new VertexNormal[vertexCount];
@@ -1367,7 +1367,7 @@ if(anIntArray1638 != null) {
 			anIntArray1634 = model.anIntArray1634;
 			anIntArray1635 = model.anIntArray1635;
 			anIntArray1636 = model.anIntArray1636;
-			anIntArray1637 = model.anIntArray1637;
+			triangleDrawType = model.triangleDrawType;
 		}
 		verticesX = model.verticesX;
 		verticesZ = model.verticesZ;
@@ -1375,9 +1375,9 @@ if(anIntArray1638 != null) {
 		anIntArray1639 = model.anIntArray1639;
 		anIntArray1638 = model.anIntArray1638;
 		anInt1641 = model.anInt1641;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
+		triangleX = model.triangleX;
+		triangleY = model.triangleY;
+		triangleZ = model.triangleZ;
 		anIntArray1643 = model.anIntArray1643;
 		anIntArray1644 = model.anIntArray1644;
 		anIntArray1645 = model.anIntArray1645;
@@ -1393,7 +1393,7 @@ if(anIntArray1638 != null) {
 
 	public void method464(int i, Model model, boolean flag) {
 		vertexCount = model.vertexCount;
-		anInt1630 = model.anInt1630;
+		triangleCount = model.triangleCount;
 		anInt1642 = model.anInt1642;
 		if (anIntArray1622.length < vertexCount) {
 			anIntArray1622 = new int[vertexCount + 10000];
@@ -1412,28 +1412,28 @@ if(anIntArray1638 != null) {
 		if (flag) {
 			anIntArray1639 = model.anIntArray1639;
 		} else {
-			if (anIntArray1625.length < anInt1630)
-				anIntArray1625 = new int[anInt1630 + 100];
+			if (anIntArray1625.length < triangleCount)
+				anIntArray1625 = new int[triangleCount + 100];
 			anIntArray1639 = anIntArray1625;
 			if (model.anIntArray1639 == null) {
-				for (int l = 0; l < anInt1630; l++)
+				for (int l = 0; l < triangleCount; l++)
 					anIntArray1639[l] = 0;
 
 			} else {
-				for (int i1 = 0; i1 < anInt1630; i1++)
+				for (int i1 = 0; i1 < triangleCount; i1++)
 					anIntArray1639[i1] = model.anIntArray1639[i1];
 
 			}
 		}
-		anIntArray1637 = model.anIntArray1637;
+		triangleDrawType = model.triangleDrawType;
 		anIntArray1640 = model.anIntArray1640;
 		anIntArray1638 = model.anIntArray1638;
 		anInt1641 = model.anInt1641;
 		anIntArrayArray1658 = model.anIntArrayArray1658;
 		anIntArrayArray1657 = model.anIntArrayArray1657;
-		anIntArray1631 = model.anIntArray1631;
-		anIntArray1632 = model.anIntArray1632;
-		anIntArray1633 = model.anIntArray1633;
+		triangleX = model.triangleX;
+		triangleY = model.triangleY;
+		triangleZ = model.triangleZ;
 		anIntArray1634 = model.anIntArray1634;
 		anIntArray1635 = model.anIntArray1635;
 		anIntArray1636 = model.anIntArray1636;
@@ -1577,7 +1577,7 @@ if(anIntArray1638 != null) {
 		if (anIntArray1656 != null) {
 			int ai1[] = new int[256];
 			int k = 0;
-			for (int i1 = 0; i1 < anInt1630; i1++) {
+			for (int i1 = 0; i1 < triangleCount; i1++) {
 				int l1 = anIntArray1656[i1];
 				ai1[l1]++;
 				if (l1 > k)
@@ -1590,7 +1590,7 @@ if(anIntArray1638 != null) {
 				ai1[i2] = 0;
 			}
 
-			for (int k2 = 0; k2 < anInt1630; k2++) {
+			for (int k2 = 0; k2 < triangleCount; k2++) {
 				int i3 = anIntArray1656[k2];
 				anIntArrayArray1658[i3][ai1[i3]++] = k2;
 			}
@@ -1833,7 +1833,7 @@ if(anIntArray1638 != null) {
 	}
 
 	public void method476(int i, int j) {
-		for (int k = 0; k < anInt1630; k++)
+		for (int k = 0; k < triangleCount; k++)
 			if (anIntArray1640[k] == i)
 				anIntArray1640[k] = j;
 	}
@@ -1841,10 +1841,10 @@ if(anIntArray1638 != null) {
 	public void method477(int i) {
 		for (int j = 0; j < vertexCount; j++)
 			verticesZ[j] = -verticesZ[j];
-		for (int k = 0; k < anInt1630; k++) {
-			int l = anIntArray1631[k];
-			anIntArray1631[k] = anIntArray1633[k];
-			anIntArray1633[k] = l;
+		for (int k = 0; k < triangleCount; k++) {
+			int l = triangleX[k];
+			triangleX[k] = triangleZ[k];
+			triangleZ[k] = l;
 		}
 	}
 
@@ -1861,9 +1861,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int j1 = (int) Math.sqrt(k * k + l * l + i1 * i1);
 		int k1 = j * j1 >> 8;
 		if (anIntArray1634 == null) {
-			anIntArray1634 = new int[anInt1630];
-			anIntArray1635 = new int[anInt1630];
-			anIntArray1636 = new int[anInt1630];
+			anIntArray1634 = new int[triangleCount];
+			anIntArray1635 = new int[triangleCount];
+			anIntArray1636 = new int[triangleCount];
 		}
 		if (super.vertexNormals == null) {
 			super.vertexNormals = new VertexNormal[vertexCount];
@@ -1871,7 +1871,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				super.vertexNormals[l1] = new VertexNormal();
 
 		}
-		for (int i2 = 0; i2 < anInt1630; i2++) {
+		for (int i2 = 0; i2 < triangleCount; i2++) {
 			if (anIntArray1640 != null && anIntArray1639 != null)
 				if (anIntArray1640[i2] == 65535 // Most triangles
 						|| anIntArray1640[i2] == 16705 // Nezzy Green
@@ -1879,9 +1879,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 														// Triangles
 				)
 					anIntArray1639[i2] = 255;
-			int j2 = anIntArray1631[i2];
-			int l2 = anIntArray1632[i2];
-			int i3 = anIntArray1633[i2];
+			int j2 = triangleX[i2];
+			int l2 = triangleY[i2];
+			int i3 = triangleZ[i2];
 			int j3 = verticesX[l2] - verticesX[j2];
 			int k3 = verticesY[l2] - verticesY[j2];
 			int l3 = verticesZ[l2] - verticesZ[j2];
@@ -1904,7 +1904,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			i5 = (i5 * 256) / k5;
 			j5 = (j5 * 256) / k5;
 
-			if (anIntArray1637 == null || (anIntArray1637[i2] & 1) == 0) {
+			if (triangleDrawType == null || (triangleDrawType[i2] & 1) == 0) {
 
 				VertexNormal class33_2 = super.vertexNormals[j2];
 				class33_2.x += l4;
@@ -1926,7 +1926,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 
 				int l5 = i + (k * l4 + l * i5 + i1 * j5) / (k1 + k1 / 2);
 				anIntArray1634[i2] = method481(anIntArray1640[i2], l5,
-						anIntArray1637[i2]);
+						triangleDrawType[i2]);
 
 			}
 		}
@@ -1961,11 +1961,11 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	+ vvString + " ";
 
 	public final void method480(int i, int j, int k, int l, int i1) {
-		for (int j1 = 0; j1 < anInt1630; j1++) {
-			int k1 = anIntArray1631[j1];
-			int i2 = anIntArray1632[j1];
-			int j2 = anIntArray1633[j1];
-			if (anIntArray1637 == null) {
+		for (int j1 = 0; j1 < triangleCount; j1++) {
+			int k1 = triangleX[j1];
+			int i2 = triangleY[j1];
+			int j2 = triangleZ[j1];
+			if (triangleDrawType == null) {
 				int i3 = anIntArray1640[j1];
 				VertexNormal class33 = super.vertexNormals[k1];
 				int k2 = i
@@ -1982,9 +1982,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				+ (k * class33.x + l * class33.y + i1
 						* class33.z) / (j * class33.magnitude);
 				anIntArray1636[j1] = method481(i3, k2, 0);
-			} else if ((anIntArray1637[j1] & 1) == 0) {
+			} else if ((triangleDrawType[j1] & 1) == 0) {
 				int j3 = anIntArray1640[j1];
-				int k3 = anIntArray1637[j1];
+				int k3 = triangleDrawType[j1];
 				VertexNormal class33_1 = super.vertexNormals[k1];
 				int l2 = i
 				+ (k * class33_1.x + l * class33_1.y + i1
@@ -2010,9 +2010,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		vertexNormalOffset = null;
 		anIntArray1655 = null;
 		anIntArray1656 = null;
-		if (anIntArray1637 != null) {
-			for (int l1 = 0; l1 < anInt1630; l1++)
-				if ((anIntArray1637[l1] & 2) == 2)
+		if (triangleDrawType != null) {
+			for (int l1 = 0; l1 < triangleCount; l1++)
+				if ((triangleDrawType[l1] & 2) == 2)
 					return;
 
 		}
@@ -2099,25 +2099,25 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int set2 = 0;
 		int max = 50;
 		if(textureIds != null) {
-			anIntArray1643 = new int[anInt1630];
-			anIntArray1644 = new int[anInt1630];
-			anIntArray1645 = new int[anInt1630];
+			anIntArray1643 = new int[triangleCount];
+			anIntArray1644 = new int[triangleCount];
+			anIntArray1645 = new int[triangleCount];
 
 
-			for(int i = 0; i < anInt1630; i++) {
-				if(textureIds[i] == -1 && anIntArray1637[i] == 2) {
+			for(int i = 0; i < triangleCount; i++) {
+				if(textureIds[i] == -1 && triangleDrawType[i] == 2) {
 					anIntArray1640[i] = 65535;
-					anIntArray1637[i] = 0;
+					triangleDrawType[i] = 0;
 				}
 				if(textureIds[i] >= max || textureIds[i] < 0 || textureIds[i] == 39) {
-					anIntArray1637[i] = 0;
+					triangleDrawType[i] = 0;
 					continue;
 				}
-				anIntArray1637[i] = 2+set2;
+				triangleDrawType[i] = 2+set2;
 				set2 += 4;
-				int a = anIntArray1631[i];
-				int b = anIntArray1632[i];
-				int c = anIntArray1633[i];
+				int a = triangleX[i];
+				int b = triangleY[i];
+				int c = triangleZ[i];
 				anIntArray1640[i] = textureIds[i];
 
 
@@ -2253,11 +2253,11 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		for (int j = 0; j < anInt1652; j++)
 			anIntArray1671[j] = 0;
 
-		for (int k = 0; k < anInt1630; k++)
-			if (anIntArray1637 == null || anIntArray1637[k] != -1) {
-				int l = anIntArray1631[k];
-				int k1 = anIntArray1632[k];
-				int j2 = anIntArray1633[k];
+		for (int k = 0; k < triangleCount; k++)
+			if (triangleDrawType == null || triangleDrawType[k] != -1) {
+				int l = triangleX[k];
+				int k1 = triangleY[k];
+				int j2 = triangleZ[k];
 				int i3 = anIntArray1665[l];
 				int l3 = anIntArray1665[k1];
 				int k4 = anIntArray1665[j2];
@@ -2424,19 +2424,19 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			method485(i);
 			return;
 		}
-		int j = anIntArray1631[i];
-		int k = anIntArray1632[i];
-		int l = anIntArray1633[i];
+		int j = triangleX[i];
+		int k = triangleY[i];
+		int l = triangleZ[i];
 		Rasterizer.aBoolean1462 = aBooleanArray1663[i];
 		if (anIntArray1639 == null)
 			Rasterizer.anInt1465 = 0;
 		else
 			Rasterizer.anInt1465 = anIntArray1639[i];
 		int i1;
-		if (anIntArray1637 == null)
+		if (triangleDrawType == null)
 			i1 = 0;
 		else
-			i1 = anIntArray1637[i] & 3;
+			i1 = triangleDrawType[i] & 3;
 		if (i1 == 0) {
 			if(Configuration.distanceFog) {
 				Rasterizer.drawFogTriangle(anIntArray1666[j], anIntArray1666[k],
@@ -2464,7 +2464,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			return;
 		}
 		if (i1 == 2) {
-			int j1 = anIntArray1637[i] >> 2;
+			int j1 = triangleDrawType[i] >> 2;
 			int l1 = anIntArray1643[j1];
 			int j2 = anIntArray1644[j1];
 			int l2 = anIntArray1645[j1];
@@ -2487,7 +2487,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 			return;
 		}
 		if (i1 == 3) {
-			int k1 = anIntArray1637[i] >> 2;
+			int k1 = triangleDrawType[i] >> 2;
 				int i2 = anIntArray1643[k1];
 				int k2 = anIntArray1644[k1];
 				int i3 = anIntArray1645[k1];
@@ -2517,9 +2517,9 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int j = Rasterizer.centerX;
 		int k = Rasterizer.centerY;
 		int l = 0;
-		int i1 = anIntArray1631[i];
-		int j1 = anIntArray1632[i];
-		int k1 = anIntArray1633[i];
+		int i1 = triangleX[i];
+		int j1 = triangleY[i];
+		int k1 = triangleZ[i];
 		int l1 = anIntArray1670[i1];
 		int i2 = anIntArray1670[j1];
 		int j2 = anIntArray1670[k1];
@@ -2625,10 +2625,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 						|| j4 > DrawingArea.centerX || j5 > DrawingArea.centerX)
 					Rasterizer.aBoolean1462 = true;
 				int l7;
-				if (anIntArray1637 == null)
+				if (triangleDrawType == null)
 					l7 = 0;
 				else
-					l7 = anIntArray1637[i] & 3;
+					l7 = triangleDrawType[i] & 3;
 				if (l7 == 0) {
 					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5,
 							anIntArray1680[0], anIntArray1680[1],
@@ -2637,7 +2637,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					Rasterizer.method376(i7, j7, k7, j3, j4, j5,
 							anIntArray1691[anIntArray1634[i]]);
 				}else if (l7 == 2) {
-					int j8 = anIntArray1637[i] >> 2;
+					int j8 = triangleDrawType[i] >> 2;
 					int k9 = anIntArray1643[j8];
 					int k10 = anIntArray1644[j8];
 					int k11 = anIntArray1645[j8];
@@ -2650,7 +2650,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 							anIntArray1670[k10], anIntArray1670[k11],
 							anIntArray1640[i]);
 				} else if (l7 == 3) {
-					int k8 = anIntArray1637[i] >> 2;
+					int k8 = triangleDrawType[i] >> 2;
 					int l9 = anIntArray1643[k8];
 					int l10 = anIntArray1644[k8];
 					int l11 = anIntArray1645[k8];
@@ -2671,10 +2671,10 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 						|| anIntArray1678[3] > DrawingArea.centerX)
 					Rasterizer.aBoolean1462 = true;
 				int i8;
-				if (anIntArray1637 == null)
+				if (triangleDrawType == null)
 					i8 = 0;
 				else
-					i8 = anIntArray1637[i] & 3;
+					i8 = triangleDrawType[i] & 3;
 				if (i8 == 0) {
 					Rasterizer.drawGouraudTriangle(i7, j7, k7, j3, j4, j5,
 							anIntArray1680[0], anIntArray1680[1],
@@ -2692,7 +2692,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					return;
 				}
 				if (i8 == 2) {
-					int i9 = anIntArray1637[i] >> 2;
+					int i9 = triangleDrawType[i] >> 2;
 					int i10 = anIntArray1643[i9];
 					int i11 = anIntArray1644[i9];
 					int i12 = anIntArray1645[i9];
@@ -2715,7 +2715,7 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 					return;
 				}
 				if (i8 == 3) {
-					int j9 = anIntArray1637[i] >> 2;
+					int j9 = triangleDrawType[i] >> 2;
 					int j10 = anIntArray1643[j9];
 					int j11 = anIntArray1644[j9];
 					int j12 = anIntArray1645[j9];
@@ -2767,14 +2767,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public int verticesX[];
 	public int verticesY[];
 	public int verticesZ[];
-	public int anInt1630;
-	public int anIntArray1631[];
-	public int anIntArray1632[];
-	public int anIntArray1633[];
+	public int triangleCount;
+	public int triangleX[];
+	public int triangleY[];
+	public int triangleZ[];
 	public int anIntArray1634[];
 	public int anIntArray1635[];
 	public int anIntArray1636[];
-	public int anIntArray1637[];
+	public int triangleDrawType[];
 	public int anIntArray1638[];
 	public int anIntArray1639[];
 	public int[] anIntArray1640;

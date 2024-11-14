@@ -2606,11 +2606,11 @@ public class client extends Applet_Sub1 {
 
             for(k2 = 1; k2 < 103; ++k2) {
                 if((this.aByteArrayArrayArray1258[i][k2][j1] & 24) == 0) {
-                    this.aClass25_946.method309(ai, l1, 512, i, k2, j1);
+                    this.aClass25_946.drawMinimapTile(ai, l1, 512, i, k2, j1);
                 }
 
                 if(i < 3 && (this.aByteArrayArrayArray1258[i + 1][k2][j1] & 8) != 0) {
-                    this.aClass25_946.method309(ai, l1, 512, i + 1, k2, j1);
+                    this.aClass25_946.drawMinimapTile(ai, l1, 512, i + 1, k2, j1);
                 }
 
                 l1 += 4;

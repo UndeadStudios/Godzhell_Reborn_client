@@ -170,30 +170,30 @@ public class Class25
     {
         if(l == 0)
         {
-            Class43 class43 = new Class43(k2, l2, i3, j3, underlaytex, k4, false, tex);
+            PlainTile plainTile = new PlainTile(k2, l2, i3, j3, underlaytex, k4, false, tex);
             for(int i5 = i; i5 >= 0; i5--)
                 if(tileArray[i5][j][k] == null)
                     tileArray[i5][j][k] = new Tile(i5, j, k);
 
-            tileArray[i][j][k].aClass43_1311 = class43;
+            tileArray[i][j][k].plainTile = plainTile;
             return;
         }
         if(l == 1)
         {
-            Class43 class43_1 = new Class43(k3, l3, i4, j4, overlaytex, l4, k1 == l1 && k1 == i2 && k1 == j2, tex);
+            PlainTile plainTile_1 = new PlainTile(k3, l3, i4, j4, overlaytex, l4, k1 == l1 && k1 == i2 && k1 == j2, tex);
             for(int j5 = i; j5 >= 0; j5--)
                 if(tileArray[j5][j][k] == null)
                     tileArray[j5][j][k] = new Tile(j5, j, k);
 
-            tileArray[i][j][k].aClass43_1311 = class43_1;
+            tileArray[i][j][k].plainTile = plainTile_1;
             return;
         }
-        Class40 class40 = new Class40(k, k3, j3, i2, overlaytex, underlaytex,i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, 3, j, l4, tex);
+        ShapedTile shapedTile = new ShapedTile(k, k3, j3, i2, overlaytex, underlaytex,i4, i1, k2, k4, i3, j2, l1, k1, l, j4, l3, l2, 3, j, l4, tex);
         for(int k5 = i; k5 >= 0; k5--)
             if(tileArray[k5][j][k] == null)
                 tileArray[k5][j][k] = new Tile(k5, j, k);
 
-        tileArray[i][j][k].aClass40_1312 = class40;
+        tileArray[i][j][k].aShapedTile_1312 = shapedTile;
     }
 
     public void method280(int i, int j, int k, int l, Animable animable, byte byte0, long i1,
@@ -850,74 +850,77 @@ public class Class25
         if(count < 3 || !flag) {
             return;
         }
-        for(int k1 = 0; k1 < model.anInt1630; k1++)
-            if(anIntArray486[model.anIntArray1631[k1]] == anInt488 && anIntArray486[model.anIntArray1632[k1]] == anInt488 && anIntArray486[model.anIntArray1633[k1]] == anInt488)
-                model.anIntArray1637[k1] = -1;
-
-        for(int l1 = 0; l1 < model_1.anInt1630; l1++)
-            if(anIntArray487[model_1.anIntArray1631[l1]] == anInt488 && anIntArray487[model_1.anIntArray1632[l1]] == anInt488 && anIntArray487[model_1.anIntArray1633[l1]] == anInt488)
-                model_1.anIntArray1637[l1] = -1;
-
+        for(int triangle = 0; triangle < model.triangleCount; triangle++) {
+            if (anIntArray486[model.triangleX[triangle]] == anInt488
+                    && anIntArray486[model.triangleY[triangle]] == anInt488
+                    && anIntArray486[model.triangleZ[triangle]] == anInt488) {
+                model.triangleDrawType[triangle] = -1;
+            }
+        }
+        for(int triangle = 0; triangle < model_1.triangleCount; triangle++) {
+            if (anIntArray487[model_1.triangleX[triangle]] == anInt488
+                    && anIntArray487[model_1.triangleY[triangle]] == anInt488
+                    && anIntArray487[model_1.triangleZ[triangle]] == anInt488) {
+                model_1.triangleDrawType[triangle] = -1;
+            }
+        }
     }
 
-    public void method309(int ai[], int i, int j, int k, int l, int i1)
+    public void drawMinimapTile(int[] pixels, int pixelPointer, int scanLength, int z, int x, int y)
     {
-        Tile tile = tileArray[k][l][i1];
+        Tile tile = tileArray[z][x][y];
         if(tile == null)
             return;
-        Class43 class43 = tile.aClass43_1311;
-        if(class43 != null)
+        PlainTile plainTile = tile.plainTile;
+        if(plainTile != null)
         {
-            int j1 = class43.anInt722;
-            if(j1 == 0)
+            int colourRGB = plainTile.colourRGB;
+            if(colourRGB == 0) {
                 return;
+            }
             for(int k1 = 0; k1 < 4; k1++)
             {
-                ai[i] = j1;
-                ai[i + 1] = j1;
-                ai[i + 2] = j1;
-                ai[i + 3] = j1;
-                i += j;
+                pixels[pixelPointer] = colourRGB;
+                pixels[pixelPointer + 1] = colourRGB;
+                pixels[pixelPointer + 2] = colourRGB;
+                pixels[pixelPointer + 3] = colourRGB;
+                pixelPointer += scanLength;
             }
-
             return;
         }
-        Class40 class40 = tile.aClass40_1312;
-        if(class40 == null)
+        ShapedTile shapedTile = tile.aShapedTile_1312;
+        if(shapedTile == null)
             return;
-        int l1 = class40.anInt684;
-        int i2 = class40.anInt685;
-        int j2 = class40.anInt686;
-        int k2 = class40.anInt687;
-        int ai1[] = tileShapePoints[l1];
-        int ai2[] = tileShapeIndices[i2];
-        int l2 = 0;
-        if(j2 != 0)
+        int shape = shapedTile.shape;
+        int rotation = shapedTile.rotation;
+        int underlayRGB = shapedTile.underlayRGB;
+        int overlayRGB = shapedTile.overlayRGB;
+        int[] shapePoints = tileShapePoints[shape];
+        int[] shapeIndices = tileShapeIndices[rotation];
+        int shapePointer = 0;
+        if(underlayRGB != 0)
         {
             for(int i3 = 0; i3 < 4; i3++)
             {
-                ai[i] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-                ai[i + 1] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-                ai[i + 2] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-                ai[i + 3] = ai1[ai2[l2++]] != 0 ? k2 : j2;
-                i += j;
+                pixels[pixelPointer] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
+                pixels[pixelPointer + 1] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
+                pixels[pixelPointer + 2] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
+                pixels[pixelPointer + 3] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
+                pixelPointer += scanLength;
             }
-
             return;
         }
-        for(int j3 = 0; j3 < 4; j3++)
-        {
-            if(ai1[ai2[l2++]] != 0)
-                ai[i] = k2;
-            if(ai1[ai2[l2++]] != 0)
-                ai[i + 1] = k2;
-            if(ai1[ai2[l2++]] != 0)
-                ai[i + 2] = k2;
-            if(ai1[ai2[l2++]] != 0)
-                ai[i + 3] = k2;
-            i += j;
+        for(int j3 = 0; j3 < 4; j3++) {
+            if(shapePoints[shapeIndices[shapePointer++]] != 0)
+                pixels[pixelPointer] = overlayRGB;
+            if(shapePoints[shapeIndices[shapePointer++]] != 0)
+                pixels[pixelPointer + 1] = overlayRGB;
+            if(shapePoints[shapeIndices[shapePointer++]] != 0)
+                pixels[pixelPointer + 2] = overlayRGB;
+            if(shapePoints[shapeIndices[shapePointer++]] != 0)
+                pixels[pixelPointer + 3] = overlayRGB;
+            pixelPointer += scanLength;
         }
-
     }
 
     public static void method310(int i, int j, int k, int l, int ai[], boolean flag)
@@ -1280,13 +1283,13 @@ label0:
                 if(tile_1.aTile_1329 != null)
                 {
                     Tile tile_7 = tile_1.aTile_1329;
-                    if(tile_7.aClass43_1311 != null)
+                    if(tile_7.plainTile != null)
                     {
                         if(!method320(0, i, j))
-                            method315(tile_7.aClass43_1311, 0, curveSineY, curveCosineY, curveSineX, curveCosineX, i, j);
+                            method315(tile_7.plainTile, 0, curveSineY, curveCosineY, curveSineX, curveCosineX, i, j);
                     } else
-                    if(tile_7.aClass40_1312 != null && !method320(0, i, j))
-                        method316(i, curveSineY, curveSineX, tile_7.aClass40_1312, curveCosineY, j, curveCosineX);
+                    if(tile_7.aShapedTile_1312 != null && !method320(0, i, j))
+                        method316(i, curveSineY, curveSineX, tile_7.aShapedTile_1312, curveCosineY, j, curveCosineX);
                     Class10 class10 = tile_7.aClass10_1313;
                     if(class10 != null)
                         class10.aAnimable_278.method443(0, curveSineY, curveCosineY, curveSineX, curveCosineX, class10.anInt274 - cameraPosX, class10.anInt273 - cameraPosZ, class10.anInt275 - cameraPosY, class10.anInt280);
@@ -1299,18 +1302,18 @@ label0:
 
                 }
                 boolean flag1 = false;
-                if(tile_1.aClass43_1311 != null)
+                if(tile_1.plainTile != null)
                 {
                     if(!method320(l, i, j))
                     {
                         flag1 = true;
-                        method315(tile_1.aClass43_1311, l, curveSineY, curveCosineY, curveSineX, curveCosineX, i, j);
+                        method315(tile_1.plainTile, l, curveSineY, curveCosineY, curveSineX, curveCosineX, i, j);
                     }
                 } else
-                if(tile_1.aClass40_1312 != null && !method320(l, i, j))
+                if(tile_1.aShapedTile_1312 != null && !method320(l, i, j))
                 {
                     flag1 = true;
-                    method316(i, curveSineY, curveSineX, tile_1.aClass40_1312, curveCosineY, j, curveCosineX);
+                    method316(i, curveSineY, curveSineX, tile_1.aShapedTile_1312, curveCosineY, j, curveCosineX);
                 }
                 int j1 = 0;
                 int j2 = 0;
@@ -1687,7 +1690,7 @@ label0:
         } while(true);
     }
 
-    private void method315(Class43 class43, int i, int j, int k, int l, int i1, int j1, int k1) {
+    private void method315(PlainTile plainTile, int i, int j, int k, int l, int i1, int j1, int k1) {
         int l1;
         int i2 = l1 = (j1 << 7) - cameraPosX;
         int z2;
@@ -1752,35 +1755,35 @@ label0:
                 clickedTileX = j1;
                 clickedTileY = k1;
             }
-            if (class43.anInt720 == -1 || class43.anInt720 > 50) {
-                if (class43.anInt718 != 0xbc614e) {
-                    if (Configuration.hdTexturing && class43.anInt720 != -1) {
-                        if (class43.aBoolean721) {
-                            Rasterizer.drawMaterializedTriangle(y3, y4, y2, x3, x4, x2, class43.anInt718,
-                                    class43.anInt719, class43.anInt717, i2, i3, l1, l3, i4, k4, z1, z2, z4,
-                                    class43.anInt720);
+            if (plainTile.anInt720 == -1 || plainTile.anInt720 > 50) {
+                if (plainTile.anInt718 != 0xbc614e) {
+                    if (Configuration.hdTexturing && plainTile.anInt720 != -1) {
+                        if (plainTile.aBoolean721) {
+                            Rasterizer.drawMaterializedTriangle(y3, y4, y2, x3, x4, x2, plainTile.anInt718,
+                                    plainTile.anInt719, plainTile.anInt717, i2, i3, l1, l3, i4, k4, z1, z2, z4,
+                                    plainTile.anInt720);
                         } else {
-                            Rasterizer.drawMaterializedTriangle(y3, y4, y2, x3, x4, x2, class43.anInt718,
-                                    class43.anInt719, class43.anInt717, l2, l1, i3, j4, k4, i4, z3, z4, z2,
-                                    class43.anInt720);
+                            Rasterizer.drawMaterializedTriangle(y3, y4, y2, x3, x4, x2, plainTile.anInt718,
+                                    plainTile.anInt719, plainTile.anInt717, l2, l1, i3, j4, k4, i4, z3, z4, z2,
+                                    plainTile.anInt720);
                         }
                     } else {
-                        Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, class43.anInt718, class43.anInt719,
-                                class43.anInt717);
+                        Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, plainTile.anInt718, plainTile.anInt719,
+                                plainTile.anInt717);
                     }
                 }
             } else if (!lowMem) {
-                if (class43.aBoolean721) {
-                    Rasterizer.method378(y3, y4, y2, x3, x4, x2, class43.anInt718, class43.anInt719, class43.anInt717,
-                            i2, i3, l1, l3, i4, k4, z1, z2, z4, class43.anInt720);
+                if (plainTile.aBoolean721) {
+                    Rasterizer.method378(y3, y4, y2, x3, x4, x2, plainTile.anInt718, plainTile.anInt719, plainTile.anInt717,
+                            i2, i3, l1, l3, i4, k4, z1, z2, z4, plainTile.anInt720);
                 } else {
-                    Rasterizer.method378(y3, y4, y2, x3, x4, x2, class43.anInt718, class43.anInt719, class43.anInt717,
-                            l2, l1, i3, j4, k4, i4, z3, z4, z2, class43.anInt720);
+                    Rasterizer.method378(y3, y4, y2, x3, x4, x2, plainTile.anInt718, plainTile.anInt719, plainTile.anInt717,
+                            l2, l1, i3, j4, k4, i4, z3, z4, z2, plainTile.anInt720);
                 }
             } else {
-                int i7 = textureRGB[class43.anInt720];
-                Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, method317(i7, class43.anInt718),
-                        method317(i7, class43.anInt719), method317(i7, class43.anInt717));
+                int i7 = textureRGB[plainTile.anInt720];
+                Rasterizer.drawGouraudTriangle(y3, y4, y2, x3, x4, x2, method317(i7, plainTile.anInt718),
+                        method317(i7, plainTile.anInt719), method317(i7, plainTile.anInt717));
             }
             if (Configuration.distanceFog) {
                 Rasterizer.drawFogTriangle(y3, y4, y2, x3, x4, x2, z3, z4, z2);
@@ -1793,24 +1796,24 @@ label0:
                 clickedTileX = j1;
                 clickedTileY = k1;
             }
-            if (class43.anInt720 == -1 || class43.anInt720 > 50) {
-                if (class43.anInt716 != 0xbc614e) {
-                    if (Configuration.hdTexturing && class43.anInt720 != -1) {
-                        Rasterizer.drawMaterializedTriangle(y1, y2, y4, x1, x2, x4, class43.anInt716, class43.anInt717,
-                                class43.anInt719, i2, i3, l1, l3, i4, k4, z1, z2, z4, class43.anInt720);
+            if (plainTile.anInt720 == -1 || plainTile.anInt720 > 50) {
+                if (plainTile.anInt716 != 0xbc614e) {
+                    if (Configuration.hdTexturing && plainTile.anInt720 != -1) {
+                        Rasterizer.drawMaterializedTriangle(y1, y2, y4, x1, x2, x4, plainTile.anInt716, plainTile.anInt717,
+                                plainTile.anInt719, i2, i3, l1, l3, i4, k4, z1, z2, z4, plainTile.anInt720);
                     } else {
-                        Rasterizer.drawGouraudTriangle(y1, y2, y4, x1, x2, x4, class43.anInt716, class43.anInt717,
-                                class43.anInt719);
+                        Rasterizer.drawGouraudTriangle(y1, y2, y4, x1, x2, x4, plainTile.anInt716, plainTile.anInt717,
+                                plainTile.anInt719);
                     }
                 }
             } else {
                 if (!lowMem) {
-                    Rasterizer.method378(y1, y2, y4, x1, x2, x4, class43.anInt716, class43.anInt717, class43.anInt719,
-                            i2, i3, l1, l3, i4, k4, z1, z2, z4, class43.anInt720);
+                    Rasterizer.method378(y1, y2, y4, x1, x2, x4, plainTile.anInt716, plainTile.anInt717, plainTile.anInt719,
+                            i2, i3, l1, l3, i4, k4, z1, z2, z4, plainTile.anInt720);
                 } else {
-                    int j7 = textureRGB[class43.anInt720];
-                    Rasterizer.drawGouraudTriangle(y1, y2, y4, x1, x2, x4, method317(j7, class43.anInt716),
-                            method317(j7, class43.anInt717), method317(j7, class43.anInt719));
+                    int j7 = textureRGB[plainTile.anInt720];
+                    Rasterizer.drawGouraudTriangle(y1, y2, y4, x1, x2, x4, method317(j7, plainTile.anInt716),
+                            method317(j7, plainTile.anInt717), method317(j7, plainTile.anInt719));
                 }
             }
             if (Configuration.distanceFog) {
@@ -1819,12 +1822,12 @@ label0:
         }
     }
 
-    private void method316(int i, int j, int k, Class40 class40, int l, int i1, int j1) {
-        int k1 = class40.anIntArray673.length;
+    private void method316(int i, int j, int k, ShapedTile shapedTile, int l, int i1, int j1) {
+        int k1 = shapedTile.anIntArray673.length;
         for (int l1 = 0; l1 < k1; l1++) {
-            int i2 = class40.anIntArray673[l1] - cameraPosX;
-            int k2 = class40.anIntArray674[l1] - cameraPosZ;
-            int i3 = class40.anIntArray675[l1] - cameraPosY;
+            int i2 = shapedTile.anIntArray673[l1] - cameraPosX;
+            int k2 = shapedTile.anIntArray674[l1] - cameraPosZ;
+            int i3 = shapedTile.anIntArray675[l1] - cameraPosY;
             int k3 = i3 * k + i2 * j1 >> 16;
             i3 = i3 * j1 - i2 * k >> 16;
             i2 = k3;
@@ -1834,29 +1837,29 @@ label0:
             if (i3 < 50) {
                 return;
             }
-            if (Configuration.hdTexturing || class40.anIntArray682 != null) {
-                Class40.anIntArray690[l1] = i2;
-                Class40.anIntArray691[l1] = k2;
-                Class40.anIntArray692[l1] = i3;
+            if (Configuration.hdTexturing || shapedTile.anIntArray682 != null) {
+                ShapedTile.anIntArray690[l1] = i2;
+                ShapedTile.anIntArray691[l1] = k2;
+                ShapedTile.anIntArray692[l1] = i3;
             } else if (Configuration.distanceFog) {
-                Class40.anIntArray692[l1] = i3;
+                ShapedTile.anIntArray692[l1] = i3;
             }
-            Class40.anIntArray688[l1] = Rasterizer.centerX + (i2 << client.log_view_dist) / i3;
-            Class40.anIntArray689[l1] = Rasterizer.centerY + (k2 << client.log_view_dist) / i3;
+            ShapedTile.anIntArray688[l1] = Rasterizer.centerX + (i2 << client.log_view_dist) / i3;
+            ShapedTile.anIntArray689[l1] = Rasterizer.centerY + (k2 << client.log_view_dist) / i3;
         }
 
         Rasterizer.anInt1465 = 0;
-        k1 = class40.anIntArray679.length;
+        k1 = shapedTile.anIntArray679.length;
         for (int j2 = 0; j2 < k1; j2++) {
-            int l2 = class40.anIntArray679[j2];
-            int j3 = class40.anIntArray680[j2];
-            int l3 = class40.anIntArray681[j2];
-            int x1 = Class40.anIntArray688[l2];
-            int x2 = Class40.anIntArray688[j3];
-            int x3 = Class40.anIntArray688[l3];
-            int y1 = Class40.anIntArray689[l2];
-            int y2 = Class40.anIntArray689[j3];
-            int y3 = Class40.anIntArray689[l3];
+            int l2 = shapedTile.anIntArray679[j2];
+            int j3 = shapedTile.anIntArray680[j2];
+            int l3 = shapedTile.anIntArray681[j2];
+            int x1 = ShapedTile.anIntArray688[l2];
+            int x2 = ShapedTile.anIntArray688[j3];
+            int x3 = ShapedTile.anIntArray688[l3];
+            int y1 = ShapedTile.anIntArray689[l2];
+            int y2 = ShapedTile.anIntArray689[j3];
+            int y3 = ShapedTile.anIntArray689[l3];
             if ((x1 - x2) * (y3 - y2) - (y1 - y2) * (x3 - x2) > 0) {
                 Rasterizer.aBoolean1462 = x1 < 0 || x2 < 0 || x3 < 0 || x1 > DrawingArea.centerX
                         || x2 > DrawingArea.centerX || x3 > DrawingArea.centerX;
@@ -1864,52 +1867,52 @@ label0:
                     clickedTileX = i;
                     clickedTileY = i1;
                 }
-                if (class40.anIntArray682 == null || class40.anIntArray682[j2] == -1
-                        || class40.anIntArray682[j2] > 50) {
-                    if (class40.anIntArray676[j2] != 0xbc614e) {
-                        if (Configuration.hdTexturing && class40.anIntArray682 != null
-                                && class40.anIntArray682[j2] != -1) {
-                            if (class40.aBoolean683 || class40.anIntArray682[j2] == 505) {
-                                Rasterizer.drawMaterializedTriangle(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
-                                        class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
-                                        Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
-                                        Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
-                                        Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
+                if (shapedTile.anIntArray682 == null || shapedTile.anIntArray682[j2] == -1
+                        || shapedTile.anIntArray682[j2] > 50) {
+                    if (shapedTile.anIntArray676[j2] != 0xbc614e) {
+                        if (Configuration.hdTexturing && shapedTile.anIntArray682 != null
+                                && shapedTile.anIntArray682[j2] != -1) {
+                            if (shapedTile.aBoolean683 || shapedTile.anIntArray682[j2] == 505) {
+                                Rasterizer.drawMaterializedTriangle(y1, y2, y3, x1, x2, x3, shapedTile.anIntArray676[j2],
+                                        shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[0],
+                                        ShapedTile.anIntArray690[1], ShapedTile.anIntArray690[3], ShapedTile.anIntArray691[0],
+                                        ShapedTile.anIntArray691[1], ShapedTile.anIntArray691[3], ShapedTile.anIntArray692[0],
+                                        ShapedTile.anIntArray692[1], ShapedTile.anIntArray692[3], shapedTile.anIntArray682[j2]);
                             } else {
-                                Rasterizer.drawMaterializedTriangle(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
-                                        class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
-                                        Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
-                                        Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
-                                        Class40.anIntArray692[j3], Class40.anIntArray692[l3],
-                                        class40.anIntArray682[j2]);
+                                Rasterizer.drawMaterializedTriangle(y1, y2, y3, x1, x2, x3, shapedTile.anIntArray676[j2],
+                                        shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[l2],
+                                        ShapedTile.anIntArray690[j3], ShapedTile.anIntArray690[l3], ShapedTile.anIntArray691[l2],
+                                        ShapedTile.anIntArray691[j3], ShapedTile.anIntArray691[l3], ShapedTile.anIntArray692[l2],
+                                        ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3],
+                                        shapedTile.anIntArray682[j2]);
                             }
                         } else {
-                            Rasterizer.drawGouraudTriangle(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
-                                    class40.anIntArray677[j2], class40.anIntArray678[j2]);
+                            Rasterizer.drawGouraudTriangle(y1, y2, y3, x1, x2, x3, shapedTile.anIntArray676[j2],
+                                    shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2]);
                         }
                     }
                 } else if (!lowMem) {
-                    if (/* true || */class40.aBoolean683) {
-                        Rasterizer.method378(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
-                                class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[0],
-                                Class40.anIntArray690[1], Class40.anIntArray690[3], Class40.anIntArray691[0],
-                                Class40.anIntArray691[1], Class40.anIntArray691[3], Class40.anIntArray692[0],
-                                Class40.anIntArray692[1], Class40.anIntArray692[3], class40.anIntArray682[j2]);
+                    if (/* true || */shapedTile.aBoolean683) {
+                        Rasterizer.method378(y1, y2, y3, x1, x2, x3, shapedTile.anIntArray676[j2],
+                                shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[0],
+                                ShapedTile.anIntArray690[1], ShapedTile.anIntArray690[3], ShapedTile.anIntArray691[0],
+                                ShapedTile.anIntArray691[1], ShapedTile.anIntArray691[3], ShapedTile.anIntArray692[0],
+                                ShapedTile.anIntArray692[1], ShapedTile.anIntArray692[3], shapedTile.anIntArray682[j2]);
                     } else {
-                        Rasterizer.method378(y1, y2, y3, x1, x2, x3, class40.anIntArray676[j2],
-                                class40.anIntArray677[j2], class40.anIntArray678[j2], Class40.anIntArray690[l2],
-                                Class40.anIntArray690[j3], Class40.anIntArray690[l3], Class40.anIntArray691[l2],
-                                Class40.anIntArray691[j3], Class40.anIntArray691[l3], Class40.anIntArray692[l2],
-                                Class40.anIntArray692[j3], Class40.anIntArray692[l3], class40.anIntArray682[j2]);
+                        Rasterizer.method378(y1, y2, y3, x1, x2, x3, shapedTile.anIntArray676[j2],
+                                shapedTile.anIntArray677[j2], shapedTile.anIntArray678[j2], ShapedTile.anIntArray690[l2],
+                                ShapedTile.anIntArray690[j3], ShapedTile.anIntArray690[l3], ShapedTile.anIntArray691[l2],
+                                ShapedTile.anIntArray691[j3], ShapedTile.anIntArray691[l3], ShapedTile.anIntArray692[l2],
+                                ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3], shapedTile.anIntArray682[j2]);
                     }
                 } else {
-                    int k5 = textureRGB[class40.anIntArray682[j2]];
-                    Rasterizer.drawGouraudTriangle(y1, y2, y3, x1, x2, x3, method317(k5, class40.anIntArray676[j2]),
-                            method317(k5, class40.anIntArray677[j2]), method317(k5, class40.anIntArray678[j2]));
+                    int k5 = textureRGB[shapedTile.anIntArray682[j2]];
+                    Rasterizer.drawGouraudTriangle(y1, y2, y3, x1, x2, x3, method317(k5, shapedTile.anIntArray676[j2]),
+                            method317(k5, shapedTile.anIntArray677[j2]), method317(k5, shapedTile.anIntArray678[j2]));
                 }
                 if (Configuration.distanceFog) {
-                    Rasterizer.drawFogTriangle(y1, y2, y3, x1, x2, x3, Class40.anIntArray692[l2],
-                            Class40.anIntArray692[j3], Class40.anIntArray692[l3]);
+                    Rasterizer.drawFogTriangle(y1, y2, y3, x1, x2, x3, ShapedTile.anIntArray692[l2],
+                            ShapedTile.anIntArray692[j3], ShapedTile.anIntArray692[l3]);
                 }
             }
         }

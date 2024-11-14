@@ -16,8 +16,8 @@ final class Tile extends Class30
     int anInt1308;
     int anInt1309;
     int anInt1310;
-    public Class43 aClass43_1311;
-    public Class40 aClass40_1312;
+    public PlainTile plainTile;
+    public ShapedTile aShapedTile_1312;
     Class10 aClass10_1313;
     Class26 aClass26_1314;
     Class49 groundDecoration;

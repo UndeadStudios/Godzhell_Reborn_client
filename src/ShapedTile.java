@@ -1,11 +1,9 @@
-import sign.signlink;
-
-final class Class40
+final class ShapedTile
 {
 
-    public Class40(int i, int j, int k, int l, int overlaytex, int underlaytex, int j1, int k1,
-            int l1, int i2, int j2, int k2, int l2, int i3, int j3, 
-            int k3, int l3, int i4, int j4, int k4, int l4, boolean tex)
+    public ShapedTile(int i, int j, int k, int l, int overlaytex, int underlaytex, int j1, int k1,
+                      int l1, int i2, int j2, int k2, int l2, int i3, int j3,
+                      int k3, int l3, int i4, int j4, int k4, int l4, boolean tex)
     {
         color61 = l1;
         color71 = i4;
@@ -19,10 +17,10 @@ final class Class40
         textured = tex;
         if(i3 != l2 || i3 != l || i3 != k2)
             aBoolean683 = false;
-        anInt684 = j3;
-        anInt685 = k1;
-        anInt686 = i2;
-        anInt687 = l4;
+        shape = j3;
+        rotation = k1;
+        underlayRGB = i2;
+        overlayRGB = l4;
         char c = '\200';
         int i5 = c / 2;
         int j5 = c / 4;
@@ -261,10 +259,10 @@ final class Class40
     int anIntArray681[];
     int anIntArray682[];
     boolean aBoolean683;
-    int anInt684;
-    int anInt685;
-    int anInt686;
-    int anInt687;
+    int shape;
+    int rotation;
+    int underlayRGB;
+    int overlayRGB;
     static int anIntArray688[] = new int[6];
     static int anIntArray689[] = new int[6];
     static int anIntArray690[] = new int[6];
