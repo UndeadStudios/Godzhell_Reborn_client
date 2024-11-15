@@ -909,7 +909,7 @@ public class client extends Applet_Sub1 {
             cameraZoom = 600;
         }
 
-        Class25.method310(500, 800, currentScreenMode == client.ScreenMode.FIXED?516:screenAreaWidth, currentScreenMode == client.ScreenMode.FIXED?335:screenAreaHeight, ai, aBoolean1231);
+        Class25.setupViewport(500, 800, currentScreenMode == client.ScreenMode.FIXED?516:screenAreaWidth, currentScreenMode == client.ScreenMode.FIXED?335:screenAreaHeight, ai);
         if(loggedIn) {
             aRSImageProducer_1165 = new RSImageProducer(screenAreaWidth, screenAreaHeight);
         }
@@ -10031,8 +10031,8 @@ public class client extends Applet_Sub1 {
 
         if(l > 4225 && l < 90000) {
             int i1 = this.anInt1185 + this.anInt1209 & 2047;
-            int j1 = Model.anIntArray1689[i1];
-            int k1 = Model.anIntArray1690[i1];
+            int j1 = Model.SINE[i1];
+            int k1 = Model.COSINE[i1];
             j1 = j1 * 256 / (this.anInt1170 + 256);
             k1 = k1 * 256 / (this.anInt1170 + 256);
             int l1 = j * j1 + k * k1 >> 16;
@@ -14550,10 +14550,10 @@ public class client extends Applet_Sub1 {
             i -= this.xCameraPos;
             i1 -= this.zCameraPos;
             l -= this.yCameraPos;
-            int j1 = Model.anIntArray1689[this.yCameraCurve];
-            int k1 = Model.anIntArray1690[this.yCameraCurve];
-            int l1 = Model.anIntArray1689[this.xCameraCurve];
-            int i2 = Model.anIntArray1690[this.xCameraCurve];
+            int j1 = Model.SINE[this.yCameraCurve];
+            int k1 = Model.COSINE[this.yCameraCurve];
+            int l1 = Model.SINE[this.xCameraCurve];
+            int i2 = Model.COSINE[this.xCameraCurve];
             int j2 = l * l1 + i * i2 >> 16;
             l = l * i2 - i * l1 >> 16;
             i = j2;
@@ -15640,8 +15640,8 @@ public class client extends Applet_Sub1 {
             }
 
             if(l <= 6400) {
-                int i1 = Model.anIntArray1689[k];
-                int j1 = Model.anIntArray1690[k];
+                int i1 = Model.SINE[k];
+                int j1 = Model.COSINE[k];
                 i1 = i1 * 256 / (this.anInt1170 + 256);
                 j1 = j1 * 256 / (this.anInt1170 + 256);
                 int k1 = j * i1 + i * j1 >> 16;
@@ -15777,8 +15777,8 @@ public class client extends Applet_Sub1 {
         int l3;
         int j4;
         if(l1 != 0) {
-            j3 = Model.anIntArray1689[l1];
-            l3 = Model.anIntArray1690[l1];
+            j3 = Model.SINE[l1];
+            l3 = Model.COSINE[l1];
             j4 = k2 * l3 - j * j3 >> 16;
             l2 = k2 * j3 + j * l3 >> 16;
             k2 = j4;
@@ -15803,8 +15803,8 @@ public class client extends Applet_Sub1 {
                 l2 = fwdbwd;
             }
 
-            j3 = Model.anIntArray1689[i2];
-            l3 = Model.anIntArray1690[i2];
+            j3 = Model.SINE[i2];
+            l3 = Model.COSINE[i2];
             j4 = l2 * j3 + j2 * l3 >> 16;
             l2 = l2 * l3 - j2 * j3 >> 16;
             j2 = j4;

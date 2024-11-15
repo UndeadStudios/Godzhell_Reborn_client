@@ -16,8 +16,8 @@ public class Model extends Animable {
 		anIntArray1675 = null;
 		anIntArray1676 = null;
 		anIntArray1677 = null;
-	       	anIntArray1689 = null;
-        	anIntArray1690 = null;
+	       	SINE = null;
+        	COSINE = null;
         	anIntArray1691 = null;
         	anIntArray1692 = null;
 	}
@@ -1737,23 +1737,23 @@ if(anIntArray1638 != null) {
 						int l6 = (k & 0xff) * 8;
 						int i7 = (l & 0xff) * 8;
 						if (i7 != 0) {
-							int j7 = anIntArray1689[i7];
-							int i8 = anIntArray1690[i7];
+							int j7 = SINE[i7];
+							int i8 = COSINE[i7];
 							int l8 = verticesY[k5] * j7 + verticesX[k5] * i8 >> 16;
 					verticesY[k5] = verticesY[k5] * i8
 					- verticesX[k5] * j7 >> 16;
 			verticesX[k5] = l8;
 						}
 						if (k6 != 0) {
-							int k7 = anIntArray1689[k6];
-							int j8 = anIntArray1690[k6];
+							int k7 = SINE[k6];
+							int j8 = COSINE[k6];
 							int i9 = verticesY[k5] * j8 - verticesZ[k5] * k7 >> 16;
 							verticesZ[k5] = verticesY[k5] * k7 + verticesZ[k5] * j8 >> 16;
 							verticesY[k5] = i9;
 						}
 						if (l6 != 0) {
-							int l7 = anIntArray1689[l6];
-							int k8 = anIntArray1690[l6];
+							int l7 = SINE[l6];
+							int k8 = COSINE[l6];
 							int j9 = verticesZ[k5] * l7 + verticesX[k5] * k8 >> 16;
 							verticesZ[k5] = verticesZ[k5] * k8 - verticesX[k5] * l7 >> 16;
 							verticesX[k5] = j9;
@@ -1815,8 +1815,8 @@ if(anIntArray1638 != null) {
 	}
 
 	public void method474(int i, int j) {
-		int k = anIntArray1689[i];
-		int l = anIntArray1690[i];
+		int k = SINE[i];
+		int l = COSINE[i];
 		for (int i1 = 0; i1 < vertexCount; i1++) {
 			int j1 = verticesY[i1] * l - verticesZ[i1] * k >> 16;
 			verticesZ[i1] = verticesY[i1] * k + verticesZ[i1] * l >> 16;
@@ -2043,14 +2043,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 		int i = 0;
 		int l1 = Rasterizer.centerX;
 		int i2 = Rasterizer.centerY;
-		int j2 = anIntArray1689[i];
-		int k2 = anIntArray1690[i];
-		int l2 = anIntArray1689[j];
-		int i3 = anIntArray1690[j];
-		int j3 = anIntArray1689[k];
-		int k3 = anIntArray1690[k];
-		int l3 = anIntArray1689[l];
-		int i4 = anIntArray1690[l];
+		int j2 = SINE[i];
+		int k2 = COSINE[i];
+		int l2 = SINE[j];
+		int i3 = COSINE[j];
+		int j3 = SINE[k];
+		int k3 = COSINE[k];
+		int l3 = SINE[l];
+		int i4 = COSINE[l];
 		int j4 = j1 * l3 + k1 * i4 >> 16;
 			for (int k4 = 0; k4 < vertexCount; k4++) {
 				int l4 = verticesX[k4];
@@ -2202,8 +2202,8 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 				int l6 = 0;
 				int i7 = 0;
 				if (i != 0) {
-					l6 = anIntArray1689[i];
-					i7 = anIntArray1690[i];
+					l6 = SINE[i];
+					i7 = COSINE[i];
 				}
 				for (int j7 = 0; j7 < vertexCount; j7++) {
 					int k7 = verticesX[j7];
@@ -2826,14 +2826,14 @@ public final void method479(int i, int j, int k, int l, int i1, boolean flag) {
 	public static int anInt1686;
 	public static int anInt1687;
 	public static long anIntArray1688[] = new long[1000];
-	public static int anIntArray1689[];
-	public static int anIntArray1690[];
+	public static int SINE[];
+	public static int COSINE[];
 	static int anIntArray1691[];
 	static int anIntArray1692[];
 
 	static {
-		anIntArray1689 = Rasterizer.anIntArray1470;
-		anIntArray1690 = Rasterizer.anIntArray1471;
+		SINE = Rasterizer.anIntArray1470;
+		COSINE = Rasterizer.anIntArray1471;
 		anIntArray1691 = Rasterizer.anIntArray1482;
 		anIntArray1692 = Rasterizer.anIntArray1469;
 	}

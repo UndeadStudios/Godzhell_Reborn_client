@@ -898,10 +898,8 @@ public class Class25
         int[] shapePoints = tileShapePoints[shape];
         int[] shapeIndices = tileShapeIndices[rotation];
         int shapePointer = 0;
-        if(underlayRGB != 0)
-        {
-            for(int i3 = 0; i3 < 4; i3++)
-            {
+        if(underlayRGB != 0) {
+            for(int i3 = 0; i3 < 4; i3++) {
                 pixels[pixelPointer] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
                 pixels[pixelPointer + 1] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
                 pixels[pixelPointer + 2] = shapePoints[shapeIndices[shapePointer++]] != 0 ? overlayRGB : underlayRGB;
@@ -923,7 +921,7 @@ public class Class25
         }
     }
 
-    public static void method310(int i, int j, int k, int l, int ai[], boolean flag)
+    public static void setupViewport(int i, int j, int k, int l, int ai[])
     {
         left = 0;
         top = 0;
@@ -931,35 +929,32 @@ public class Class25
         bottom = l;
         midX = k / 2;
         midY = l / 2;
-        boolean aflag[][][][] = new boolean[9][32][(MAX_FAR_Z * 2) + 3][(MAX_FAR_Z * 2) + 3];
-        if(flag)
-            anInt433 = 168;
-        for(int i1 = 128; i1 <= 384; i1 += 32)
+        boolean[][][][] tileOnScreen = new boolean[9][32][(MAX_FAR_Z * 2) + 3][(MAX_FAR_Z * 2) + 3];
+        for(int angleY = 128; angleY <= 384; angleY += 32)
         {
-            for(int j1 = 0; j1 < 2048; j1 += 64)
+            for(int angleX = 0; angleX < 2048; angleX += 64)
             {
-                curveSineY = Model.anIntArray1689[i1];
-                curveCosineY = Model.anIntArray1690[i1];
-                curveSineX = Model.anIntArray1689[j1];
-                curveCosineX = Model.anIntArray1690[j1];
-                int l1 = (i1 - 128) / 32;
-                int j2 = j1 / 64;
-                for(int l2 = -26; l2 <= 26; l2++)
-                {
-                    for(int j3 = -26; j3 <= 26; j3++)
-                    {
-                        int k3 = l2 * 128;
-                        int i4 = j3 * 128;
-                        boolean flag2 = false;
-                        for(int k4 = -i; k4 <= j; k4 += 128)
+                curveSineY = Model.SINE[angleY];
+                curveCosineY = Model.COSINE[angleY];
+                curveSineX = Model.SINE[angleX];
+                curveCosineX = Model.COSINE[angleX];
+                int anglePointerY = (angleY - 128) / 32;
+                int anglePointerX = angleX / 64;
+                for(int x = -26; x <= 26; x++) {
+                    for(int y = -26; y <= 26; y++) {
+                        int worldX = x * 128;
+                        int worldY = y * 128;
+                        boolean visible = false;
+                        for(int worldZ = -i; worldZ <= j; worldZ += 128)
                         {
-                            if(!method311((byte)9, ai[l1] + k4, i4, k3))
+                            if(!onScreen(ai[anglePointerY] + worldZ, worldY, worldX)) {
                                 continue;
-                            flag2 = true;
+                            }
+                            visible = true;
                             break;
                         }
 
-                        aflag[l1][j2][l2 + MAX_FAR_Z + 1][j3 + MAX_FAR_Z + 1] = flag2;
+                        tileOnScreen[anglePointerY][anglePointerX][x + MAX_FAR_Z + 1][y + MAX_FAR_Z + 1] = visible;
                     }
 
                 }
@@ -968,41 +963,35 @@ public class Class25
 
         }
 
-        for(int k1 = 0; k1 < 8; k1++)
-        {
-            for(int i2 = 0; i2 < 32; i2++)
-            {
-                for(int k2 = -farZ; k2 < farZ; k2++)
-                {
-                    for(int i3 = -farZ; i3 < farZ; i3++)
-                    {
-                        boolean flag1 = false;
-label0:
-                        for(int l3 = -1; l3 <= 1; l3++)
-                        {
-                            for(int j4 = -1; j4 <= 1; j4++)
-                            {
-                                if(aflag[k1][i2][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
-                                    flag1 = true;
+        for(int anglePointerY = 0; anglePointerY < 8; anglePointerY++) {
+            for(int anglePointerX = 0; anglePointerX < 32; anglePointerX++) {
+                for(int relativeX = -farZ; relativeX < farZ; relativeX++) {
+                    for(int relativeZ = -farZ; relativeZ < farZ; relativeZ++) {
+                        boolean visible = false;
+                        label0:
+                        for(int l3 = -1; l3 <= 1; l3++) {
+                            for(int j4 = -1; j4 <= 1; j4++) {
+                                if(tileOnScreen[anglePointerY][anglePointerX][relativeX + l3 + MAX_FAR_Z + 1][relativeZ + j4 + MAX_FAR_Z + 1])
+                                    visible = true;
                                 else
-                                if(aflag[k1][(i2 + 1) % 31][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
-                                    flag1 = true;
+                                if(tileOnScreen[anglePointerY][(anglePointerX + 1) % 31][relativeX + l3 + MAX_FAR_Z + 1][relativeZ + j4 + MAX_FAR_Z + 1])
+                                    visible = true;
                                 else
-                                if(aflag[k1 + 1][i2][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
+                                if(tileOnScreen[anglePointerY + 1][anglePointerX][relativeX + l3 + MAX_FAR_Z + 1][relativeZ + j4 + MAX_FAR_Z + 1])
                                 {
-                                    flag1 = true;
+                                    visible = true;
                                 } else
                                 {
-                                    if(!aflag[k1 + 1][(i2 + 1) % 31][k2 + l3 + MAX_FAR_Z + 1][i3 + j4 + MAX_FAR_Z + 1])
+                                    if(!tileOnScreen[anglePointerY + 1][(anglePointerX + 1) % 31][relativeX + l3 + MAX_FAR_Z + 1][relativeZ + j4 + MAX_FAR_Z + 1])
                                         continue;
-                                    flag1 = true;
+                                    visible = true;
                                 }
                                 break label0;
                             }
 
                         }
 
-                        TILE_VISIBILITY_MAPS[k1][i2][k2 + farZ][i3 + farZ] = flag1;
+                        TILE_VISIBILITY_MAPS[anglePointerY][anglePointerX][relativeX + farZ][relativeZ + farZ] = visible;
                     }
 
                 }
@@ -1013,12 +1002,11 @@ label0:
 
     }
 
-    public static boolean method311(byte byte0, int i, int j, int k)
+    public static boolean onScreen(int i, int j, int k)
     {
         int l = j * curveSineX + k * curveCosineX >> 16;
         int i1 = j * curveCosineX - k * curveSineX >> 16;
-        if(byte0 != 9)
-            anInt431 = -346;
+
         int j1 = i * curveSineY + i1 * curveCosineY >> 16;
         int k1 = i * curveCosineY - i1 * curveSineY >> 16;
         if (j1 < 50 || j1 > Class25.renderDistanceClamp) // Changed 3500 to 6000
@@ -1054,12 +1042,12 @@ label0:
         if(j >= mapSizeY * 128)
             j = mapSizeY * 128 - 1;
         anInt448++;
-        curveSineY = Model.anIntArray1689[j1];
-        curveCosineY = Model.anIntArray1690[j1];
+        curveSineY = Model.SINE[j1];
+        curveCosineY = Model.COSINE[j1];
         if(flag)
             return;
-        curveSineX = Model.anIntArray1689[k];
-        curveCosineX = Model.anIntArray1690[k];
+        curveSineX = Model.SINE[k];
+        curveCosineX = Model.COSINE[k];
         TILE_VISIBILITY_MAP = TILE_VISIBILITY_MAPS[(j1 - 128) / 32][k / 64];
         cameraPosX = i;
         cameraPosZ = l;
