@@ -1,283 +1,238 @@
 final class ShapedTile
 {
 
-    public ShapedTile(int i, int j, int k, int l, int overlaytex, int underlaytex, int j1, int k1,
-                      int l1, int i2, int j2, int k2, int l2, int i3, int j3,
-                      int k3, int l3, int i4, int j4, int k4, int l4, boolean tex)
+    public ShapedTile(int tileZ, int underlaySW, int overlayNW, int heightNE, int overlaytex, int underlaytex, int underlayNE, int rotation,
+                      int overlaySW, int i2, int overlayNE, int heightNW, int heightSE, int heightSW, int shape,
+                      int underlayNW, int underlaySE, int overlaySE, int j4, int tileX, int l4, boolean tex)
     {
-        color61 = l1;
-        color71 = i4;
-        color81 = j2;
-        color91 = k;
-        color62 = j;
-        color72 = l3;
-        color82 = j1;
-        color92 = k3;
-        aBoolean683 = true;
+        color61 = overlaySW;
+        color71 = overlaySE;
+        color81 = overlayNE;
+        color91 = overlayNW;
+        color62 = underlaySW;
+        color72 = underlaySE;
+        color82 = underlayNE;
+        color92 = underlayNW;
+        this.flat = true;
         textured = tex;
-        if(i3 != l2 || i3 != l || i3 != k2)
-            aBoolean683 = false;
-        shape = j3;
-        rotation = k1;
-        underlayRGB = i2;
-        overlayRGB = l4;
-        char c = '\200';
-        int i5 = c / 2;
-        int j5 = c / 4;
-        int k5 = (c * 3) / 4;
-        int ai[] = anIntArrayArray696[j3];
-        int l5 = ai.length;
-        anIntArray673 = new int[l5];
-        anIntArray674 = new int[l5];
-        anIntArray675 = new int[l5];
-        int ai1[] = new int[l5];
-        int ai2[] = new int[l5];
-        int i6 = k4 * c;
-        int j6 = i * c;
-        for(int k6 = 0; k6 < l5; k6++)
-        {
-            int l6 = ai[k6];
-            if((l6 & 1) == 0 && l6 <= 8)
-                l6 = (l6 - k1 - k1 - 1 & 7) + 1;
-            if(l6 > 8 && l6 <= 12)
-                l6 = (l6 - 9 - k1 & 3) + 9;
-            if(l6 > 12 && l6 <= 16)
-                l6 = (l6 - 13 - k1 & 3) + 13;
-            int i7;
-            int k7;
-            int i8;
-            int k8;
-            int j9;
-            if(l6 == 1)
-            {
-                i7 = i6;
-                k7 = j6;
-                i8 = i3;
-                k8 = l1;
-                j9 = j;
-            } else
-            if(l6 == 2)
-            {
-                i7 = i6 + i5;
-                k7 = j6;
-                i8 = i3 + l2 >> 1;
-                k8 = l1 + i4 >> 1;
-                j9 = j + l3 >> 1;
-            } else
-            if(l6 == 3)
-            {
-                i7 = i6 + c;
-                k7 = j6;
-                i8 = l2;
-                k8 = i4;
-                j9 = l3;
-            } else
-            if(l6 == 4)
-            {
-                i7 = i6 + c;
-                k7 = j6 + i5;
-                i8 = l2 + l >> 1;
-                k8 = i4 + j2 >> 1;
-                j9 = l3 + j1 >> 1;
-            } else
-            if(l6 == 5)
-            {
-                i7 = i6 + c;
-                k7 = j6 + c;
-                i8 = l;
-                k8 = j2;
-                j9 = j1;
-            } else
-            if(l6 == 6)
-            {
-                i7 = i6 + i5;
-                k7 = j6 + c;
-                i8 = l + k2 >> 1;
-                k8 = j2 + k >> 1;
-                j9 = j1 + k3 >> 1;
-            } else
-            if(l6 == 7)
-            {
-                i7 = i6;
-                k7 = j6 + c;
-                i8 = k2;
-                k8 = k;
-                j9 = k3;
-            } else
-            if(l6 == 8)
-            {
-                i7 = i6;
-                k7 = j6 + i5;
-                i8 = k2 + i3 >> 1;
-                k8 = k + l1 >> 1;
-                j9 = k3 + j >> 1;
-            } else
-            if(l6 == 9)
-            {
-                i7 = i6 + i5;
-                k7 = j6 + j5;
-                i8 = i3 + l2 >> 1;
-                k8 = l1 + i4 >> 1;
-                j9 = j + l3 >> 1;
-            } else
-            if(l6 == 10)
-            {
-                i7 = i6 + k5;
-                k7 = j6 + i5;
-                i8 = l2 + l >> 1;
-                k8 = i4 + j2 >> 1;
-                j9 = l3 + j1 >> 1;
-            } else
-            if(l6 == 11)
-            {
-                i7 = i6 + i5;
-                k7 = j6 + k5;
-                i8 = l + k2 >> 1;
-                k8 = j2 + k >> 1;
-                j9 = j1 + k3 >> 1;
-            } else
-            if(l6 == 12)
-            {
-                i7 = i6 + j5;
-                k7 = j6 + i5;
-                i8 = k2 + i3 >> 1;
-                k8 = k + l1 >> 1;
-                j9 = k3 + j >> 1;
-            } else
-            if(l6 == 13)
-            {
-                i7 = i6 + j5;
-                k7 = j6 + j5;
-                i8 = i3;
-                k8 = l1;
-                j9 = j;
-            } else
-            if(l6 == 14)
-            {
-                i7 = i6 + k5;
-                k7 = j6 + j5;
-                i8 = l2;
-                k8 = i4;
-                j9 = l3;
-            } else
-            if(l6 == 15)
-            {
-                i7 = i6 + k5;
-                k7 = j6 + k5;
-                i8 = l;
-                k8 = j2;
-                j9 = j1;
-            } else
-            {
-                i7 = i6 + j5;
-                k7 = j6 + k5;
-                i8 = k2;
-                k8 = k;
-                j9 = k3;
+        if(heightSW != heightSE || heightSW != heightNE || heightSW != heightNW)
+            this.flat = false;
+        this.shape = shape;
+        this.rotation = rotation;
+        this.underlayRGB = i2;
+        this.overlayRGB = l4;
+        char TILE_WIDTH  = '\200';
+        int HALF_TILE = TILE_WIDTH  / 2;
+        int QUARTER_TILE = TILE_WIDTH  / 4;
+        int THREE_QUARTER_TILE = (TILE_WIDTH  * 3) / 4;
+        int shapedTileMesh[] = shapedTilePointData[shape];
+        int shapedTileMeshLength = shapedTileMesh.length;
+        this.vertexX = new int[shapedTileMeshLength];
+        this.vertexY = new int[shapedTileMeshLength];
+        this.vertexZ = new int[shapedTileMeshLength];
+        int vertexColourOverlay[] = new int[shapedTileMeshLength];
+        int vertexColourUnderlay[] = new int[shapedTileMeshLength];
+        int tilePosX = tileX * TILE_WIDTH ;
+        int tilePosY = tileZ * TILE_WIDTH ;
+        for(int vertex = 0; vertex < shapedTileMeshLength; vertex++) {
+            int vertexType = shapedTileMesh[vertex];
+            if((vertexType & 1) == 0 && vertexType <= 8)
+                vertexType = (vertexType - rotation - rotation - 1 & 7) + 1;
+            if(vertexType > 8 && vertexType <= 12)
+                vertexType = (vertexType - 9 - rotation & 3) + 9;
+            if(vertexType > 12 && vertexType <= 16)
+                vertexType = (vertexType - 13 - rotation & 3) + 13;
+            int vertexX;
+            int vertexZ;
+            int vertexY;
+            int vertexCOverlay;
+            int vertexCUnderlay;
+            if(vertexType == 1) {
+                vertexX = tilePosX;
+                vertexZ = tilePosY;
+                vertexY = heightSW;
+                vertexCOverlay = overlaySW;
+                vertexCUnderlay = underlaySW;
+            } else if(vertexType == 2) {
+                vertexX = tilePosX + HALF_TILE;
+                vertexZ = tilePosY;
+                vertexY = heightSW + heightSE >> 1;
+                vertexCOverlay = overlaySW + overlaySE >> 1;
+                vertexCUnderlay = underlaySW + underlaySE >> 1;
+            } else if(vertexType == 3) {
+                vertexX = tilePosX + TILE_WIDTH ;
+                vertexZ = tilePosY;
+                vertexY = heightSE;
+                vertexCOverlay = overlaySE;
+                vertexCUnderlay = underlaySE;
+            } else if(vertexType == 4) {
+                vertexX = tilePosX + TILE_WIDTH ;
+                vertexZ = tilePosY + HALF_TILE;
+                vertexY = heightSE + heightNE >> 1;
+                vertexCOverlay = overlaySE + overlayNE >> 1;
+                vertexCUnderlay = underlaySE + underlayNE >> 1;
+            } else if(vertexType == 5) {
+                vertexX = tilePosX + TILE_WIDTH ;
+                vertexZ = tilePosY + TILE_WIDTH ;
+                vertexY = heightNE;
+                vertexCOverlay = overlayNE;
+                vertexCUnderlay = underlayNE;
+            } else if(vertexType == 6) {
+                vertexX = tilePosX + HALF_TILE;
+                vertexZ = tilePosY + TILE_WIDTH ;
+                vertexY = heightNE + heightNW >> 1;
+                vertexCOverlay = overlayNE + overlayNW >> 1;
+                vertexCUnderlay = underlayNE + underlayNW >> 1;
+            } else if(vertexType == 7) {
+                vertexX = tilePosX;
+                vertexZ = tilePosY + TILE_WIDTH ;
+                vertexY = heightNW;
+                vertexCOverlay = overlayNW;
+                vertexCUnderlay = underlayNW;
+            } else if(vertexType == 8) {
+                vertexX = tilePosX;
+                vertexZ = tilePosY + HALF_TILE;
+                vertexY = heightNW + heightSW >> 1;
+                vertexCOverlay = overlayNW + overlaySW >> 1;
+                vertexCUnderlay = underlayNW + underlaySW >> 1;
+            } else if(vertexType == 9) {
+                vertexX = tilePosX + HALF_TILE;
+                vertexZ = tilePosY + QUARTER_TILE;
+                vertexY = heightSW + heightSE >> 1;
+                vertexCOverlay = overlaySW + overlaySE >> 1;
+                vertexCUnderlay = underlaySW + underlaySE >> 1;
+            } else if(vertexType == 10) {
+                vertexX = tilePosX + THREE_QUARTER_TILE;
+                vertexZ = tilePosY + HALF_TILE;
+                vertexY = heightSE + heightNE >> 1;
+                vertexCOverlay = overlaySE + overlayNE >> 1;
+                vertexCUnderlay = underlaySE + underlayNE >> 1;
+            } else if(vertexType == 11) {
+                vertexX = tilePosX + HALF_TILE;
+                vertexZ = tilePosY + THREE_QUARTER_TILE;
+                vertexY = heightNE + heightNW >> 1;
+                vertexCOverlay = overlayNE + overlayNW >> 1;
+                vertexCUnderlay = underlayNE + underlayNW >> 1;
+            } else if(vertexType == 12) {
+                vertexX = tilePosX + QUARTER_TILE;
+                vertexZ = tilePosY + HALF_TILE;
+                vertexY = heightNW + heightSW >> 1;
+                vertexCOverlay = overlayNW + overlaySW >> 1;
+                vertexCUnderlay = underlayNW + underlaySW >> 1;
+            } else if(vertexType == 13) {
+                vertexX = tilePosX + QUARTER_TILE;
+                vertexZ = tilePosY + QUARTER_TILE;
+                vertexY = heightSW;
+                vertexCOverlay = overlaySW;
+                vertexCUnderlay = underlaySW;
+            } else if(vertexType == 14) {
+                vertexX = tilePosX + THREE_QUARTER_TILE;
+                vertexZ = tilePosY + QUARTER_TILE;
+                vertexY = heightSE;
+                vertexCOverlay = overlaySE;
+                vertexCUnderlay = underlaySE;
+            } else if(vertexType == 15) {
+                vertexX = tilePosX + THREE_QUARTER_TILE;
+                vertexZ = tilePosY + THREE_QUARTER_TILE;
+                vertexY = heightNE;
+                vertexCOverlay = overlayNE;
+                vertexCUnderlay = underlayNE;
+            } else {
+                vertexX = tilePosX + QUARTER_TILE;
+                vertexZ = tilePosY + THREE_QUARTER_TILE;
+                vertexY = heightNW;
+                vertexCOverlay = overlayNW;
+                vertexCUnderlay = underlayNW;
             }
-            anIntArray673[k6] = i7;
-            anIntArray674[k6] = i8;
-            anIntArray675[k6] = k7;
-            ai1[k6] = k8;
-            ai2[k6] = j9;
+            this.vertexX[vertex] = vertexX;
+            this.vertexY[vertex] = vertexY;
+            this.vertexZ[vertex] = vertexZ;
+            vertexColourOverlay[vertex] = vertexCOverlay;
+            vertexColourUnderlay[vertex] = vertexCUnderlay;
         }
 
-        int ai3[] = anIntArrayArray697[j3];
-        int j7 = ai3.length / 4;
-        anIntArray679 = new int[j7];
-        anIntArray680 = new int[j7];
-        anIntArray681 = new int[j7];
-        anIntArray676 = new int[j7];
-        anIntArray677 = new int[j7];
-        anIntArray678 = new int[j7];
-        if(overlaytex != -1 || underlaytex != -1)
-            anIntArray682 = new int[j7];
-        int l7 = 0;
-        for(int j8 = 0; j8 < j7; j8++)
-        {
-            int l8 = ai3[l7];
-            int k9 = ai3[l7 + 1];
-            int i10 = ai3[l7 + 2];
-            int k10 = ai3[l7 + 3];
-            l7 += 4;
-            if(k9 < 4)
-                k9 = k9 - k1 & 3;
-            if(i10 < 4)
-                i10 = i10 - k1 & 3;
-            if(k10 < 4)
-                k10 = k10 - k1 & 3;
-            anIntArray679[j8] = k9;
-            anIntArray680[j8] = i10;
-            anIntArray681[j8] = k10;
-            if(l8 == 0)
-            {
-                anIntArray676[j8] = ai1[k9];
-                anIntArray677[j8] = ai1[i10];
-                anIntArray678[j8] = ai1[k10];
-                if(anIntArray682 != null)
-                    anIntArray682[j8] = underlaytex;
-            } else
-            {
-                anIntArray676[j8] = ai2[k9];
-                anIntArray677[j8] = ai2[i10];
-                anIntArray678[j8] = ai2[k10];
-                if(anIntArray682 != null)
-                    anIntArray682[j8] = overlaytex;
+        int[] shapedTileElements = shapedTileElementData[shape];
+        int vertexCount = shapedTileElements.length / 4;
+        this.triangleA = new int[vertexCount];
+        this.triangleB = new int[vertexCount];
+        this.triangleC = new int[vertexCount];
+        this.triangleHSLA = new int[vertexCount];
+        this.triangleHSLB = new int[vertexCount];
+        this.triangleHSLC = new int[vertexCount];
+        if(overlaytex != -1 || underlaytex != -1) {
+            this.triangleTexture = new int[vertexCount];
+        }
+        int offset = 0;
+        for(int vertex = 0; vertex < vertexCount; vertex++) {
+            int overlayOrUnderlay = shapedTileElements[offset];
+            int idxA = shapedTileElements[offset + 1];
+            int idxB = shapedTileElements[offset + 2];
+            int idxC = shapedTileElements[offset + 3];
+            offset += 4;
+            if(idxA < 4)
+                idxA = idxA - rotation & 3;
+            if(idxB < 4)
+                idxB = idxB - rotation & 3;
+            if(idxC < 4)
+                idxC = idxC - rotation & 3;
+            this.triangleA[vertex] = idxA;
+            this.triangleB[vertex] = idxB;
+            this.triangleC[vertex] = idxC;
+            if(overlayOrUnderlay == 0) {
+                this.triangleHSLA[vertex] = vertexColourOverlay[idxA];
+                this.triangleHSLB[vertex] = vertexColourOverlay[idxB];
+                this.triangleHSLC[vertex] = vertexColourOverlay[idxC];
+                if(this.triangleTexture != null)
+                    this.triangleTexture[vertex] = underlaytex;
+            } else {
+                this.triangleHSLA[vertex] = vertexColourUnderlay[idxA];
+                this.triangleHSLB[vertex] = vertexColourUnderlay[idxB];
+                this.triangleHSLC[vertex] = vertexColourUnderlay[idxC];
+                if(this.triangleTexture != null)
+                    this.triangleTexture[vertex] = overlaytex;
             }
         }
 
-        int i9 = i3;
-        int l9 = l2;
-        if(l2 < i9)
-            i9 = l2;
-        if(l2 > l9)
-            l9 = l2;
-        if(l < i9)
-            i9 = l;
-        if(l > l9)
-            l9 = l;
-        if(k2 < i9)
-            i9 = k2;
-        if(k2 > l9)
-            l9 = k2;
+        int i9 = heightSW;
+        int l9 = heightSE;
+        if(heightSE < i9)
+            i9 = heightSE;
+        if(heightSE > l9)
+            l9 = heightSE;
+        if(heightNE < i9)
+            i9 = heightNE;
+        if(heightNE > l9)
+            l9 = heightNE;
+        if(heightNW < i9)
+            i9 = heightNW;
+        if(heightNW > l9)
+            l9 = heightNW;
         i9 /= 14;
         l9 /= 14;
-        if(j4 < 3 || j4 > 3)
-        {
-            for(int j10 = 1; j10 > 0; j10++);
-        }
     }
 
-    int anIntArray673[];
-    int anIntArray674[];
-    int anIntArray675[];
-    int anIntArray676[];
-    int anIntArray677[];
-    int anIntArray678[];
-    int anIntArray679[];
-    int anIntArray680[];
-    int anIntArray681[];
-    int anIntArray682[];
-    boolean aBoolean683;
+    int[] vertexX;
+    int[] vertexY;
+    int[] vertexZ;
+    int[] triangleHSLA;
+    int[] triangleHSLB;
+    int[] triangleHSLC;
+    int[] triangleA;
+    int[] triangleB;
+    int[] triangleC;
+    int[] triangleTexture;
+    boolean flat;
     int shape;
     int rotation;
     int underlayRGB;
     int overlayRGB;
-    static int anIntArray688[] = new int[6];
-    static int anIntArray689[] = new int[6];
-    static int anIntArray690[] = new int[6];
-    static int anIntArray691[] = new int[6];
-    static int anIntArray692[] = new int[6];
-    static int anIntArray693[] = {
-        1, 0
-    };
-    static int anIntArray694[] = {
-        2, 1
-    };
-    static int anIntArray695[] = {
-        3, 3
-    };
-    static final int anIntArrayArray696[][] = {
+    static int[] screenX = new int[6];
+    static int[] screenY = new int[6];
+    static int[] viewspaceX = new int[6];
+    static int[] viewspaceY = new int[6];
+    static int[] viewspaceZ = new int[6];
+
+    static final int[][] shapedTilePointData = {
         {
             1, 3, 5, 7
         }, {
@@ -306,7 +261,7 @@ final class ShapedTile
             1, 3, 5, 7, 13, 14
         }
     };
-    static final int anIntArrayArray697[][] = {
+    static final int[][] shapedTileElementData = {
         {
             0, 1, 2, 3, 0, 0, 1, 3
         }, {
