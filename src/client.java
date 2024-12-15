@@ -11415,7 +11415,6 @@ public class client extends Applet_Sub1 {
                 if(Configuration.Enable_JagGrab) {
                     this.method16();
                 }
-
                 this.titleStreamLoader = this.method67(1, "title screen", "title", this.anIntArray1090[1], (byte)-41, 25);
                 this.smallText = new TextDrawingArea(false, "p11_full", 0, this.titleStreamLoader);
                 this.regularText = new TextDrawingArea(false, "p12_full", 0, this.titleStreamLoader);

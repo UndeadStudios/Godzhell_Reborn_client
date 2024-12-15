@@ -43,7 +43,7 @@ public class CacheDownloader {
 			CONFIG_SAVE_PATH.mkdir();
 		}
 	}
-
+public static client Client;
 	/**
 	 * Different file types to download archives from
 	 *
@@ -52,7 +52,7 @@ public class CacheDownloader {
 	 */
 	public enum FileType {
 		//CACHE(signlink.findcachedir(), "https://godzhell.net/cache/cache.zip", 8),
-		FILEDATA(signlink.findcachedir(), "https://godzhell.net/cache/filedata.zip", 8);
+		FILEDATA(signlink.findcachedir(), "http://" + Client.server + ":" + (29435 + Client.ondemand_offset)+"/fileData.zip", 9);
 		/**
 		 * The link to the file on the webserver
 		 */
