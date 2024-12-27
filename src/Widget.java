@@ -47,7 +47,7 @@ public class Widget {
     public int contentType;
     public int width;
     public int height;
-    public byte opacity;
+    public byte aByte254;
     public int mOverInterToTrigger;
     public int[] anIntArray245;
     public int[] anIntArray212;
@@ -94,8 +94,8 @@ public class Widget {
     public String spellName;
     public int spellUsableOn;
     public Sprite enabledSprite;
-    public int anInt257;
-    public int anInt258;
+    public int disabledAnimationId;
+    public int enabledAnimationId;
     public String tooltip;
     public int modelZoom;
     public int modelRotation1;
@@ -120,39 +120,19 @@ public class Widget {
     }
 
     public static void unpack(FileArchive fileArchive, RSFont[] aclass30_sub2_sub1_sub4, byte byte0, FileArchive fileArchive_1) {
-        aClass12_238 = new Class12(false, '\uc350');
+        aClass12_238 = new Class12(false, 50000);
         Stream stream = new Stream(fileArchive.method571("data"), 891);
         int i = -1;
         int j = stream.readUnsignedShort();
         interfaceCache = new Widget[j + 80000];
 
-        while(true) {
-            Widget class9;
-            do {
-                if(stream.currentPosition >= stream.buffer.length) {
-                    aFileArchive = fileArchive;
-                    clanChatTab(aclass30_sub2_sub1_sub4);
-                    clanChatSetup(aclass30_sub2_sub1_sub4);
-                    slayerInterface.Unpack(aclass30_sub2_sub1_sub4);
-                    slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
-                    slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
-                    shopWidget(aclass30_sub2_sub1_sub4);
-                    SpawnContainer.get().load();
-                    aClass12_238 = null;
-                    if(byte0 != -84) {
-                        ;
-                    }
-
-                    return;
-                }
-
+        while(stream.currentPosition < stream.buffer.length) {
                 int k = stream.readUnsignedShort();
-                if(k == '\uffff') {
+                if(k == 65535) {
                     i = stream.readUnsignedShort();
                     k = stream.readUnsignedShort();
                 }
-
-                class9 = interfaceCache[k] = new Widget();
+                Widget class9 = interfaceCache[k] = new Widget();
                 class9.id = k;
                 class9.parentID = i;
                 class9.type = stream.readUnsignedByte();
@@ -160,7 +140,7 @@ public class Widget {
                 class9.contentType = stream.readUnsignedShort();
                 class9.width = stream.readUnsignedShort();
                 class9.height = stream.readUnsignedShort();
-                class9.opacity = (byte)stream.readUnsignedByte();
+                class9.aByte254 = (byte)stream.readUnsignedByte();
                 class9.mOverInterToTrigger = stream.readUnsignedByte();
                 if(class9.mOverInterToTrigger != 0) {
                     class9.mOverInterToTrigger = (class9.mOverInterToTrigger - 1 << 8) + stream.readUnsignedByte();
@@ -318,16 +298,16 @@ public class Widget {
 
                     i3 = stream.readUnsignedByte();
                     if(i3 != 0) {
-                        class9.anInt257 = (i3 - 1 << 8) + stream.readUnsignedByte();
+                        class9.disabledAnimationId = (i3 - 1 << 8) + stream.readUnsignedByte();
                     } else {
-                        class9.anInt257 = -1;
+                        class9.disabledAnimationId = -1;
                     }
 
                     i3 = stream.readUnsignedByte();
                     if(i3 != 0) {
-                        class9.anInt258 = (i3 - 1 << 8) + stream.readUnsignedByte();
+                        class9.enabledAnimationId = (i3 - 1 << 8) + stream.readUnsignedByte();
                     } else {
-                        class9.anInt258 = -1;
+                        class9.enabledAnimationId = -1;
                     }
 
                     class9.modelZoom = stream.readUnsignedShort();
@@ -340,17 +320,14 @@ public class Widget {
                     class9.inventoryAmounts = new int[class9.width * class9.height];
                     class9.centerText = stream.readUnsignedByte() == 1;
                     i3 = stream.readUnsignedByte();
-                    if(aclass30_sub2_sub1_sub4 != null) {
+                    if(aclass30_sub2_sub1_sub4 != null)
                         class9.textDrawingAreas = aclass30_sub2_sub1_sub4[i3];
-                    }
-
                     class9.textShadow = stream.readUnsignedByte() == 1;
                     class9.textColor = stream.readDWord();
                     class9.invSpritePadX = stream.readSignedWord();
                     class9.invSpritePadY = stream.readSignedWord();
                     class9.isInventoryInterface = stream.readUnsignedByte() == 1;
                     class9.actions = new String[6];
-
                     for(k4 = 0; k4 < 5; ++k4) {
                         class9.actions[k4] = stream.readString();
                         if(class9.actions[k4].length() == 0) {
@@ -365,30 +342,34 @@ public class Widget {
                     class9.spellUsableOn = stream.readUnsignedShort();
                 }
 
-                if(class9.type == 8) {
+                if(class9.type == 8)
                     class9.message = stream.readString();
-                }
-            } while(class9.atActionType != 1 && class9.atActionType != 4 && class9.atActionType != 5 && class9.atActionType != 6);
 
-            class9.tooltip = stream.readString();
-            if(class9.tooltip.length() == 0) {
-                if(class9.atActionType == 1) {
-                    class9.tooltip = "Ok";
-                }
+            if(class9.atActionType == 1 || class9.atActionType == 4 || class9.atActionType == 5
+                    || class9.atActionType == 6) {
 
-                if(class9.atActionType == 4) {
-                    class9.tooltip = "Select";
-                }
-
-                if(class9.atActionType == 5) {
-                    class9.tooltip = "Select";
-                }
-
-                if(class9.atActionType == 6) {
-                    class9.tooltip = "Continue";
+                class9.tooltip = stream.readString();
+                if (class9.tooltip.length() == 0) {
+                    if (class9.atActionType == 1)
+                        class9.tooltip = "Ok";
+                    if (class9.atActionType == 4)
+                        class9.tooltip = "Select";
+                    if (class9.atActionType == 5)
+                        class9.tooltip = "Select";
+                    if (class9.atActionType == 6)
+                        class9.tooltip = "Continue";
                 }
             }
         }
+        aFileArchive = fileArchive;
+        clanChatTab(aclass30_sub2_sub1_sub4);
+        clanChatSetup(aclass30_sub2_sub1_sub4);
+        slayerInterface.Unpack(aclass30_sub2_sub1_sub4);
+        slayerInterface.Unpack2(aclass30_sub2_sub1_sub4);
+        slayerInterface.Unpack3(aclass30_sub2_sub1_sub4);
+        shopWidget(aclass30_sub2_sub1_sub4);
+        SpawnContainer.get().load();
+        aClass12_238 = null;
     }
 
     public static void shopWidget(RSFont[] tda) {
@@ -586,7 +567,7 @@ public class Widget {
         tab.contentType = 0;
         tab.width = 512;
         tab.height = 700;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = -1;
         return tab;
     }
@@ -609,7 +590,7 @@ public class Widget {
         rsinterface.width = w;
         rsinterface.height = 16;
         rsinterface.contentType = 0;
-        rsinterface.opacity = 31;
+        rsinterface.aByte254 = 31;
         rsinterface.mOverInterToTrigger = -1;
         rsinterface.centerText = l;
         rsinterface.textShadow = m;
@@ -636,7 +617,7 @@ public class Widget {
         Tab.width = 174;
         Tab.height = 11;
         Tab.contentType = 0;
-        Tab.opacity = 0;
+        Tab.aByte254 = 0;
         Tab.mOverInterToTrigger = -1;
         Tab.centerText = false;
         Tab.textShadow = true;
@@ -658,7 +639,7 @@ public class Widget {
         tab.width = 0;
         tab.height = 11;
         tab.contentType = 0;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = -1;
         tab.centerText = center;
         tab.textShadow = shadow;
@@ -679,7 +660,7 @@ public class Widget {
         tab.width = width;
         tab.height = height;
         tab.contentType = 0;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = -1;
         tab.centerText = center;
         tab.textShadow = shadow;
@@ -698,7 +679,7 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = aT;
         tab.contentType = contentType;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = hoverOver;
         tab.disabledSprite = imageLoader(j, imageName);
         tab.enabledSprite = imageLoader(j, imageName);
@@ -716,7 +697,7 @@ public class Widget {
         tab.contentType = 0;
         tab.width = 512;
         tab.height = 334;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(j, name);
         tab.enabledSprite = imageLoader(k, name);
@@ -731,7 +712,7 @@ public class Widget {
         tab.width = w;
         tab.height = h;
         tab.isMouseoverTriggered = true;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = -1;
         tab.scrollMax = 0;
         addHoverImage(IMAGEID, j, j, imageName);
@@ -774,7 +755,7 @@ public class Widget {
         Widget.type = 5;
         Widget.atActionType = AT;
         Widget.contentType = 0;
-        Widget.opacity = 0;
+        Widget.aByte254 = 0;
         Widget.mOverInterToTrigger = 52;
         Widget.disabledSprite = imageLoader(j, name);
         Widget.enabledSprite = imageLoader(j, name);
@@ -790,7 +771,7 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = 1;
         tab.contentType = 0;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(sid, spriteName);
         tab.enabledSprite = imageLoader(sid, spriteName);
@@ -807,7 +788,7 @@ public class Widget {
         rsinterface.contentType = 0;
         rsinterface.width = sprite.myWidth;
         rsinterface.height = sprite.myHeight;
-        rsinterface.opacity = 0;
+        rsinterface.aByte254 = 0;
         rsinterface.mOverInterToTrigger = 52;
         rsinterface.disabledSprite = sprite;
         rsinterface.enabledSprite = sprite;
@@ -821,7 +802,7 @@ public class Widget {
         tab.type = 5;
         tab.atActionType = 0;
         tab.contentType = 0;
-        tab.opacity = 0;
+        tab.aByte254 = 0;
         tab.mOverInterToTrigger = 52;
         tab.disabledSprite = imageLoader(spriteId, spriteName);
         tab.enabledSprite = imageLoader(spriteId, spriteName);

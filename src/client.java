@@ -12827,16 +12827,16 @@ public class client extends Applet_Sub1 {
                                 }
                             }
 
-                            if(class9_1.opacity == 0) {
+                            if(class9_1.aByte254 == 0) {
                                 if(class9_1.aBoolean227) {
                                     DrawingArea.drawPixels(class9_1.height, _y, _x, k4, class9_1.width);
                                 } else {
                                     DrawingArea.fillPixels(_x, class9_1.width, class9_1.height, k4, _y, true);
                                 }
                             } else if(class9_1.aBoolean227) {
-                                DrawingArea.method335(k4, _y, class9_1.width, class9_1.height, 256 - (class9_1.opacity & 255), 0, _x);
+                                DrawingArea.method335(k4, _y, class9_1.width, class9_1.height, 256 - (class9_1.aByte254 & 255), 0, _x);
                             } else {
-                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.opacity & 255), k4, class9_1.width, _x, -17319);
+                                DrawingArea.method338(_y, class9_1.height, 256 - (class9_1.aByte254 & 255), k4, class9_1.width, _x, -17319);
                             }
                         } else {
                             RSFont class30_sub2_sub1_sub4_1;
@@ -12956,9 +12956,9 @@ public class client extends Applet_Sub1 {
                                 i6 = Rasterizer.anIntArray1471[class9_1.modelRotation1] * class9_1.modelZoom >> 16;
                                 boolean var30 = this.method131(class9_1, false);
                                 if(var30) {
-                                    var32 = class9_1.anInt258;
+                                    var32 = class9_1.enabledAnimationId;
                                 } else {
-                                    var32 = class9_1.anInt257;
+                                    var32 = class9_1.disabledAnimationId;
                                 }
 
                                 Model var33;
@@ -13888,13 +13888,13 @@ public class client extends Applet_Sub1 {
                     flag1 |= this.method119(i, false, class9_1.id);
                 }
 
-                if(class9_1.type == 6 && (class9_1.anInt257 != -1 || class9_1.anInt258 != -1)) {
+                if(class9_1.type == 6 && (class9_1.disabledAnimationId != -1 || class9_1.enabledAnimationId != -1)) {
                     boolean flag2 = this.method131(class9_1, false);
                     int l;
                     if(flag2) {
-                        l = class9_1.anInt258;
+                        l = class9_1.enabledAnimationId;
                     } else {
-                        l = class9_1.anInt257;
+                        l = class9_1.disabledAnimationId;
                     }
 
                     if(l != -1) {
@@ -17334,7 +17334,7 @@ public class client extends Applet_Sub1 {
                     var23 = this.in.readUnsignedShort();
                     j15 = this.in.readSignedWord();
                     var26 = Widget.interfaceCache[var23];
-                    var26.anInt257 = j15;
+                    var26.disabledAnimationId = j15;
                     var26.modelZoom = 1600;
                     if(j15 == -1) {
                         var26.anInt246 = 0;

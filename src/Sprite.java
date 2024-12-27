@@ -1,8 +1,4 @@
-import java.awt.Component;
-import java.awt.Image;
-import java.awt.MediaTracker;
-import java.awt.Point;
-import java.awt.Toolkit;
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.DirectColorModel;
@@ -210,6 +206,7 @@ public final class Sprite extends DrawingArea {
          PixelGrabber pixelgrabber = new PixelGrabber(exception, 0, 0, this.myWidth, this.myHeight, this.myPixels, 0, this.myWidth);
          pixelgrabber.grabPixels();
          this.setTransparency(255, 0, 255);
+         //applyPinkOverlay();
       } catch (Exception var5) {
          var5.printStackTrace();
       }
@@ -229,6 +226,7 @@ public final class Sprite extends DrawingArea {
          PixelGrabber pixelgrabber = new PixelGrabber(exception, 0, 0, this.myWidth, this.myHeight, this.myPixels, 0, this.myWidth);
          pixelgrabber.grabPixels();
          this.setTransparency(255, 0, 255);
+         //applyPinkOverlay();
       } catch (Exception var6) {
          var6.printStackTrace();
       }
@@ -288,6 +286,7 @@ public final class Sprite extends DrawingArea {
          PixelGrabber pixelgrabber = new PixelGrabber(exception, 0, 0, this.myWidth, this.myHeight, this.myPixels, 0, this.myWidth);
          pixelgrabber.grabPixels();
          this.setTransparency(255, 0, 255);
+         //applyPinkOverlay();
       } catch (Exception var6) {
          System.out.println("Error converting jpg");
       }
@@ -427,13 +426,14 @@ public final class Sprite extends DrawingArea {
          } catch (Exception var12) {
             System.out.println(var12);
          }
+         //applyPinkOverlay();
       } else {
          int var21;
          if(i1 == 0) {
             for(var21 = 0; var21 < j1; ++var21) {
                this.myPixels[var21] = ai[stream.readUnsignedByte()];
             }
-
+             //applyPinkOverlay();
             return;
          }
 
@@ -441,13 +441,57 @@ public final class Sprite extends DrawingArea {
             for(var21 = 0; var21 < this.myWidth; ++var21) {
                for(int var20 = 0; var20 < this.myHeight; ++var20) {
                   this.myPixels[var21 + var20 * this.myWidth] = ai[stream.readUnsignedByte()];
+                  //applyPinkOverlay();
                }
             }
          }
       }
 
    }
+   private void applyPinkOverlay() {
+      Color overlayColor = new Color(0, 0, 0, 255); // RGB for light magenta pink
+      int overlayRed = overlayColor.getRed();
+      int overlayGreen = overlayColor.getGreen();
+      int overlayBlue = overlayColor.getBlue();
 
+      for (int i = 0; i < myPixels.length; i++) {
+         int pixel = myPixels[i];
+         int alpha = (pixel >> 24) & 0xFF;
+
+         // Check if the pixel is not transparent
+         if (alpha != 0) {
+            int r = (pixel >> 16) & 0xFF;
+            int g = (pixel >> 8) & 0xFF;
+            int b = pixel & 0xFF;
+
+            // Skip applying overlay if the pixel is close to the target pink (255, 61, 163)
+            if (isCloseToPink(r, g, b, overlayRed, overlayGreen, overlayBlue)) {
+               continue;  // Skip applying the overlay to this pixel
+            }
+
+            // Apply the pink overlay by blending the current pixel color with the new pink color
+            int newRed = (int)((r + overlayRed) / 2);
+            int newGreen = (int)((g + overlayGreen) / 2);
+            int newBlue = (int)((b + overlayBlue) / 2);
+
+            // Rebuild the pixel with the new blended colors
+            myPixels[i] = (alpha << 24) | (newRed << 16) | (newGreen << 8) | newBlue;
+         }
+      }
+   }
+
+   private boolean isCloseToPink(int r, int g, int b, int overlayRed, int overlayGreen, int overlayBlue) {
+      // Define the threshold for how "close" a pixel can be to the pink color (255, 61, 163)
+      int threshold = 50;
+
+      // Calculate the RGB difference between the pixel color and the target pink
+      int redDiff = Math.abs(r - overlayRed);
+      int greenDiff = Math.abs(g - overlayGreen);
+      int blueDiff = Math.abs(b - overlayBlue);
+
+      // If the pixel is close enough to the pink color, return true (do not apply overlay)
+      return redDiff < threshold && greenDiff < threshold && blueDiff < threshold;
+   }
    public static void writeTemp(String tempData, String tempFile) {
       try {
          BufferedWriter LV = new BufferedWriter(new FileWriter(tempFile, true));
